@@ -1,2 +1,1 @@
-# azurefile-csi-driver
-Azure file Container Storage Interface (CSI) Storage Plugin
+# Azure file CSI Driver
