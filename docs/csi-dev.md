@@ -7,7 +7,7 @@
 $ make azurefile
 ```
 
-#### Before start running CSI driver, create "/etc/kubernetes/azure.json" file under testing server(it's better copy `azure.json` file from a k8s cluster with service principle configured correctly) and set `AZURE_CREDENTIAL_FILE` as following:
+> Before running CSI driver, create "/etc/kubernetes/azure.json" file under testing server(it's better copy `azure.json` file from a k8s cluster with service principle configured correctly) and set `AZURE_CREDENTIAL_FILE` as following:
 ```
 export set AZURE_CREDENTIAL_FILE=/etc/kubernetes/azure.json
 ```
@@ -20,44 +20,44 @@ $ ./_output/azurefileplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v
 ### Test using csc
 Get ```csc``` tool from https://github.com/rexray/gocsi/tree/master/csc
 
-#### Get plugin info
+#### 1. Get plugin info
 ```
 $ csc identity plugin-info --endpoint tcp://127.0.0.1:10000
 "csi-azurefile" "v0.5.0-alpha"
 ```
 
-#### Create a volume
+#### 2. Create an azure file volume
 ```
 $ csc controller new --endpoint tcp://127.0.0.1:10000 --cap 1,block CSIVolumeName  --req-bytes 2147483648 --params skuname=Standard_LRS
 CSIVolumeID       2147483648      "accountname"="f5713de20cde511e8ba4900" "skuname"="Standard_LRS"
 ```
 
-#### NodePublish a volume
+#### 3. Mount an azure file volume to a user specified directory
 ```
 $ mkdir ~/testmount
 $ csc node publish --endpoint tcp://127.0.0.1:10000 --cap 1,block --target-path ~/testmount CSIVolumeID
 #f5713de20cde511e8ba4900#pvc-file-dynamic-8ff5d05a-f47c-11e8-9c3a-000d3a00df41
 ```
 
-#### NodeUnpublish a volume
+#### 4. Unmount azure file volume
 ```
 $ csc node unpublish --endpoint tcp://127.0.0.1:10000 --target-path ~/testmount CSIVolumeID
 CSIVolumeID
 ```
 
-#### Delete a volume
+#### 5. Delete azure file volume
 ```
 $ csc controller del --endpoint tcp://127.0.0.1:10000 CSIVolumeID
 CSIVolumeID
 ```
 
-#### Validate volume capabilities
+#### 6. Validate volume capabilities
 ```
 $ csc controller validate-volume-capabilities --endpoint tcp://127.0.0.1:10000 --cap 1,block CSIVolumeName
 CSIVolumeID  true
 ```
 
-#### Get NodeID
+#### 7. Get NodeID
 ```
 $ csc node get-id --endpoint tcp://127.0.0.1:10000
 CSINode
