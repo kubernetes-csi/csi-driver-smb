@@ -7,9 +7,14 @@
 $ make azurefile
 ```
 
+#### Before start running CSI driver, create "/etc/kubernetes/azure.json" file under testing server(it's better copy `azure.json` file from a k8s cluster with service principle configured correctly) and set `AZURE_CREDENTIAL_FILE` as following:
+```
+export set AZURE_CREDENTIAL_FILE=/etc/kubernetes/azure.json
+```
+
 ### Start CSI driver
 ```
-$ sudo ./_output/azurefileplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5
+$ ./_output/azurefileplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5
 ```
 
 ### Test using csc
@@ -20,8 +25,6 @@ Get ```csc``` tool from https://github.com/rexray/gocsi/tree/master/csc
 $ csc identity plugin-info --endpoint tcp://127.0.0.1:10000
 "csi-azurefile" "v0.5.0-alpha"
 ```
-
-#### Before create a volume, create "/etc/kubernetes/azure.json" file under testing server
 
 #### Create a volume
 ```
