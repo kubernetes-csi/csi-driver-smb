@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-REGISTRY_NAME=quay.io/k8scsi
-IMAGE_NAME=azurefileplugin
-IMAGE_VERSION=canary
+REGISTRY_NAME=andyzhangx
+IMAGE_NAME=azurefile-csi
+IMAGE_VERSION=0.0.1
 IMAGE_TAG=$(REGISTRY_NAME)/$(IMAGE_NAME):$(IMAGE_VERSION)
 REV=$(shell git describe --long --tags --dirty)
 
