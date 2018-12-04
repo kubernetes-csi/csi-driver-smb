@@ -47,8 +47,8 @@ func NewCSIDriver(name string, v string, nodeID string) *CSIDriver {
 	}
 	// TODO version format and validation
 	if len(v) == 0 {
-		glog.Errorf("Version argument missing")
-		return nil
+		glog.Errorf("Version argument missing, now skip it")
+		//return nil
 	}
 
 	driver := CSIDriver{

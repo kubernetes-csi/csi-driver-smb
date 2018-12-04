@@ -33,7 +33,8 @@ func GetCloudProvider() (*azure.Cloud, error) {
 	if ok {
 		glog.V(2).Infof("AZURE_CREDENTIAL_FILE env var set as %v", credFile)
 	} else {
-		return nil, fmt.Errorf("AZURE_CREDENTIAL_FILE env var not set, cloud not get azure cloud provider")
+		credFile = "/etc/kubernetes/azure.json"
+		glog.V(2).Infof("use default AZURE_CREDENTIAL_FILE env var: %v", credFile)
 	}
 
 	f, err := os.Open(credFile)

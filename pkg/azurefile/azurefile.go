@@ -72,7 +72,7 @@ var azureFileVolumeSnapshots map[string]azureFileSnapshot
 
 var (
 	azureFileDriver *azureFile
-	vendorVersion   = "dev"
+	vendorVersion   = "0.0.1"
 )
 
 func init() {

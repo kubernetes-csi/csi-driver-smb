@@ -27,9 +27,9 @@ test:
 	go vet github.com/kubernetes-csi/drivers/pkg/...
 azurefile:
 	if [ ! -d ./vendor ]; then dep ensure -vendor-only; fi
-	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-X github.com/kubernetes-csi/drivers/pkg/azurefile.vendorVersion=$(REV) -extldflags "-static"' -o _output/azurefileplugin ./app/azurefileplugin
+	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-X github.com/kubernetes-csi/drivers/pkg/azurefile.vendorVersion="0.0.1" -extldflags "-static"' -o _output/azurefileplugin ./app/azurefileplugin
 azurefile-container: azurefile
-	docker build -t $(IMAGE_TAG) -f ./app/azurefileplugin/Dockerfile .
+	docker build --no-cache -t $(IMAGE_TAG) -f ./app/azurefileplugin/Dockerfile .
 push: azurefile-container
 	docker push $(IMAGE_TAG)
 clean:
