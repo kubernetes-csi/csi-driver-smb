@@ -10,18 +10,18 @@
   version = "v0.2.0"
 
 [[projects]]
-  digest = "1:0f4d7f9842fb1b05e498ac7d1baae3146fc85326b79c6dd86bea7da22cb76200"
+  digest = "1:a7bf9c992656c91cec418424c550f878285ffff83d208cdacfb052339658190e"
   name = "github.com/Azure/azure-sdk-for-go"
   packages = [
-    "services/compute/mgmt/2018-04-01/compute",
+    "services/compute/mgmt/2018-10-01/compute",
     "services/network/mgmt/2017-09-01/network",
-    "services/storage/mgmt/2017-10-01/storage",
+    "services/storage/mgmt/2018-07-01/storage",
     "storage",
     "version",
   ]
   pruneopts = ""
-  revision = "07f918ba2d513bbc5b75bc4caac845e10f27449e"
-  version = "v23.0.0"
+  revision = "da91af54816b4cf72949c225a2d0980f51fab01b"
+  version = "v21.3.0"
 
 [[projects]]
   digest = "1:2034a827d81a693fbd70e8dd31e302580b26604bd721f0c8adc62305b4f1b382"
@@ -84,16 +84,6 @@
   pruneopts = ""
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
-
-[[projects]]
-  digest = "1:2c87cf00343faf42f84cbda2e475281542497a250a85c5cfa50747f55028e2d8"
-  name = "github.com/docker/distribution"
-  packages = [
-    "digestset",
-    "reference",
-  ]
-  pruneopts = ""
-  revision = "5db89f0ca68677abc5eefce8f2a0a772c98ba52d"
 
 [[projects]]
   digest = "1:b13707423743d41665fd23f0c36b2f37bb49c30e94adb813319c44188a51ba22"
@@ -236,14 +226,6 @@
   version = "1.0.1"
 
 [[projects]]
-  digest = "1:5d9b668b0b4581a978f07e7d2e3314af18eb27b3fb5d19b70185b7c575723d11"
-  name = "github.com/opencontainers/go-digest"
-  packages = ["."]
-  pruneopts = ""
-  revision = "279bed98673dd5bef374d3b6e4b09e2af76183bf"
-  version = "v1.0.0-rc1"
-
-[[projects]]
   digest = "1:63e142fc50307bcb3c57494913cfc9c12f6061160bdf97a678f78c71615f939b"
   name = "github.com/pborman/uuid"
   packages = ["."]
@@ -377,9 +359,6 @@
   digest = "1:79b763a59bc081a752605854f75ac04d4b8fba22bab9bbb11689efd2de255864"
   name = "golang.org/x/crypto"
   packages = [
-    "ed25519",
-    "ed25519/internal/edwards25519",
-    "pbkdf2",
     "pkcs12",
     "pkcs12/internal/rc2",
     "ssh/terminal",
@@ -538,19 +517,6 @@
   version = "v0.9.0"
 
 [[projects]]
-  digest = "1:78c193a044c9c6f540da8158d8d8af12f3615d0261e7fa172e0cadcd05abd64f"
-  name = "gopkg.in/square/go-jose.v2"
-  packages = [
-    ".",
-    "cipher",
-    "json",
-    "jwt",
-  ]
-  pruneopts = ""
-  revision = "8254d6c783765f38c8675fae4427a1fe73fbd09d"
-  version = "v2.1.8"
-
-[[projects]]
   digest = "1:5fe876313b07628905b2181e537faabe45032cb9c79c01b49b51c25a0a40040d"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -559,7 +525,7 @@
   version = "v2.1.1"
 
 [[projects]]
-  digest = "1:5f076f6f9c3ac4f2b99d79dc7974eabd3f51be35254aa0d8c4cf920fdb9c7ff8"
+  digest = "1:be67264067c68b1f601bfc4a6c102b1380ed0743147381de81ed11da88d2e246"
   name = "k8s.io/api"
   packages = [
     "admissionregistration/v1alpha1",
@@ -595,30 +561,27 @@
     "storage/v1beta1",
   ]
   pruneopts = ""
-  revision = "fd83cbc87e7632ccd8bbab63d2b673d4e0c631cc"
-  version = "kubernetes-1.12.0"
+  revision = "89a74a8d264df0e993299876a8cde88379b940ee"
+  version = "kubernetes-1.13.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:2371b3477ede2a623918e94eb35196f5aed416756f5bbaff9c44a59766236464"
+  digest = "1:956191f0722897b65075356663b0cdee0b68afeb9546bd539f32309a31c87250"
   name = "k8s.io/apiextensions-apiserver"
   packages = ["pkg/features"]
   pruneopts = ""
-  revision = "cfb732a3dd26c3e6349d0954e1209c9d5c093d1f"
+  revision = "20c909e7c8c3fec1a0e345b1d4e57f1c1623c368"
+  version = "kubernetes-1.13.0"
 
 [[projects]]
   digest = "1:7aa037a4df5432be2820d164f378d7c22335e5cbba124e90e42114757ebd11ac"
   name = "k8s.io/apimachinery"
   packages = [
-    "pkg/api/equality",
     "pkg/api/errors",
     "pkg/api/meta",
     "pkg/api/resource",
-    "pkg/api/validation",
     "pkg/apis/meta/internalversion",
     "pkg/apis/meta/v1",
     "pkg/apis/meta/v1/unstructured",
-    "pkg/apis/meta/v1/validation",
     "pkg/apis/meta/v1beta1",
     "pkg/conversion",
     "pkg/conversion/queryparams",
@@ -644,7 +607,6 @@
     "pkg/util/mergepatch",
     "pkg/util/naming",
     "pkg/util/net",
-    "pkg/util/rand",
     "pkg/util/runtime",
     "pkg/util/sets",
     "pkg/util/strategicpatch",
@@ -663,18 +625,15 @@
   version = "kubernetes-1.12.0"
 
 [[projects]]
-  digest = "1:f129d76e4103ddcd176f1a07051eb1826922e54f489032bef8283f7f9c32c4f0"
+  digest = "1:f2333764374be9cff9789a067acd08529229bb10e9472cc6be9e7479b6b70d15"
   name = "k8s.io/apiserver"
   packages = [
-    "pkg/authentication/authenticator",
-    "pkg/authentication/serviceaccount",
-    "pkg/authentication/user",
     "pkg/features",
     "pkg/util/feature",
   ]
   pruneopts = ""
-  revision = "e85ad7b666fef0476185731329f4cff1536efff8"
-  version = "kubernetes-1.12.0"
+  revision = "9caa0299108fbdf51d3d9b8e8956834ae84dac75"
+  version = "kubernetes-1.13.0"
 
 [[projects]]
   branch = "master"
@@ -799,7 +758,6 @@
     "tools/pager",
     "tools/record",
     "tools/reference",
-    "tools/watch",
     "transport",
     "util/buffer",
     "util/cert",
@@ -810,6 +768,14 @@
   ]
   pruneopts = ""
   revision = "ca74aedde1ee2ea0ae6a39c3fb58409c1f04840f"
+
+[[projects]]
+  branch = "master"
+  digest = "1:550f56c52a6419298095a548983ce2fae1dfbb6f144aacf1d1ad6ff9625b6980"
+  name = "k8s.io/cloud-provider"
+  packages = ["."]
+  pruneopts = ""
+  revision = "9b77dc1c384685cb732b3025ed5689dd597a5971"
 
 [[projects]]
   branch = "master"
@@ -825,6 +791,14 @@
   revision = "2966180a4e54fab57c98153a33cf018cc4017ba3"
 
 [[projects]]
+  digest = "1:4f5eb833037cc0ba0bf8fe9cae6be9df62c19dd1c869415275c708daa8ccfda5"
+  name = "k8s.io/klog"
+  packages = ["."]
+  pruneopts = ""
+  revision = "a5bc97fbc634d635061f3146511332c7e313a55a"
+  version = "v0.1.0"
+
+[[projects]]
   branch = "master"
   digest = "1:9a648ff9eb89673d2870c22fc011ec5db0fcff6c4e5174a650298e51be71bbf1"
   name = "k8s.io/kube-openapi"
@@ -833,52 +807,25 @@
   revision = "50ae88d24ede7b8bad68e23c805b5d3da5c8abaf"
 
 [[projects]]
-  digest = "1:c8b66f8046163fd757f9fb87602e3bb181191512d31281c50c2c900046470877"
+  digest = "1:a53c39a815a31aceb509f9987d7d8c65e74fcb1fcd5077eaf723a8defec1af90"
   name = "k8s.io/kubernetes"
   packages = [
     "pkg/api/legacyscheme",
-    "pkg/api/service",
-    "pkg/api/v1/pod",
     "pkg/api/v1/service",
-    "pkg/apis/autoscaling",
     "pkg/apis/core",
     "pkg/apis/core/helper",
-    "pkg/apis/core/install",
-    "pkg/apis/core/pods",
-    "pkg/apis/core/v1",
     "pkg/apis/core/v1/helper",
-    "pkg/apis/core/validation",
-    "pkg/apis/extensions",
-    "pkg/apis/networking",
-    "pkg/apis/policy",
-    "pkg/apis/scheduling",
-    "pkg/capabilities",
-    "pkg/cloudprovider",
     "pkg/cloudprovider/providers/azure",
     "pkg/cloudprovider/providers/azure/auth",
-    "pkg/controller",
     "pkg/features",
-    "pkg/fieldpath",
     "pkg/kubelet/apis",
-    "pkg/kubelet/types",
-    "pkg/master/ports",
-    "pkg/scheduler/algorithm",
-    "pkg/scheduler/algorithm/priorities/util",
-    "pkg/scheduler/api",
-    "pkg/scheduler/cache",
-    "pkg/scheduler/util",
-    "pkg/security/apparmor",
-    "pkg/serviceaccount",
     "pkg/util/file",
-    "pkg/util/hash",
     "pkg/util/io",
     "pkg/util/mount",
     "pkg/util/net/sets",
-    "pkg/util/node",
     "pkg/util/nsenter",
-    "pkg/util/parsers",
+    "pkg/util/resizefs",
     "pkg/util/strings",
-    "pkg/util/taints",
     "pkg/version",
     "pkg/volume",
     "pkg/volume/util",
@@ -888,19 +835,24 @@
     "pkg/volume/util/volumepathhandler",
   ]
   pruneopts = ""
-  revision = "4ed3216f3ec431b140b1d899130a69fc671678f4"
-  version = "v1.12.1"
+  revision = "ddf47ac13c1a9483ea035a79cd7c10005ff21a6d"
+  version = "v1.13.0"
 
 [[projects]]
   branch = "master"
   digest = "1:0efd5f9ea94a2c4e38c286c88411509407b441256576a33a7712fd4913c96333"
   name = "k8s.io/utils"
-  packages = [
-    "exec",
-    "pointer",
-  ]
+  packages = ["exec"]
   pruneopts = ""
   revision = "cd34563cd63c2bd7c6fe88a73c4dcf34ed8a67cb"
+
+[[projects]]
+  digest = "1:321081b4a44256715f2b68411d8eda9a17f17ebfe6f0cc61d2cc52d11c08acfa"
+  name = "sigs.k8s.io/yaml"
+  packages = ["."]
+  pruneopts = ""
+  revision = "fd68e9863619f6ec2fdd8625fe1f02e7c877e480"
+  version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"

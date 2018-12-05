@@ -17,22 +17,21 @@ limitations under the License.
 package customresourcedefinition
 
 import (
+	"context"
 	"fmt"
 
+	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions"
+	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/validation"
+	apiextensionsfeatures "k8s.io/apiextensions-apiserver/pkg/features"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation/field"
-	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/storage"
 	"k8s.io/apiserver/pkg/storage/names"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
-
-	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions"
-	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/validation"
-	apiextensionsfeatures "k8s.io/apiextensions-apiserver/pkg/features"
 )
 
 // strategy implements behavior for CustomResources.
@@ -50,7 +49,7 @@ func (strategy) NamespaceScoped() bool {
 }
 
 // PrepareForCreate clears the status of a CustomResourceDefinition before creation.
-func (strategy) PrepareForCreate(ctx genericapirequest.Context, obj runtime.Object) {
+func (strategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 	crd := obj.(*apiextensions.CustomResourceDefinition)
 	crd.Status = apiextensions.CustomResourceDefinitionStatus{}
 	crd.Generation = 1
@@ -58,14 +57,42 @@ func (strategy) PrepareForCreate(ctx genericapirequest.Context, obj runtime.Obje
 	// if the feature gate is disabled, drop the feature.
 	if !utilfeature.DefaultFeatureGate.Enabled(apiextensionsfeatures.CustomResourceValidation) {
 		crd.Spec.Validation = nil
+		for i := range crd.Spec.Versions {
+			crd.Spec.Versions[i].Schema = nil
+		}
 	}
 	if !utilfeature.DefaultFeatureGate.Enabled(apiextensionsfeatures.CustomResourceSubresources) {
 		crd.Spec.Subresources = nil
+		for i := range crd.Spec.Versions {
+			crd.Spec.Versions[i].Subresources = nil
+		}
+	}
+	// On CREATE, if the CustomResourceWebhookConversion feature gate is off, we auto-clear
+	// the per-version fields. This is to be consistent with the other built-in types, as the
+	// apiserver drops unknown fields.
+	if !utilfeature.DefaultFeatureGate.Enabled(apiextensionsfeatures.CustomResourceWebhookConversion) {
+		for i := range crd.Spec.Versions {
+			crd.Spec.Versions[i].Schema = nil
+			crd.Spec.Versions[i].Subresources = nil
+			crd.Spec.Versions[i].AdditionalPrinterColumns = nil
+		}
+	}
+	if !utilfeature.DefaultFeatureGate.Enabled(apiextensionsfeatures.CustomResourceWebhookConversion) && crd.Spec.Conversion != nil {
+		crd.Spec.Conversion.WebhookClientConfig = nil
+	}
+
+	for _, v := range crd.Spec.Versions {
+		if v.Storage {
+			if !apiextensions.IsStoredVersion(crd, v.Name) {
+				crd.Status.StoredVersions = append(crd.Status.StoredVersions, v.Name)
+			}
+			break
+		}
 	}
 }
 
 // PrepareForUpdate clears fields that are not allowed to be set by end users on update.
-func (strategy) PrepareForUpdate(ctx genericapirequest.Context, obj, old runtime.Object) {
+func (strategy) PrepareForUpdate(ctx context.Context, obj, old runtime.Object) {
 	newCRD := obj.(*apiextensions.CustomResourceDefinition)
 	oldCRD := old.(*apiextensions.CustomResourceDefinition)
 	newCRD.Status = oldCRD.Status
@@ -85,15 +112,65 @@ func (strategy) PrepareForUpdate(ctx genericapirequest.Context, obj, old runtime
 	if !utilfeature.DefaultFeatureGate.Enabled(apiextensionsfeatures.CustomResourceValidation) {
 		newCRD.Spec.Validation = nil
 		oldCRD.Spec.Validation = nil
+		for i := range newCRD.Spec.Versions {
+			newCRD.Spec.Versions[i].Schema = nil
+		}
+		for i := range oldCRD.Spec.Versions {
+			oldCRD.Spec.Versions[i].Schema = nil
+		}
 	}
 	if !utilfeature.DefaultFeatureGate.Enabled(apiextensionsfeatures.CustomResourceSubresources) {
 		newCRD.Spec.Subresources = nil
 		oldCRD.Spec.Subresources = nil
+		for i := range newCRD.Spec.Versions {
+			newCRD.Spec.Versions[i].Subresources = nil
+		}
+		for i := range oldCRD.Spec.Versions {
+			oldCRD.Spec.Versions[i].Subresources = nil
+		}
+	}
+
+	// On UPDATE, if the CustomResourceWebhookConversion feature gate is off, we auto-clear
+	// the per-version fields if the old CRD doesn't use per-version fields already.
+	// This is to be consistent with the other built-in types, as the apiserver drops unknown
+	// fields. If the old CRD already uses per-version fields, the CRD is allowed to continue
+	// use per-version fields.
+	if !utilfeature.DefaultFeatureGate.Enabled(apiextensionsfeatures.CustomResourceWebhookConversion) &&
+		!hasPerVersionField(oldCRD.Spec.Versions) {
+		for i := range newCRD.Spec.Versions {
+			newCRD.Spec.Versions[i].Schema = nil
+			newCRD.Spec.Versions[i].Subresources = nil
+			newCRD.Spec.Versions[i].AdditionalPrinterColumns = nil
+		}
+	}
+	if !utilfeature.DefaultFeatureGate.Enabled(apiextensionsfeatures.CustomResourceWebhookConversion) && newCRD.Spec.Conversion != nil {
+		if oldCRD.Spec.Conversion == nil || newCRD.Spec.Conversion.WebhookClientConfig == nil {
+			newCRD.Spec.Conversion.WebhookClientConfig = nil
+		}
+	}
+
+	for _, v := range newCRD.Spec.Versions {
+		if v.Storage {
+			if !apiextensions.IsStoredVersion(newCRD, v.Name) {
+				newCRD.Status.StoredVersions = append(newCRD.Status.StoredVersions, v.Name)
+			}
+			break
+		}
 	}
 }
 
+// hasPerVersionField returns true if a CRD uses per-version schema/subresources/columns fields.
+func hasPerVersionField(versions []apiextensions.CustomResourceDefinitionVersion) bool {
+	for _, v := range versions {
+		if v.Schema != nil || v.Subresources != nil || len(v.AdditionalPrinterColumns) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
 // Validate validates a new CustomResourceDefinition.
-func (strategy) Validate(ctx genericapirequest.Context, obj runtime.Object) field.ErrorList {
+func (strategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
 	return validation.ValidateCustomResourceDefinition(obj.(*apiextensions.CustomResourceDefinition))
 }
 
@@ -113,7 +190,7 @@ func (strategy) Canonicalize(obj runtime.Object) {
 }
 
 // ValidateUpdate is the default update validation for an end user updating status.
-func (strategy) ValidateUpdate(ctx genericapirequest.Context, obj, old runtime.Object) field.ErrorList {
+func (strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
 	return validation.ValidateCustomResourceDefinitionUpdate(obj.(*apiextensions.CustomResourceDefinition), old.(*apiextensions.CustomResourceDefinition))
 }
 
@@ -130,7 +207,7 @@ func (statusStrategy) NamespaceScoped() bool {
 	return false
 }
 
-func (statusStrategy) PrepareForUpdate(ctx genericapirequest.Context, obj, old runtime.Object) {
+func (statusStrategy) PrepareForUpdate(ctx context.Context, obj, old runtime.Object) {
 	newObj := obj.(*apiextensions.CustomResourceDefinition)
 	oldObj := old.(*apiextensions.CustomResourceDefinition)
 	newObj.Spec = oldObj.Spec
@@ -155,7 +232,7 @@ func (statusStrategy) AllowUnconditionalUpdate() bool {
 func (statusStrategy) Canonicalize(obj runtime.Object) {
 }
 
-func (statusStrategy) ValidateUpdate(ctx genericapirequest.Context, obj, old runtime.Object) field.ErrorList {
+func (statusStrategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
 	return validation.ValidateUpdateCustomResourceDefinitionStatus(obj.(*apiextensions.CustomResourceDefinition), old.(*apiextensions.CustomResourceDefinition))
 }
 

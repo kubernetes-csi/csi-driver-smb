@@ -24,10 +24,10 @@ import (
 	"k8s.io/kubernetes/pkg/cloudprovider/providers/azure"
 	"k8s.io/kubernetes/pkg/volume/util"
 
-	//"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
+	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
+	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
 	"github.com/container-storage-interface/spec/lib/go/csi/v0"
 	"github.com/golang/glog"
-	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/pborman/uuid"
 
 	"google.golang.org/grpc/codes"
@@ -87,15 +87,13 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 	}
 
 	// when use azure file premium, account kind should be specified as FileStorage
-	/* todo: depends on k8s v1.13.0
 	accountKind := string(storage.StorageV2)
 	if strings.HasPrefix(strings.ToLower(sku), "premium") {
 		accountKind = string(storage.FileStorage)
 	}
-	*/
 
 	glog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
-	account, _, err := cs.cloud.CreateFileShare(fileShareName, account, sku, resourceGroup, location, requestGiB)
+	account, _, err := cs.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
 	if err != nil {
 		glog.Errorf("failed to create volume: %v", err)
 		return nil, err
