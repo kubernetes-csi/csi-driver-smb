@@ -24,7 +24,7 @@ import (
 
 	"github.com/container-storage-interface/spec/lib/go/csi/v0"
 	"github.com/golang/glog"
-	"github.com/kubernetes-csi/drivers/pkg/csi-common"
+	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

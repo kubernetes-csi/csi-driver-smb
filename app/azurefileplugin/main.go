@@ -20,7 +20,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/kubernetes-csi/drivers/pkg/azurefile"
+	"github.com/andyzhangx/azurefile-csi-driver/pkg/azurefile"
 )
 
 func init() {

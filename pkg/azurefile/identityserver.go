@@ -17,7 +17,7 @@ limitations under the License.
 package azurefile
 
 import (
-	"github.com/kubernetes-csi/drivers/pkg/csi-common"
+	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 )
 
 type identityServer struct {

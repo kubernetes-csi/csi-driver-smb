@@ -23,11 +23,11 @@ REV=$(shell git describe --long --tags --dirty)
 all: azurefile
 
 test:
-	go test github.com/kubernetes-csi/drivers/pkg/... -cover
-	go vet github.com/kubernetes-csi/drivers/pkg/...
+	go test github.com/andyzhangx/azurefile-csi-driver/pkg/... -cover
+	go vet github.com/andyzhangx/azurefile-csi-driver/pkg/...
 azurefile:
 	if [ ! -d ./vendor ]; then dep ensure -vendor-only; fi
-	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-X github.com/kubernetes-csi/drivers/pkg/azurefile.vendorVersion="0.0.1" -extldflags "-static"' -o _output/azurefileplugin ./app/azurefileplugin
+	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-X github.com/andyzhangx/azurefile-csi-driver/pkg/azurefile.vendorVersion="0.0.1" -extldflags "-static"' -o _output/azurefileplugin ./app/azurefileplugin
 azurefile-container: azurefile
 	docker build --no-cache -t $(IMAGE_TAG) -f ./app/azurefileplugin/Dockerfile .
 push: azurefile-container

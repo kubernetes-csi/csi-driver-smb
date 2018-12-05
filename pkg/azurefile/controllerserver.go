@@ -27,7 +27,7 @@ import (
 	//"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
 	"github.com/container-storage-interface/spec/lib/go/csi/v0"
 	"github.com/golang/glog"
-	"github.com/kubernetes-csi/drivers/pkg/csi-common"
+	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/pborman/uuid"
 
 	"google.golang.org/grpc/codes"
