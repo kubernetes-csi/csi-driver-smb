@@ -5,8 +5,6 @@
  - supported Kubernetes version: v1.12.0 or later version
  - supported agent OS: Linux
 
-> Note: This driver only works before v1.12.0 since there is a CSI breaking change in v1.12.0, find details [here](https://github.com/Azure/kubernetes-volume-drivers/issues/8)
-
 # About
 This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume
 
