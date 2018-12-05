@@ -1,0 +1,19 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx-azurefile
+spec:
+  containers:
+  - image: nginx
+    name: nginx-azurefile
+    command:
+    - "/bin/sh"
+    - "-c"
+    - while true; do echo $(date) >> /mnt/azurefile/outfile; sleep 1; done
+    volumeMounts:
+    - name: azurefile01
+      mountPath: "/mnt/azurefile"
+  volumes:
+  - name: azurefile01
+    persistentVolumeClaim:
+      claimName: pvc-azurefile

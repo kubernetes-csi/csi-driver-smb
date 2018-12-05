@@ -1,0 +1,48 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: csi-azurefile-attacher
+  labels:
+    app: csi-azurefile-attacher
+spec:
+  selector:
+    app: csi-azurefile-attacher
+  ports:
+    - name: dummy
+      port: 12345
+
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: csi-azurefile-attacher
+spec:
+  serviceName: "csi-azurefile-attacher"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csi-azurefile-attacher
+  template:
+    metadata:
+      labels:
+        app: csi-azurefile-attacher
+    spec:
+      serviceAccountName: csi-attacher
+      containers:
+        - name: csi-attacher
+          image: quay.io/k8scsi/csi-attacher:v0.4.1
+          args:
+            - --v=5
+            - --csi-address=$(ADDRESS)
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          imagePullPolicy: Always
+          volumeMounts:
+          - mountPath: /csi
+            name: socket-dir
+      volumes:
+        - hostPath:
+            path: /var/lib/kubelet/plugins/csi-azurefile
+            type: DirectoryOrCreate
+          name: socket-dir
