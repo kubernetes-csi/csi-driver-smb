@@ -24,8 +24,8 @@ import (
 	"k8s.io/kubernetes/pkg/cloudprovider/providers/azure"
 	"k8s.io/kubernetes/pkg/volume/util"
 
-	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
+	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/container-storage-interface/spec/lib/go/csi/v0"
 	"github.com/golang/glog"
 	"github.com/pborman/uuid"
@@ -35,7 +35,7 @@ import (
 )
 
 const (
-	deviceID      = "deviceID"
+	volumeIDTemplate = "%s#%s#%s"
 )
 
 type controllerServer struct {
@@ -65,10 +65,6 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 	parameters := req.GetParameters()
 	var sku, resourceGroup, location, account string
 
-	// File share name has a length limit of 63, and it cannot contain two consecutive '-'s.
-	// todo: get cluster name
-	fileShareName := util.GenerateVolumeName("pvc-file", uuid.NewUUID().String(), 63)
-	fileShareName = strings.Replace(fileShareName, "--", "-", -1)
 	// Apply ProvisionerParameters (case-insensitive). We leave validation of
 	// the values to the cloud provider.
 	for k, v := range parameters {
@@ -92,22 +88,25 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 		accountKind = string(storage.FileStorage)
 	}
 
-	glog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
-	account, _, err := cs.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
-	if err != nil {
-		glog.Errorf("failed to create volume: %v", err)
-		return nil, err
-	}
-	parameters[accountName] = account
+	// dynamic provisioning since storage account is not provided by secrets
+	// File share name has a length limit of 63, and it cannot contain two consecutive '-'s.
+	// todo: get cluster name
+	fileShareName := util.GenerateVolumeName("pvc-file", uuid.NewUUID().String(), 63)
+	fileShareName = strings.Replace(fileShareName, "--", "-", -1)
 
-	volumeID := resourceGroup + seperator + account + seperator + fileShareName
+	glog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
+	retAccount, _, err := cs.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
+	}
+	volumeID := fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName)
 
 	if req.GetVolumeContentSource() != nil {
 		contentSource := req.GetVolumeContentSource()
 		if contentSource.GetSnapshot() != nil {
 		}
 	}
-	glog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, account)
+	glog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
 
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
@@ -125,11 +124,10 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 	}
 
 	if err := cs.Driver.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME); err != nil {
-		glog.V(3).Infof("invalid delete volume req: %v", req)
-		return nil, err
+		return nil, fmt.Errorf("invalid delete volume req: %v", req)
 	}
 	volumeID := req.VolumeId
-	glog.V(2).Infof("deleting azure file %s", volumeID)
+
 	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
 	if err != nil {
 		return nil, err
@@ -144,6 +142,7 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 		return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
 	}
 
+	glog.V(2).Infof("deleting azure file(%s) rg(%s) account(%s) volumeID(%s)", fileShareName, resourceGroupName, accountName, volumeID)
 	if err := cs.cloud.DeleteFileShare(accountName, accountKey, fileShareName); err != nil {
 		return nil, err
 	}

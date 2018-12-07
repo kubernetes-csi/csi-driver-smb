@@ -22,9 +22,9 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/container-storage-interface/spec/lib/go/csi/v0"
 	"github.com/golang/glog"
-	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -76,31 +76,43 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 
 	fsType := req.GetVolumeCapability().GetMount().GetFsType()
 
-	deviceId := ""
-	if req.GetPublishInfo() != nil {
-		deviceId = req.GetPublishInfo()[deviceID]
-	}
-
 	readOnly := req.GetReadonly()
 	volumeID := req.GetVolumeId()
 	attrib := req.GetVolumeAttributes()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 
-	glog.V(2).Infof("target %v\nfstype %v\ndevice %v\nreadonly %v\nvolumeId %v\nattributes %v\nmountflags %v\n",
-		targetPath, fsType, deviceId, readOnly, volumeID, attrib, mountFlags)
+	glog.V(2).Infof("target %v\nfstype %v\n\nreadonly %v\nvolumeId %v\nattributes %v\nmountflags %v\n",
+		targetPath, fsType, readOnly, volumeID, attrib, mountFlags)
 
-	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
-	if err != nil {
-		return nil, err
-	}
+	var accountName, accountKey, fileShareName string
 
-	if resourceGroupName == "" {
-		resourceGroupName = ns.cloud.ResourceGroup
-	}
+	secrets := req.GetNodePublishSecrets()
+	if len(secrets) == 0 {
+		var resourceGroupName string
+		resourceGroupName, accountName, fileShareName, err = getFileShareInfo(volumeID)
+		if err != nil {
+			return nil, err
+		}
 
-	accountKey, err := GetStorageAccesskey(ns.cloud, accountName, resourceGroupName)
-	if err != nil {
-		return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
+		if resourceGroupName == "" {
+			resourceGroupName = ns.cloud.ResourceGroup
+		}
+
+		accountKey, err = GetStorageAccesskey(ns.cloud, accountName, resourceGroupName)
+		if err != nil {
+			return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
+		}
+	} else {
+		var ok bool
+		fileShareName, ok = attrib["sharename"]
+		if !ok {
+			return nil, fmt.Errorf("could not find sharename from attributes(%v)", attrib)
+		}
+
+		accountName, accountKey, err = getStorageAccount(secrets)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	mountOptions := []string{}

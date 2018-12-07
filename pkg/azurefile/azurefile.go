@@ -22,9 +22,9 @@ import (
 
 	"k8s.io/kubernetes/pkg/cloudprovider/providers/azure"
 
+	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/container-storage-interface/spec/lib/go/csi/v0"
 	"github.com/golang/glog"
-	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 )
 
 const (
@@ -164,7 +164,7 @@ func getSnapshotByName(name string) (azureFileSnapshot, error) {
 func getFileShareInfo(id string) (string, string, string, error) {
 	segments := strings.Split(id, seperator)
 	if len(segments) < 3 {
-		return "", "", "", fmt.Errorf("error parsing volume id: %q", id)
+		return "", "", "", fmt.Errorf("error parsing volume id: %q, should at least contain two #", id)
 	}
 	return segments[0], segments[1], segments[2], nil
 }
@@ -206,4 +206,21 @@ func appendDefaultMountOptions(mountOptions []string) []string {
 	}
 	*/
 	return allMountOptions
+}
+
+func getStorageAccount(secrets map[string]string) (string, string, error) {
+	if secrets == nil {
+		return "", "", fmt.Errorf("unexpected: getStorageAccount secrets is nil")
+	}
+
+	storageAccountName, ok := secrets["accountname"]
+	if !ok {
+		return "", "", fmt.Errorf("could not find accountname field secrets(%v)", secrets)
+	}
+	storageAccountKey, ok := secrets["accountkey"]
+	if !ok {
+		return "", "", fmt.Errorf("could not find accountkey field in secrets(%v)", secrets)
+	}
+
+	return storageAccountName, storageAccountKey, nil
 }
