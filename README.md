@@ -24,16 +24,36 @@ Please refer to https://raw.githubusercontent.com/andyzhangx/azurefile-csi-drive
 # Basic Usage
 ## 1. create a pod with csi azurefile driver mount on linux
 #### Example#1: Azurefile Dynamic Provisioning
- - Create a azurefile CSI storage class
+ - Create an azurefile CSI storage class
 ```
 kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/storageclass-azurefile-csi.yaml
 ```
 
- - Create a azurefile CSI PVC volume
+ - Create an azurefile CSI PVC
 ```
 kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
 ```
-make sure pvc is created successfully
+
+#### Example#2: Azurefile Static Provisioning(use an existing azure file share)
+ - Use `kubectl create secret` to create `azure-secret` with existing storage account name and key
+```
+kubectl create secret generic azure-secret --from-literal accountname=NAME --from-literal accountkey="KEY" --type=Opaque
+```
+
+ - Create an azurefile CSI PV, download `pv-azurefile-csi.yaml` file and edit `sharename`
+```
+wget https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/pv-azurefile-csi.yaml
+vi pv-azurefile-csi.yaml
+kubectl create -f pv-azurefile-csi.yaml
+```
+
+ - Create an azurefile CSI PVC which would be bound to the above PV
+```
+kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi-static.yaml
+```
+
+## 2. validate PVC status and create an nginx pod
+ > make sure pvc is created and in `Bound` status finally
 ```
 watch kubectl describe pvc pvc-azurefile
 ```
@@ -55,12 +75,9 @@ root@nginx-azurefile:/# df -h
 Filesystem                                                                                             Size  Used Avail Use% Mounted on
 overlay                                                                                                 30G   19G   11G  65% /
 tmpfs                                                                                                  3.5G     0  3.5G   0% /dev
-tmpfs                                                                                                  3.5G     0  3.5G   0% /sys/fs/cgroup
-/dev/sda1                                                                                               30G   19G   11G  65% /etc/hosts
-//f5713de20cde511e8ba4900.file.core.windows.net/pvc-file-dynamic-e2ade9f3-f88b-11e8-8429-000d3a03e7d7  1.0G   64K  1.0G   1% /mnt/azurefile
-shm                                                                                                     64M     0   64M   0% /dev/shm
-tmpfs                                                                                                  3.5G   12K  3.5G   1% /run/secrets/kubernetes.io/serviceaccount
-tmpfs                                                                                                  3.5G     0  3.5G   0% /sys/firmware
+...
+//f571xxx.file.core.windows.net/pvc-file-dynamic-e2ade9f3-f88b-11e8-8429-000d3a03e7d7  1.0G   64K  1.0G   1% /mnt/azurefile
+...
 ```
 In the above example, there is a `/mnt/azurefile` directory mounted as dysk filesystem.
 
