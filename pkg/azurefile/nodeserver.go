@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/container-storage-interface/spec/lib/go/csi/v0"
@@ -103,9 +104,13 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 			return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
 		}
 	} else {
-		var ok bool
-		fileShareName, ok = attrib["sharename"]
-		if !ok {
+		for k, v := range attrib {
+			switch strings.ToLower(k) {
+			case "sharename":
+				fileShareName = v
+			}
+		}
+		if fileShareName == "" {
 			return nil, fmt.Errorf("could not find sharename from attributes(%v)", attrib)
 		}
 
