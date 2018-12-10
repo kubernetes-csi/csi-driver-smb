@@ -1,11 +1,12 @@
-apiVersion: v1
 kind: PersistentVolumeClaim
+apiVersion: v1
 metadata:
   name: pvc-azurefile
 spec:
   accessModes:
-  - ReadWriteMany
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
-  storageClassName: csi-azurefile-sc
+  volumeName: pv-azurefile
+  storageClassName: ""
