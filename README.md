@@ -29,7 +29,7 @@ CSIPersistentVolume is enabled by default in v1.10. MountPropagation is enabled 
  > usually it's `/etc/kubernetes/azure.json` deployed by AKS or acs-engine, and supports both `service principal` and `msi`
 
 # Install azurefile CSI driver on a kubernetes cluster
-Please refer to https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/docs/install-azurefile-csi-driver.md
+Please refer to [install azurefile csi driver](https://github.com/andyzhangx/azurefile-csi-driver/blob/master/docs/install-azurefile-csi-driver.md)
 
 # Basic Usage
 ## 1. create a pod with csi azurefile driver mount on linux
