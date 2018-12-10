@@ -15,5 +15,5 @@ spec:
     volumeAttributes:
       sharename: k8stest
     nodePublishSecretRef:
-      name: azurefilecred
+      name: azure-secret
       namespace: default
