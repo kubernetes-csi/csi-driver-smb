@@ -213,14 +213,26 @@ func getStorageAccount(secrets map[string]string) (string, string, error) {
 		return "", "", fmt.Errorf("unexpected: getStorageAccount secrets is nil")
 	}
 
-	storageAccountName, ok := secrets["accountname"]
-	if !ok {
-		return "", "", fmt.Errorf("could not find accountname field secrets(%v)", secrets)
-	}
-	storageAccountKey, ok := secrets["accountkey"]
-	if !ok {
-		return "", "", fmt.Errorf("could not find accountkey field in secrets(%v)", secrets)
+	var accountName, accountKey string
+	for k, v := range secrets {
+		switch strings.ToLower(k) {
+		case "accountname":
+			accountName = v
+		case "azurestorageaccountname":	// for compatability with built-in azurefile plugin
+			accountName = v
+		case "accountkey":
+			accountKey = v
+		case "azurestorageaccountkey":  // for compatability with built-in azurefile plugin
+			accountKey = v
+		}
 	}
 
-	return storageAccountName, storageAccountKey, nil
+	if accountName == "" {
+		return "", "", fmt.Errorf("could not find accountname or azurestorageaccountname field secrets(%v)", secrets)
+	}
+	if accountKey == "" {
+		return "", "", fmt.Errorf("could not find accountkey or azurestorageaccountkey field in secrets(%v)", secrets)
+	}
+
+	return accountName, accountKey, nil
 }
