@@ -59,6 +59,9 @@ spec:
               name: mountpoint-dir
             - mountPath: /etc/kubernetes/
               name: azure-cred
+            - mountPath: "/var/lib/waagent/ManagedIdentity-Settings"
+              readOnly: true
+              name: msi
       volumes:
         - hostPath:
             path: /var/lib/kubelet/plugins/csi-azurefile
@@ -76,3 +79,6 @@ spec:
             path: /etc/kubernetes/
             type: Directory
           name: azure-cred
+        - hostPath:
+            path: "/var/lib/waagent/ManagedIdentity-Settings"
+          name: msi

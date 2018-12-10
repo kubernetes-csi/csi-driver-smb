@@ -16,7 +16,7 @@ This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-
 CSIPersistentVolume is enabled by default in v1.10. MountPropagation is enabled by default in v1.10. VolumeSnapshotDataSource is a new alpha feature in v1.12. KubeletPluginsWatcher is enabled by default in v1.12. CSINodeInfo and CSIDriverRegistry are new alpha features in v1.12.
 
  - An [Cloud provider config file](https://github.com/kubernetes/cloud-provider-azure/blob/master/docs/cloud-provider-config.md) should already exist on all agent nodes
- > usually it's `/etc/kubernetes/azure.json` deployed by AKS or acs-engine, and currently it only supports service principal
+ > usually it's `/etc/kubernetes/azure.json` deployed by AKS or acs-engine, and it supports both `service principal` and `msi`
 
 # Install azurefile CSI driver on a kubernetes cluster
 ```
