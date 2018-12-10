@@ -81,5 +81,5 @@ spec:
           name: azure-cred
         - hostPath:
             path: /var/lib/waagent/ManagedIdentity-Settings
-            type: Directory
+            type: DirectoryOrCreate
           name: msi
