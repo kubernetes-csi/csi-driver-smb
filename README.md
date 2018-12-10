@@ -8,6 +8,16 @@
 # About
 This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume, csi plugin name: `csi-azurefile`
 
+ ### `csi-azurefile` driver parameters
+ > storage class `csi-azurefile` parameters are compatable with built-in [azurefile](https://kubernetes.io/docs/concepts/storage/volumes/#azurefile) plugin
+ 
+Name | Meaning | Example | Mandatory | Notes
+--- | --- | --- | --- | ---
+skuName | azure file storage account type | `Standard_LRS`, `Standard_GRS`, `Standard_RAGRS` | No | if empty, default will be `Standard_LRS`)
+storageAccount | specify the storage account name in which azure file share will be created | STORAGE_ACCOUNT_NAME | No | if empty, driver find a suitable storage account that matches `skuName` in the same resource group
+location | specify the location in which azure file share will be created | `eastus`, `westus`, etc. | No | if empty, driver will use the same location name as current k8s cluster
+resourceGroup | specify the resource group in which azure file share will be created | RG_NAME | No | if empty, driver will use the same resource group name as current k8s cluster
+
 # Prerequisite
  - To ensure that all necessary features are enabled, set the following feature gate flags to true:
 ```
@@ -40,7 +50,7 @@ kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-dri
 kubectl create secret generic azure-secret --from-literal accountname=NAME --from-literal accountkey="KEY" --type=Opaque
 ```
 
- - Create an azurefile CSI PV, download `pv-azurefile-csi.yaml` file and edit `sharename`
+ - Create an azurefile CSI PV, download `pv-azurefile-csi.yaml` file and edit `sharename` in `volumeAttributes`
 ```
 wget https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/pv-azurefile-csi.yaml
 vi pv-azurefile-csi.yaml
