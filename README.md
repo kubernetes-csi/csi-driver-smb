@@ -6,7 +6,7 @@
  - supported agent OS: Linux
 
 # About
-This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume
+This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume, csi plugin name: `csi-azurefile`
 
 # Prerequisite
  - To ensure that all necessary features are enabled, set the following feature gate flags to true:
@@ -16,33 +16,10 @@ This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-
 CSIPersistentVolume is enabled by default in v1.10. MountPropagation is enabled by default in v1.10. VolumeSnapshotDataSource is a new alpha feature in v1.12. KubeletPluginsWatcher is enabled by default in v1.12. CSINodeInfo and CSIDriverRegistry are new alpha features in v1.12.
 
  - An [Cloud provider config file](https://github.com/kubernetes/cloud-provider-azure/blob/master/docs/cloud-provider-config.md) should already exist on all agent nodes
- > usually it's `/etc/kubernetes/azure.json` deployed by AKS or acs-engine, and it supports both `service principal` and `msi`
+ > usually it's `/etc/kubernetes/azure.json` deployed by AKS or acs-engine, and supports both `service principal` and `msi`
 
 # Install azurefile CSI driver on a kubernetes cluster
-```
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-attacher.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-driver-registrar.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-provisioner.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-snapshotter.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/csi-azurefile-provisioner.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/csi-azurefile-attacher.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/azurefile-csi-driver.yaml
-```
-
- - check pods status:
-```
-watch kubectl get po -o wide
-```
-example output:
-```
-NAME                          READY   STATUS    RESTARTS   AGE   IP            NODE                     
-csi-azurefile-attacher-0      1/1     Running   0          22h   10.240.0.61   k8s-agentpool-17181929-1
-csi-azurefile-g2ksx           2/2     Running   0          21h   10.240.0.4    k8s-agentpool-17181929-0
-csi-azurefile-nqxn9           2/2     Running   0          21h   10.240.0.35   k8s-agentpool-17181929-1
-csi-azurefile-provisioner-0   1/1     Running   0          22h   10.240.0.39   k8s-agentpool-17181929-1
-```
+Please refer to https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/docs/install-azurefile-csi-driver.md
 
 # Basic Usage
 ## 1. create a pod with csi azurefile driver mount on linux
