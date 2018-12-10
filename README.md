@@ -49,7 +49,7 @@ csi-azurefile-provisioner-0   1/1     Running   0          22h   10.240.0.39   k
 #### Example#1: Azurefile Dynamic Provisioning
  - Create a azurefile CSI storage class
 ```
-kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/csi-azurefile-sc.yaml
+kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/storageclass-azurefile-csi.yaml
 ```
 
  - Create a azurefile CSI PVC volume
