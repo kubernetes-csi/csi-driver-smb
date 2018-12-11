@@ -13,7 +13,7 @@ This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-
  
 Name | Meaning | Example | Mandatory | Notes
 --- | --- | --- | --- | ---
-skuName | azure file storage account type | `Standard_LRS`, `Standard_GRS`, `Standard_RAGRS` | No | if empty, default will be `Standard_LRS`)
+skuName | azure file storage account type | `Standard_LRS`, `Standard_GRS`, `Standard_RAGRS` | No | if empty, `Standard_LRS` is the default value)
 storageAccount | specify the storage account name in which azure file share will be created | STORAGE_ACCOUNT_NAME | No | if empty, driver find a suitable storage account that matches `skuName` in the same resource group
 location | specify the location in which azure file share will be created | `eastus`, `westus`, etc. | No | if empty, driver will use the same location name as current k8s cluster
 resourceGroup | specify the resource group in which azure file share will be created | RG_NAME | No | if empty, driver will use the same resource group name as current k8s cluster
