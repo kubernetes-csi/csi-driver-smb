@@ -1,7 +1,5 @@
 # Azure file CSI driver development
 
-## Usage:
-
 ### Build azurefileplugin
 ```
 $ make azurefile
