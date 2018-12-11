@@ -14,7 +14,7 @@
 
 REGISTRY_NAME=andyzhangx
 IMAGE_NAME=azurefile-csi
-IMAGE_VERSION=v0.1.2-alpha
+IMAGE_VERSION=v0.1.3-alpha
 IMAGE_TAG=$(REGISTRY_NAME)/$(IMAGE_NAME):$(IMAGE_VERSION)
 REV=$(shell git describe --long --tags --dirty)
 
