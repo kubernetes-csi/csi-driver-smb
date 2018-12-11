@@ -1,4 +1,4 @@
-# Azure file CSI driver
+# Azure file CSI driver development
 
 ## Usage:
 
@@ -61,4 +61,14 @@ CSIVolumeID  true
 ```
 $ csc node get-id --endpoint tcp://127.0.0.1:10000
 CSINode
+```
+
+#### 8. Create snapshot
+```
+$  csc controller create-snapshot
+```
+
+#### 9. Delete snapshot
+```
+$  csc controller delete-snapshot
 ```
