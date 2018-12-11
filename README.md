@@ -8,7 +8,7 @@
 # About
 This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume, csi plugin name: `csi-azurefile`
 
- ### `csi-azurefile` driver parameters
+# `csi-azurefile` driver parameters
  > storage class `csi-azurefile` parameters are compatable with built-in [azurefile](https://kubernetes.io/docs/concepts/storage/volumes/#azurefile) plugin
  
 Name | Meaning | Example | Mandatory | Notes
