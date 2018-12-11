@@ -5,10 +5,10 @@
  - supported Kubernetes version: v1.12.0 or later version
  - supported agent OS: Linux
 
-# About
+## About
 This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume, csi plugin name: `csi-azurefile`
 
-# `csi-azurefile` driver parameters
+## `csi-azurefile` driver parameters
  > storage class `csi-azurefile` parameters are compatable with built-in [azurefile](https://kubernetes.io/docs/concepts/storage/volumes/#azurefile) plugin
  
 Name | Meaning | Example | Mandatory | Notes
@@ -18,7 +18,7 @@ storageAccount | specify the storage account name in which azure file share will
 location | specify the location in which azure file share will be created | `eastus`, `westus`, etc. | No | if empty, driver will use the same location name as current k8s cluster
 resourceGroup | specify the resource group in which azure file share will be created | RG_NAME | No | if empty, driver will use the same resource group name as current k8s cluster
 
-# Prerequisite
+## Prerequisite
  - To ensure that all necessary features are enabled, set the following feature gate flags to true:
 ```
 --feature-gates=CSIPersistentVolume=true,MountPropagation=true,VolumeSnapshotDataSource=true,KubeletPluginsWatcher=true,CSINodeInfo=true,CSIDriverRegistry=true
@@ -28,11 +28,11 @@ CSIPersistentVolume is enabled by default in v1.10. MountPropagation is enabled 
  - An [Cloud provider config file](https://github.com/kubernetes/cloud-provider-azure/blob/master/docs/cloud-provider-config.md) should already exist on all agent nodes
  > usually it's `/etc/kubernetes/azure.json` deployed by AKS or acs-engine, and supports both `service principal` and `msi`
 
-# Install azurefile CSI driver on a kubernetes cluster
+### Install azurefile CSI driver on a kubernetes cluster
 Please refer to [install azurefile csi driver](https://github.com/andyzhangx/azurefile-csi-driver/blob/master/docs/install-azurefile-csi-driver.md)
 
-# Basic Usage
-## 1. create a pod with csi azurefile driver mount on linux
+## Basic Usage
+### 1. create a pod with csi azurefile driver mount on linux
 #### Example#1: Azurefile Dynamic Provisioning
  - Create an azurefile CSI storage class
 ```
@@ -62,7 +62,7 @@ kubectl create -f pv-azurefile-csi.yaml
 kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi-static.yaml
 ```
 
-## 2. validate PVC status and create an nginx pod
+### 2. validate PVC status and create an nginx pod
  > make sure pvc is created and in `Bound` status finally
 ```
 watch kubectl describe pvc pvc-azurefile
@@ -73,7 +73,7 @@ watch kubectl describe pvc pvc-azurefile
 kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/nginx-pod-azurefile.yaml
 ```
 
-## 3. enter the pod container to do validation
+### 3. enter the pod container to do validation
  - watch the status of pod until its Status changed from `Pending` to `Running`
 ```
 watch kubectl describe po nginx-azurefile
@@ -90,6 +90,10 @@ tmpfs                                                                           
 ...
 ```
 In the above example, there is a `/mnt/azurefile` directory mounted as dysk filesystem.
+
+## Kubernetes Development
+Please refer to [development guide](./docs/csi-dev.md)
+
 
 ### Links
  - [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/Home.html)
