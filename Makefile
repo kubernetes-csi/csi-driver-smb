@@ -16,6 +16,7 @@ REGISTRY_NAME=andyzhangx
 IMAGE_NAME=azurefile-csi
 IMAGE_VERSION=v0.1.3-alpha
 IMAGE_TAG=$(REGISTRY_NAME)/$(IMAGE_NAME):$(IMAGE_VERSION)
+IMAGE_TAG_LATEST=$(REGISTRY_NAME)/$(IMAGE_NAME):latest
 REV=$(shell git describe --long --tags --dirty)
 
 .PHONY: all azurefile azurefile-container clean
@@ -32,6 +33,10 @@ azurefile-container: azurefile
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
 push: azurefile-container
 	docker push $(IMAGE_TAG)
+push-latest: azurefile-container
+	docker push $(IMAGE_TAG)
+	docker tag $(IMAGE_TAG) $(IMAGE_TAG_LATEST)
+	docker push $(IMAGE_TAG_LATEST)
 clean:
 	go clean -r -x
 	-rm -rf _output
