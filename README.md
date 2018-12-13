@@ -31,7 +31,7 @@ CSIPersistentVolume is enabled by default in v1.10. MountPropagation is enabled 
 ### Install azurefile CSI driver on a kubernetes cluster
 Please refer to [install azurefile csi driver](https://github.com/andyzhangx/azurefile-csi-driver/blob/master/docs/install-azurefile-csi-driver.md)
 
-## Basic Usage
+## Example
 ### 1. create a pod with csi azurefile driver mount on linux
 #### Example#1: Azurefile Dynamic Provisioning
  - Create an azurefile CSI storage class
@@ -74,12 +74,9 @@ kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-dri
 ```
 
 ### 3. enter the pod container to do validation
- - watch the status of pod until its Status changed from `Pending` to `Running`
+ - watch the status of pod until its Status changed from `Pending` to `Running` and then enter the pod container
 ```
 watch kubectl describe po nginx-azurefile
-```
- - enter the pod container
-```
 kubectl exec -it nginx-azurefile -- bash
 root@nginx-azurefile:/# df -h
 Filesystem                                                                                             Size  Used Avail Use% Mounted on
