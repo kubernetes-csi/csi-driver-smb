@@ -63,7 +63,7 @@ kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-dri
 ```
 
 ### 2. validate PVC status and create an nginx pod
- > make sure pvc is created and in `Bound` status finally
+ - make sure pvc is created and in `Bound` status finally
 ```
 watch kubectl describe pvc pvc-azurefile
 ```
@@ -76,8 +76,8 @@ kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-dri
 ### 3. enter the pod container to do validation
  - watch the status of pod until its Status changed from `Pending` to `Running` and then enter the pod container
 ```
-watch kubectl describe po nginx-azurefile
-kubectl exec -it nginx-azurefile -- bash
+$ watch kubectl describe po nginx-azurefile
+$ kubectl exec -it nginx-azurefile -- bash
 root@nginx-azurefile:/# df -h
 Filesystem                                                                                             Size  Used Avail Use% Mounted on
 overlay                                                                                                 30G   19G   11G  65% /
