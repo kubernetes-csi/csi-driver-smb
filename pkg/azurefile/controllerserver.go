@@ -118,7 +118,6 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 }
 
 func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest) (*csi.DeleteVolumeResponse, error) {
-	// Check arguments
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
@@ -126,8 +125,8 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 	if err := cs.Driver.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME); err != nil {
 		return nil, fmt.Errorf("invalid delete volume req: %v", req)
 	}
-	volumeID := req.VolumeId
 
+	volumeID := req.VolumeId
 	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
 	if err != nil {
 		return nil, err
@@ -151,21 +150,19 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 }
 
 func (cs *controllerServer) ValidateVolumeCapabilities(ctx context.Context, req *csi.ValidateVolumeCapabilitiesRequest) (*csi.ValidateVolumeCapabilitiesResponse, error) {
-	// Check arguments
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
 	if req.GetVolumeCapabilities() == nil {
 		return nil, status.Error(codes.InvalidArgument, "Volume capabilities missing in request")
 	}
-	if _, ok := azureFileVolumes[req.GetVolumeId()]; !ok {
-		return nil, status.Error(codes.NotFound, "Volume does not exist")
+
+	if _, _, _, err := getFileShareInfo(req.VolumeId); err != nil {
+		return nil, err
 	}
 
-	for _, cap := range req.VolumeCapabilities {
-		if cap.GetAccessMode().GetMode() != csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER {
-			return &csi.ValidateVolumeCapabilitiesResponse{Supported: false, Message: ""}, nil
-		}
-	}
+	// todo: we may check file share existence here
+
+	// azure file supports all AccessModes
 	return &csi.ValidateVolumeCapabilitiesResponse{Supported: true, Message: ""}, nil
 }

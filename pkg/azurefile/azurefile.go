@@ -45,9 +45,6 @@ type azureFile struct {
 	ids *identityServer
 	ns  *nodeServer
 	cs  *controllerServer
-
-	cap   []*csi.VolumeCapability_AccessMode
-	cscap []*csi.ControllerServiceCapability
 }
 
 type azureFileVolume struct {
@@ -124,7 +121,17 @@ func (f *azureFile) Run(driverName, nodeID, endpoint string) {
 			csi.ControllerServiceCapability_RPC_CREATE_DELETE_SNAPSHOT,
 			csi.ControllerServiceCapability_RPC_LIST_SNAPSHOTS,
 		})
-	f.driver.AddVolumeCapabilityAccessModes([]csi.VolumeCapability_AccessMode_Mode{csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER})
+	f.driver.AddVolumeCapabilityAccessModes([]csi.VolumeCapability_AccessMode_Mode{
+		csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER,
+		csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY,
+		csi.VolumeCapability_AccessMode_MULTI_NODE_READER_ONLY,
+		csi.VolumeCapability_AccessMode_MULTI_NODE_SINGLE_WRITER,
+		csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER,
+	})
+
+	f.driver.AddNodeServiceCapabilities([]csi.NodeServiceCapability_RPC_Type{
+		csi.NodeServiceCapability_RPC_UNKNOWN,
+	})
 
 	// Create GRPC servers
 	f.ids = NewIdentityServer(f.driver)

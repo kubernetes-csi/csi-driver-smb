@@ -68,6 +68,16 @@ func NewControllerServiceCapability(cap csi.ControllerServiceCapability_RPC_Type
 	}
 }
 
+func NewNodeServiceCapability(cap csi.NodeServiceCapability_RPC_Type) *csi.NodeServiceCapability {
+	return &csi.NodeServiceCapability{
+			Type: &csi.NodeServiceCapability_Rpc{
+					Rpc: &csi.NodeServiceCapability_RPC{
+							Type: cap,
+					},
+			},
+	}
+}
+
 func RunNodePublishServer(endpoint string, d *CSIDriver, ns csi.NodeServer) {
 	ids := NewDefaultIdentityServer(d)
 
