@@ -157,10 +157,6 @@ func (cs *controllerServer) ValidateVolumeCapabilities(ctx context.Context, req 
 		return nil, status.Error(codes.InvalidArgument, "Volume capabilities missing in request")
 	}
 
-	if _, _, _, err := getFileShareInfo(req.VolumeId); err != nil {
-		return nil, err
-	}
-
 	// todo: we may check file share existence here
 
 	// azure file supports all AccessModes
