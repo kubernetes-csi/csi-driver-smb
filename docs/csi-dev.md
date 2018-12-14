@@ -51,7 +51,7 @@ CSIVolumeID
 
 #### 6. Validate volume capabilities
 ```
-$ csc controller validate-volume-capabilities --endpoint tcp://127.0.0.1:10000 --cap 1,block CSIVolumeName
+$ csc controller validate-volume-capabilities --endpoint tcp://127.0.0.1:10000 --cap 1,block CSIVolumeID
 CSIVolumeID  true
 ```
 
