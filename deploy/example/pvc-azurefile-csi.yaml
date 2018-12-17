@@ -8,4 +8,4 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: csi-azurefile-sc
+  storageClassName: file.csi.azure.com

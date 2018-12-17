@@ -6,10 +6,10 @@
  - supported agent OS: Linux
 
 ## About
-This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume, csi plugin name: `csi-azurefile`
+This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume, csi plugin name: `file.csi.azure.com`
 
-## `csi-azurefile` driver parameters
- > storage class `csi-azurefile` parameters are compatable with built-in [azurefile](https://kubernetes.io/docs/concepts/storage/volumes/#azurefile) plugin
+## `file.csi.azure.com` driver parameters
+ > storage class `file.csi.azure.com` parameters are compatable with built-in [azurefile](https://kubernetes.io/docs/concepts/storage/volumes/#azurefile) plugin
  
 Name | Meaning | Example | Mandatory | Notes
 --- | --- | --- | --- | ---
