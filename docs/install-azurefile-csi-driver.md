@@ -23,3 +23,10 @@ csi-azurefile-g2ksx           2/2     Running   0          21h   10.240.0.4    k
 csi-azurefile-nqxn9           2/2     Running   0          21h   10.240.0.35   k8s-agentpool-17181929-1
 csi-azurefile-provisioner-0   1/1     Running   0          22h   10.240.0.39   k8s-agentpool-17181929-1
 ```
+
+ - clean up azure file CSI driver
+```
+kubectl delete ds csi-azurefile
+kubectl delete sts csi-azurefile-provisioner
+kubectl delete sts csi-azurefile-attacher
+```
