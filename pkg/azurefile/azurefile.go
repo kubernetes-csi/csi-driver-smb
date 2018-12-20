@@ -28,6 +28,7 @@ import (
 )
 
 const (
+	driverName      = "file.csi.azure.com"
 	accountName     = "accountname"
 	seperator       = "#"
 	fileMode        = "file_mode"
@@ -101,7 +102,7 @@ func NewNodeServer(d *csicommon.CSIDriver, cloud *azure.Cloud) *nodeServer {
 	}
 }
 
-func (f *azureFile) Run(driverName, nodeID, endpoint string) {
+func (f *azureFile) Run(nodeID, endpoint string) {
 	glog.Infof("Driver: %v ", driverName)
 	glog.Infof("Version: %s", vendorVersion)
 

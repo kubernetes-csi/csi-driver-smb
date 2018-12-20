@@ -28,9 +28,8 @@ func init() {
 }
 
 var (
-	endpoint   = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
-	driverName = flag.String("drivername", "file.csi.azure.com", "name of the driver")
-	nodeID     = flag.String("nodeid", "", "node id")
+	endpoint = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
+	nodeID   = flag.String("nodeid", "", "node id")
 )
 
 func main() {
@@ -42,5 +41,5 @@ func main() {
 
 func handle() {
 	driver := azurefile.GetAzureFileDriver()
-	driver.Run(*driverName, *nodeID, *endpoint)
+	driver.Run(*nodeID, *endpoint)
 }
