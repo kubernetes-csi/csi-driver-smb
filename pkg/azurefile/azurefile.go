@@ -41,11 +41,8 @@ const (
 )
 
 type azureFile struct {
-	driver *csicommon.CSIDriver
-
-	ids *identityServer
-	ns  *nodeServer
-	cs  *controllerServer
+	csicommon.CSIDriver
+	cloud *azure.Cloud
 }
 
 type azureFileVolume struct {
@@ -78,10 +75,6 @@ func init() {
 	azureFileVolumeSnapshots = map[string]azureFileSnapshot{}
 }
 
-func GetAzureFileDriver() *azureFile {
-	return &azureFile{}
-}
-
 func NewIdentityServer(d *csicommon.CSIDriver) *identityServer {
 	return &identityServer{
 		DefaultIdentityServer: csicommon.NewDefaultIdentityServer(d),
@@ -102,7 +95,24 @@ func NewNodeServer(d *csicommon.CSIDriver, cloud *azure.Cloud) *nodeServer {
 	}
 }
 
-func (f *azureFile) Run(nodeID, endpoint string) {
+// Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
+// does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
+func NewDriver(nodeID string) *azureFile {
+	if nodeID == "" {
+		glog.Fatalln("NodeID missing")
+		return nil
+	}
+
+	driver := azureFile{}
+
+	driver.Name = driverName
+	driver.Version = vendorVersion
+	driver.NodeID = nodeID
+
+	return &driver
+}
+
+func (f *azureFile) Run(endpoint string) {
 	glog.Infof("Driver: %v ", driverName)
 	glog.Infof("Version: %s", vendorVersion)
 
@@ -110,19 +120,16 @@ func (f *azureFile) Run(nodeID, endpoint string) {
 	if err != nil {
 		glog.Fatalln("failed to get Azure Cloud Provider")
 	}
+	f.cloud = cloud
 
 	// Initialize default library driver
-	f.driver = csicommon.NewCSIDriver(driverName, vendorVersion, nodeID)
-	if f.driver == nil {
-		glog.Fatalln("Failed to initialize azurefile CSI Driver.")
-	}
-	f.driver.AddControllerServiceCapabilities(
+	f.AddControllerServiceCapabilities(
 		[]csi.ControllerServiceCapability_RPC_Type{
 			csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME,
-			csi.ControllerServiceCapability_RPC_CREATE_DELETE_SNAPSHOT,
-			csi.ControllerServiceCapability_RPC_LIST_SNAPSHOTS,
+			//csi.ControllerServiceCapability_RPC_CREATE_DELETE_SNAPSHOT,
+			//csi.ControllerServiceCapability_RPC_LIST_SNAPSHOTS,
 		})
-	f.driver.AddVolumeCapabilityAccessModes([]csi.VolumeCapability_AccessMode_Mode{
+	f.AddVolumeCapabilityAccessModes([]csi.VolumeCapability_AccessMode_Mode{
 		csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER,
 		csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY,
 		csi.VolumeCapability_AccessMode_MULTI_NODE_READER_ONLY,
@@ -130,17 +137,12 @@ func (f *azureFile) Run(nodeID, endpoint string) {
 		csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER,
 	})
 
-	f.driver.AddNodeServiceCapabilities([]csi.NodeServiceCapability_RPC_Type{
+	f.AddNodeServiceCapabilities([]csi.NodeServiceCapability_RPC_Type{
 		csi.NodeServiceCapability_RPC_UNKNOWN,
 	})
 
-	// Create GRPC servers
-	f.ids = NewIdentityServer(f.driver)
-	f.ns = NewNodeServer(f.driver, cloud)
-	f.cs = NewControllerServer(f.driver, cloud)
-
 	s := csicommon.NewNonBlockingGRPCServer()
-	s.Start(endpoint, f.ids, f.cs, f.ns)
+	s.Start(endpoint, f, f, f)
 	s.Wait()
 }
 
@@ -226,11 +228,11 @@ func getStorageAccount(secrets map[string]string) (string, string, error) {
 		switch strings.ToLower(k) {
 		case "accountname":
 			accountName = v
-		case "azurestorageaccountname":	// for compatability with built-in azurefile plugin
+		case "azurestorageaccountname": // for compatability with built-in azurefile plugin
 			accountName = v
 		case "accountkey":
 			accountKey = v
-		case "azurestorageaccountkey":  // for compatability with built-in azurefile plugin
+		case "azurestorageaccountkey": // for compatability with built-in azurefile plugin
 			accountKey = v
 		}
 	}

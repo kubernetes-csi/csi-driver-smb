@@ -49,7 +49,7 @@ func (cs *DefaultControllerServer) ValidateVolumeCapabilities(ctx context.Contex
 
 	for _, c := range req.GetVolumeCapabilities() {
 		found := false
-		for _, c1 := range cs.Driver.vc {
+		for _, c1 := range cs.Driver.VC {
 			if c1.GetMode() == c.GetAccessMode().GetMode() {
 				found = true
 			}
@@ -82,7 +82,7 @@ func (cs *DefaultControllerServer) ControllerGetCapabilities(ctx context.Context
 	glog.V(5).Infof("Using default ControllerGetCapabilities")
 
 	return &csi.ControllerGetCapabilitiesResponse{
-		Capabilities: cs.Driver.cap,
+		Capabilities: cs.Driver.Cap,
 	}, nil
 }
 

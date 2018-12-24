@@ -26,12 +26,12 @@ import (
 )
 
 type CSIDriver struct {
-	name    string
-	nodeID  string
-	version string
-	cap     []*csi.ControllerServiceCapability
-	vc      []*csi.VolumeCapability_AccessMode
-	nscap 	[]*csi.NodeServiceCapability
+	Name    string
+	NodeID  string
+	Version string
+	Cap     []*csi.ControllerServiceCapability
+	VC      []*csi.VolumeCapability_AccessMode
+	NSCap 	[]*csi.NodeServiceCapability
 }
 
 // Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -53,9 +53,9 @@ func NewCSIDriver(name string, v string, nodeID string) *CSIDriver {
 	}
 
 	driver := CSIDriver{
-		name:    name,
-		version: v,
-		nodeID:  nodeID,
+		Name:    name,
+		Version: v,
+		NodeID:  nodeID,
 	}
 
 	return &driver
@@ -66,7 +66,7 @@ func (d *CSIDriver) ValidateControllerServiceRequest(c csi.ControllerServiceCapa
 		return nil
 	}
 
-	for _, cap := range d.cap {
+	for _, cap := range d.Cap {
 		if c == cap.GetRpc().GetType() {
 			return nil
 		}
@@ -82,7 +82,7 @@ func (d *CSIDriver) AddControllerServiceCapabilities(cl []csi.ControllerServiceC
 		csc = append(csc, NewControllerServiceCapability(c))
 	}
 
-	d.cap = csc
+	d.Cap = csc
 
 	return
 }
@@ -93,7 +93,7 @@ func (d *CSIDriver) AddNodeServiceCapabilities(nl []csi.NodeServiceCapability_RP
 			glog.V(2).Infof("Enabling node service capability: %v", n.String())
 			nsc = append(nsc, NewNodeServiceCapability(n))
 	}
-	d.nscap = nsc
+	d.NSCap = nsc
 	return nil
 }
 
@@ -104,10 +104,10 @@ func (d *CSIDriver) AddVolumeCapabilityAccessModes(vc []csi.VolumeCapability_Acc
 		glog.Infof("Enabling volume access mode: %v", c.String())
 		vca = append(vca, NewVolumeCapabilityAccessMode(c))
 	}
-	d.vc = vca
+	d.VC = vca
 	return vca
 }
 
 func (d *CSIDriver) GetVolumeCapabilityAccessModes() []*csi.VolumeCapability_AccessMode {
-	return d.vc
+	return d.VC
 }

@@ -31,17 +31,17 @@ type DefaultIdentityServer struct {
 func (ids *DefaultIdentityServer) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
 	glog.V(5).Infof("Using default GetPluginInfo")
 
-	if ids.Driver.name == "" {
+	if ids.Driver.Name == "" {
 		return nil, status.Error(codes.Unavailable, "Driver name not configured")
 	}
 
-	if ids.Driver.version == "" {
+	if ids.Driver.Version == "" {
 		return nil, status.Error(codes.Unavailable, "Driver is missing version")
 	}
 
 	return &csi.GetPluginInfoResponse{
-		Name:          ids.Driver.name,
-		VendorVersion: ids.Driver.version,
+		Name:          ids.Driver.Name,
+		VendorVersion: ids.Driver.Version,
 	}, nil
 }
 

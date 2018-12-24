@@ -30,7 +30,7 @@ func (ns *DefaultNodeServer) NodeGetId(ctx context.Context, req *csi.NodeGetIdRe
 	glog.V(5).Infof("Using default NodeGetId")
 
 	return &csi.NodeGetIdResponse{
-		NodeId: ns.Driver.nodeID,
+		NodeId: ns.Driver.NodeID,
 	}, nil
 }
 
@@ -38,7 +38,7 @@ func (ns *DefaultNodeServer) NodeGetInfo(ctx context.Context, req *csi.NodeGetIn
 	glog.V(5).Infof("Using default NodeGetInfo")
 
 	return &csi.NodeGetInfoResponse{
-		NodeId: ns.Driver.nodeID,
+		NodeId: ns.Driver.NodeID,
 	}, nil
 }
 
@@ -46,6 +46,6 @@ func (ns *DefaultNodeServer) NodeGetCapabilities(ctx context.Context, req *csi.N
 	glog.V(2).Infof("Using default NodeGetCapabilities")
 
 	return &csi.NodeGetCapabilitiesResponse{
-		Capabilities: ns.Driver.nscap,
+		Capabilities: ns.Driver.NSCap,
 	}, nil
 }
