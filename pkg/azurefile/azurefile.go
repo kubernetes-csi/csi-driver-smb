@@ -40,70 +40,24 @@ const (
 	defaultVers     = "3.0"
 )
 
-type azureFile struct {
+type Driver struct {
 	csicommon.CSIDriver
 	cloud *azure.Cloud
 }
 
-type azureFileVolume struct {
-	VolName string `json:"volName"`
-	VolID   string `json:"volID"`
-	VolSize int64  `json:"volSize"`
-	VolPath string `json:"volPath"`
-}
-
-type azureFileSnapshot struct {
-	Name      string              `json:"name"`
-	Id        string              `json:"id"`
-	VolID     string              `json:"volID"`
-	Path      string              `json:"path"`
-	CreateAt  int64               `json:"createAt"`
-	SizeBytes int64               `json:"sizeBytes"`
-	Status    *csi.SnapshotStatus `json:"status"`
-}
-
-var azureFileVolumes map[string]azureFileVolume
-var azureFileVolumeSnapshots map[string]azureFileSnapshot
-
 var (
-	azureFileDriver *azureFile
 	vendorVersion   = "0.0.1"
 )
 
-func init() {
-	azureFileVolumes = map[string]azureFileVolume{}
-	azureFileVolumeSnapshots = map[string]azureFileSnapshot{}
-}
-
-func NewIdentityServer(d *csicommon.CSIDriver) *identityServer {
-	return &identityServer{
-		DefaultIdentityServer: csicommon.NewDefaultIdentityServer(d),
-	}
-}
-
-func NewControllerServer(d *csicommon.CSIDriver, cloud *azure.Cloud) *controllerServer {
-	return &controllerServer{
-		DefaultControllerServer: csicommon.NewDefaultControllerServer(d),
-		cloud:                   cloud,
-	}
-}
-
-func NewNodeServer(d *csicommon.CSIDriver, cloud *azure.Cloud) *nodeServer {
-	return &nodeServer{
-		DefaultNodeServer: csicommon.NewDefaultNodeServer(d),
-		cloud:             cloud,
-	}
-}
-
 // Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
-func NewDriver(nodeID string) *azureFile {
+func NewDriver(nodeID string) *Driver {
 	if nodeID == "" {
 		glog.Fatalln("NodeID missing")
 		return nil
 	}
 
-	driver := azureFile{}
+	driver := Driver{}
 
 	driver.Name = driverName
 	driver.Version = vendorVersion
@@ -112,7 +66,7 @@ func NewDriver(nodeID string) *azureFile {
 	return &driver
 }
 
-func (f *azureFile) Run(endpoint string) {
+func (f *Driver) Run(endpoint string) {
 	glog.Infof("Driver: %v ", driverName)
 	glog.Infof("Version: %s", vendorVersion)
 
@@ -144,31 +98,6 @@ func (f *azureFile) Run(endpoint string) {
 	s := csicommon.NewNonBlockingGRPCServer()
 	s.Start(endpoint, f, f, f)
 	s.Wait()
-}
-
-func getVolumeByID(volumeID string) (azureFileVolume, error) {
-	if azureFileVol, ok := azureFileVolumes[volumeID]; ok {
-		return azureFileVol, nil
-	}
-	return azureFileVolume{}, fmt.Errorf("volume id %s does not exit in the volumes list", volumeID)
-}
-
-func getVolumeByName(volName string) (azureFileVolume, error) {
-	for _, azureFileVol := range azureFileVolumes {
-		if azureFileVol.VolName == volName {
-			return azureFileVol, nil
-		}
-	}
-	return azureFileVolume{}, fmt.Errorf("volume name %s does not exit in the volumes list", volName)
-}
-
-func getSnapshotByName(name string) (azureFileSnapshot, error) {
-	for _, snapshot := range azureFileVolumeSnapshots {
-		if snapshot.Name == name {
-			return snapshot, nil
-		}
-	}
-	return azureFileSnapshot{}, fmt.Errorf("snapshot name %s does not exit in the snapshots list", name)
 }
 
 func getFileShareInfo(id string) (string, string, string, error) {
