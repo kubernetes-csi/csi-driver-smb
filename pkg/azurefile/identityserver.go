@@ -27,7 +27,7 @@ import (
 )
 
 func (f *Driver) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
-	glog.V(5).Infof("Using default GetPluginInfo")
+	glog.V(2).Infof("Using default GetPluginInfo")
 
 	if f.Name == "" {
 		return nil, status.Error(codes.Unavailable, "Driver name not configured")
@@ -48,7 +48,7 @@ func (f *Driver) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeRe
 }
 
 func (f *Driver) GetPluginCapabilities(ctx context.Context, req *csi.GetPluginCapabilitiesRequest) (*csi.GetPluginCapabilitiesResponse, error) {
-	glog.V(5).Infof("Using default capabilities")
+	glog.V(2).Infof("Using default capabilities")
 	return &csi.GetPluginCapabilitiesResponse{
 		Capabilities: []*csi.PluginCapability{
 			{

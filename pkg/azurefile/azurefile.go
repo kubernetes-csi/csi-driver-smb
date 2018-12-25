@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	"k8s.io/kubernetes/pkg/cloudprovider/providers/azure"
+	"k8s.io/kubernetes/pkg/util/mount"
 
 	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/container-storage-interface/spec/lib/go/csi/v0"
@@ -43,6 +44,7 @@ const (
 type Driver struct {
 	csicommon.CSIDriver
 	cloud *azure.Cloud
+	mounter *mount.SafeFormatAndMount
 }
 
 var (
@@ -66,7 +68,7 @@ func NewDriver(nodeID string) *Driver {
 	return &driver
 }
 
-func (f *Driver) Run(endpoint string) {
+func (d *Driver) Run(endpoint string) {
 	glog.Infof("Driver: %v ", driverName)
 	glog.Infof("Version: %s", vendorVersion)
 
@@ -74,16 +76,21 @@ func (f *Driver) Run(endpoint string) {
 	if err != nil {
 		glog.Fatalln("failed to get Azure Cloud Provider")
 	}
-	f.cloud = cloud
+	d.cloud = cloud
+
+	d.mounter = &mount.SafeFormatAndMount{
+		Interface: mount.New(""),
+		Exec:      mount.NewOsExec(),
+	}
 
 	// Initialize default library driver
-	f.AddControllerServiceCapabilities(
+	d.AddControllerServiceCapabilities(
 		[]csi.ControllerServiceCapability_RPC_Type{
 			csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME,
 			//csi.ControllerServiceCapability_RPC_CREATE_DELETE_SNAPSHOT,
 			//csi.ControllerServiceCapability_RPC_LIST_SNAPSHOTS,
 		})
-	f.AddVolumeCapabilityAccessModes([]csi.VolumeCapability_AccessMode_Mode{
+	d.AddVolumeCapabilityAccessModes([]csi.VolumeCapability_AccessMode_Mode{
 		csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER,
 		csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY,
 		csi.VolumeCapability_AccessMode_MULTI_NODE_READER_ONLY,
@@ -91,12 +98,13 @@ func (f *Driver) Run(endpoint string) {
 		csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER,
 	})
 
-	f.AddNodeServiceCapabilities([]csi.NodeServiceCapability_RPC_Type{
+	d.AddNodeServiceCapabilities([]csi.NodeServiceCapability_RPC_Type{
 		csi.NodeServiceCapability_RPC_UNKNOWN,
 	})
 
 	s := csicommon.NewNonBlockingGRPCServer()
-	s.Start(endpoint, f, f, f)
+	// Driver d act as IdentityServer, ControllerServer and NodeServer
+	s.Start(endpoint, d, d, d)
 	s.Wait()
 }
 

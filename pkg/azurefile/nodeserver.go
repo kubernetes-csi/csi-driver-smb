@@ -31,11 +31,10 @@ import (
 
 	"golang.org/x/net/context"
 
-	"k8s.io/kubernetes/pkg/util/mount"
-	volutil "k8s.io/kubernetes/pkg/volume/util"
+	"k8s.io/kubernetes/pkg/volume/util"
 )
 
-func (ns *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
+func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
 	if req.GetVolumeCapability() == nil {
 		return nil, status.Error(codes.InvalidArgument, "Volume capability missing in request")
 	}
@@ -47,11 +46,10 @@ func (ns *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVol
 	}
 
 	targetPath := req.GetTargetPath()
-	notMnt, err := mount.New("").IsLikelyNotMountPoint(targetPath)
+	notMnt, err := d.mounter.IsLikelyNotMountPoint(targetPath)
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
-	mounter := mount.New("")
 	if !notMnt {
 		// testing original mount point, make sure the mount link is valid
 		if _, err := ioutil.ReadDir(targetPath); err == nil {
@@ -60,7 +58,7 @@ func (ns *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVol
 		}
 		// todo: mount link is invalid, now unmount and remount later (built-in functionality)
 		glog.Warningf("azureFile - ReadDir %s failed with %v, unmount this directory", targetPath, err)
-		if err := mounter.Unmount(targetPath); err != nil {
+		if err := d.mounter.Unmount(targetPath); err != nil {
 			glog.Errorf("azureFile - Unmount directory %s failed with %v", targetPath, err)
 			return nil, err
 		}
@@ -88,10 +86,10 @@ func (ns *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVol
 		}
 
 		if resourceGroupName == "" {
-			resourceGroupName = ns.cloud.ResourceGroup
+			resourceGroupName = d.cloud.ResourceGroup
 		}
 
-		accountKey, err = GetStorageAccesskey(ns.cloud, accountName, resourceGroupName)
+		accountKey, err = GetStorageAccesskey(d.cloud, accountName, resourceGroupName)
 		if err != nil {
 			return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
 		}
@@ -115,7 +113,7 @@ func (ns *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVol
 	mountOptions := []string{}
 	source := ""
 	osSeparator := string(os.PathSeparator)
-	source = fmt.Sprintf("%s%s%s.file.%s%s%s", osSeparator, osSeparator, accountName, ns.cloud.Environment.StorageEndpointSuffix, osSeparator, fileShareName)
+	source = fmt.Sprintf("%s%s%s.file.%s%s%s", osSeparator, osSeparator, accountName, d.cloud.Environment.StorageEndpointSuffix, osSeparator, fileShareName)
 
 	if runtime.GOOS == "windows" {
 		mountOptions = []string{fmt.Sprintf("AZURE\\%s", accountName), accountKey}
@@ -128,23 +126,23 @@ func (ns *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVol
 		if readOnly {
 			options = append(options, "ro")
 		}
-		mountOptions = volutil.JoinMountOptions(mountFlags, options)
+		mountOptions = util.JoinMountOptions(mountFlags, options)
 		mountOptions = appendDefaultMountOptions(mountOptions)
 	}
 
-	err = mounter.Mount(source, targetPath, "cifs", mountOptions)
+	err = d.mounter.Mount(source, targetPath, "cifs", mountOptions)
 	if err != nil {
-		notMnt, mntErr := mounter.IsLikelyNotMountPoint(targetPath)
+		notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
 		if mntErr != nil {
 			glog.Errorf("IsLikelyNotMountPoint check failed: %v", mntErr)
 			return nil, err
 		}
 		if !notMnt {
-			if mntErr = mounter.Unmount(targetPath); mntErr != nil {
+			if mntErr = d.mounter.Unmount(targetPath); mntErr != nil {
 				glog.Errorf("Failed to unmount: %v", mntErr)
 				return nil, err
 			}
-			notMnt, mntErr := mounter.IsLikelyNotMountPoint(targetPath)
+			notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
 			if mntErr != nil {
 				glog.Errorf("IsLikelyNotMountPoint check failed: %v", mntErr)
 				return nil, err
@@ -162,7 +160,7 @@ func (ns *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVol
 	return &csi.NodePublishVolumeResponse{}, nil
 }
 
-func (ns *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
+func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
@@ -173,7 +171,7 @@ func (ns *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublis
 	volumeID := req.GetVolumeId()
 
 	// Unmounting the image
-	err := mount.New("").Unmount(req.GetTargetPath())
+	err := d.mounter.Unmount(req.GetTargetPath())
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -182,7 +180,7 @@ func (ns *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublis
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }
 
-func (ns *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
+func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
@@ -193,7 +191,7 @@ func (ns *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeR
 	return &csi.NodeStageVolumeResponse{}, nil
 }
 
-func (ns *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolumeRequest) (*csi.NodeUnstageVolumeResponse, error) {
+func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolumeRequest) (*csi.NodeUnstageVolumeResponse, error) {
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
@@ -204,26 +202,26 @@ func (ns *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVol
 	return &csi.NodeUnstageVolumeResponse{}, nil
 }
 
-func (ns *Driver) NodeGetCapabilities(ctx context.Context, req *csi.NodeGetCapabilitiesRequest) (*csi.NodeGetCapabilitiesResponse, error) {
+func (d *Driver) NodeGetCapabilities(ctx context.Context, req *csi.NodeGetCapabilitiesRequest) (*csi.NodeGetCapabilitiesResponse, error) {
 	glog.V(2).Infof("Using default NodeGetCapabilities")
 
 	return &csi.NodeGetCapabilitiesResponse{
-		Capabilities: ns.NSCap,
+		Capabilities: d.NSCap,
 	}, nil
 }
 
-func (ns *Driver) NodeGetId(ctx context.Context, req *csi.NodeGetIdRequest) (*csi.NodeGetIdResponse, error) {
+func (d *Driver) NodeGetId(ctx context.Context, req *csi.NodeGetIdRequest) (*csi.NodeGetIdResponse, error) {
 	glog.V(5).Infof("Using default NodeGetId")
 
 	return &csi.NodeGetIdResponse{
-		NodeId: ns.NodeID,
+		NodeId: d.NodeID,
 	}, nil
 }
 
-func (ns *Driver) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoRequest) (*csi.NodeGetInfoResponse, error) {
+func (d *Driver) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoRequest) (*csi.NodeGetInfoResponse, error) {
 	glog.V(5).Infof("Using default NodeGetInfo")
 
 	return &csi.NodeGetInfoResponse{
-		NodeId: ns.NodeID,
+		NodeId: d.NodeID,
 	}, nil
 }
