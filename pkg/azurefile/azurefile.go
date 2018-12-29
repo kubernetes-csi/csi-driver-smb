@@ -41,17 +41,18 @@ const (
 	defaultVers     = "3.0"
 )
 
+// Driver implements all interfaces of CSI drivers
 type Driver struct {
 	csicommon.CSIDriver
-	cloud *azure.Cloud
+	cloud   *azure.Cloud
 	mounter *mount.SafeFormatAndMount
 }
 
 var (
-	vendorVersion   = "0.0.1"
+	vendorVersion = "0.0.1"
 )
 
-// Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
+// NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
 func NewDriver(nodeID string) *Driver {
 	if nodeID == "" {
@@ -68,6 +69,7 @@ func NewDriver(nodeID string) *Driver {
 	return &driver
 }
 
+// Run driver initialization
 func (d *Driver) Run(endpoint string) {
 	glog.Infof("Driver: %v ", driverName)
 	glog.Infof("Version: %s", vendorVersion)

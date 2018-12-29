@@ -26,6 +26,7 @@ import (
 	"github.com/golang/glog"
 )
 
+// GetPluginInfo return the version and name of the plugin
 func (f *Driver) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
 	glog.V(2).Infof("Using default GetPluginInfo")
 
@@ -43,10 +44,15 @@ func (f *Driver) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoReques
 	}, nil
 }
 
+// Probe check whether the plugin is running or not.
+// This method does not need to return anything.
+// Currently the spec does not dictate what you should return either.
+// Hence, return an empty response
 func (f *Driver) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeResponse, error) {
 	return &csi.ProbeResponse{}, nil
 }
 
+// GetPluginCapabilities returns the capabilities of the plugin
 func (f *Driver) GetPluginCapabilities(ctx context.Context, req *csi.GetPluginCapabilitiesRequest) (*csi.GetPluginCapabilitiesResponse, error) {
 	glog.V(2).Infof("Using default capabilities")
 	return &csi.GetPluginCapabilitiesResponse{

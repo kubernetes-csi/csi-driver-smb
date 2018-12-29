@@ -57,6 +57,7 @@ func GetCloudProvider() (*azure.Cloud, error) {
 }
 
 // GetStorageAccesskey get storage account access key
+// todo: use cloud.GetStorageAccesskey func in k8s v1.14.0
 func GetStorageAccesskey(cloud *azure.Cloud, account, resourceGroup string) (string, error) {
 	ctx, cancel := getContextWithCancel()
 	defer cancel()
