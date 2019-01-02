@@ -19,7 +19,7 @@ spec:
           args:
             - --v=5
             - --csi-address=/csi/csi.sock
-            - --kubelet-registration-path=/var/lib/kubelet/plugins/csi-azurefile/csi.sock
+            - --kubelet-registration-path=/var/lib/kubelet/plugins/file.csi.azure.com/csi.sock
           env:
             - name: KUBE_NODE_NAME
               valueFrom:
@@ -64,7 +64,7 @@ spec:
               name: msi
       volumes:
         - hostPath:
-            path: /var/lib/kubelet/plugins/csi-azurefile
+            path: /var/lib/kubelet/plugins/file.csi.azure.com
             type: DirectoryOrCreate
           name: socket-dir
         - hostPath:
