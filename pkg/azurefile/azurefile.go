@@ -49,7 +49,7 @@ type Driver struct {
 }
 
 var (
-	vendorVersion = "0.0.1"
+	vendorVersion = "v0.1.0-alpha"
 )
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &

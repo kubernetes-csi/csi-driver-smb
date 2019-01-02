@@ -64,6 +64,8 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		switch strings.ToLower(k) {
 		case "skuname":
 			sku = v
+		case "storageaccounttype":
+			sku = v
 		case "location":
 			location = v
 		case "storageaccount":
