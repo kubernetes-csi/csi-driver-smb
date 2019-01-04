@@ -12,4 +12,4 @@ go:
 script:
   - make test
   - make azurefile
-  - $GOPATH/bin/goveralls -coverprofile=profile.cov -service=travis-ci
+  - make azurefile-container
