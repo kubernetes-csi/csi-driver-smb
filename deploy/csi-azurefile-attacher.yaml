@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: csi-azurefile-attacher
+  namespace: kube-system
   labels:
     app: csi-azurefile-attacher
 spec:
@@ -16,6 +17,7 @@ kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: csi-azurefile-attacher
+  namespace: kube-system
 spec:
   serviceName: "csi-azurefile-attacher"
   replicas: 1

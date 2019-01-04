@@ -1,7 +1,7 @@
 # Install azurefile CSI driver on a kubernetes cluster
 ```
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml
+kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml --validate=false
+kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml --validate=false
 kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-attacher.yaml
 kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-driver-registrar.yaml
 kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-provisioner.yaml
@@ -13,7 +13,7 @@ kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driv
 
  - check pods status:
 ```
-watch kubectl get po -o wide
+watch kubectl get po -o wide -n kube-system | grep csi-azurefile
 ```
 example output:
 ```
@@ -26,7 +26,7 @@ csi-azurefile-provisioner-0   1/1     Running   0          22h   10.240.0.39   k
 
  - clean up azure file CSI driver
 ```
-kubectl delete ds csi-azurefile
-kubectl delete sts csi-azurefile-provisioner
-kubectl delete sts csi-azurefile-attacher
+kubectl delete ds csi-azurefile -n kube-system
+kubectl delete sts csi-azurefile-provisioner -n kube-system
+kubectl delete sts csi-azurefile-attacher -n kube-system
 ```

@@ -13,7 +13,7 @@ kind: ServiceAccount
 metadata:
   name: csi-attacher
   # replace with non-default namespace name
-  namespace: default
+  namespace: kube-system
 
 ---
 # Attacher must be able to work with PVs, nodes and VolumeAttachments
@@ -44,7 +44,7 @@ subjects:
   - kind: ServiceAccount
     name: csi-attacher
     # replace with non-default namespace name
-    namespace: default
+    namespace: kube-system
 roleRef:
   kind: ClusterRole
   name: external-attacher-runner
@@ -57,7 +57,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   # replace with non-default namespace name
-  namespace: default
+  namespace: kube-system
   name: external-attacher-cfg
 rules:
 - apiGroups: [""]
@@ -70,12 +70,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: csi-attacher-role-cfg
   # replace with non-default namespace name
-  namespace: default
+  namespace: kube-system
 subjects:
   - kind: ServiceAccount
     name: csi-attacher
     # replace with non-default namespace name
-    namespace: default
+    namespace: kube-system
 roleRef:
   kind: Role
   name: external-attacher-cfg

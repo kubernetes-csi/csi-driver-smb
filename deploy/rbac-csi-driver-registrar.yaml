@@ -13,7 +13,7 @@ kind: ServiceAccount
 metadata:
   name: csi-driver-registrar
   # replace with non-default namespace name
-  namespace: default
+  namespace: kube-system
 
 ---
 kind: ClusterRole
@@ -44,7 +44,7 @@ subjects:
   - kind: ServiceAccount
     name: csi-driver-registrar
     # replace with non-default namespace name
-    namespace: default
+    namespace: kube-system
 roleRef:
   kind: ClusterRole
   name: driver-registrar-runner

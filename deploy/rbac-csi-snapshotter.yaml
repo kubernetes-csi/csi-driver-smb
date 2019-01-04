@@ -57,7 +57,7 @@ subjects:
   - kind: ServiceAccount
     name: csi-snapshotter
     # replace with non-default namespace name
-    namespace: default
+    namespace: kube-system
 roleRef:
   kind: ClusterRole
   # change the name also here if the ClusterRole gets renamed

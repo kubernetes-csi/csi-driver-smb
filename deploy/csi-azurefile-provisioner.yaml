@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: csi-azurefile-provisioner 
+  namespace: kube-system
   labels:
     app: csi-azurefile-provisioner 
 spec:
@@ -16,6 +17,7 @@ kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: csi-azurefile-provisioner
+  namespace: kube-system
 spec:
   serviceName: "csi-azurefile-provisioner"
   replicas: 1
