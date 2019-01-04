@@ -1,5 +1,5 @@
 /*
-Copyright 2017 The Kubernetes Authors.
+Copyright 2019 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ const (
 	seperator       = "#"
 	fileMode        = "file_mode"
 	dirMode         = "dir_mode"
-	gid             = "gid"
 	vers            = "vers"
 	defaultFileMode = "0777"
 	defaultDirMode  = "0777"
