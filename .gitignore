@@ -57,10 +57,6 @@ cscope.*
 # Go dependencies installed on Jenkins
 /_gopath/
 
-# Config directories created by gcloud and gsutil on Jenkins
-/.config/gcloud*/
-/.gsutil/
-
 # direnv .envrc files
 .envrc
 
