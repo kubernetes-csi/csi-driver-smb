@@ -32,10 +32,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const (
-	volumeIDTemplate = "%s#%s#%s"
-)
-
 // CreateVolume provisions an azure file
 func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
 	if err := d.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME); err != nil {

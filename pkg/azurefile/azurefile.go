@@ -29,15 +29,15 @@ import (
 )
 
 const (
-	driverName      = "file.csi.azure.com"
-	accountName     = "accountname"
-	seperator       = "#"
-	fileMode        = "file_mode"
-	dirMode         = "dir_mode"
-	vers            = "vers"
-	defaultFileMode = "0777"
-	defaultDirMode  = "0777"
-	defaultVers     = "3.0"
+	driverName       = "file.csi.azure.com"
+	seperator        = "#"
+	volumeIDTemplate = "%s#%s#%s"
+	fileMode         = "file_mode"
+	dirMode          = "dir_mode"
+	vers             = "vers"
+	defaultFileMode  = "0777"
+	defaultDirMode   = "0777"
+	defaultVers      = "3.0"
 )
 
 // Driver implements all interfaces of CSI drivers
@@ -109,6 +109,9 @@ func (d *Driver) Run(endpoint string) {
 	s.Wait()
 }
 
+// get file share info according to volume id, e.g.
+// input: "rg#f5713de20cde511e8ba4900#pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41"
+// output: rg, f5713de20cde511e8ba4900, pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41
 func getFileShareInfo(id string) (string, string, string, error) {
 	segments := strings.Split(id, seperator)
 	if len(segments) < 3 {
@@ -117,7 +120,7 @@ func getFileShareInfo(id string) (string, string, string, error) {
 	return segments[0], segments[1], segments[2], nil
 }
 
-// check whether mountOptions contain file_mode, dir_mode, vers, gid, if not, append default mode
+// check whether mountOptions contains file_mode, dir_mode, vers, if not, append default mode
 func appendDefaultMountOptions(mountOptions []string) []string {
 	fileModeFlag := false
 	dirModeFlag := false
@@ -156,6 +159,7 @@ func appendDefaultMountOptions(mountOptions []string) []string {
 	return allMountOptions
 }
 
+// get storage account from secrets map
 func getStorageAccount(secrets map[string]string) (string, string, error) {
 	if secrets == nil {
 		return "", "", fmt.Errorf("unexpected: getStorageAccount secrets is nil")
