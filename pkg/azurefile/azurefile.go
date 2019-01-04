@@ -30,6 +30,7 @@ import (
 
 const (
 	driverName       = "file.csi.azure.com"
+	vendorVersion    = "v0.1.0-alpha"
 	seperator        = "#"
 	volumeIDTemplate = "%s#%s#%s"
 	fileMode         = "file_mode"
@@ -47,10 +48,6 @@ type Driver struct {
 	mounter *mount.SafeFormatAndMount
 }
 
-var (
-	vendorVersion = "v0.1.0-alpha"
-)
-
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
 func NewDriver(nodeID string) *Driver {
@@ -60,7 +57,6 @@ func NewDriver(nodeID string) *Driver {
 	}
 
 	driver := Driver{}
-
 	driver.Name = driverName
 	driver.Version = vendorVersion
 	driver.NodeID = nodeID
