@@ -3,10 +3,9 @@
 
 Goal | Status | Notes
 --- | --- | --- |
-Use same driver parameters with built-in [azurefile](https://kubernetes.io/docs/concepts/storage/volumes/#azurefile) plugin | Completed | [`file.csi.azure.com` driver parameters](./driver-parameters.md) |
 Support service principal and msi authentication | Completed |  |
 Support both Linux & Windows | In Progress | Windows related work is in progress: [Enable CSI hostpath example on windows](https://github.com/kubernetes-csi/drivers/issues/79) |
-Compatible with original storage class parameters and usage| Completed | There is a little difference in static provision, see [example](https://github.com/andyzhangx/azurefile-csi-driver/blob/master/README.md#example2-azurefile-static-provisioninguse-an-existing-azure-file-share) |
+Compatible with original storage class parameters and usage| Completed | there is a little difference in static provision, see [example](../README.md#example2-azurefile-static-provisioninguse-an-existing-azure-file-share) |
 Support sovereign cloud| Completed |  |
 Support volume size grow| to-do |  |
 Support snapshot | to-do |  |
