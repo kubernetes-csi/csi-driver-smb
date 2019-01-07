@@ -29,6 +29,9 @@ test:
 azurefile:
 	if [ ! -d ./vendor ]; then dep ensure -vendor-only; fi
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-X github.com/andyzhangx/azurefile-csi-driver/pkg/azurefile.vendorVersion=$(IMAGE_VERSION) -extldflags "-static"' -o _output/azurefileplugin ./pkg/azurefileplugin
+azurefile-windows:
+	if [ ! -d ./vendor ]; then dep ensure -vendor-only; fi
+	CGO_ENABLED=0 GOOS=windows go build -a -ldflags '-X github.com/andyzhangx/azurefile-csi-driver/pkg/azurefile.vendorVersion=$(IMAGE_VERSION) -extldflags "-static"' -o _output/azurefileplugin.exe ./pkg/azurefileplugin
 azurefile-container: azurefile
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
 push: azurefile-container

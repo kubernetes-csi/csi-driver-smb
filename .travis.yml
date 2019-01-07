@@ -10,6 +10,8 @@ go:
   - "1.11.4"
 
 script:
+  - hack/verify-all.sh
   - make test
   - make azurefile
+  - make azurefile-windows
   - make azurefile-container
