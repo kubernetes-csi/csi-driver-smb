@@ -63,7 +63,7 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 			glog.Errorf("azureFile - Unmount directory %s failed with %v", targetPath, err)
 			return nil, err
 		}
-		notMnt = true
+		// notMnt = true
 	}
 
 	fsType := req.GetVolumeCapability().GetMount().GetFsType()
@@ -111,7 +111,7 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		}
 	}
 
-	mountOptions := []string{}
+	var mountOptions []string
 	source := ""
 	osSeparator := string(os.PathSeparator)
 	source = fmt.Sprintf("%s%s%s.file.%s%s%s", osSeparator, osSeparator, accountName, d.cloud.Environment.StorageEndpointSuffix, osSeparator, fileShareName)
