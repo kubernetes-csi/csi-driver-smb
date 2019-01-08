@@ -9,9 +9,14 @@ go:
   - "1.10.x"
   - "1.11.4"
 
+before_install:
+  - go get github.com/mattn/goveralls
+
 script:
   - hack/verify-all.sh
   - make test
   - make azurefile
   - make azurefile-windows
   - make azurefile-container
+  - go test -covermode=count -coverprofile=profile.cov ./pkg/...
+  - $GOPATH/bin/goveralls -coverprofile=profile.cov -service=travis-ci
