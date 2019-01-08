@@ -1,5 +1,6 @@
 # azurefile CSI driver for Kubernetes (Alpha)
 ![TravisCI](https://travis-ci.com/andyzhangx/azurefile-csi-driver.svg?branch=master)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fandyzhangx%2Fazurefile-csi-driver.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fandyzhangx%2Fazurefile-csi-driver?ref=badge_shield)
 
 **WARNING**: This driver is in ALPHA currently. Do NOT use this driver in a production environment in its current state.
 
@@ -92,3 +93,7 @@ Please refer to [development guide](./docs/csi-dev.md)
  - [Analysis of the CSI Spec](https://blog.thecodeteam.com/2017/11/03/analysis-csi-spec/)
  - [CSI Drivers](https://github.com/kubernetes-csi/drivers)
  - [Container Storage Interface (CSI) Specification](https://github.com/container-storage-interface/spec)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fandyzhangx%2Fazurefile-csi-driver.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fandyzhangx%2Fazurefile-csi-driver?ref=badge_large)
