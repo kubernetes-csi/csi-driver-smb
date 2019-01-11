@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAppendDefaultMountOptions(t *testing.T) {
@@ -62,6 +64,153 @@ func TestAppendDefaultMountOptions(t *testing.T) {
 		result := appendDefaultMountOptions(test.options)
 		if !reflect.DeepEqual(result, test.expected) {
 			t.Errorf("input: %q, appendDefaultMountOptions result: %q, expected: %q", test.options, result, test.expected)
+		}
+	}
+}
+
+func TestGetFileShareInfo(t *testing.T) {
+	tests := []struct {
+		options   string
+		expected1 string
+		expected2 string
+		expected3 string
+		expected4 error
+	}{
+		{
+			options:   "rg#f5713de20cde511e8ba4900#pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41",
+			expected1: "rg",
+			expected2: "f5713de20cde511e8ba4900",
+			expected3: "pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41",
+			expected4: nil,
+		},
+		{
+			options:   "rg#f5713de20cde511e8ba4900",
+			expected1: "",
+			expected2: "",
+			expected3: "",
+			expected4: fmt.Errorf("error parsing volume id: \"rg#f5713de20cde511e8ba4900\", should at least contain two #"),
+		},
+		{
+			options:   "rg",
+			expected1: "",
+			expected2: "",
+			expected3: "",
+			expected4: fmt.Errorf("error parsing volume id: \"rg\", should at least contain two #"),
+		},
+		{
+			options:   "",
+			expected1: "",
+			expected2: "",
+			expected3: "",
+			expected4: fmt.Errorf("error parsing volume id: \"\", should at least contain two #"),
+		},
+	}
+
+	for _, test := range tests {
+		result1, result2, result3, result4 := getFileShareInfo(test.options)
+		if !reflect.DeepEqual(result1, test.expected1) || !reflect.DeepEqual(result2, test.expected2) ||
+			!reflect.DeepEqual(result3, test.expected3) || !reflect.DeepEqual(result4, test.expected4) {
+			t.Errorf("input: %q, getFileShareInfo result1: %q, expected1: %q, result2: %q, expected2: %q, result3: %q, expected3: %q, result4: %q, expected4: %q", test.options, result1, test.expected1, result2, test.expected2,
+				result3, test.expected3, result4, test.expected4)
+		}
+	}
+}
+
+func TestGetStorageAccount(t *testing.T) {
+	emptyAccountKeyMap := map[string]string{
+		"accountname": "testaccount",
+		"accountkey":  "",
+	}
+
+	emptyAccountNameMap := map[string]string{
+		"azurestorageaccountname": "",
+		"azurestorageaccountkey":  "testkey",
+	}
+
+	emptyAzureAccountKeyMap := map[string]string{
+		"azurestorageaccountname": "testaccount",
+		"azurestorageaccountkey":  "",
+	}
+
+	emptyAzureAccountNameMap := map[string]string{
+		"azurestorageaccountname": "",
+		"azurestorageaccountkey":  "testkey",
+	}
+
+	tests := []struct {
+		options   map[string]string
+		expected1 string
+		expected2 string
+		expected3 error
+	}{
+		{
+			options: map[string]string{
+				"accountname": "testaccount",
+				"accountkey":  "testkey",
+			},
+			expected1: "testaccount",
+			expected2: "testkey",
+			expected3: nil,
+		},
+		{
+			options: map[string]string{
+				"azurestorageaccountname": "testaccount",
+				"azurestorageaccountkey":  "testkey",
+			},
+			expected1: "testaccount",
+			expected2: "testkey",
+			expected3: nil,
+		},
+		{
+			options: map[string]string{
+				"accountname": "",
+				"accountkey":  "",
+			},
+			expected1: "",
+			expected2: "",
+			expected3: fmt.Errorf("could not find accountname or azurestorageaccountname field secrets(map[accountname: accountkey:])"),
+		},
+		{
+			options:   emptyAccountKeyMap,
+			expected1: "",
+			expected2: "",
+			expected3: fmt.Errorf("could not find accountkey or azurestorageaccountkey field in secrets(%v)", emptyAccountKeyMap),
+		},
+		{
+			options:   emptyAccountNameMap,
+			expected1: "",
+			expected2: "",
+			expected3: fmt.Errorf("could not find accountname or azurestorageaccountname field secrets(%v)", emptyAccountNameMap),
+		},
+		{
+			options:   emptyAzureAccountKeyMap,
+			expected1: "",
+			expected2: "",
+			expected3: fmt.Errorf("could not find accountkey or azurestorageaccountkey field in secrets(%v)", emptyAzureAccountKeyMap),
+		},
+		{
+			options:   emptyAzureAccountNameMap,
+			expected1: "",
+			expected2: "",
+			expected3: fmt.Errorf("could not find accountname or azurestorageaccountname field secrets(%v)", emptyAzureAccountNameMap),
+		},
+		{
+			options:   nil,
+			expected1: "",
+			expected2: "",
+			expected3: fmt.Errorf("unexpected: getStorageAccount secrets is nil"),
+		},
+	}
+
+	for _, test := range tests {
+		result1, result2, result3 := getStorageAccount(test.options)
+		if !reflect.DeepEqual(result1, test.expected1) || !reflect.DeepEqual(result2, test.expected2) {
+			t.Errorf("input: %q, getStorageAccount result1: %q, expected1: %q, result2: %q, expected2: %q, result3: %q, expected3: %q", test.options, result1, test.expected1, result2, test.expected2,
+				result3, test.expected3)
+		} else {
+			if result1 == "" || result2 == "" {
+				assert.Error(t, result3)
+			}
 		}
 	}
 }
