@@ -12,7 +12,7 @@ This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-
 Status: Aplha
 
 ### Container Images:
-`andyzhangx/azurefile-csi:v0.1.0-alpha`
+`mcr.microsoft.com/k8s/csi/azurefile-csi:v0.1.0-alpha`
 
 ### Driver parameters
 Please refer to [`file.csi.azure.com` driver parameters](./docs/driver-parameters.md)
