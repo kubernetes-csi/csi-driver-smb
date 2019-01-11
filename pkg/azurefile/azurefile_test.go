@@ -18,9 +18,10 @@ package azurefile
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAppendDefaultMountOptions(t *testing.T) {
