@@ -30,7 +30,7 @@ import (
 
 const (
 	driverName       = "file.csi.azure.com"
-	vendorVersion    = "v0.1.0-alpha"
+	vendorVersion    = "v0.2.0-alpha"
 	seperator        = "#"
 	volumeIDTemplate = "%s#%s#%s"
 	fileMode         = "file_mode"
