@@ -60,7 +60,7 @@ CSIVolumeID  true
 
 #### 7. Get NodeID
 ```
-$ csc node get-id --endpoint tcp://127.0.0.1:10000
+$ csc node get-info --endpoint tcp://127.0.0.1:10000
 CSINode
 ```
 
