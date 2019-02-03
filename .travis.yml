@@ -11,11 +11,13 @@ go:
 
 before_install:
   - go get github.com/mattn/goveralls
+  - go get github.com/rexray/gocsi/csc
 
 script:
   - hack/verify-all.sh
   - make test
   - make azurefile
+  - test/e2e/run-test.sh
   - make azurefile-windows
   - make azurefile-container
   - go test -covermode=count -coverprofile=profile.cov ./pkg/...
