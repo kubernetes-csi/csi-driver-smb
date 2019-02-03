@@ -62,12 +62,12 @@
   version = "v0.1.0"
 
 [[projects]]
-  digest = "1:cf4f5171128e62b46299b0a7cd79543f50e62f483d2ca9364e4957c7bbee7a38"
+  digest = "1:93147eb1d6f08d39f2c0efe3d29ee043bda72be7a8b3b367eb08c72c18524638"
   name = "github.com/container-storage-interface/spec"
-  packages = ["lib/go/csi/v0"]
+  packages = ["lib/go/csi"]
   pruneopts = ""
-  revision = "2178fdeea87f1150a17a63252eee28d4d8141f72"
-  version = "v0.3.0"
+  revision = "ed0bb0e1557548aa028307f48728767cfe8f6345"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:56c130d885a4aacae1dd9c7b71cfe39912c7ebc1ff7d2b46083c8812996dc43b"
@@ -125,6 +125,7 @@
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
+    "protoc-gen-go/descriptor",
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
@@ -859,7 +860,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage",
-    "github.com/container-storage-interface/spec/lib/go/csi/v0",
+    "github.com/container-storage-interface/spec/lib/go/csi",
     "github.com/golang/glog",
     "github.com/pborman/uuid",
     "github.com/stretchr/testify/assert",

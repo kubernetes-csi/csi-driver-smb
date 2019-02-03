@@ -24,7 +24,7 @@ import (
 	"k8s.io/kubernetes/pkg/volume/util"
 
 	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
-	"github.com/container-storage-interface/spec/lib/go/csi/v0"
+	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
 	"github.com/pborman/uuid"
 
