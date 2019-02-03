@@ -16,13 +16,26 @@
 
 set -euo pipefail
 
+# run CSI driver as a background service
 export set AZURE_CREDENTIAL_FILE=deploy/example/azure.json
 _output/azurefileplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5 &
 sleep 3
 
+# begin to run CSI functions one by one
 $GOPATH/bin/csc identity plugin-info --endpoint tcp://127.0.0.1:10000
 retcode=$?
 if [ $retcode -gt 0 ]; then
 	exit $retcode
 fi
 
+$GOPATH/bin/csc controller validate-volume-capabilities --endpoint tcp://127.0.0.1:10000 --cap 1,block CSIVolumeID
+retcode=$?
+if [ $retcode -gt 0 ]; then
+	exit $retcode
+fi
+
+$GOPATH/bin/csc node get-info --endpoint tcp://127.0.0.1:10000
+retcode=$?
+if [ $retcode -gt 0 ]; then
+	exit $retcode
+fi
