@@ -70,15 +70,15 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 
 	readOnly := req.GetReadonly()
 	volumeID := req.GetVolumeId()
-	attrib := req.GetVolumeAttributes()
+	attrib := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 
-	glog.V(2).Infof("target %v\nfstype %v\n\nreadonly %v\nvolumeId %v\nattributes %v\nmountflags %v\n",
+	glog.V(2).Infof("target %v\nfstype %v\n\nreadonly %v\nvolumeId %v\ncontext %v\nmountflags %v\n",
 		targetPath, fsType, readOnly, volumeID, attrib, mountFlags)
 
 	var accountName, accountKey, fileShareName string
 
-	secrets := req.GetNodePublishSecrets()
+	secrets := req.GetSecrets()
 	if len(secrets) == 0 {
 		var resourceGroupName string
 		resourceGroupName, accountName, fileShareName, err = getFileShareInfo(volumeID)
@@ -223,15 +223,6 @@ func (d *Driver) NodeGetCapabilities(ctx context.Context, req *csi.NodeGetCapabi
 	}, nil
 }
 
-// NodeGetId return a unique ID of the node on which this plugin is running
-func (d *Driver) NodeGetId(ctx context.Context, req *csi.NodeGetIdRequest) (*csi.NodeGetIdResponse, error) {
-	glog.V(5).Infof("Using default NodeGetId")
-
-	return &csi.NodeGetIdResponse{
-		NodeId: d.NodeID,
-	}, nil
-}
-
 // NodeGetInfo return info of the node on which this plugin is running
 func (d *Driver) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoRequest) (*csi.NodeGetInfoResponse, error) {
 	glog.V(5).Infof("Using default NodeGetInfo")
@@ -239,4 +230,9 @@ func (d *Driver) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoRequest) (
 	return &csi.NodeGetInfoResponse{
 		NodeId: d.NodeID,
 	}, nil
+}
+
+// NodeGetVolumeStats get volume stats
+func (d *Driver) NodeGetVolumeStats(ctx context.Context, in *csi.NodeGetVolumeStatsRequest) (*csi.NodeGetVolumeStatsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "")
 }

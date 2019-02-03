@@ -103,9 +103,9 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
-			Id:            volumeID,
+			VolumeId:      volumeID,
 			CapacityBytes: req.GetCapacityRange().GetRequiredBytes(),
-			Attributes:    parameters,
+			VolumeContext: parameters,
 		},
 	}, nil
 }
@@ -156,7 +156,7 @@ func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.Valida
 	// todo: we may check file share existence here
 
 	// azure file supports all AccessModes, no need to check capabilities here
-	return &csi.ValidateVolumeCapabilitiesResponse{Supported: true, Message: ""}, nil
+	return &csi.ValidateVolumeCapabilitiesResponse{Message: ""}, nil
 }
 
 // ControllerGetCapabilities returns the capabilities of the Controller plugin

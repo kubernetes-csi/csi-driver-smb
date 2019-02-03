@@ -56,16 +56,13 @@ func (cs *DefaultControllerServer) ValidateVolumeCapabilities(ctx context.Contex
 		}
 		if !found {
 			return &csi.ValidateVolumeCapabilitiesResponse{
-				Supported: false,
 				Message:   "Driver doesnot support mode:" + c.GetAccessMode().GetMode().String(),
 			}, status.Error(codes.InvalidArgument, "Driver doesnot support mode:"+c.GetAccessMode().GetMode().String())
 		}
 		// TODO: Ignoring mount & block tyeps for now.
 	}
 
-	return &csi.ValidateVolumeCapabilitiesResponse{
-		Supported: true,
-	}, nil
+	return &csi.ValidateVolumeCapabilitiesResponse{}, nil
 }
 
 func (cs *DefaultControllerServer) ListVolumes(ctx context.Context, req *csi.ListVolumesRequest) (*csi.ListVolumesResponse, error) {

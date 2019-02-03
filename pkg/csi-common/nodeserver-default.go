@@ -26,14 +26,6 @@ type DefaultNodeServer struct {
 	Driver *CSIDriver
 }
 
-func (ns *DefaultNodeServer) NodeGetId(ctx context.Context, req *csi.NodeGetIdRequest) (*csi.NodeGetIdResponse, error) {
-	glog.V(5).Infof("Using default NodeGetId")
-
-	return &csi.NodeGetIdResponse{
-		NodeId: ns.Driver.NodeID,
-	}, nil
-}
-
 func (ns *DefaultNodeServer) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoRequest) (*csi.NodeGetInfoResponse, error) {
 	glog.V(5).Infof("Using default NodeGetInfo")
 
