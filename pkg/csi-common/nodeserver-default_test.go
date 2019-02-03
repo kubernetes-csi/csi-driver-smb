@@ -20,21 +20,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/container-storage-interface/spec/lib/go/csi/v0"
+	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/stretchr/testify/assert"
 )
-
-func TestNodeGetId(t *testing.T) {
-	d := NewFakeDriver()
-
-	ns := NewDefaultNodeServer(d)
-
-	// Test valid request
-	req := csi.NodeGetIdRequest{}
-	resp, err := ns.NodeGetId(context.Background(), &req)
-	assert.NoError(t, err)
-	assert.Equal(t, resp.GetNodeId(), fakeNodeID)
-}
 
 func TestNodeGetInfo(t *testing.T) {
 	d := NewFakeDriver()

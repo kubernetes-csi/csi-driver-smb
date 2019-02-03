@@ -24,13 +24,13 @@ import (
 	"k8s.io/kubernetes/pkg/util/mount"
 
 	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
-	"github.com/container-storage-interface/spec/lib/go/csi/v0"
+	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
 )
 
 const (
 	driverName       = "file.csi.azure.com"
-	vendorVersion    = "v0.1.0-alpha"
+	vendorVersion    = "v0.2.0-alpha"
 	seperator        = "#"
 	volumeIDTemplate = "%s#%s#%s"
 	fileMode         = "file_mode"

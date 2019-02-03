@@ -17,21 +17,13 @@ limitations under the License.
 package csicommon
 
 import (
-	"github.com/container-storage-interface/spec/lib/go/csi/v0"
+	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
 	"golang.org/x/net/context"
 )
 
 type DefaultNodeServer struct {
 	Driver *CSIDriver
-}
-
-func (ns *DefaultNodeServer) NodeGetId(ctx context.Context, req *csi.NodeGetIdRequest) (*csi.NodeGetIdResponse, error) {
-	glog.V(5).Infof("Using default NodeGetId")
-
-	return &csi.NodeGetIdResponse{
-		NodeId: ns.Driver.NodeID,
-	}, nil
 }
 
 func (ns *DefaultNodeServer) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoRequest) (*csi.NodeGetInfoResponse, error) {
