@@ -18,7 +18,7 @@ set -euo pipefail
 
 endpoint="tcp://127.0.0.1:10000"
 # run CSI driver as a background service
-export set AZURE_CREDENTIAL_FILE=test/e2e/azure.json
+export set AZURE_CREDENTIAL_FILE=test/integration/azure.json
 
 sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
 sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
