@@ -20,11 +20,13 @@ endpoint="tcp://127.0.0.1:10000"
 # run CSI driver as a background service
 export set AZURE_CREDENTIAL_FILE=test/integration/azure.json
 
-sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
-sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
-sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
-sed -i "s/aadClientSecret-input/$aadClientSecret/g" $AZURE_CREDENTIAL_FILE
-sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
+if [ ! -z $aadClientSecret ]; then
+	sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/aadClientSecret-input/$aadClientSecret/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
+fi
 
 _output/azurefileplugin --endpoint $endpoint --nodeid CSINode -v=5 &
 sleep 3
