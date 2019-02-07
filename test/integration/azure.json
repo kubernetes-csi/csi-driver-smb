@@ -24,7 +24,7 @@
     "cloudProviderRateLimitBucket": 10,
     "useManagedIdentityExtension": false,
     "userAssignedIdentityID": "",
-    "useInstanceMetadata": true,
+    "useInstanceMetadata": false,
     "loadBalancerSku": "Basic",
     "excludeMasterFromStandardLB": false,
     "providerVaultName": "",
