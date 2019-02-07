@@ -19,13 +19,18 @@ set -euo pipefail
 csc=$GOPATH/bin/csc
 
 endpoint="tcp://127.0.0.1:10000"
-if [ $# -eq 1 ]; then
+if [ $# -gt 0 ]; then
 	endpoint=$1
+fi
+
+target_path="/tmp/testmount"
+if [ $# -gt 1 ]; then
+	target_path=$2
 fi
 
 # run CSI driver as a background service
 _output/azurefileplugin --endpoint $endpoint --nodeid CSINode -v=5 &
-sleep 3
+sleep 10
 
 # begin to run CSI functions one by one
 if [ ! -z $aadClientSecret ]; then
@@ -41,7 +46,7 @@ if [ ! -z $aadClientSecret ]; then
 	echo "got volume id: $volumeid"
 
 	echo "mount volume test:"
-	$csc node publish --endpoint $endpoint --cap 1,block --target-path ~/testmount $volumeid
+	$csc node publish --endpoint $endpoint --cap 1,block --target-path $target_path $volumeid
 	retcode=$?
 	if [ $retcode -gt 0 ]; then
 		exit $retcode
@@ -49,7 +54,7 @@ if [ ! -z $aadClientSecret ]; then
 	sleep 2
 
 	echo "unmount volume test:"
-	$csc node unpublish --endpoint $endpoint --target-path ~/testmount $volumeid
+	$csc node unpublish --endpoint $endpoint --target-path $target_path $volumeid
 	retcode=$?
 	if [ $retcode -gt 0 ]; then
 		exit $retcode

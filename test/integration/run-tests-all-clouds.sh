@@ -29,11 +29,12 @@ if [ ! -z $aadClientSecret ]; then
 	sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
 fi
 
-sudo test/integration/run-test.sh "tcp://127.0.0.1:10000"
+test/integration/run-test.sh "tcp://127.0.0.1:10000" "/tmp/testmount1"
 
 # run test on AzureChinaCloud
-cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
 if [ ! -z $aadClientSecret_china ]; then
+	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
+
 	sed -i "s/AzurePublicCloud/AzureChinaCloud/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/tenantId-input/${tenantId_china}/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/subscriptionId-input/${subscriptionId_china}/g" $AZURE_CREDENTIAL_FILE
@@ -41,6 +42,6 @@ if [ ! -z $aadClientSecret_china ]; then
 	sed -i "s#aadClientSecret-input#${aadClientSecret_china}#g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/resourceGroup-input/${resourceGroup_china}/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/location-input/${location_china}/g" $AZURE_CREDENTIAL_FILE
-fi
 
-sudo test/integration/run-test.sh "tcp://127.0.0.1:10001"
+	test/integration/run-test.sh "tcp://127.0.0.1:10001" "/tmp/testmount2"
+fi
