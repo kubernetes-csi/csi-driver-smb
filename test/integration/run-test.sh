@@ -16,7 +16,6 @@
 
 set -euo pipefail
 
-endpoint="tcp://127.0.0.1:10000"
 csc=$GOPATH/bin/csc
 
 # run CSI driver as a background service
