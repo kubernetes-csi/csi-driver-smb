@@ -18,6 +18,11 @@ set -euo pipefail
 
 csc=$GOPATH/bin/csc
 
+endpoint="tcp://127.0.0.1:10000"
+if [ $# -eq 1 ]; then
+	endpoint=$1
+fi
+
 # run CSI driver as a background service
 _output/azurefileplugin --endpoint $endpoint --nodeid CSINode -v=5 &
 sleep 3

@@ -29,8 +29,7 @@ if [ ! -z $aadClientSecret ]; then
 	sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
 fi
 
-export set endpoint="tcp://127.0.0.1:10000"
-sudo test/integration/run-test.sh
+sudo test/integration/run-test.sh "tcp://127.0.0.1:10000"
 
 # run test on AzureChinaCloud
 cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
@@ -44,5 +43,4 @@ if [ ! -z $aadClientSecret_china ]; then
 	sed -i "s/location-input/${location_china}/g" $AZURE_CREDENTIAL_FILE
 fi
 
-export set endpoint="tcp://127.0.0.1:10001"
-sudo test/integration/run-test.sh
+sudo test/integration/run-test.sh "tcp://127.0.0.1:10001"
