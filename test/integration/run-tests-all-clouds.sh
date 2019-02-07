@@ -16,15 +16,29 @@
 
 set -euo pipefail
 
-cp test/integration/azure.json /tmp/azure.json
 export set AZURE_CREDENTIAL_FILE=/tmp/azure.json
 
+# run test on AzurePublicCloud
+cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
 if [ ! -z $aadClientSecret ]; then
 	sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/aadClientSecret-input/$aadClientSecret/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
+fi
+
+sudo test/integration/run-test.sh
+
+# run test on AzureChinaCloud
+cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
+if [ ! -z $aadClientSecret ]; then
+	sed -i "s/AzurePublicCloud/AzureChinaCloud/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/tenantId-input/$tenantId_china/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/subscriptionId-input/$subscriptionId_china/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/aadClientId-input/$aadClientId_china/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/aadClientSecret-input/$aadClientSecret_china/g" $AZURE_CREDENTIAL_FILE
+	sed -i "s/resourceGroup-input/$resourceGroup_china/g" $AZURE_CREDENTIAL_FILE
 fi
 
 sudo test/integration/run-test.sh
