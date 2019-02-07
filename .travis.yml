@@ -18,6 +18,6 @@ script:
   - make azurefile
   - go test -covermode=count -coverprofile=profile.cov ./pkg/...
   - $GOPATH/bin/goveralls -coverprofile=profile.cov -service=travis-ci
-  - test/integration/run-test.sh
+  - sudo test/integration/run-test.sh
   - make azurefile-windows
   - make azurefile-container
