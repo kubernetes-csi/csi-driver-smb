@@ -17,6 +17,8 @@
 set -euo pipefail
 
 endpoint="tcp://127.0.0.1:10000"
+csc=$GOPATH/bin/csc
+
 # run CSI driver as a background service
 export set AZURE_CREDENTIAL_FILE=test/integration/azure.json
 
@@ -32,19 +34,40 @@ _output/azurefileplugin --endpoint $endpoint --nodeid CSINode -v=5 &
 sleep 3
 
 # begin to run CSI functions one by one
-$GOPATH/bin/csc identity plugin-info --endpoint $endpoint
+if [ ! -z $aadClientSecret ]; then
+	echo "create volume test:"
+	value=`$csc controller new --endpoint $endpoint --cap 1,block CSIVolumeName --req-bytes 2147483648 --params skuname=Standard_LRS`
+	retcode=$?
+	if [ $retcode -gt 0 ]; then
+		exit $retcode
+	fi
+	sleep 15
+
+	volumeid=`echo $value | awk '{print $1}' | sed 's/"//g'`
+	echo "got volume id: $volumeid"
+
+	echo "delete volume test:"
+	$csc controller del --endpoint $endpoint $volumeid
+	retcode=$?
+	if [ $retcode -gt 0 ]; then
+		exit $retcode
+	fi
+	sleep 15
+fi
+
+$csc identity plugin-info --endpoint $endpoint
 retcode=$?
 if [ $retcode -gt 0 ]; then
 	exit $retcode
 fi
 
-$GOPATH/bin/csc controller validate-volume-capabilities --endpoint $endpoint --cap 1,block CSIVolumeID
+$csc controller validate-volume-capabilities --endpoint $endpoint --cap 1,block CSIVolumeID
 retcode=$?
 if [ $retcode -gt 0 ]; then
 	exit $retcode
 fi
 
-$GOPATH/bin/csc node get-info --endpoint $endpoint
+$csc node get-info --endpoint $endpoint
 retcode=$?
 if [ $retcode -gt 0 ]; then
 	exit $retcode
