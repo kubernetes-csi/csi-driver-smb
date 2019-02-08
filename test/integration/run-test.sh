@@ -28,6 +28,11 @@ if [ $# -gt 1 ]; then
 	target_path=$2
 fi
 
+cloud="AzurePublicCloud"
+if [ $# -gt 2 ]; then
+        cloud=$3
+fi
+
 # run CSI driver as a background service
 _output/azurefileplugin --endpoint $endpoint --nodeid CSINode -v=5 &
 sleep 10
@@ -45,21 +50,24 @@ if [ ! -z $aadClientSecret ]; then
 	volumeid=`echo $value | awk '{print $1}' | sed 's/"//g'`
 	echo "got volume id: $volumeid"
 
-	echo "mount volume test:"
-	$csc node publish --endpoint $endpoint --cap 1,block --target-path $target_path $volumeid
-	retcode=$?
-	if [ $retcode -gt 0 ]; then
-		exit $retcode
-	fi
-	sleep 2
+	if [ "$cloud" != "AzureChinaCloud" ]; then
+		# azure file mount/unmount on travis VM does not work against AzureChinaCloud
+		echo "mount volume test:"
+		$csc node publish --endpoint $endpoint --cap 1,block --target-path $target_path $volumeid
+		retcode=$?
+		if [ $retcode -gt 0 ]; then
+			exit $retcode
+		fi
+		sleep 2
 
-	echo "unmount volume test:"
-	$csc node unpublish --endpoint $endpoint --target-path $target_path $volumeid
-	retcode=$?
-	if [ $retcode -gt 0 ]; then
-		exit $retcode
+		echo "unmount volume test:"
+		$csc node unpublish --endpoint $endpoint --target-path $target_path $volumeid
+		retcode=$?
+		if [ $retcode -gt 0 ]; then
+			exit $retcode
+		fi
+		sleep 2
 	fi
-	sleep 2
 
 	echo "delete volume test:"
 	$csc controller del --endpoint $endpoint $volumeid
