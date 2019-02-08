@@ -33,6 +33,7 @@ if [ $# -gt 2 ]; then
         cloud=$3
 fi
 
+echo "being to run integration test on $cloud ..."
 # run CSI driver as a background service
 _output/azurefileplugin --endpoint $endpoint --nodeid CSINode -v=5 &
 sleep 10
@@ -95,3 +96,5 @@ retcode=$?
 if [ $retcode -gt 0 ]; then
 	exit $retcode
 fi
+
+echo "integration test on $cloud is completed."
