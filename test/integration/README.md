@@ -3,7 +3,7 @@ Integration test verifies the functionality of CSI driver as a standalone server
 
 ## Run Integration Tests Locally
 ### Prerequisite
- - make sure `GOPATH` is set and [`csc` tool](https://github.com/rexray/gocsi/tree/master/csc) is installed under `$GOPATH/bin/csc`
+ - make sure `GOPATH` is set and [csc](https://github.com/rexray/gocsi/tree/master/csc) tool is installed under `$GOPATH/bin/csc`
 ```
 export set GOPATH=/root/go
 go get github.com/rexray/gocsi/csc
@@ -18,7 +18,6 @@ export set aadClientId=
 export set aadClientSecret=
 export set resourceGroup=
 export set location=
-export set nodeid=
 ```
 
 ### Run integration tests
