@@ -18,6 +18,7 @@ export set aadClientId=
 export set aadClientSecret=
 export set resourceGroup=
 export set location=
+export set nodeid=
 ```
 
 ### Run integration tests
