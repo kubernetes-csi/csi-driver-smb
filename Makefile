@@ -24,8 +24,10 @@ REV=$(shell git describe --long --tags --dirty)
 all: azurefile
 
 test:
-	go test github.com/andyzhangx/azurefile-csi-driver/pkg/... -cover
-	go vet github.com/andyzhangx/azurefile-csi-driver/pkg/...
+	go test -covermode=count -coverprofile=profile.cov ./pkg/...
+	$GOPATH/bin/goveralls -coverprofile=profile.cov -service=travis-ci
+integration-test:
+	sudo test/integration/run-tests-all-clouds.sh
 azurefile:
 	if [ ! -d ./vendor ]; then dep ensure -vendor-only; fi
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-X github.com/andyzhangx/azurefile-csi-driver/pkg/azurefile.vendorVersion=$(IMAGE_VERSION) -extldflags "-static"' -o _output/azurefileplugin ./pkg/azurefileplugin
