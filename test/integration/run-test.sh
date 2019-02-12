@@ -39,7 +39,7 @@ _output/azurefileplugin --endpoint $endpoint --nodeid CSINode -v=5 &
 sleep 10
 
 # begin to run CSI functions one by one
-if [ ! -z $aadClientSecret ]; then
+if [ -v aadClientSecret ]; then
 	echo "create volume test:"
 	value=`$csc controller new --endpoint $endpoint --cap 1,block CSIVolumeName --req-bytes 2147483648 --params skuname=Standard_LRS`
 	retcode=$?
