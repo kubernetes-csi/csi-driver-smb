@@ -20,7 +20,7 @@ export set AZURE_CREDENTIAL_FILE=/tmp/azure.json
 
 # run test on AzurePublicCloud
 cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
-if [ ! -z $aadClientSecret ]; then
+if [ -v aadClientSecret ]; then
 	sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
@@ -32,7 +32,7 @@ fi
 test/integration/run-test.sh "tcp://127.0.0.1:10000" "/tmp/testmount1" "AzurePublicCloud"
 
 # run test on AzureChinaCloud
-if [ ! -z $aadClientSecret_china ]; then
+if [ -v aadClientSecret_china ]; then
 	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
 
 	sed -i "s/AzurePublicCloud/AzureChinaCloud/g" $AZURE_CREDENTIAL_FILE
