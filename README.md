@@ -11,23 +11,25 @@ This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-
 ### Project Status
 Status: Aplha
 
-### Container Images:
-`mcr.microsoft.com/k8s/csi/azurefile-csi:v0.1.0-alpha`
+### Container Images & CSI Compatibility:
+|Azure File CSI Driver Version  | Image                                              | v0.3.0| v1.0.0 |
+|-------------------------------|----------------------------------------------------|-------|--------|
+|v0.1.0-alpha                   |mcr.microsoft.com/k8s/csi/azurefile-csi:v0.1.0-alpha| yes   | no     |
+|v0.2.0-alpha                   |mcr.microsoft.com/k8s/csi/azurefile-csi:v0.2.0-alpha| no    | yes    |
+|master branch                  |mcr.microsoft.com/k8s/csi/azurefile-csi:latest      | no    | yes    |
+
+### Kubernetes Compatibility
+| Azure File CSI Driver\Kubernetes Version | 1.12 | 1.13+ | 
+|------------------------------------------|------|-------|
+| v0.1.0-alpha                             | yes  | yes    |
+| v0.2.0-alpha                             | no   | yes    |
+| master branch                            | no   | yes    |
 
 ### Driver parameters
 Please refer to [`file.csi.azure.com` driver parameters](./docs/driver-parameters.md)
  > storage class `file.csi.azure.com` parameters are compatible with built-in [azurefile](https://kubernetes.io/docs/concepts/storage/volumes/#azurefile) plugin
 
-## Kubernetes User Guide
- - supported Kubernetes version: v1.12.0 or later version
- - supported agent OS: Linux
 ### Prerequisite
- - To ensure that all necessary features are enabled, set the following feature gate flags to true:
-```
---feature-gates=CSIPersistentVolume=true,MountPropagation=true,VolumeSnapshotDataSource=true,KubeletPluginsWatcher=true,CSINodeInfo=true,CSIDriverRegistry=true
-```
-`VolumeSnapshotDataSource` is a new alpha feature in v1.12. `KubeletPluginsWatcher` is enabled by default in v1.12. `CSINodeInfo` and `CSIDriverRegistry` are new alpha features in v1.12.
-
  - The driver initialization depends on a [Cloud provider config file](https://github.com/kubernetes/cloud-provider-azure/blob/master/docs/cloud-provider-config.md), usually it's `/etc/kubernetes/azure.json` on all k8s nodes deployed by AKS or aks-engine, here is an [azure.json example](./deploy/example/azure.json)
 
 ### Install azurefile CSI driver on a kubernetes cluster
