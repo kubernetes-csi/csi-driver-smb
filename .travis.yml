@@ -20,4 +20,3 @@ script:
   - make azurefile
   - make integration-test
   - make azurefile-windows
-  - make azurefile-container
