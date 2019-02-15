@@ -11,7 +11,7 @@ go:
 before_install:
   - go get github.com/mattn/goveralls
   - go get github.com/rexray/gocsi/csc
-  - sudo apt update && sudo apt install cifs-utils -y
+  - sudo apt update && sudo apt install cifs-utils procps -y
 
 script:
   - hack/verify-all.sh
