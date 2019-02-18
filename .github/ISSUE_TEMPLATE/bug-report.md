@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Create a report to help us improve CSI Driver
+about: Create a report to help us improve this project
 
 ---
 
