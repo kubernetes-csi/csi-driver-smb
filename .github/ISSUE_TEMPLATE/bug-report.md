@@ -17,7 +17,9 @@ about: Create a report to help us improve CSI Driver
 **Anything else we need to know?**:
 
 **Environment**:
-- Azure Disk CSI Driver version
+- CSI Driver version:
 - Kubernetes version (use `kubectl version`):
+- OS (e.g. from /etc/os-release):
+- Kernel (e.g. `uname -a`):
+- Install tools:
 - Others:
-
