@@ -23,8 +23,8 @@ import (
 	"k8s.io/kubernetes/pkg/cloudprovider/providers/azure"
 	"k8s.io/kubernetes/pkg/util/mount"
 
-	"github.com/andyzhangx/azurefile-csi-driver/pkg/csi-common"
 	"github.com/container-storage-interface/spec/lib/go/csi"
+	"github.com/csi-driver/azurefile-csi-driver/pkg/csi-common"
 	"github.com/golang/glog"
 )
 

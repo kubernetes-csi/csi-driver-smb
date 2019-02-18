@@ -1,5 +1,5 @@
 language: go
-go_import_path: github.com/andyzhangx/azurefile-csi-driver
+go_import_path: github.com/csi-driver/azurefile-csi-driver
 
 env:
   global:

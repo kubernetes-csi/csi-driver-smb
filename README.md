@@ -1,7 +1,7 @@
 # azurefile CSI driver for Kubernetes
-![TravisCI](https://travis-ci.com/andyzhangx/azurefile-csi-driver.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/andyzhangx/azurefile-csi-driver/badge.svg?branch=master)](https://coveralls.io/github/andyzhangx/azurefile-csi-driver?branch=master)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fandyzhangx%2Fazurefile-csi-driver.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fandyzhangx%2Fazurefile-csi-driver?ref=badge_shield)
+![TravisCI](https://travis-ci.com/csi-driver/azurefile-csi-driver.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/csi-driver/azurefile-csi-driver/badge.svg?branch=master)](https://coveralls.io/github/csi-driver/azurefile-csi-driver?branch=master)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcsi-driver%2Fazurefile-csi-driver.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcsi-driver%2Fazurefile-csi-driver?ref=badge_shield)
 
 **WARNING**: This driver is in ALPHA currently. Do NOT use this driver in a production environment in its current state.
 
@@ -33,19 +33,19 @@ Please refer to [`file.csi.azure.com` driver parameters](./docs/driver-parameter
  - The driver initialization depends on a [Cloud provider config file](https://github.com/kubernetes/cloud-provider-azure/blob/master/docs/cloud-provider-config.md), usually it's `/etc/kubernetes/azure.json` on all k8s nodes deployed by AKS or aks-engine, here is an [azure.json example](./deploy/example/azure.json)
 
 ### Install azurefile CSI driver on a kubernetes cluster
-Please refer to [install azurefile csi driver](https://github.com/andyzhangx/azurefile-csi-driver/blob/master/docs/install-azurefile-csi-driver.md)
+Please refer to [install azurefile csi driver](https://github.com/csi-driver/azurefile-csi-driver/blob/master/docs/install-azurefile-csi-driver.md)
 
 ### E2E Usage example
 #### 1. create a pod with csi azurefile driver mount on linux
 ##### Option#1: Azurefile Dynamic Provisioning
  - Create an azurefile CSI storage class
 ```
-kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/storageclass-azurefile-csi.yaml
+kubectl create -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/example/storageclass-azurefile-csi.yaml
 ```
 
  - Create an azurefile CSI PVC
 ```
-kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
+kubectl create -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
 ```
 
 ##### Option#2: Azurefile Static Provisioning(use an existing azure file share)
@@ -56,14 +56,14 @@ kubectl create secret generic azure-secret --from-literal accountname=NAME --fro
 
  - Create an azurefile CSI PV, download `pv-azurefile-csi.yaml` file and edit `sharename` in `volumeAttributes`
 ```
-wget https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/pv-azurefile-csi.yaml
+wget https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/example/pv-azurefile-csi.yaml
 vi pv-azurefile-csi.yaml
 kubectl create -f pv-azurefile-csi.yaml
 ```
 
  - Create an azurefile CSI PVC which would be bound to the above PV
 ```
-kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi-static.yaml
+kubectl create -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi-static.yaml
 ```
 
 #### 2. validate PVC status and create an nginx pod
@@ -74,7 +74,7 @@ watch kubectl describe pvc pvc-azurefile
 
  - create a pod with azurefile CSI PVC
 ```
-kubectl create -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/example/nginx-pod-azurefile.yaml
+kubectl create -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/example/nginx-pod-azurefile.yaml
 ```
 
 #### 3. enter the pod container to do validation

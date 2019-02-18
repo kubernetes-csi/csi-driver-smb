@@ -1,14 +1,14 @@
 # Install azurefile CSI driver on a kubernetes cluster
 ```
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml --validate=false
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml --validate=false
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-attacher.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-driver-registrar.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-provisioner.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/rbac-csi-snapshotter.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/csi-azurefile-provisioner.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/csi-azurefile-attacher.yaml
-kubectl apply -f https://raw.githubusercontent.com/andyzhangx/azurefile-csi-driver/master/deploy/azurefile-csi-driver.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml --validate=false
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml --validate=false
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/rbac-csi-attacher.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/rbac-csi-driver-registrar.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/rbac-csi-provisioner.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/rbac-csi-snapshotter.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/csi-azurefile-provisioner.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/csi-azurefile-attacher.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/azurefile-csi-driver/master/deploy/azurefile-csi-driver.yaml
 ```
 
  - check pods status:

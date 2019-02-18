@@ -20,7 +20,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/andyzhangx/azurefile-csi-driver/pkg/azurefile"
+	"github.com/csi-driver/azurefile-csi-driver/pkg/azurefile"
 	"github.com/golang/glog"
 )
 
