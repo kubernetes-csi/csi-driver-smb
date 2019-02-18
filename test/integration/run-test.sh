@@ -37,7 +37,7 @@ echo "being to run integration test on $cloud ..."
 # run CSI driver as a background service
 _output/azurefileplugin --endpoint $endpoint --nodeid CSINode -v=5 &
 if [ $cloud = "AzureChinaCloud" ]; then
-	sleep 20
+	sleep 25
 else
 	sleep 5
 fi
