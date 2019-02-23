@@ -1,0 +1,15 @@
+language: go
+sudo: required
+services:
+  - docker
+matrix:
+  include:
+  - go: 1.10.3
+script:
+- make test
+after_success:
+  - if [ "${TRAVIS_BRANCH}" == "master" ] && [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+      make container;
+      docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}" quay.io;
+      make push;
+    fi
