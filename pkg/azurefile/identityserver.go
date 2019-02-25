@@ -24,6 +24,7 @@ import (
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
 // GetPluginInfo return the version and name of the plugin
@@ -49,7 +50,7 @@ func (f *Driver) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoReques
 // Currently the spec does not dictate what you should return either.
 // Hence, return an empty response
 func (f *Driver) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeResponse, error) {
-	return &csi.ProbeResponse{}, nil
+	return &csi.ProbeResponse{Ready: &wrappers.BoolValue{Value: true}}, nil
 }
 
 // GetPluginCapabilities returns the capabilities of the plugin
