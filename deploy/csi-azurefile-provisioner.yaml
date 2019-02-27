@@ -1,13 +1,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: csi-azurefile-provisioner 
+  name: csi-azurefile-provisioner
   namespace: kube-system
   labels:
-    app: csi-azurefile-provisioner 
+    app: csi-azurefile-provisioner
 spec:
   selector:
-    app: csi-azurefile-provisioner 
+    app: csi-azurefile-provisioner
   ports:
     - name: dummy
       port: 12345
