@@ -434,7 +434,7 @@ func TestCreatePutTracker202SuccessLocation(t *testing.T) {
 	if pt.pollingMethod() != PollingLocation {
 		t.Fatalf("wrong polling method: %s", pt.pollingMethod())
 	}
-	if pt.finalGetURL() != mocks.TestLocationURL {
+	if pt.finalGetURL() != resp.Request.URL.String() {
 		t.Fatalf("wrong final GET URL: %s", pt.finalGetURL())
 	}
 }
@@ -450,7 +450,7 @@ func TestCreatePutTracker202SuccessBoth(t *testing.T) {
 	if pt.pollingMethod() != PollingAsyncOperation {
 		t.Fatalf("wrong polling method: %s", pt.pollingMethod())
 	}
-	if pt.finalGetURL() != mocks.TestLocationURL {
+	if pt.finalGetURL() != resp.Request.URL.String() {
 		t.Fatalf("wrong final GET URL: %s", pt.finalGetURL())
 	}
 }

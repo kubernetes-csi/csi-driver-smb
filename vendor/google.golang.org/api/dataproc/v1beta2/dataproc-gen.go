@@ -2358,6 +2358,8 @@ type SoftwareConfig struct {
 	// accessing HCatalog).
 	//   "ZEPPELIN" - The Zeppelin notebook.
 	//   "ANACONDA" - The Anaconda python distribution.
+	//   "PRESTO" - The Presto query engine.
+	//   "KERBEROS" - The Kerberos security feature.
 	OptionalComponents []string `json:"optionalComponents,omitempty"`
 
 	// Properties: Optional. The properties to set on daemon config
@@ -2895,8 +2897,11 @@ func (s *WorkflowGraph) MarshalJSON() ([]byte, error) {
 
 // WorkflowMetadata: A Cloud Dataproc workflow template resource.
 type WorkflowMetadata struct {
-	// ClusterName: Output only. The name of the managed cluster.
+	// ClusterName: Output only. The name of the target cluster.
 	ClusterName string `json:"clusterName,omitempty"`
+
+	// ClusterUuid: Output only. The UUID of target cluster.
+	ClusterUuid string `json:"clusterUuid,omitempty"`
 
 	// CreateCluster: Output only. The create cluster operation metadata.
 	CreateCluster *ClusterOperation `json:"createCluster,omitempty"`
@@ -3014,7 +3019,7 @@ type WorkflowTemplate struct {
 	// Id: Required. The template id.The id must contain only letters (a-z,
 	// A-Z), numbers (0-9), underscores (_), and hyphens (-). Cannot begin
 	// or end with underscore or hyphen. Must consist of between 3 and 50
-	// characters.
+	// characters..
 	Id string `json:"id,omitempty"`
 
 	// Jobs: Required. The Directed Acyclic Graph of Jobs to submit.

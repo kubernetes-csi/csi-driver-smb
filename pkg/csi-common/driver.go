@@ -18,7 +18,7 @@ package csicommon
 
 import (
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/golang/glog"
+	"k8s.io/klog"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -37,17 +37,17 @@ type CSIDriver struct {
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
 func NewCSIDriver(name string, v string, nodeID string) *CSIDriver {
 	if name == "" {
-		glog.Errorf("Driver name missing")
+		klog.Errorf("Driver name missing")
 		return nil
 	}
 
 	if nodeID == "" {
-		glog.Errorf("NodeID missing")
+		klog.Errorf("NodeID missing")
 		return nil
 	}
 	// TODO version format and validation
 	if len(v) == 0 {
-		glog.Errorf("Version argument missing, now skip it")
+		klog.Errorf("Version argument missing, now skip it")
 		//return nil
 	}
 
@@ -77,7 +77,7 @@ func (d *CSIDriver) AddControllerServiceCapabilities(cl []csi.ControllerServiceC
 	var csc []*csi.ControllerServiceCapability
 
 	for _, c := range cl {
-		glog.Infof("Enabling controller service capability: %v", c.String())
+		klog.Infof("Enabling controller service capability: %v", c.String())
 		csc = append(csc, NewControllerServiceCapability(c))
 	}
 
@@ -87,7 +87,7 @@ func (d *CSIDriver) AddControllerServiceCapabilities(cl []csi.ControllerServiceC
 func (d *CSIDriver) AddNodeServiceCapabilities(nl []csi.NodeServiceCapability_RPC_Type) {
 	var nsc []*csi.NodeServiceCapability
 	for _, n := range nl {
-		glog.V(2).Infof("Enabling node service capability: %v", n.String())
+		klog.V(2).Infof("Enabling node service capability: %v", n.String())
 		nsc = append(nsc, NewNodeServiceCapability(n))
 	}
 	d.NSCap = nsc
@@ -96,7 +96,7 @@ func (d *CSIDriver) AddNodeServiceCapabilities(nl []csi.NodeServiceCapability_RP
 func (d *CSIDriver) AddVolumeCapabilityAccessModes(vc []csi.VolumeCapability_AccessMode_Mode) []*csi.VolumeCapability_AccessMode {
 	var vca []*csi.VolumeCapability_AccessMode
 	for _, c := range vc {
-		glog.Infof("Enabling volume access mode: %v", c.String())
+		klog.Infof("Enabling volume access mode: %v", c.String())
 		vca = append(vca, NewVolumeCapabilityAccessMode(c))
 	}
 	d.VC = vca

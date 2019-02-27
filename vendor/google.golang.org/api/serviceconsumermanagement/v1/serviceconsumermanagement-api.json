@@ -387,7 +387,7 @@
               ]
             },
             "delete": {
-              "description": "Delete a tenancy unit.  Before the tenancy unit is deleted, there should be\nno tenant resources in it.\nOperation\u003cresponse: Empty\u003e.",
+              "description": "Delete a tenancy unit.  Before the tenancy unit is deleted, there should be\nno tenant resources in it not in DELETED state.\nOperation\u003cresponse: Empty\u003e.",
               "flatPath": "v1/services/{servicesId}/{servicesId1}/{servicesId2}/tenancyUnits/{tenancyUnitsId}",
               "httpMethod": "DELETE",
               "id": "serviceconsumermanagement.services.tenancyUnits.delete",
@@ -453,7 +453,7 @@
               ]
             },
             "removeProject": {
-              "description": "Removes specified project resource identified by tenant resource tag.\nIt will remove project lien with 'TenantManager' origin if that was added.\nIt will then attempt to delete the project.\nIf that operation fails, this method fails.\nOperation\u003cresponse: Empty\u003e.",
+              "description": "Removes specified project resource identified by tenant resource tag.\nIt will remove project lien with 'TenantManager' origin if that was added.\nIt will then attempt to delete the project. If that operation fails, this\nmethod fails.\nAfter the project has been deleted, or if was already in DELETED state,\nresource metadata is permanently removed from the tenancy unit.\nOperation\u003cresponse: Empty\u003e.",
               "flatPath": "v1/services/{servicesId}/{servicesId1}/{servicesId2}/tenancyUnits/{tenancyUnitsId}:removeProject",
               "httpMethod": "POST",
               "id": "serviceconsumermanagement.services.tenancyUnits.removeProject",
@@ -485,7 +485,7 @@
       }
     }
   },
-  "revision": "20181127",
+  "revision": "20181217",
   "rootUrl": "https://serviceconsumermanagement.googleapis.com/",
   "schemas": {
     "AddTenantProjectRequest": {
@@ -598,7 +598,7 @@
           "type": "string"
         },
         "authorizationUrl": {
-          "description": "Redirect URL if JWT token is required but no present or is expired.\nImplement authorizationUrl of securityDefinitions in OpenAPI spec.",
+          "description": "Redirect URL if JWT token is required but not present or is expired.\nImplement authorizationUrl of securityDefinitions in OpenAPI spec.",
           "type": "string"
         },
         "id": {
@@ -1606,14 +1606,14 @@
       "id": "Monitoring",
       "properties": {
         "consumerDestinations": {
-          "description": "Monitoring configurations for sending metrics to the consumer project.\nThere can be multiple consumer destinations, each one must have a\ndifferent monitored resource type. A metric can be used in at most\none consumer destination.",
+          "description": "Monitoring configurations for sending metrics to the consumer project.\nThere can be multiple consumer destinations. A monitored resouce type may\nappear in multiple monitoring destinations if different aggregations are\nneeded for different sets of metrics associated with that monitored\nresource type. A monitored resource and metric pair may only be used once\nin the Monitoring configuration.",
           "items": {
             "$ref": "MonitoringDestination"
           },
           "type": "array"
         },
         "producerDestinations": {
-          "description": "Monitoring configurations for sending metrics to the producer project.\nThere can be multiple producer destinations, each one must have a\ndifferent monitored resource type. A metric can be used in at most\none producer destination.",
+          "description": "Monitoring configurations for sending metrics to the producer project.\nThere can be multiple producer destinations. A monitored resouce type may\nappear in multiple monitoring destinations if different aggregations are\nneeded for different sets of metrics associated with that monitored\nresource type. A monitored resource and metric pair may only be used once\nin the Monitoring configuration.",
           "items": {
             "$ref": "MonitoringDestination"
           },
@@ -1627,7 +1627,7 @@
       "id": "MonitoringDestination",
       "properties": {
         "metrics": {
-          "description": "Names of the metrics to report to this monitoring destination.\nEach name must be defined in Service.metrics section.",
+          "description": "Types of the metrics to report to this monitoring destination.\nEach type must be defined in Service.metrics section.",
           "items": {
             "type": "string"
           },
@@ -2215,14 +2215,16 @@
             "PENDING_CREATE",
             "ACTIVE",
             "PENDING_DELETE",
-            "FAILED"
+            "FAILED",
+            "DELETED"
           ],
           "enumDescriptions": [
             "Unspecified status is the default unset value.",
             "Creation of the tenant resource is ongoing.",
             "Active resource.",
             "Deletion of the resource is ongoing.",
-            "Tenant resource creation or deletion has failed."
+            "Tenant resource creation or deletion has failed.",
+            "Tenant resource has been deleted."
           ],
           "type": "string"
         },

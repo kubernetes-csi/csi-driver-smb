@@ -22,6 +22,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"math/rand"
@@ -31,7 +32,6 @@ import (
 	"sync"
 	"time"
 
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
@@ -215,27 +215,27 @@ func performRPCs(gauge *gauge, conn *grpc.ClientConn, selector *weightedRandomTe
 		test := selector.getNextTest()
 		switch test {
 		case "empty_unary":
-			interop.DoEmptyUnaryCall(client, grpc.FailFast(false))
+			interop.DoEmptyUnaryCall(client, grpc.WaitForReady(true))
 		case "large_unary":
-			interop.DoLargeUnaryCall(client, grpc.FailFast(false))
+			interop.DoLargeUnaryCall(client, grpc.WaitForReady(true))
 		case "client_streaming":
-			interop.DoClientStreaming(client, grpc.FailFast(false))
+			interop.DoClientStreaming(client, grpc.WaitForReady(true))
 		case "server_streaming":
-			interop.DoServerStreaming(client, grpc.FailFast(false))
+			interop.DoServerStreaming(client, grpc.WaitForReady(true))
 		case "ping_pong":
-			interop.DoPingPong(client, grpc.FailFast(false))
+			interop.DoPingPong(client, grpc.WaitForReady(true))
 		case "empty_stream":
-			interop.DoEmptyStream(client, grpc.FailFast(false))
+			interop.DoEmptyStream(client, grpc.WaitForReady(true))
 		case "timeout_on_sleeping_server":
-			interop.DoTimeoutOnSleepingServer(client, grpc.FailFast(false))
+			interop.DoTimeoutOnSleepingServer(client, grpc.WaitForReady(true))
 		case "cancel_after_begin":
-			interop.DoCancelAfterBegin(client, grpc.FailFast(false))
+			interop.DoCancelAfterBegin(client, grpc.WaitForReady(true))
 		case "cancel_after_first_response":
-			interop.DoCancelAfterFirstResponse(client, grpc.FailFast(false))
+			interop.DoCancelAfterFirstResponse(client, grpc.WaitForReady(true))
 		case "status_code_and_message":
-			interop.DoStatusCodeAndMessage(client, grpc.FailFast(false))
+			interop.DoStatusCodeAndMessage(client, grpc.WaitForReady(true))
 		case "custom_metadata":
-			interop.DoCustomMetadata(client, grpc.FailFast(false))
+			interop.DoCustomMetadata(client, grpc.WaitForReady(true))
 		}
 		numCalls++
 		gauge.set(int64(float64(numCalls) / time.Since(startTime).Seconds()))
@@ -249,23 +249,23 @@ func performRPCs(gauge *gauge, conn *grpc.ClientConn, selector *weightedRandomTe
 }
 
 func logParameterInfo(addresses []string, tests []testCaseWithWeight) {
-	grpclog.Printf("server_addresses: %s", *serverAddresses)
-	grpclog.Printf("test_cases: %s", *testCases)
-	grpclog.Printf("test_duration_secs: %d", *testDurationSecs)
-	grpclog.Printf("num_channels_per_server: %d", *numChannelsPerServer)
-	grpclog.Printf("num_stubs_per_channel: %d", *numStubsPerChannel)
-	grpclog.Printf("metrics_port: %d", *metricsPort)
-	grpclog.Printf("use_tls: %t", *useTLS)
-	grpclog.Printf("use_test_ca: %t", *testCA)
-	grpclog.Printf("server_host_override: %s", *tlsServerName)
+	grpclog.Infof("server_addresses: %s", *serverAddresses)
+	grpclog.Infof("test_cases: %s", *testCases)
+	grpclog.Infof("test_duration_secs: %d", *testDurationSecs)
+	grpclog.Infof("num_channels_per_server: %d", *numChannelsPerServer)
+	grpclog.Infof("num_stubs_per_channel: %d", *numStubsPerChannel)
+	grpclog.Infof("metrics_port: %d", *metricsPort)
+	grpclog.Infof("use_tls: %t", *useTLS)
+	grpclog.Infof("use_test_ca: %t", *testCA)
+	grpclog.Infof("server_host_override: %s", *tlsServerName)
 
-	grpclog.Println("addresses:")
+	grpclog.Infoln("addresses:")
 	for i, addr := range addresses {
-		grpclog.Printf("%d. %s\n", i+1, addr)
+		grpclog.Infof("%d. %s\n", i+1, addr)
 	}
-	grpclog.Println("tests:")
+	grpclog.Infoln("tests:")
 	for i, test := range tests {
-		grpclog.Printf("%d. %v\n", i+1, test)
+		grpclog.Infof("%d. %v\n", i+1, test)
 	}
 }
 
@@ -332,6 +332,6 @@ func main() {
 		close(stop)
 	}
 	wg.Wait()
-	grpclog.Printf(" ===== ALL DONE ===== ")
+	grpclog.Infof(" ===== ALL DONE ===== ")
 
 }

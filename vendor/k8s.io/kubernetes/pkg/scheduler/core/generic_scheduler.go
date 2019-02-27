@@ -241,16 +241,19 @@ func (g *genericScheduler) selectHost(priorityList schedulerapi.HostPriorityList
 // returns 1) the node, 2) the list of preempted pods if such a node is found,
 // 3) A list of pods whose nominated node name should be cleared, and 4) any
 // possible error.
+// Preempt does not update its snapshot. It uses the same snapshot used in the
+// scheduling cycle. This is to avoid a scenario where preempt finds feasible
+// nodes without preempting any pod. When there are many pending pods in the
+// scheduling queue a nominated pod will go back to the queue and behind
+// other pods with the same priority. The nominated pod prevents other pods from
+// using the nominated resources and the nominated pod could take a long time
+// before it is retried after many other pending pods.
 func (g *genericScheduler) Preempt(pod *v1.Pod, nodeLister algorithm.NodeLister, scheduleErr error) (*v1.Node, []*v1.Pod, []*v1.Pod, error) {
 	// Scheduler may return various types of errors. Consider preemption only if
 	// the error is of type FitError.
 	fitError, ok := scheduleErr.(*FitError)
 	if !ok || fitError == nil {
 		return nil, nil, nil, nil
-	}
-	err := g.snapshot()
-	if err != nil {
-		return nil, nil, nil, err
 	}
 	if !podEligibleToPreemptOthers(pod, g.cachedNodeInfoMap) {
 		klog.V(5).Infof("Pod %v/%v is not eligible for more preemption.", pod.Namespace, pod.Name)
@@ -351,7 +354,7 @@ func (g *genericScheduler) processPreemptionWithExtenders(
 // worth the complexity, especially because we generally expect to have a very
 // small number of nominated pods per node.
 func (g *genericScheduler) getLowerPriorityNominatedPods(pod *v1.Pod, nodeName string) []*v1.Pod {
-	pods := g.schedulingQueue.WaitingPodsForNode(nodeName)
+	pods := g.schedulingQueue.NominatedPodsForNode(nodeName)
 
 	if len(pods) == 0 {
 		return nil
@@ -501,7 +504,7 @@ func addNominatedPods(pod *v1.Pod, meta algorithm.PredicateMetadata,
 		// This may happen only in tests.
 		return false, meta, nodeInfo
 	}
-	nominatedPods := queue.WaitingPodsForNode(nodeInfo.Node().Name)
+	nominatedPods := queue.NominatedPodsForNode(nodeInfo.Node().Name)
 	if nominatedPods == nil || len(nominatedPods) == 0 {
 		return false, meta, nodeInfo
 	}
@@ -655,24 +658,26 @@ func PrioritizeNodes(
 
 	// DEPRECATED: we can remove this when all priorityConfigs implement the
 	// Map-Reduce pattern.
-	workqueue.ParallelizeUntil(context.TODO(), 16, len(priorityConfigs), func(i int) {
-		priorityConfig := priorityConfigs[i]
-		if priorityConfig.Function == nil {
+	for i := range priorityConfigs {
+		if priorityConfigs[i].Function != nil {
+			wg.Add(1)
+			go func(index int) {
+				defer wg.Done()
+				var err error
+				results[index], err = priorityConfigs[index].Function(pod, nodeNameToInfo, nodes)
+				if err != nil {
+					appendError(err)
+				}
+			}(i)
+		} else {
 			results[i] = make(schedulerapi.HostPriorityList, len(nodes))
-			return
 		}
-
-		var err error
-		results[i], err = priorityConfig.Function(pod, nodeNameToInfo, nodes)
-		if err != nil {
-			appendError(err)
-		}
-	})
+	}
 
 	workqueue.ParallelizeUntil(context.TODO(), 16, len(nodes), func(index int) {
 		nodeInfo := nodeNameToInfo[nodes[index].Name]
-		for i, priorityConfig := range priorityConfigs {
-			if priorityConfig.Function != nil {
+		for i := range priorityConfigs {
+			if priorityConfigs[i].Function != nil {
 				continue
 			}
 
@@ -685,22 +690,22 @@ func PrioritizeNodes(
 		}
 	})
 
-	for i, priorityConfig := range priorityConfigs {
-		if priorityConfig.Reduce == nil {
+	for i := range priorityConfigs {
+		if priorityConfigs[i].Reduce == nil {
 			continue
 		}
 		wg.Add(1)
-		go func(index int, config algorithm.PriorityConfig) {
+		go func(index int) {
 			defer wg.Done()
-			if err := config.Reduce(pod, meta, nodeNameToInfo, results[index]); err != nil {
+			if err := priorityConfigs[index].Reduce(pod, meta, nodeNameToInfo, results[index]); err != nil {
 				appendError(err)
 			}
 			if klog.V(10) {
 				for _, hostPriority := range results[index] {
-					klog.Infof("%v -> %v: %v, Score: (%d)", util.GetPodFullName(pod), hostPriority.Host, config.Name, hostPriority.Score)
+					klog.Infof("%v -> %v: %v, Score: (%d)", util.GetPodFullName(pod), hostPriority.Host, priorityConfigs[index].Name, hostPriority.Score)
 				}
 			}
-		}(i, priorityConfig)
+		}(i)
 	}
 	// Wait for all computations to be finished.
 	wg.Wait()
@@ -720,14 +725,14 @@ func PrioritizeNodes(
 
 	if len(extenders) != 0 && nodes != nil {
 		combinedScores := make(map[string]int, len(nodeNameToInfo))
-		for _, extender := range extenders {
-			if !extender.IsInterested(pod) {
+		for i := range extenders {
+			if !extenders[i].IsInterested(pod) {
 				continue
 			}
 			wg.Add(1)
-			go func(ext algorithm.SchedulerExtender) {
+			go func(extIndex int) {
 				defer wg.Done()
-				prioritizedList, weight, err := ext.Prioritize(pod, nodes)
+				prioritizedList, weight, err := extenders[extIndex].Prioritize(pod, nodes)
 				if err != nil {
 					// Prioritization errors from extender can be ignored, let k8s/other extenders determine the priorities
 					return
@@ -736,12 +741,12 @@ func PrioritizeNodes(
 				for i := range *prioritizedList {
 					host, score := (*prioritizedList)[i].Host, (*prioritizedList)[i].Score
 					if klog.V(10) {
-						klog.Infof("%v -> %v: %v, Score: (%d)", util.GetPodFullName(pod), host, ext.Name(), score)
+						klog.Infof("%v -> %v: %v, Score: (%d)", util.GetPodFullName(pod), host, extenders[extIndex].Name(), score)
 					}
 					combinedScores[host] += score * weight
 				}
 				mu.Unlock()
-			}(extender)
+			}(i)
 		}
 		// wait for all go routines to finish
 		wg.Wait()
@@ -1056,7 +1061,7 @@ func nodesWherePreemptionMightHelp(nodes []*v1.Node, failedPredicatesMap FailedP
 	potentialNodes := []*v1.Node{}
 	for _, node := range nodes {
 		unresolvableReasonExist := false
-		failedPredicates, found := failedPredicatesMap[node.Name]
+		failedPredicates, _ := failedPredicatesMap[node.Name]
 		// If we assume that scheduler looks at all nodes and populates the failedPredicateMap
 		// (which is the case today), the !found case should never happen, but we'd prefer
 		// to rely less on such assumptions in the code when checking does not impose
@@ -1088,7 +1093,7 @@ func nodesWherePreemptionMightHelp(nodes []*v1.Node, failedPredicatesMap FailedP
 				break
 			}
 		}
-		if !found || !unresolvableReasonExist {
+		if !unresolvableReasonExist {
 			klog.V(3).Infof("Node %v is a potential node for preemption.", node.Name)
 			potentialNodes = append(potentialNodes, node)
 		}

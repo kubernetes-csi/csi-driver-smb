@@ -24,19 +24,22 @@ Package benchmark implements the building blocks to setup end-to-end gRPC benchm
 package benchmark
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"sync"
 	"testing"
 	"time"
 
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	testpb "google.golang.org/grpc/benchmark/grpc_testing"
 	"google.golang.org/grpc/benchmark/latency"
 	"google.golang.org/grpc/benchmark/stats"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/status"
 )
 
 // AddOne add 1 to the features slice
@@ -65,10 +68,10 @@ func setPayload(p *testpb.Payload, t testpb.PayloadType, size int) {
 	}
 	p.Type = t
 	p.Body = body
-	return
 }
 
-func newPayload(t testpb.PayloadType, size int) *testpb.Payload {
+// NewPayload creates a payload with the given type and size.
+func NewPayload(t testpb.PayloadType, size int) *testpb.Payload {
 	p := new(testpb.Payload)
 	setPayload(p, t, size)
 	return p
@@ -79,7 +82,7 @@ type testServer struct {
 
 func (s *testServer) UnaryCall(ctx context.Context, in *testpb.SimpleRequest) (*testpb.SimpleResponse, error) {
 	return &testpb.SimpleResponse{
-		Payload: newPayload(in.ResponseType, int(in.ResponseSize)),
+		Payload: NewPayload(in.ResponseType, int(in.ResponseSize)),
 	}, nil
 }
 
@@ -103,6 +106,52 @@ func (s *testServer) StreamingCall(stream testpb.BenchmarkService_StreamingCallS
 			return err
 		}
 	}
+}
+
+func (s *testServer) UnconstrainedStreamingCall(stream testpb.BenchmarkService_UnconstrainedStreamingCallServer) error {
+	in := new(testpb.SimpleRequest)
+	// Receive a message to learn response type and size.
+	err := stream.RecvMsg(in)
+	if err == io.EOF {
+		// read done.
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+
+	response := &testpb.SimpleResponse{
+		Payload: new(testpb.Payload),
+	}
+	setPayload(response.Payload, in.ResponseType, int(in.ResponseSize))
+
+	go func() {
+		for {
+			// Using RecvMsg rather than Recv to prevent reallocation of SimpleRequest.
+			err := stream.RecvMsg(in)
+			switch status.Code(err) {
+			case codes.Canceled:
+			case codes.OK:
+			default:
+				log.Fatalf("server recv error: %v", err)
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			err := stream.Send(response)
+			switch status.Code(err) {
+			case codes.Unavailable:
+			case codes.OK:
+			default:
+				log.Fatalf("server send error: %v", err)
+			}
+		}
+	}()
+
+	<-stream.Context().Done()
+	return stream.Context().Err()
 }
 
 // byteBufServer is a gRPC server that sends and receives byte buffer.
@@ -134,11 +183,25 @@ func (s *byteBufServer) StreamingCall(stream testpb.BenchmarkService_StreamingCa
 	}
 }
 
+func (s *byteBufServer) UnconstrainedStreamingCall(stream testpb.BenchmarkService_UnconstrainedStreamingCallServer) error {
+	for {
+		var in []byte
+		err := stream.(grpc.ServerStream).RecvMsg(&in)
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		out := make([]byte, s.respSize)
+		if err := stream.(grpc.ServerStream).SendMsg(&out); err != nil {
+			return err
+		}
+	}
+}
+
 // ServerInfo contains the information to create a gRPC benchmark server.
 type ServerInfo struct {
-	// Addr is the address of the server.
-	Addr string
-
 	// Type is the type of the server.
 	// It should be "protobuf" or "bytebuf".
 	Type string
@@ -148,21 +211,13 @@ type ServerInfo struct {
 	// For "bytebuf", it should be an int representing response size.
 	Metadata interface{}
 
-	// Network can simulate latency
-	Network *latency.Network
+	// Listener is the network listener for the server to use
+	Listener net.Listener
 }
 
 // StartServer starts a gRPC server serving a benchmark service according to info.
-// It returns its listen address and a function to stop the server.
-func StartServer(info ServerInfo, opts ...grpc.ServerOption) (string, func()) {
-	lis, err := net.Listen("tcp", info.Addr)
-	if err != nil {
-		grpclog.Fatalf("Failed to listen: %v", err)
-	}
-	nw := info.Network
-	if nw != nil {
-		lis = nw.Listener(lis)
-	}
+// It returns a function to stop the server.
+func StartServer(info ServerInfo, opts ...grpc.ServerOption) func() {
 	opts = append(opts, grpc.WriteBufferSize(128*1024))
 	opts = append(opts, grpc.ReadBufferSize(128*1024))
 	s := grpc.NewServer(opts...)
@@ -178,15 +233,15 @@ func StartServer(info ServerInfo, opts ...grpc.ServerOption) (string, func()) {
 	default:
 		grpclog.Fatalf("failed to StartServer, unknown Type: %v", info.Type)
 	}
-	go s.Serve(lis)
-	return lis.Addr().String(), func() {
+	go s.Serve(info.Listener)
+	return func() {
 		s.Stop()
 	}
 }
 
 // DoUnaryCall performs an unary RPC with given stub and request and response sizes.
 func DoUnaryCall(tc testpb.BenchmarkServiceClient, reqSize, respSize int) error {
-	pl := newPayload(testpb.PayloadType_COMPRESSABLE, reqSize)
+	pl := NewPayload(testpb.PayloadType_COMPRESSABLE, reqSize)
 	req := &testpb.SimpleRequest{
 		ResponseType: pl.Type,
 		ResponseSize: int32(respSize),
@@ -200,7 +255,7 @@ func DoUnaryCall(tc testpb.BenchmarkServiceClient, reqSize, respSize int) error 
 
 // DoStreamingRoundTrip performs a round trip for a single streaming rpc.
 func DoStreamingRoundTrip(stream testpb.BenchmarkService_StreamingCallClient, reqSize, respSize int) error {
-	pl := newPayload(testpb.PayloadType_COMPRESSABLE, reqSize)
+	pl := NewPayload(testpb.PayloadType_COMPRESSABLE, reqSize)
 	req := &testpb.SimpleRequest{
 		ResponseType: pl.Type,
 		ResponseSize: int32(respSize),
@@ -238,9 +293,14 @@ func DoByteBufStreamingRoundTrip(stream testpb.BenchmarkService_StreamingCallCli
 
 // NewClientConn creates a gRPC client connection to addr.
 func NewClientConn(addr string, opts ...grpc.DialOption) *grpc.ClientConn {
+	return NewClientConnWithContext(context.Background(), addr, opts...)
+}
+
+// NewClientConnWithContext creates a gRPC client connection to addr using ctx.
+func NewClientConnWithContext(ctx context.Context, addr string, opts ...grpc.DialOption) *grpc.ClientConn {
 	opts = append(opts, grpc.WithWriteBufferSize(128*1024))
 	opts = append(opts, grpc.WithReadBufferSize(128*1024))
-	conn, err := grpc.Dial(addr, opts...)
+	conn, err := grpc.DialContext(ctx, addr, opts...)
 	if err != nil {
 		grpclog.Fatalf("NewClientConn(%q) failed to create a ClientConn %v", addr, err)
 	}
@@ -250,12 +310,18 @@ func NewClientConn(addr string, opts ...grpc.DialOption) *grpc.ClientConn {
 func runUnary(b *testing.B, benchFeatures stats.Features) {
 	s := stats.AddStats(b, 38)
 	nw := &latency.Network{Kbps: benchFeatures.Kbps, Latency: benchFeatures.Latency, MTU: benchFeatures.Mtu}
-	target, stopper := StartServer(ServerInfo{Addr: "localhost:0", Type: "protobuf", Network: nw}, grpc.MaxConcurrentStreams(uint32(benchFeatures.MaxConcurrentCalls+1)))
+	lis, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		grpclog.Fatalf("Failed to listen: %v", err)
+	}
+	target := lis.Addr().String()
+	lis = nw.Listener(lis)
+	stopper := StartServer(ServerInfo{Type: "protobuf", Listener: lis}, grpc.MaxConcurrentStreams(uint32(benchFeatures.MaxConcurrentCalls+1)))
 	defer stopper()
 	conn := NewClientConn(
 		target, grpc.WithInsecure(),
-		grpc.WithDialer(func(address string, timeout time.Duration) (net.Conn, error) {
-			return nw.TimeoutDialer(net.DialTimeout)("tcp", address, timeout)
+		grpc.WithContextDialer(func(ctx context.Context, address string) (net.Conn, error) {
+			return nw.ContextDialer((&net.Dialer{}).DialContext)(ctx, "tcp", address)
 		}),
 	)
 	tc := testpb.NewBenchmarkServiceClient(conn)
@@ -298,12 +364,18 @@ func runUnary(b *testing.B, benchFeatures stats.Features) {
 func runStream(b *testing.B, benchFeatures stats.Features) {
 	s := stats.AddStats(b, 38)
 	nw := &latency.Network{Kbps: benchFeatures.Kbps, Latency: benchFeatures.Latency, MTU: benchFeatures.Mtu}
-	target, stopper := StartServer(ServerInfo{Addr: "localhost:0", Type: "protobuf", Network: nw}, grpc.MaxConcurrentStreams(uint32(benchFeatures.MaxConcurrentCalls+1)))
+	lis, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		grpclog.Fatalf("Failed to listen: %v", err)
+	}
+	target := lis.Addr().String()
+	lis = nw.Listener(lis)
+	stopper := StartServer(ServerInfo{Type: "protobuf", Listener: lis}, grpc.MaxConcurrentStreams(uint32(benchFeatures.MaxConcurrentCalls+1)))
 	defer stopper()
 	conn := NewClientConn(
 		target, grpc.WithInsecure(),
-		grpc.WithDialer(func(address string, timeout time.Duration) (net.Conn, error) {
-			return nw.TimeoutDialer(net.DialTimeout)("tcp", address, timeout)
+		grpc.WithContextDialer(func(ctx context.Context, address string) (net.Conn, error) {
+			return nw.ContextDialer((&net.Dialer{}).DialContext)(ctx, "tcp", address)
 		}),
 	)
 	tc := testpb.NewBenchmarkServiceClient(conn)

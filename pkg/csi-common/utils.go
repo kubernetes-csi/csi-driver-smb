@@ -21,9 +21,9 @@ import (
 	"strings"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/golang/glog"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"k8s.io/klog"
 )
 
 func ParseEndpoint(ep string) (string, string, error) {
@@ -103,13 +103,13 @@ func RunControllerandNodePublishServer(endpoint string, d *CSIDriver, cs csi.Con
 }
 
 func logGRPC(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	glog.V(3).Infof("GRPC call: %s", info.FullMethod)
-	glog.V(5).Infof("GRPC request: %+v", req)
+	klog.V(3).Infof("GRPC call: %s", info.FullMethod)
+	klog.V(5).Infof("GRPC request: %+v", req)
 	resp, err := handler(ctx, req)
 	if err != nil {
-		glog.Errorf("GRPC error: %v", err)
+		klog.Errorf("GRPC error: %v", err)
 	} else {
-		glog.V(5).Infof("GRPC response: %+v", resp)
+		klog.V(5).Infof("GRPC response: %+v", resp)
 	}
 	return resp, err
 }

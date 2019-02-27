@@ -24,17 +24,28 @@ import (
 	"strconv"
 
 	"google.golang.org/grpc"
+	_ "google.golang.org/grpc/balancer/grpclb"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/alts"
+	"google.golang.org/grpc/credentials/google"
 	"google.golang.org/grpc/credentials/oauth"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/interop"
 	testpb "google.golang.org/grpc/interop/grpc_testing"
+	"google.golang.org/grpc/resolver"
 	"google.golang.org/grpc/testdata"
+)
+
+const (
+	googleDefaultCredsName = "google_default_credentials"
 )
 
 var (
 	caFile                = flag.String("ca_file", "", "The file containning the CA root cert file")
-	useTLS                = flag.Bool("use_tls", false, "Connection uses TLS if true, else plain TCP")
+	useTLS                = flag.Bool("use_tls", false, "Connection uses TLS if true")
+	useALTS               = flag.Bool("use_alts", false, "Connection uses ALTS if true (this option can only be used on GCP)")
+	customCredentialsType = flag.String("custom_credentials_type", "", "Custom creds to use, excluding TLS or ALTS")
+	altsHSAddr            = flag.String("alts_handshaker_service_address", "", "ALTS handshaker gRPC service address")
 	testCA                = flag.Bool("use_test_ca", false, "Whether to replace platform root CAs with test CA as the CA root")
 	serviceAccountKeyFile = flag.String("service_account_key_file", "", "Path to service account json key file")
 	oauthScope            = flag.String("oauth_scope", "", "The scope for OAuth2 tokens")
@@ -56,19 +67,53 @@ var (
         jwt_token_creds: large_unary with jwt token auth;
         per_rpc_creds: large_unary with per rpc token;
         oauth2_auth_token: large_unary with oauth2 token auth;
+        google_default_credentials: large_unary with google default credentials
         cancel_after_begin: cancellation after metadata has been sent but before payloads are sent;
         cancel_after_first_response: cancellation after receiving 1st message from the server;
         status_code_and_message: status code propagated back to client;
+        special_status_message: Unicode and whitespace is correctly processed in status message;
         custom_metadata: server will echo custom metadata;
         unimplemented_method: client attempts to call unimplemented method;
         unimplemented_service: client attempts to call unimplemented service.`)
 )
 
+type credsMode uint8
+
+const (
+	credsNone credsMode = iota
+	credsTLS
+	credsALTS
+	credsGoogleDefaultCreds
+)
+
 func main() {
 	flag.Parse()
+	var useGDC bool // use google default creds
+	if *customCredentialsType != "" {
+		if *customCredentialsType != googleDefaultCredsName {
+			grpclog.Fatalf("custom_credentials_type can only be set to %v or not set", googleDefaultCredsName)
+		}
+		useGDC = true
+	}
+	if (*useTLS && *useALTS) || (*useTLS && useGDC) || (*useALTS && useGDC) {
+		grpclog.Fatalf("only one of TLS, ALTS and google default creds can be used")
+	}
+
+	var credsChosen credsMode
+	switch {
+	case *useTLS:
+		credsChosen = credsTLS
+	case *useALTS:
+		credsChosen = credsALTS
+	case useGDC:
+		credsChosen = credsGoogleDefaultCreds
+	}
+
+	resolver.SetDefaultScheme("dns")
 	serverAddr := net.JoinHostPort(*serverHost, strconv.Itoa(*serverPort))
 	var opts []grpc.DialOption
-	if *useTLS {
+	switch credsChosen {
+	case credsTLS:
 		var sn string
 		if *tlsServerName != "" {
 			sn = *tlsServerName
@@ -87,6 +132,21 @@ func main() {
 			creds = credentials.NewClientTLSFromCert(nil, sn)
 		}
 		opts = append(opts, grpc.WithTransportCredentials(creds))
+	case credsALTS:
+		altsOpts := alts.DefaultClientOptions()
+		if *altsHSAddr != "" {
+			altsOpts.HandshakerServiceAddress = *altsHSAddr
+		}
+		altsTC := alts.NewClientCreds(altsOpts)
+		opts = append(opts, grpc.WithTransportCredentials(altsTC))
+	case credsGoogleDefaultCreds:
+		opts = append(opts, grpc.WithCredentialsBundle(google.NewDefaultCredentials()))
+	case credsNone:
+		opts = append(opts, grpc.WithInsecure())
+	default:
+		grpclog.Fatal("Invalid creds")
+	}
+	if credsChosen == credsTLS {
 		if *testCase == "compute_engine_creds" {
 			opts = append(opts, grpc.WithPerRPCCredentials(oauth.NewComputeEngine()))
 		} else if *testCase == "service_account_creds" {
@@ -104,8 +164,6 @@ func main() {
 		} else if *testCase == "oauth2_auth_token" {
 			opts = append(opts, grpc.WithPerRPCCredentials(oauth.NewOauthAccess(interop.GetToken(*serviceAccountKeyFile, *oauthScope))))
 		}
-	} else {
-		opts = append(opts, grpc.WithInsecure())
 	}
 	opts = append(opts, grpc.WithBlock())
 	conn, err := grpc.Dial(serverAddr, opts...)
@@ -117,73 +175,82 @@ func main() {
 	switch *testCase {
 	case "empty_unary":
 		interop.DoEmptyUnaryCall(tc)
-		grpclog.Println("EmptyUnaryCall done")
+		grpclog.Infoln("EmptyUnaryCall done")
 	case "large_unary":
 		interop.DoLargeUnaryCall(tc)
-		grpclog.Println("LargeUnaryCall done")
+		grpclog.Infoln("LargeUnaryCall done")
 	case "client_streaming":
 		interop.DoClientStreaming(tc)
-		grpclog.Println("ClientStreaming done")
+		grpclog.Infoln("ClientStreaming done")
 	case "server_streaming":
 		interop.DoServerStreaming(tc)
-		grpclog.Println("ServerStreaming done")
+		grpclog.Infoln("ServerStreaming done")
 	case "ping_pong":
 		interop.DoPingPong(tc)
-		grpclog.Println("Pingpong done")
+		grpclog.Infoln("Pingpong done")
 	case "empty_stream":
 		interop.DoEmptyStream(tc)
-		grpclog.Println("Emptystream done")
+		grpclog.Infoln("Emptystream done")
 	case "timeout_on_sleeping_server":
 		interop.DoTimeoutOnSleepingServer(tc)
-		grpclog.Println("TimeoutOnSleepingServer done")
+		grpclog.Infoln("TimeoutOnSleepingServer done")
 	case "compute_engine_creds":
-		if !*useTLS {
-			grpclog.Fatalf("TLS is not enabled. TLS is required to execute compute_engine_creds test case.")
+		if credsChosen != credsTLS {
+			grpclog.Fatalf("TLS credentials need to be set for compute_engine_creds test case.")
 		}
 		interop.DoComputeEngineCreds(tc, *defaultServiceAccount, *oauthScope)
-		grpclog.Println("ComputeEngineCreds done")
+		grpclog.Infoln("ComputeEngineCreds done")
 	case "service_account_creds":
-		if !*useTLS {
-			grpclog.Fatalf("TLS is not enabled. TLS is required to execute service_account_creds test case.")
+		if credsChosen != credsTLS {
+			grpclog.Fatalf("TLS credentials need to be set for service_account_creds test case.")
 		}
 		interop.DoServiceAccountCreds(tc, *serviceAccountKeyFile, *oauthScope)
-		grpclog.Println("ServiceAccountCreds done")
+		grpclog.Infoln("ServiceAccountCreds done")
 	case "jwt_token_creds":
-		if !*useTLS {
-			grpclog.Fatalf("TLS is not enabled. TLS is required to execute jwt_token_creds test case.")
+		if credsChosen != credsTLS {
+			grpclog.Fatalf("TLS credentials need to be set for jwt_token_creds test case.")
 		}
 		interop.DoJWTTokenCreds(tc, *serviceAccountKeyFile)
-		grpclog.Println("JWTtokenCreds done")
+		grpclog.Infoln("JWTtokenCreds done")
 	case "per_rpc_creds":
-		if !*useTLS {
-			grpclog.Fatalf("TLS is not enabled. TLS is required to execute per_rpc_creds test case.")
+		if credsChosen != credsTLS {
+			grpclog.Fatalf("TLS credentials need to be set for per_rpc_creds test case.")
 		}
 		interop.DoPerRPCCreds(tc, *serviceAccountKeyFile, *oauthScope)
-		grpclog.Println("PerRPCCreds done")
+		grpclog.Infoln("PerRPCCreds done")
 	case "oauth2_auth_token":
-		if !*useTLS {
-			grpclog.Fatalf("TLS is not enabled. TLS is required to execute oauth2_auth_token test case.")
+		if credsChosen != credsTLS {
+			grpclog.Fatalf("TLS credentials need to be set for oauth2_auth_token test case.")
 		}
 		interop.DoOauth2TokenCreds(tc, *serviceAccountKeyFile, *oauthScope)
-		grpclog.Println("Oauth2TokenCreds done")
+		grpclog.Infoln("Oauth2TokenCreds done")
+	case "google_default_credentials":
+		if credsChosen != credsGoogleDefaultCreds {
+			grpclog.Fatalf("GoogleDefaultCredentials need to be set for google_default_credentials test case.")
+		}
+		interop.DoGoogleDefaultCredentials(tc, *defaultServiceAccount)
+		grpclog.Infoln("GoogleDefaultCredentials done")
 	case "cancel_after_begin":
 		interop.DoCancelAfterBegin(tc)
-		grpclog.Println("CancelAfterBegin done")
+		grpclog.Infoln("CancelAfterBegin done")
 	case "cancel_after_first_response":
 		interop.DoCancelAfterFirstResponse(tc)
-		grpclog.Println("CancelAfterFirstResponse done")
+		grpclog.Infoln("CancelAfterFirstResponse done")
 	case "status_code_and_message":
 		interop.DoStatusCodeAndMessage(tc)
-		grpclog.Println("StatusCodeAndMessage done")
+		grpclog.Infoln("StatusCodeAndMessage done")
+	case "special_status_message":
+		interop.DoSpecialStatusMessage(tc)
+		grpclog.Infoln("SpecialStatusMessage done")
 	case "custom_metadata":
 		interop.DoCustomMetadata(tc)
-		grpclog.Println("CustomMetadata done")
+		grpclog.Infoln("CustomMetadata done")
 	case "unimplemented_method":
 		interop.DoUnimplementedMethod(conn)
-		grpclog.Println("UnimplementedMethod done")
+		grpclog.Infoln("UnimplementedMethod done")
 	case "unimplemented_service":
 		interop.DoUnimplementedService(testpb.NewUnimplementedServiceClient(conn))
-		grpclog.Println("UnimplementedService done")
+		grpclog.Infoln("UnimplementedService done")
 	default:
 		grpclog.Fatal("Unsupported test case: ", *testCase)
 	}

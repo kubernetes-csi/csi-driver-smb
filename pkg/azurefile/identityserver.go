@@ -23,13 +23,13 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"k8s.io/klog"
 )
 
 // GetPluginInfo return the version and name of the plugin
 func (f *Driver) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
-	glog.V(2).Infof("Using default GetPluginInfo")
+	klog.V(2).Infof("Using default GetPluginInfo")
 
 	if f.Name == "" {
 		return nil, status.Error(codes.Unavailable, "Driver name not configured")
@@ -55,7 +55,7 @@ func (f *Driver) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeRe
 
 // GetPluginCapabilities returns the capabilities of the plugin
 func (f *Driver) GetPluginCapabilities(ctx context.Context, req *csi.GetPluginCapabilitiesRequest) (*csi.GetPluginCapabilitiesResponse, error) {
-	glog.V(2).Infof("Using default capabilities")
+	klog.V(2).Infof("Using default capabilities")
 	return &csi.GetPluginCapabilitiesResponse{
 		Capabilities: []*csi.PluginCapability{
 			{

@@ -17,8 +17,9 @@ limitations under the License.
 package csicommon
 
 import (
+	"k8s.io/klog"
+
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/golang/glog"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -45,7 +46,7 @@ func (cs *DefaultControllerServer) ControllerUnpublishVolume(ctx context.Context
 }
 
 func (cs *DefaultControllerServer) ValidateVolumeCapabilities(ctx context.Context, req *csi.ValidateVolumeCapabilitiesRequest) (*csi.ValidateVolumeCapabilitiesResponse, error) {
-	glog.V(5).Infof("Using default ValidateVolumeCapabilities")
+	klog.V(5).Infof("Using default ValidateVolumeCapabilities")
 
 	for _, c := range req.GetVolumeCapabilities() {
 		found := false
@@ -76,7 +77,7 @@ func (cs *DefaultControllerServer) GetCapacity(ctx context.Context, req *csi.Get
 // ControllerGetCapabilities implements the default GRPC callout.
 // Default supports all capabilities
 func (cs *DefaultControllerServer) ControllerGetCapabilities(ctx context.Context, req *csi.ControllerGetCapabilitiesRequest) (*csi.ControllerGetCapabilitiesResponse, error) {
-	glog.V(5).Infof("Using default ControllerGetCapabilities")
+	klog.V(5).Infof("Using default ControllerGetCapabilities")
 
 	return &csi.ControllerGetCapabilitiesResponse{
 		Capabilities: cs.Driver.Cap,

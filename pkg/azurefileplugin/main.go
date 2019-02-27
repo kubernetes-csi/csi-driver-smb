@@ -21,7 +21,7 @@ import (
 	"os"
 
 	"github.com/csi-driver/azurefile-csi-driver/pkg/azurefile"
-	"github.com/golang/glog"
+	"k8s.io/klog"
 )
 
 func init() {
@@ -34,7 +34,13 @@ var (
 )
 
 func main() {
+	klog.InitFlags(nil)
 	flag.Parse()
+
+	if *nodeID == "" {
+		klog.Error("--nodeid is a required parameter")
+		os.Exit(1)
+	}
 
 	handle()
 	os.Exit(0)
@@ -43,7 +49,7 @@ func main() {
 func handle() {
 	driver := azurefile.NewDriver(*nodeID)
 	if driver == nil {
-		glog.Fatalln("Failed to initialize azurefile CSI Driver")
+		klog.Fatalln("Failed to initialize azurefile CSI Driver")
 	}
 	driver.Run(*endpoint)
 }

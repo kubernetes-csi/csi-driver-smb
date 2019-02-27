@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## v11.5.0
+
+### New Features
+
+- The `auth` package has been refactored so that the environment and file settings are now available.
+- The methods used in `auth.NewAuthorizerFromEnvironment()` are now exported so that custom authorization chains can be created.
+- Added support for certificate authorization for file-based config.
+
+## v11.4.0
+
+### New Features
+
+- Added `adal.AddToUserAgent()` so callers can append custom data to the user-agent header used for ADAL requests.
+- Exported `adal.UserAgent()` for parity with `autorest.Client`.
+
+## v11.3.2
+
+### Bug Fixes
+
+- In `Future.WaitForCompletionRef()` if the provided context has a deadline don't add the default deadline.
+
+## v11.3.1
+
+### Bug Fixes
+
+- For an LRO PUT operation the final GET URL was incorrectly set to the Location polling header in some cases.
+
+## v11.3.0
+
+### New Features
+
+- Added method `ServicePrincipalToken()` to `DeviceFlowConfig` type.
+
 ## v11.2.8
 
 ### Bug Fixes
