@@ -24,7 +24,7 @@ import (
 	"strings"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/golang/glog"
+	"k8s.io/klog"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -54,13 +54,13 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if !notMnt {
 		// testing original mount point, make sure the mount link is valid
 		if _, err := ioutil.ReadDir(targetPath); err == nil {
-			glog.V(2).Infof("azureFile - already mounted to target %s", targetPath)
+			klog.V(2).Infof("azureFile - already mounted to target %s", targetPath)
 			return &csi.NodePublishVolumeResponse{}, nil
 		}
 		// todo: mount link is invalid, now unmount and remount later (built-in functionality)
-		glog.Warningf("azureFile - ReadDir %s failed with %v, unmount this directory", targetPath, err)
+		klog.Warningf("azureFile - ReadDir %s failed with %v, unmount this directory", targetPath, err)
 		if err := d.mounter.Unmount(targetPath); err != nil {
-			glog.Errorf("azureFile - Unmount directory %s failed with %v", targetPath, err)
+			klog.Errorf("azureFile - Unmount directory %s failed with %v", targetPath, err)
 			return nil, err
 		}
 		// notMnt = true
@@ -73,7 +73,7 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	attrib := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 
-	glog.V(2).Infof("target %v\nfstype %v\n\nreadonly %v\nvolumeId %v\ncontext %v\nmountflags %v\n",
+	klog.V(2).Infof("target %v\nfstype %v\n\nreadonly %v\nvolumeId %v\ncontext %v\nmountflags %v\n",
 		targetPath, fsType, readOnly, volumeID, attrib, mountFlags)
 
 	var accountName, accountKey, fileShareName string
@@ -135,22 +135,22 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if err != nil {
 		notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
 		if mntErr != nil {
-			glog.Errorf("IsLikelyNotMountPoint check failed: %v", mntErr)
+			klog.Errorf("IsLikelyNotMountPoint check failed: %v", mntErr)
 			return nil, err
 		}
 		if !notMnt {
 			if mntErr = d.mounter.Unmount(targetPath); mntErr != nil {
-				glog.Errorf("Failed to unmount: %v", mntErr)
+				klog.Errorf("Failed to unmount: %v", mntErr)
 				return nil, err
 			}
 			notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
 			if mntErr != nil {
-				glog.Errorf("IsLikelyNotMountPoint check failed: %v", mntErr)
+				klog.Errorf("IsLikelyNotMountPoint check failed: %v", mntErr)
 				return nil, err
 			}
 			if !notMnt {
 				// This is very odd, we don't expect it.  We'll try again next sync loop.
-				glog.Errorf("%s is still mounted, despite call to unmount().  Will try again next sync loop.", targetPath)
+				klog.Errorf("%s is still mounted, despite call to unmount().  Will try again next sync loop.", targetPath)
 				return nil, err
 			}
 		}
@@ -177,7 +177,7 @@ func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublish
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	glog.V(4).Infof("azurefile: volume %s/%s has been unmounted.", targetPath, volumeID)
+	klog.V(4).Infof("azurefile: volume %s/%s has been unmounted.", targetPath, volumeID)
 
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }
@@ -216,7 +216,7 @@ func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 
 // NodeGetCapabilities return the capabilities of the Node plugin
 func (d *Driver) NodeGetCapabilities(ctx context.Context, req *csi.NodeGetCapabilitiesRequest) (*csi.NodeGetCapabilitiesResponse, error) {
-	glog.V(2).Infof("Using default NodeGetCapabilities")
+	klog.V(2).Infof("Using default NodeGetCapabilities")
 
 	return &csi.NodeGetCapabilitiesResponse{
 		Capabilities: d.NSCap,
@@ -225,7 +225,7 @@ func (d *Driver) NodeGetCapabilities(ctx context.Context, req *csi.NodeGetCapabi
 
 // NodeGetInfo return info of the node on which this plugin is running
 func (d *Driver) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoRequest) (*csi.NodeGetInfoResponse, error) {
-	glog.V(5).Infof("Using default NodeGetInfo")
+	klog.V(5).Infof("Using default NodeGetInfo")
 
 	return &csi.NodeGetInfoResponse{
 		NodeId: d.NodeID,

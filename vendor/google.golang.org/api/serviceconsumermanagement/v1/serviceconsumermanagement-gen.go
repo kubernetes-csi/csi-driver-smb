@@ -352,7 +352,7 @@ type AuthProvider struct {
 	//                bookstore_web.apps.googleusercontent.com
 	Audiences string `json:"audiences,omitempty"`
 
-	// AuthorizationUrl: Redirect URL if JWT token is required but no
+	// AuthorizationUrl: Redirect URL if JWT token is required but not
 	// present or is expired.
 	// Implement authorizationUrl of securityDefinitions in OpenAPI spec.
 	AuthorizationUrl string `json:"authorizationUrl,omitempty"`
@@ -3014,20 +3014,28 @@ func (s *MonitoredResourceDescriptor) MarshalJSON() ([]byte, error) {
 type Monitoring struct {
 	// ConsumerDestinations: Monitoring configurations for sending metrics
 	// to the consumer project.
-	// There can be multiple consumer destinations, each one must have
-	// a
-	// different monitored resource type. A metric can be used in at
-	// most
-	// one consumer destination.
+	// There can be multiple consumer destinations. A monitored resouce type
+	// may
+	// appear in multiple monitoring destinations if different aggregations
+	// are
+	// needed for different sets of metrics associated with that
+	// monitored
+	// resource type. A monitored resource and metric pair may only be used
+	// once
+	// in the Monitoring configuration.
 	ConsumerDestinations []*MonitoringDestination `json:"consumerDestinations,omitempty"`
 
 	// ProducerDestinations: Monitoring configurations for sending metrics
 	// to the producer project.
-	// There can be multiple producer destinations, each one must have
-	// a
-	// different monitored resource type. A metric can be used in at
-	// most
-	// one producer destination.
+	// There can be multiple producer destinations. A monitored resouce type
+	// may
+	// appear in multiple monitoring destinations if different aggregations
+	// are
+	// needed for different sets of metrics associated with that
+	// monitored
+	// resource type. A monitored resource and metric pair may only be used
+	// once
+	// in the Monitoring configuration.
 	ProducerDestinations []*MonitoringDestination `json:"producerDestinations,omitempty"`
 
 	// ForceSendFields is a list of field names (e.g.
@@ -3059,9 +3067,9 @@ func (s *Monitoring) MarshalJSON() ([]byte, error) {
 // destination (the producer project
 // or the consumer project).
 type MonitoringDestination struct {
-	// Metrics: Names of the metrics to report to this monitoring
+	// Metrics: Types of the metrics to report to this monitoring
 	// destination.
-	// Each name must be defined in Service.metrics section.
+	// Each type must be defined in Service.metrics section.
 	Metrics []string `json:"metrics,omitempty"`
 
 	// MonitoredResource: The monitored resource type. The type must be
@@ -4402,6 +4410,7 @@ type TenantResource struct {
 	//   "ACTIVE" - Active resource.
 	//   "PENDING_DELETE" - Deletion of the resource is ongoing.
 	//   "FAILED" - Tenant resource creation or deletion has failed.
+	//   "DELETED" - Tenant resource has been deleted.
 	Status string `json:"status,omitempty"`
 
 	// Tag: Unique per single tenancy unit.
@@ -6111,7 +6120,7 @@ type ServicesTenancyUnitsDeleteCall struct {
 
 // Delete: Delete a tenancy unit.  Before the tenancy unit is deleted,
 // there should be
-// no tenant resources in it.
+// no tenant resources in it not in DELETED state.
 // Operation<response: Empty>.
 func (r *ServicesTenancyUnitsService) Delete(name string) *ServicesTenancyUnitsDeleteCall {
 	c := &ServicesTenancyUnitsDeleteCall{s: r.s, urlParams_: make(gensupport.URLParams)}
@@ -6204,7 +6213,7 @@ func (c *ServicesTenancyUnitsDeleteCall) Do(opts ...googleapi.CallOption) (*Oper
 	}
 	return ret, nil
 	// {
-	//   "description": "Delete a tenancy unit.  Before the tenancy unit is deleted, there should be\nno tenant resources in it.\nOperation\u003cresponse: Empty\u003e.",
+	//   "description": "Delete a tenancy unit.  Before the tenancy unit is deleted, there should be\nno tenant resources in it not in DELETED state.\nOperation\u003cresponse: Empty\u003e.",
 	//   "flatPath": "v1/services/{servicesId}/{servicesId1}/{servicesId2}/tenancyUnits/{tenancyUnitsId}",
 	//   "httpMethod": "DELETE",
 	//   "id": "serviceconsumermanagement.services.tenancyUnits.delete",
@@ -6455,8 +6464,13 @@ type ServicesTenancyUnitsRemoveProjectCall struct {
 // tenant resource tag.
 // It will remove project lien with 'TenantManager' origin if that was
 // added.
-// It will then attempt to delete the project.
-// If that operation fails, this method fails.
+// It will then attempt to delete the project. If that operation fails,
+// this
+// method fails.
+// After the project has been deleted, or if was already in DELETED
+// state,
+// resource metadata is permanently removed from the tenancy
+// unit.
 // Operation<response: Empty>.
 func (r *ServicesTenancyUnitsService) RemoveProject(name string, removetenantprojectrequest *RemoveTenantProjectRequest) *ServicesTenancyUnitsRemoveProjectCall {
 	c := &ServicesTenancyUnitsRemoveProjectCall{s: r.s, urlParams_: make(gensupport.URLParams)}
@@ -6555,7 +6569,7 @@ func (c *ServicesTenancyUnitsRemoveProjectCall) Do(opts ...googleapi.CallOption)
 	}
 	return ret, nil
 	// {
-	//   "description": "Removes specified project resource identified by tenant resource tag.\nIt will remove project lien with 'TenantManager' origin if that was added.\nIt will then attempt to delete the project.\nIf that operation fails, this method fails.\nOperation\u003cresponse: Empty\u003e.",
+	//   "description": "Removes specified project resource identified by tenant resource tag.\nIt will remove project lien with 'TenantManager' origin if that was added.\nIt will then attempt to delete the project. If that operation fails, this\nmethod fails.\nAfter the project has been deleted, or if was already in DELETED state,\nresource metadata is permanently removed from the tenancy unit.\nOperation\u003cresponse: Empty\u003e.",
 	//   "flatPath": "v1/services/{servicesId}/{servicesId1}/{servicesId2}/tenancyUnits/{tenancyUnitsId}:removeProject",
 	//   "httpMethod": "POST",
 	//   "id": "serviceconsumermanagement.services.tenancyUnits.removeProject",

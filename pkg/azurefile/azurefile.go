@@ -24,8 +24,8 @@ import (
 	"k8s.io/kubernetes/pkg/util/mount"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/csi-driver/azurefile-csi-driver/pkg/csi-common"
-	"github.com/golang/glog"
+	csicommon "github.com/csi-driver/azurefile-csi-driver/pkg/csi-common"
+	"k8s.io/klog"
 )
 
 const (
@@ -52,7 +52,7 @@ type Driver struct {
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
 func NewDriver(nodeID string) *Driver {
 	if nodeID == "" {
-		glog.Fatalln("NodeID missing")
+		klog.Fatalln("NodeID missing")
 		return nil
 	}
 
@@ -66,12 +66,12 @@ func NewDriver(nodeID string) *Driver {
 
 // Run driver initialization
 func (d *Driver) Run(endpoint string) {
-	glog.Infof("Driver: %v ", driverName)
-	glog.Infof("Version: %s", vendorVersion)
+	klog.Infof("Driver: %v ", driverName)
+	klog.Infof("Version: %s", vendorVersion)
 
 	cloud, err := GetCloudProvider()
 	if err != nil {
-		glog.Fatalln("failed to get Azure Cloud Provider")
+		klog.Fatalln("failed to get Azure Cloud Provider")
 	}
 	d.cloud = cloud
 

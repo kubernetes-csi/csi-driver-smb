@@ -19,12 +19,13 @@
 package mock_routeguide_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/golang/protobuf/proto"
-	"golang.org/x/net/context"
 	rgmock "google.golang.org/grpc/examples/route_guide/mock_routeguide"
 	rgpb "google.golang.org/grpc/examples/route_guide/routeguide"
 )
@@ -59,7 +60,9 @@ func TestRouteChat(t *testing.T) {
 }
 
 func testRouteChat(client rgpb.RouteGuideClient) error {
-	stream, err := client.RouteChat(context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	stream, err := client.RouteChat(ctx)
 	if err != nil {
 		return err
 	}

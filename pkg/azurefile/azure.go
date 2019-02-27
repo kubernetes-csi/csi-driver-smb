@@ -24,22 +24,22 @@ import (
 
 	"k8s.io/kubernetes/pkg/cloudprovider/providers/azure"
 
-	"github.com/golang/glog"
+	"k8s.io/klog"
 )
 
 // GetCloudProvider get Azure Cloud Provider
 func GetCloudProvider() (*azure.Cloud, error) {
 	credFile, ok := os.LookupEnv("AZURE_CREDENTIAL_FILE")
 	if ok {
-		glog.V(2).Infof("AZURE_CREDENTIAL_FILE env var set as %v", credFile)
+		klog.V(2).Infof("AZURE_CREDENTIAL_FILE env var set as %v", credFile)
 	} else {
 		credFile = "/etc/kubernetes/azure.json"
-		glog.V(2).Infof("use default AZURE_CREDENTIAL_FILE env var: %v", credFile)
+		klog.V(2).Infof("use default AZURE_CREDENTIAL_FILE env var: %v", credFile)
 	}
 
 	f, err := os.Open(credFile)
 	if err != nil {
-		glog.Errorf("Failed to load config from file: %s", credFile)
+		klog.Errorf("Failed to load config from file: %s", credFile)
 		return nil, fmt.Errorf("Failed to load config from file: %s, cloud not get azure cloud provider", credFile)
 	}
 	defer f.Close()

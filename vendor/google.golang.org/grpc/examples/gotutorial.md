@@ -227,7 +227,7 @@ func (s *routeGuideServer) RecordRoute(stream pb.RouteGuide_RecordRouteServer) e
 }
 ```
 
-In the method body we use the `RouteGuide_RecordRouteServer`s `Recv()` method to repeatedly read in our client's requests to a request object (in this case a `Point`) until there are no more messages: the server needs to check the the error returned from `Recv()` after each call. If this is `nil`, the stream is still good and it can continue reading; if it's `io.EOF` the message stream has ended and the server can return its `RouteSummary`. If it has any other value, we return the error "as is" so that it'll be translated to an RPC status by the gRPC layer.
+In the method body we use the `RouteGuide_RecordRouteServer`s `Recv()` method to repeatedly read in our client's requests to a request object (in this case a `Point`) until there are no more messages: the server needs to check the error returned from `Recv()` after each call. If this is `nil`, the stream is still good and it can continue reading; if it's `io.EOF` the message stream has ended and the server can return its `RouteSummary`. If it has any other value, we return the error "as is" so that it'll be translated to an RPC status by the gRPC layer.
 
 #### Bidirectional streaming RPC
 Finally, let's look at our bidirectional streaming RPC `RouteChat()`.
@@ -313,7 +313,7 @@ Now let's look at how we call our service methods. Note that in gRPC-Go, RPCs op
 Calling the simple RPC `GetFeature` is nearly as straightforward as calling a local method.
 
 ```go
-feature, err := client.GetFeature(context.Background(), &pb.Point{409146138, -746188906})
+feature, err := client.GetFeature(ctx, &pb.Point{409146138, -746188906})
 if err != nil {
         ...
 }
@@ -331,7 +331,7 @@ Here's where we call the server-side streaming method `ListFeatures`, which retu
 
 ```go
 rect := &pb.Rectangle{ ... }  // initialize a pb.Rectangle
-stream, err := client.ListFeatures(context.Background(), rect)
+stream, err := client.ListFeatures(ctx, rect)
 if err != nil {
     ...
 }
@@ -364,7 +364,7 @@ for i := 0; i < pointCount; i++ {
 	points = append(points, randomPoint(r))
 }
 log.Printf("Traversing %d points.", len(points))
-stream, err := client.RecordRoute(context.Background())
+stream, err := client.RecordRoute(ctx)
 if err != nil {
 	log.Fatalf("%v.RecordRoute(_) = _, %v", client, err)
 }
@@ -387,7 +387,7 @@ The `RouteGuide_RecordRouteClient` has a `Send()` method that we can use to send
 Finally, let's look at our bidirectional streaming RPC `RouteChat()`. As in the case of `RecordRoute`, we only pass the method a context object and get back a stream that we can use to both write and read messages. However, this time we return values via our method's stream while the server is still writing messages to *their* message stream.
 
 ```go
-stream, err := client.RouteChat(context.Background())
+stream, err := client.RouteChat(ctx)
 waitc := make(chan struct{})
 go func() {
 	for {
