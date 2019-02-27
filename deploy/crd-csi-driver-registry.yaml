@@ -16,12 +16,14 @@ spec:
           description: Specification of the CSI Driver.
           properties:
             attachRequired:
-              description: Indicates this CSI volume driver requires an attach operation,
+              description:
+                Indicates this CSI volume driver requires an attach operation,
                 and that Kubernetes should call attach and wait for any attach operation
                 to complete before proceeding to mount.
               type: boolean
             podInfoOnMountVersion:
-              description: Indicates this CSI volume driver requires additional pod
+              description:
+                Indicates this CSI volume driver requires additional pod
                 information (like podName, podUID, etc.) during mount operations.
               type: string
   version: v1alpha1
@@ -29,5 +31,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: null
-  storedVersions: null
+  conditions: []
+  storedVersions: []

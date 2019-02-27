@@ -68,9 +68,9 @@ metadata:
   namespace: kube-system
   name: external-provisioner-cfg
 rules:
-- apiGroups: [""]
-  resources: ["endpoints"]
-  verbs: ["get", "watch", "list", "delete", "update", "create"]
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
 
 ---
 kind: RoleBinding
