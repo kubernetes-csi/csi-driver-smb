@@ -11,7 +11,7 @@ storageAccount | specify the storage account name in which azure file share will
 location | specify the location in which azure file share will be created | `eastus`, `westus`, etc. | No | if empty, driver will use the same location name as current k8s cluster
 resourceGroup | specify the resource group in which azure file share will be created | existing resource group name | No | if empty, driver will use the same resource group name as current k8s cluster
 
- - Static Provisioning(use existing azure disk)
+ - Static Provisioning(use existing azure file)
   > get a quick example [here](../deploy/example/pv-azurefile-csi.yaml)
 
 Name | Meaning | Available Value | Mandatory | Default value
