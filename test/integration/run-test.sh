@@ -55,6 +55,12 @@ if [ -v aadClientSecret ]; then
 	volumeid=`echo $value | awk '{print $1}' | sed 's/"//g'`
 	echo "got volume id: $volumeid"
 
+	$csc controller validate-volume-capabilities --endpoint $endpoint --cap 1,block $volumeid
+	retcode=$?
+	if [ $retcode -gt 0 ]; then
+		exit $retcode
+	fi
+
 	if [ "$cloud" != "AzureChinaCloud" ]; then
 		# azure file mount/unmount on travis VM does not work against AzureChinaCloud
 		echo "mount volume test:"
@@ -84,12 +90,6 @@ if [ -v aadClientSecret ]; then
 fi
 
 $csc identity plugin-info --endpoint $endpoint
-retcode=$?
-if [ $retcode -gt 0 ]; then
-	exit $retcode
-fi
-
-$csc controller validate-volume-capabilities --endpoint $endpoint --cap 1,block CSIVolumeID
 retcode=$?
 if [ $retcode -gt 0 ]; then
 	exit $retcode
