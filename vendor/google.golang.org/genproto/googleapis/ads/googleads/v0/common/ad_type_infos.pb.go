@@ -37,7 +37,7 @@ func (m *TextAdInfo) Reset()         { *m = TextAdInfo{} }
 func (m *TextAdInfo) String() string { return proto.CompactTextString(m) }
 func (*TextAdInfo) ProtoMessage()    {}
 func (*TextAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{0}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{0}
 }
 func (m *TextAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TextAdInfo.Unmarshal(m, b)
@@ -103,7 +103,7 @@ func (m *ExpandedTextAdInfo) Reset()         { *m = ExpandedTextAdInfo{} }
 func (m *ExpandedTextAdInfo) String() string { return proto.CompactTextString(m) }
 func (*ExpandedTextAdInfo) ProtoMessage()    {}
 func (*ExpandedTextAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{1}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{1}
 }
 func (m *ExpandedTextAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExpandedTextAdInfo.Unmarshal(m, b)
@@ -187,7 +187,7 @@ func (m *DynamicSearchAdInfo) Reset()         { *m = DynamicSearchAdInfo{} }
 func (m *DynamicSearchAdInfo) String() string { return proto.CompactTextString(m) }
 func (*DynamicSearchAdInfo) ProtoMessage()    {}
 func (*DynamicSearchAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{2}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{2}
 }
 func (m *DynamicSearchAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DynamicSearchAdInfo.Unmarshal(m, b)
@@ -271,7 +271,7 @@ func (m *ResponsiveDisplayAdInfo) Reset()         { *m = ResponsiveDisplayAdInfo
 func (m *ResponsiveDisplayAdInfo) String() string { return proto.CompactTextString(m) }
 func (*ResponsiveDisplayAdInfo) ProtoMessage()    {}
 func (*ResponsiveDisplayAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{3}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{3}
 }
 func (m *ResponsiveDisplayAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponsiveDisplayAdInfo.Unmarshal(m, b)
@@ -434,7 +434,7 @@ func (m *CallOnlyAdInfo) Reset()         { *m = CallOnlyAdInfo{} }
 func (m *CallOnlyAdInfo) String() string { return proto.CompactTextString(m) }
 func (*CallOnlyAdInfo) ProtoMessage()    {}
 func (*CallOnlyAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{4}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{4}
 }
 func (m *CallOnlyAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CallOnlyAdInfo.Unmarshal(m, b)
@@ -537,7 +537,7 @@ func (m *ExpandedDynamicSearchAdInfo) Reset()         { *m = ExpandedDynamicSear
 func (m *ExpandedDynamicSearchAdInfo) String() string { return proto.CompactTextString(m) }
 func (*ExpandedDynamicSearchAdInfo) ProtoMessage()    {}
 func (*ExpandedDynamicSearchAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{5}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{5}
 }
 func (m *ExpandedDynamicSearchAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExpandedDynamicSearchAdInfo.Unmarshal(m, b)
@@ -575,7 +575,7 @@ func (m *HotelAdInfo) Reset()         { *m = HotelAdInfo{} }
 func (m *HotelAdInfo) String() string { return proto.CompactTextString(m) }
 func (*HotelAdInfo) ProtoMessage()    {}
 func (*HotelAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{6}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{6}
 }
 func (m *HotelAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HotelAdInfo.Unmarshal(m, b)
@@ -606,7 +606,7 @@ func (m *ShoppingSmartAdInfo) Reset()         { *m = ShoppingSmartAdInfo{} }
 func (m *ShoppingSmartAdInfo) String() string { return proto.CompactTextString(m) }
 func (*ShoppingSmartAdInfo) ProtoMessage()    {}
 func (*ShoppingSmartAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{7}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{7}
 }
 func (m *ShoppingSmartAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ShoppingSmartAdInfo.Unmarshal(m, b)
@@ -637,7 +637,7 @@ func (m *ShoppingProductAdInfo) Reset()         { *m = ShoppingProductAdInfo{} }
 func (m *ShoppingProductAdInfo) String() string { return proto.CompactTextString(m) }
 func (*ShoppingProductAdInfo) ProtoMessage()    {}
 func (*ShoppingProductAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{8}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{8}
 }
 func (m *ShoppingProductAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ShoppingProductAdInfo.Unmarshal(m, b)
@@ -685,7 +685,7 @@ func (m *GmailAdInfo) Reset()         { *m = GmailAdInfo{} }
 func (m *GmailAdInfo) String() string { return proto.CompactTextString(m) }
 func (*GmailAdInfo) ProtoMessage()    {}
 func (*GmailAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{9}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{9}
 }
 func (m *GmailAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GmailAdInfo.Unmarshal(m, b)
@@ -769,7 +769,7 @@ func (m *GmailTeaser) Reset()         { *m = GmailTeaser{} }
 func (m *GmailTeaser) String() string { return proto.CompactTextString(m) }
 func (*GmailTeaser) ProtoMessage()    {}
 func (*GmailTeaser) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{10}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{10}
 }
 func (m *GmailTeaser) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GmailTeaser.Unmarshal(m, b)
@@ -835,7 +835,7 @@ func (m *DisplayCallToAction) Reset()         { *m = DisplayCallToAction{} }
 func (m *DisplayCallToAction) String() string { return proto.CompactTextString(m) }
 func (*DisplayCallToAction) ProtoMessage()    {}
 func (*DisplayCallToAction) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{11}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{11}
 }
 func (m *DisplayCallToAction) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DisplayCallToAction.Unmarshal(m, b)
@@ -906,7 +906,7 @@ func (m *ImageAdInfo) Reset()         { *m = ImageAdInfo{} }
 func (m *ImageAdInfo) String() string { return proto.CompactTextString(m) }
 func (*ImageAdInfo) ProtoMessage()    {}
 func (*ImageAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{12}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{12}
 }
 func (m *ImageAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImageAdInfo.Unmarshal(m, b)
@@ -1113,7 +1113,7 @@ func (m *VideoTrueViewInStreamAdInfo) Reset()         { *m = VideoTrueViewInStre
 func (m *VideoTrueViewInStreamAdInfo) String() string { return proto.CompactTextString(m) }
 func (*VideoTrueViewInStreamAdInfo) ProtoMessage()    {}
 func (*VideoTrueViewInStreamAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{13}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{13}
 }
 func (m *VideoTrueViewInStreamAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VideoTrueViewInStreamAdInfo.Unmarshal(m, b)
@@ -1165,7 +1165,7 @@ func (m *VideoAdInfo) Reset()         { *m = VideoAdInfo{} }
 func (m *VideoAdInfo) String() string { return proto.CompactTextString(m) }
 func (*VideoAdInfo) ProtoMessage()    {}
 func (*VideoAdInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_type_infos_128b09aa9cda8bcd, []int{14}
+	return fileDescriptor_ad_type_infos_9fd2cc429f6d1980, []int{14}
 }
 func (m *VideoAdInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VideoAdInfo.Unmarshal(m, b)
@@ -1290,10 +1290,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/common/ad_type_infos.proto", fileDescriptor_ad_type_infos_128b09aa9cda8bcd)
+	proto.RegisterFile("google/ads/googleads/v0/common/ad_type_infos.proto", fileDescriptor_ad_type_infos_9fd2cc429f6d1980)
 }
 
-var fileDescriptor_ad_type_infos_128b09aa9cda8bcd = []byte{
+var fileDescriptor_ad_type_infos_9fd2cc429f6d1980 = []byte{
 	// 1519 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x58, 0xdd, 0x6e, 0xdb, 0xc6,
 	0x12, 0x8e, 0xfc, 0x17, 0x79, 0x64, 0xcb, 0x31, 0x9d, 0x1f, 0x1d, 0xfb, 0x9c, 0x20, 0x87, 0x17,

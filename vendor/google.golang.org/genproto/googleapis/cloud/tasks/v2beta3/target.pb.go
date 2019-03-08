@@ -66,7 +66,7 @@ func (x HttpMethod) String() string {
 	return proto.EnumName(HttpMethod_name, int32(x))
 }
 func (HttpMethod) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_target_9b40d4bfcbae133f, []int{0}
+	return fileDescriptor_target_a001396d255f3c88, []int{0}
 }
 
 // HTTP request.
@@ -82,7 +82,8 @@ func (HttpMethod) EnumDescriptor() ([]byte, []int) {
 // task will be retried according to the following:
 //
 // * User-specified throttling: [retry configuration][Queue.RetryConfig],
-//   [rate limits][Queue.RateLimits], and the [queue's state][google.cloud.tasks.v2beta3.Queue.state].
+//   [rate limits][Queue.RateLimits], and the [queue's
+//   state][google.cloud.tasks.v2beta3.Queue.state].
 //
 // * System throttling: To prevent the worker from overloading, Cloud Tasks may
 //   temporarily reduce the queue's effective rate. User-specified settings
@@ -146,8 +147,9 @@ type HttpRequest struct {
 	// HTTP request body.
 	//
 	// A request body is allowed only if the
-	// [HTTP method][google.cloud.tasks.v2beta3.HttpRequest.http_method] is POST, PUT, or PATCH. It is an
-	// error to set body on a task with an incompatible [HttpMethod][google.cloud.tasks.v2beta3.HttpMethod].
+	// [HTTP method][google.cloud.tasks.v2beta3.HttpRequest.http_method] is POST,
+	// PUT, or PATCH. It is an error to set body on a task with an incompatible
+	// [HttpMethod][google.cloud.tasks.v2beta3.HttpMethod].
 	Body                 []byte   `protobuf:"bytes,4,opt,name=body,proto3" json:"body,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -158,7 +160,7 @@ func (m *HttpRequest) Reset()         { *m = HttpRequest{} }
 func (m *HttpRequest) String() string { return proto.CompactTextString(m) }
 func (*HttpRequest) ProtoMessage()    {}
 func (*HttpRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_9b40d4bfcbae133f, []int{0}
+	return fileDescriptor_target_a001396d255f3c88, []int{0}
 }
 func (m *HttpRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HttpRequest.Unmarshal(m, b)
@@ -209,11 +211,15 @@ func (m *HttpRequest) GetBody() []byte {
 // App Engine HTTP queue.
 //
 // The task will be delivered to the App Engine application hostname
-// specified by its [AppEngineHttpQueue][google.cloud.tasks.v2beta3.AppEngineHttpQueue] and [AppEngineHttpRequest][google.cloud.tasks.v2beta3.AppEngineHttpRequest].
-// The documentation for [AppEngineHttpRequest][google.cloud.tasks.v2beta3.AppEngineHttpRequest] explains how the
-// task's host URL is constructed.
+// specified by its
+// [AppEngineHttpQueue][google.cloud.tasks.v2beta3.AppEngineHttpQueue] and
+// [AppEngineHttpRequest][google.cloud.tasks.v2beta3.AppEngineHttpRequest]. The
+// documentation for
+// [AppEngineHttpRequest][google.cloud.tasks.v2beta3.AppEngineHttpRequest]
+// explains how the task's host URL is constructed.
 //
-// Using [AppEngineHttpQueue][google.cloud.tasks.v2beta3.AppEngineHttpQueue] requires
+// Using [AppEngineHttpQueue][google.cloud.tasks.v2beta3.AppEngineHttpQueue]
+// requires
 // [`appengine.applications.get`](https://cloud.google.com/appengine/docs/admin-api/access-control)
 // Google IAM permission for the project
 // and the following scope:
@@ -221,11 +227,13 @@ func (m *HttpRequest) GetBody() []byte {
 // `https://www.googleapis.com/auth/cloud-platform`
 type AppEngineHttpQueue struct {
 	// Overrides for the
-	// [task-level app_engine_routing][google.cloud.tasks.v2beta3.AppEngineHttpRequest.app_engine_routing].
+	// [task-level
+	// app_engine_routing][google.cloud.tasks.v2beta3.AppEngineHttpRequest.app_engine_routing].
 	//
 	// If set, `app_engine_routing_override` is used for all tasks in
 	// the queue, no matter what the setting is for the
-	// [task-level app_engine_routing][google.cloud.tasks.v2beta3.AppEngineHttpRequest.app_engine_routing].
+	// [task-level
+	// app_engine_routing][google.cloud.tasks.v2beta3.AppEngineHttpRequest.app_engine_routing].
 	AppEngineRoutingOverride *AppEngineRouting `protobuf:"bytes,1,opt,name=app_engine_routing_override,json=appEngineRoutingOverride,proto3" json:"app_engine_routing_override,omitempty"`
 	XXX_NoUnkeyedLiteral     struct{}          `json:"-"`
 	XXX_unrecognized         []byte            `json:"-"`
@@ -236,7 +244,7 @@ func (m *AppEngineHttpQueue) Reset()         { *m = AppEngineHttpQueue{} }
 func (m *AppEngineHttpQueue) String() string { return proto.CompactTextString(m) }
 func (*AppEngineHttpQueue) ProtoMessage()    {}
 func (*AppEngineHttpQueue) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_9b40d4bfcbae133f, []int{1}
+	return fileDescriptor_target_a001396d255f3c88, []int{1}
 }
 func (m *AppEngineHttpQueue) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppEngineHttpQueue.Unmarshal(m, b)
@@ -269,9 +277,11 @@ func (m *AppEngineHttpQueue) GetAppEngineRoutingOverride() *AppEngineRouting {
 // the task is dispatched.
 //
 // This proto can only be used for tasks in a queue which has
-// [app_engine_http_queue][google.cloud.tasks.v2beta3.Queue.app_engine_http_queue] set.
+// [app_engine_http_queue][google.cloud.tasks.v2beta3.Queue.app_engine_http_queue]
+// set.
 //
-// Using [AppEngineHttpRequest][google.cloud.tasks.v2beta3.AppEngineHttpRequest] requires
+// Using [AppEngineHttpRequest][google.cloud.tasks.v2beta3.AppEngineHttpRequest]
+// requires
 // [`appengine.applications.get`](https://cloud.google.com/appengine/docs/admin-api/access-control)
 // Google IAM permission for the project
 // and the following scope:
@@ -280,23 +290,27 @@ func (m *AppEngineHttpQueue) GetAppEngineRoutingOverride() *AppEngineRouting {
 //
 // The task will be delivered to the App Engine app which belongs to the same
 // project as the queue. For more information, see
-// [How Requests are Routed](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed)
+// [How Requests are
+// Routed](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed)
 // and how routing is affected by
-// [dispatch files](https://cloud.google.com/appengine/docs/python/config/dispatchref).
+// [dispatch
+// files](https://cloud.google.com/appengine/docs/python/config/dispatchref).
 // Traffic is encrypted during transport and never leaves Google datacenters.
 // Because this traffic is carried over a communication mechanism internal to
 // Google, you cannot explicitly set the protocol (for example, HTTP or HTTPS).
 // The request to the handler, however, will appear to have used the HTTP
 // protocol.
 //
-// The [AppEngineRouting][google.cloud.tasks.v2beta3.AppEngineRouting] used to construct the URL that the task is
-// delivered to can be set at the queue-level or task-level:
+// The [AppEngineRouting][google.cloud.tasks.v2beta3.AppEngineRouting] used to
+// construct the URL that the task is delivered to can be set at the queue-level
+// or task-level:
 //
 // * If set,
 //    [app_engine_routing_override][google.cloud.tasks.v2beta3.AppEngineHttpQueue.app_engine_routing_override]
 //    is used for all tasks in the queue, no matter what the setting
 //    is for the
-//    [task-level app_engine_routing][google.cloud.tasks.v2beta3.AppEngineHttpRequest.app_engine_routing].
+//    [task-level
+//    app_engine_routing][google.cloud.tasks.v2beta3.AppEngineHttpRequest.app_engine_routing].
 //
 //
 // The `url` that the task will be sent to is:
@@ -306,10 +320,12 @@ func (m *AppEngineHttpQueue) GetAppEngineRoutingOverride() *AppEngineRouting {
 //
 // Tasks can be dispatched to secure app handlers, unsecure app handlers, and
 // URIs restricted with
-// [`login: admin`](https://cloud.google.com/appengine/docs/standard/python/config/appref).
+// [`login:
+// admin`](https://cloud.google.com/appengine/docs/standard/python/config/appref).
 // Because tasks are not run as any user, they cannot be dispatched to URIs
 // restricted with
-// [`login: required`](https://cloud.google.com/appengine/docs/standard/python/config/appref)
+// [`login:
+// required`](https://cloud.google.com/appengine/docs/standard/python/config/appref)
 // Task dispatches also do not follow redirects.
 //
 // The task attempt has succeeded if the app's request handler returns
@@ -325,17 +341,20 @@ type AppEngineHttpRequest struct {
 	// The app's request handler for the task's target URL must be able to handle
 	// HTTP requests with this http_method, otherwise the task attempt will fail
 	// with error code 405 (Method Not Allowed). See
-	// [Writing a push task request handler](https://cloud.google.com/appengine/docs/java/taskqueue/push/creating-handlers#writing_a_push_task_request_handler)
+	// [Writing a push task request
+	// handler](https://cloud.google.com/appengine/docs/java/taskqueue/push/creating-handlers#writing_a_push_task_request_handler)
 	// and the documentation for the request handlers in the language your app is
 	// written in e.g.
-	// [Python Request Handler](https://cloud.google.com/appengine/docs/python/tools/webapp/requesthandlerclass).
+	// [Python Request
+	// Handler](https://cloud.google.com/appengine/docs/python/tools/webapp/requesthandlerclass).
 	HttpMethod HttpMethod `protobuf:"varint,1,opt,name=http_method,json=httpMethod,proto3,enum=google.cloud.tasks.v2beta3.HttpMethod" json:"http_method,omitempty"`
 	// Task-level setting for App Engine routing.
 	//
 	// If set,
 	// [app_engine_routing_override][google.cloud.tasks.v2beta3.AppEngineHttpQueue.app_engine_routing_override]
 	// is used for all tasks in the queue, no matter what the setting is for the
-	// [task-level app_engine_routing][google.cloud.tasks.v2beta3.AppEngineHttpRequest.app_engine_routing].
+	// [task-level
+	// app_engine_routing][google.cloud.tasks.v2beta3.AppEngineHttpRequest.app_engine_routing].
 	AppEngineRouting *AppEngineRouting `protobuf:"bytes,2,opt,name=app_engine_routing,json=appEngineRouting,proto3" json:"app_engine_routing,omitempty"`
 	// The relative URI.
 	//
@@ -359,8 +378,9 @@ type AppEngineHttpRequest struct {
 	//   `"AppEngine-Google; (+http://code.google.com/appengine)"` to the
 	//   modified `User-Agent`.
 	//
-	// If the task has a [body][google.cloud.tasks.v2beta3.AppEngineHttpRequest.body], Cloud
-	// Tasks sets the following headers:
+	// If the task has a
+	// [body][google.cloud.tasks.v2beta3.AppEngineHttpRequest.body], Cloud Tasks
+	// sets the following headers:
 	//
 	// * `Content-Type`: By default, the `Content-Type` header is set to
 	//   `"application/octet-stream"`. The default can be overridden by explicitly
@@ -378,18 +398,22 @@ type AppEngineHttpRequest struct {
 	//
 	// In addition, Cloud Tasks sets some headers when the task is dispatched,
 	// such as headers containing information about the task; see
-	// [request headers](https://cloud.google.com/appengine/docs/python/taskqueue/push/creating-handlers#reading_request_headers).
+	// [request
+	// headers](https://cloud.google.com/appengine/docs/python/taskqueue/push/creating-handlers#reading_request_headers).
 	// These headers are set only when the task is dispatched, so they are not
 	// visible when the task is returned in a Cloud Tasks response.
 	//
 	// Although there is no specific limit for the maximum number of headers or
-	// the size, there is a limit on the maximum size of the [Task][google.cloud.tasks.v2beta3.Task]. For more
-	// information, see the [CreateTask][google.cloud.tasks.v2beta3.CloudTasks.CreateTask] documentation.
+	// the size, there is a limit on the maximum size of the
+	// [Task][google.cloud.tasks.v2beta3.Task]. For more information, see the
+	// [CreateTask][google.cloud.tasks.v2beta3.CloudTasks.CreateTask]
+	// documentation.
 	Headers map[string]string `protobuf:"bytes,4,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// HTTP request body.
 	//
 	// A request body is allowed only if the HTTP method is POST or PUT. It is
-	// an error to set a body on a task with an incompatible [HttpMethod][google.cloud.tasks.v2beta3.HttpMethod].
+	// an error to set a body on a task with an incompatible
+	// [HttpMethod][google.cloud.tasks.v2beta3.HttpMethod].
 	Body                 []byte   `protobuf:"bytes,5,opt,name=body,proto3" json:"body,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -400,7 +424,7 @@ func (m *AppEngineHttpRequest) Reset()         { *m = AppEngineHttpRequest{} }
 func (m *AppEngineHttpRequest) String() string { return proto.CompactTextString(m) }
 func (*AppEngineHttpRequest) ProtoMessage()    {}
 func (*AppEngineHttpRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_9b40d4bfcbae133f, []int{2}
+	return fileDescriptor_target_a001396d255f3c88, []int{2}
 }
 func (m *AppEngineHttpRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppEngineHttpRequest.Unmarshal(m, b)
@@ -461,10 +485,14 @@ func (m *AppEngineHttpRequest) GetBody() []byte {
 // and instance.
 //
 // For more information about services, versions, and instances see
-// [An Overview of App Engine](https://cloud.google.com/appengine/docs/python/an-overview-of-app-engine),
-// [Microservices Architecture on Google App Engine](https://cloud.google.com/appengine/docs/python/microservices-on-app-engine),
-// [App Engine Standard request routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed),
-// and [App Engine Flex request routing](https://cloud.google.com/appengine/docs/flexible/python/how-requests-are-routed).
+// [An Overview of App
+// Engine](https://cloud.google.com/appengine/docs/python/an-overview-of-app-engine),
+// [Microservices Architecture on Google App
+// Engine](https://cloud.google.com/appengine/docs/python/microservices-on-app-engine),
+// [App Engine Standard request
+// routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed),
+// and [App Engine Flex request
+// routing](https://cloud.google.com/appengine/docs/flexible/python/how-requests-are-routed).
 type AppEngineRouting struct {
 	// App service.
 	//
@@ -472,16 +500,18 @@ type AppEngineRouting struct {
 	// service when the task is attempted.
 	//
 	// For some queues or tasks which were created using the App Engine
-	// Task Queue API, [host][google.cloud.tasks.v2beta3.AppEngineRouting.host] is not parsable
-	// into [service][google.cloud.tasks.v2beta3.AppEngineRouting.service],
-	// [version][google.cloud.tasks.v2beta3.AppEngineRouting.version], and
-	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance]. For example, some tasks
-	// which were created using the App Engine SDK use a custom domain
-	// name; custom domains are not parsed by Cloud Tasks. If
-	// [host][google.cloud.tasks.v2beta3.AppEngineRouting.host] is not parsable, then
+	// Task Queue API, [host][google.cloud.tasks.v2beta3.AppEngineRouting.host] is
+	// not parsable into
 	// [service][google.cloud.tasks.v2beta3.AppEngineRouting.service],
 	// [version][google.cloud.tasks.v2beta3.AppEngineRouting.version], and
-	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance] are the empty string.
+	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance]. For
+	// example, some tasks which were created using the App Engine SDK use a
+	// custom domain name; custom domains are not parsed by Cloud Tasks. If
+	// [host][google.cloud.tasks.v2beta3.AppEngineRouting.host] is not parsable,
+	// then [service][google.cloud.tasks.v2beta3.AppEngineRouting.service],
+	// [version][google.cloud.tasks.v2beta3.AppEngineRouting.version], and
+	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance] are the
+	// empty string.
 	Service string `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`
 	// App version.
 	//
@@ -489,16 +519,18 @@ type AppEngineRouting struct {
 	// version when the task is attempted.
 	//
 	// For some queues or tasks which were created using the App Engine
-	// Task Queue API, [host][google.cloud.tasks.v2beta3.AppEngineRouting.host] is not parsable
-	// into [service][google.cloud.tasks.v2beta3.AppEngineRouting.service],
-	// [version][google.cloud.tasks.v2beta3.AppEngineRouting.version], and
-	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance]. For example, some tasks
-	// which were created using the App Engine SDK use a custom domain
-	// name; custom domains are not parsed by Cloud Tasks. If
-	// [host][google.cloud.tasks.v2beta3.AppEngineRouting.host] is not parsable, then
+	// Task Queue API, [host][google.cloud.tasks.v2beta3.AppEngineRouting.host] is
+	// not parsable into
 	// [service][google.cloud.tasks.v2beta3.AppEngineRouting.service],
 	// [version][google.cloud.tasks.v2beta3.AppEngineRouting.version], and
-	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance] are the empty string.
+	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance]. For
+	// example, some tasks which were created using the App Engine SDK use a
+	// custom domain name; custom domains are not parsed by Cloud Tasks. If
+	// [host][google.cloud.tasks.v2beta3.AppEngineRouting.host] is not parsable,
+	// then [service][google.cloud.tasks.v2beta3.AppEngineRouting.service],
+	// [version][google.cloud.tasks.v2beta3.AppEngineRouting.version], and
+	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance] are the
+	// empty string.
 	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
 	// App instance.
 	//
@@ -506,21 +538,27 @@ type AppEngineRouting struct {
 	// the task is attempted.
 	//
 	// Requests can only be sent to a specific instance if
-	// [manual scaling is used in App Engine Standard](https://cloud.google.com/appengine/docs/python/an-overview-of-app-engine?hl=en_US#scaling_types_and_instance_classes).
+	// [manual scaling is used in App Engine
+	// Standard](https://cloud.google.com/appengine/docs/python/an-overview-of-app-engine?hl=en_US#scaling_types_and_instance_classes).
 	// App Engine Flex does not support instances. For more information, see
-	// [App Engine Standard request routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed)
-	// and [App Engine Flex request routing](https://cloud.google.com/appengine/docs/flexible/python/how-requests-are-routed).
+	// [App Engine Standard request
+	// routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed)
+	// and [App Engine Flex request
+	// routing](https://cloud.google.com/appengine/docs/flexible/python/how-requests-are-routed).
 	Instance string `protobuf:"bytes,3,opt,name=instance,proto3" json:"instance,omitempty"`
 	// Output only. The host that the task is sent to.
 	//
 	// The host is constructed from the domain name of the app associated with
 	// the queue's project ID (for example <app-id>.appspot.com), and the
-	// [service][google.cloud.tasks.v2beta3.AppEngineRouting.service], [version][google.cloud.tasks.v2beta3.AppEngineRouting.version],
-	// and [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance]. Tasks which were created using
-	// the App Engine SDK might have a custom domain name.
+	// [service][google.cloud.tasks.v2beta3.AppEngineRouting.service],
+	// [version][google.cloud.tasks.v2beta3.AppEngineRouting.version], and
+	// [instance][google.cloud.tasks.v2beta3.AppEngineRouting.instance]. Tasks
+	// which were created using the App Engine SDK might have a custom domain
+	// name.
 	//
 	// For more information, see
-	// [How Requests are Routed](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed).
+	// [How Requests are
+	// Routed](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed).
 	Host                 string   `protobuf:"bytes,4,opt,name=host,proto3" json:"host,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -531,7 +569,7 @@ func (m *AppEngineRouting) Reset()         { *m = AppEngineRouting{} }
 func (m *AppEngineRouting) String() string { return proto.CompactTextString(m) }
 func (*AppEngineRouting) ProtoMessage()    {}
 func (*AppEngineRouting) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_9b40d4bfcbae133f, []int{3}
+	return fileDescriptor_target_a001396d255f3c88, []int{3}
 }
 func (m *AppEngineRouting) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppEngineRouting.Unmarshal(m, b)
@@ -590,10 +628,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/tasks/v2beta3/target.proto", fileDescriptor_target_9b40d4bfcbae133f)
+	proto.RegisterFile("google/cloud/tasks/v2beta3/target.proto", fileDescriptor_target_a001396d255f3c88)
 }
 
-var fileDescriptor_target_9b40d4bfcbae133f = []byte{
+var fileDescriptor_target_a001396d255f3c88 = []byte{
 	// 575 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x41, 0x6f, 0xd3, 0x4c,
 	0x10, 0xfd, 0x1c, 0x27, 0x4d, 0x33, 0xae, 0x3e, 0x59, 0xab, 0x4a, 0x58, 0x29, 0x42, 0xa1, 0x07,

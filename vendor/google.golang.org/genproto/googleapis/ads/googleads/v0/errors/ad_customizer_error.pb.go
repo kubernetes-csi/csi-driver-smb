@@ -61,7 +61,7 @@ func (x AdCustomizerErrorEnum_AdCustomizerError) String() string {
 	return proto.EnumName(AdCustomizerErrorEnum_AdCustomizerError_name, int32(x))
 }
 func (AdCustomizerErrorEnum_AdCustomizerError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_ad_customizer_error_cbcf253ca629b5d1, []int{0, 0}
+	return fileDescriptor_ad_customizer_error_8e31a87aead61c95, []int{0, 0}
 }
 
 // Container for enum describing possible ad customizer errors.
@@ -75,7 +75,7 @@ func (m *AdCustomizerErrorEnum) Reset()         { *m = AdCustomizerErrorEnum{} }
 func (m *AdCustomizerErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*AdCustomizerErrorEnum) ProtoMessage()    {}
 func (*AdCustomizerErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_customizer_error_cbcf253ca629b5d1, []int{0}
+	return fileDescriptor_ad_customizer_error_8e31a87aead61c95, []int{0}
 }
 func (m *AdCustomizerErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdCustomizerErrorEnum.Unmarshal(m, b)
@@ -101,10 +101,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/ad_customizer_error.proto", fileDescriptor_ad_customizer_error_cbcf253ca629b5d1)
+	proto.RegisterFile("google/ads/googleads/v0/errors/ad_customizer_error.proto", fileDescriptor_ad_customizer_error_8e31a87aead61c95)
 }
 
-var fileDescriptor_ad_customizer_error_cbcf253ca629b5d1 = []byte{
+var fileDescriptor_ad_customizer_error_8e31a87aead61c95 = []byte{
 	// 366 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0x4f, 0x0b, 0xd3, 0x30,
 	0x18, 0xc6, 0x6d, 0xa7, 0x13, 0xb2, 0x83, 0x5d, 0x60, 0x43, 0x44, 0x07, 0xd6, 0x83, 0xb7, 0xb4,

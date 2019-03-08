@@ -65,7 +65,7 @@ func (x FieldErrorEnum_FieldError) String() string {
 	return proto.EnumName(FieldErrorEnum_FieldError_name, int32(x))
 }
 func (FieldErrorEnum_FieldError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_field_error_fe89113f8c5e1ea0, []int{0, 0}
+	return fileDescriptor_field_error_3a09a97fcab409d3, []int{0, 0}
 }
 
 // Container for enum describing possible field errors.
@@ -79,7 +79,7 @@ func (m *FieldErrorEnum) Reset()         { *m = FieldErrorEnum{} }
 func (m *FieldErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*FieldErrorEnum) ProtoMessage()    {}
 func (*FieldErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_field_error_fe89113f8c5e1ea0, []int{0}
+	return fileDescriptor_field_error_3a09a97fcab409d3, []int{0}
 }
 func (m *FieldErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldErrorEnum.Unmarshal(m, b)
@@ -105,10 +105,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/field_error.proto", fileDescriptor_field_error_fe89113f8c5e1ea0)
+	proto.RegisterFile("google/ads/googleads/v0/errors/field_error.proto", fileDescriptor_field_error_3a09a97fcab409d3)
 }
 
-var fileDescriptor_field_error_fe89113f8c5e1ea0 = []byte{
+var fileDescriptor_field_error_3a09a97fcab409d3 = []byte{
 	// 363 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xdf, 0x6e, 0xda, 0x30,
 	0x14, 0xc6, 0x97, 0xb0, 0xc1, 0x64, 0xb6, 0x91, 0x19, 0x69, 0x48, 0x9b, 0xc4, 0x45, 0x1e, 0xc0,

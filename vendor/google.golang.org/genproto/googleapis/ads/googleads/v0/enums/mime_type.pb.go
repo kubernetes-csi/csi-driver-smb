@@ -91,7 +91,7 @@ func (x MimeTypeEnum_MimeType) String() string {
 	return proto.EnumName(MimeTypeEnum_MimeType_name, int32(x))
 }
 func (MimeTypeEnum_MimeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_mime_type_039ea239ed9fe372, []int{0, 0}
+	return fileDescriptor_mime_type_9d68a7e3d7ca4947, []int{0, 0}
 }
 
 // Container for enum describing the mime types.
@@ -105,7 +105,7 @@ func (m *MimeTypeEnum) Reset()         { *m = MimeTypeEnum{} }
 func (m *MimeTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*MimeTypeEnum) ProtoMessage()    {}
 func (*MimeTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_mime_type_039ea239ed9fe372, []int{0}
+	return fileDescriptor_mime_type_9d68a7e3d7ca4947, []int{0}
 }
 func (m *MimeTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MimeTypeEnum.Unmarshal(m, b)
@@ -131,10 +131,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/mime_type.proto", fileDescriptor_mime_type_039ea239ed9fe372)
+	proto.RegisterFile("google/ads/googleads/v0/enums/mime_type.proto", fileDescriptor_mime_type_9d68a7e3d7ca4947)
 }
 
-var fileDescriptor_mime_type_039ea239ed9fe372 = []byte{
+var fileDescriptor_mime_type_9d68a7e3d7ca4947 = []byte{
 	// 375 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xbd, 0xee, 0xda, 0x30,
 	0x14, 0xc5, 0x9b, 0xd0, 0x3f, 0x1f, 0x06, 0x5a, 0xcb, 0x3b, 0x03, 0xec, 0x75, 0x22, 0xa1, 0x2e,

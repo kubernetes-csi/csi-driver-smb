@@ -71,7 +71,7 @@ func (m *ParseResumeRequest) Reset()         { *m = ParseResumeRequest{} }
 func (m *ParseResumeRequest) String() string { return proto.CompactTextString(m) }
 func (*ParseResumeRequest) ProtoMessage()    {}
 func (*ParseResumeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resume_service_7eaac74e87797cc5, []int{0}
+	return fileDescriptor_resume_service_d325ab94b73b8b68, []int{0}
 }
 func (m *ParseResumeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ParseResumeRequest.Unmarshal(m, b)
@@ -155,7 +155,7 @@ func (m *ParseResumeOptions) Reset()         { *m = ParseResumeOptions{} }
 func (m *ParseResumeOptions) String() string { return proto.CompactTextString(m) }
 func (*ParseResumeOptions) ProtoMessage()    {}
 func (*ParseResumeOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resume_service_7eaac74e87797cc5, []int{1}
+	return fileDescriptor_resume_service_d325ab94b73b8b68, []int{1}
 }
 func (m *ParseResumeOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ParseResumeOptions.Unmarshal(m, b)
@@ -204,7 +204,7 @@ func (m *ParseResumeResponse) Reset()         { *m = ParseResumeResponse{} }
 func (m *ParseResumeResponse) String() string { return proto.CompactTextString(m) }
 func (*ParseResumeResponse) ProtoMessage()    {}
 func (*ParseResumeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resume_service_7eaac74e87797cc5, []int{2}
+	return fileDescriptor_resume_service_d325ab94b73b8b68, []int{2}
 }
 func (m *ParseResumeResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ParseResumeResponse.Unmarshal(m, b)
@@ -256,8 +256,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ResumeServiceClient interface {
-	// Parses a resume into a [Profile][google.cloud.talent.v4beta1.Profile]. The API attempts to fill out the
-	// following profile fields if present within the resume:
+	// Parses a resume into a [Profile][google.cloud.talent.v4beta1.Profile]. The
+	// API attempts to fill out the following profile fields if present within the
+	// resume:
 	//
 	// * personNames
 	// * addresses
@@ -306,8 +307,9 @@ func (c *resumeServiceClient) ParseResume(ctx context.Context, in *ParseResumeRe
 
 // ResumeServiceServer is the server API for ResumeService service.
 type ResumeServiceServer interface {
-	// Parses a resume into a [Profile][google.cloud.talent.v4beta1.Profile]. The API attempts to fill out the
-	// following profile fields if present within the resume:
+	// Parses a resume into a [Profile][google.cloud.talent.v4beta1.Profile]. The
+	// API attempts to fill out the following profile fields if present within the
+	// resume:
 	//
 	// * personNames
 	// * addresses
@@ -373,10 +375,10 @@ var _ResumeService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/talent/v4beta1/resume_service.proto", fileDescriptor_resume_service_7eaac74e87797cc5)
+	proto.RegisterFile("google/cloud/talent/v4beta1/resume_service.proto", fileDescriptor_resume_service_d325ab94b73b8b68)
 }
 
-var fileDescriptor_resume_service_7eaac74e87797cc5 = []byte{
+var fileDescriptor_resume_service_d325ab94b73b8b68 = []byte{
 	// 476 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xc1, 0x6e, 0x13, 0x31,
 	0x10, 0x86, 0xe5, 0x16, 0x9a, 0xc4, 0x69, 0x2f, 0x46, 0x42, 0x4b, 0x0a, 0x6a, 0xb4, 0x70, 0x08,

@@ -59,7 +59,7 @@ func (x SessionEntityType_EntityOverrideMode) String() string {
 	return proto.EnumName(SessionEntityType_EntityOverrideMode_name, int32(x))
 }
 func (SessionEntityType_EntityOverrideMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_session_entity_type_f014f04ccf41506d, []int{0, 0}
+	return fileDescriptor_session_entity_type_9381c2422871bc2f, []int{0, 0}
 }
 
 // Represents a session entity type.
@@ -89,7 +89,7 @@ func (m *SessionEntityType) Reset()         { *m = SessionEntityType{} }
 func (m *SessionEntityType) String() string { return proto.CompactTextString(m) }
 func (*SessionEntityType) ProtoMessage()    {}
 func (*SessionEntityType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_entity_type_f014f04ccf41506d, []int{0}
+	return fileDescriptor_session_entity_type_9381c2422871bc2f, []int{0}
 }
 func (m *SessionEntityType) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SessionEntityType.Unmarshal(m, b)
@@ -130,7 +130,8 @@ func (m *SessionEntityType) GetEntities() []*EntityType_Entity {
 	return nil
 }
 
-// The request message for [SessionEntityTypes.ListSessionEntityTypes][google.cloud.dialogflow.v2.SessionEntityTypes.ListSessionEntityTypes].
+// The request message for
+// [SessionEntityTypes.ListSessionEntityTypes][google.cloud.dialogflow.v2.SessionEntityTypes.ListSessionEntityTypes].
 type ListSessionEntityTypesRequest struct {
 	// Required. The session to list all session entity types from.
 	// Format: `projects/<Project ID>/agent/sessions/<Session ID>`.
@@ -149,7 +150,7 @@ func (m *ListSessionEntityTypesRequest) Reset()         { *m = ListSessionEntity
 func (m *ListSessionEntityTypesRequest) String() string { return proto.CompactTextString(m) }
 func (*ListSessionEntityTypesRequest) ProtoMessage()    {}
 func (*ListSessionEntityTypesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_entity_type_f014f04ccf41506d, []int{1}
+	return fileDescriptor_session_entity_type_9381c2422871bc2f, []int{1}
 }
 func (m *ListSessionEntityTypesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListSessionEntityTypesRequest.Unmarshal(m, b)
@@ -190,7 +191,8 @@ func (m *ListSessionEntityTypesRequest) GetPageToken() string {
 	return ""
 }
 
-// The response message for [SessionEntityTypes.ListSessionEntityTypes][google.cloud.dialogflow.v2.SessionEntityTypes.ListSessionEntityTypes].
+// The response message for
+// [SessionEntityTypes.ListSessionEntityTypes][google.cloud.dialogflow.v2.SessionEntityTypes.ListSessionEntityTypes].
 type ListSessionEntityTypesResponse struct {
 	// The list of session entity types. There will be a maximum number of items
 	// returned based on the page_size field in the request.
@@ -207,7 +209,7 @@ func (m *ListSessionEntityTypesResponse) Reset()         { *m = ListSessionEntit
 func (m *ListSessionEntityTypesResponse) String() string { return proto.CompactTextString(m) }
 func (*ListSessionEntityTypesResponse) ProtoMessage()    {}
 func (*ListSessionEntityTypesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_entity_type_f014f04ccf41506d, []int{2}
+	return fileDescriptor_session_entity_type_9381c2422871bc2f, []int{2}
 }
 func (m *ListSessionEntityTypesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListSessionEntityTypesResponse.Unmarshal(m, b)
@@ -241,7 +243,8 @@ func (m *ListSessionEntityTypesResponse) GetNextPageToken() string {
 	return ""
 }
 
-// The request message for [SessionEntityTypes.GetSessionEntityType][google.cloud.dialogflow.v2.SessionEntityTypes.GetSessionEntityType].
+// The request message for
+// [SessionEntityTypes.GetSessionEntityType][google.cloud.dialogflow.v2.SessionEntityTypes.GetSessionEntityType].
 type GetSessionEntityTypeRequest struct {
 	// Required. The name of the session entity type. Format:
 	// `projects/<Project ID>/agent/sessions/<Session ID>/entityTypes/<Entity Type
@@ -256,7 +259,7 @@ func (m *GetSessionEntityTypeRequest) Reset()         { *m = GetSessionEntityTyp
 func (m *GetSessionEntityTypeRequest) String() string { return proto.CompactTextString(m) }
 func (*GetSessionEntityTypeRequest) ProtoMessage()    {}
 func (*GetSessionEntityTypeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_entity_type_f014f04ccf41506d, []int{3}
+	return fileDescriptor_session_entity_type_9381c2422871bc2f, []int{3}
 }
 func (m *GetSessionEntityTypeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetSessionEntityTypeRequest.Unmarshal(m, b)
@@ -283,7 +286,8 @@ func (m *GetSessionEntityTypeRequest) GetName() string {
 	return ""
 }
 
-// The request message for [SessionEntityTypes.CreateSessionEntityType][google.cloud.dialogflow.v2.SessionEntityTypes.CreateSessionEntityType].
+// The request message for
+// [SessionEntityTypes.CreateSessionEntityType][google.cloud.dialogflow.v2.SessionEntityTypes.CreateSessionEntityType].
 type CreateSessionEntityTypeRequest struct {
 	// Required. The session to create a session entity type for.
 	// Format: `projects/<Project ID>/agent/sessions/<Session ID>`.
@@ -299,7 +303,7 @@ func (m *CreateSessionEntityTypeRequest) Reset()         { *m = CreateSessionEnt
 func (m *CreateSessionEntityTypeRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateSessionEntityTypeRequest) ProtoMessage()    {}
 func (*CreateSessionEntityTypeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_entity_type_f014f04ccf41506d, []int{4}
+	return fileDescriptor_session_entity_type_9381c2422871bc2f, []int{4}
 }
 func (m *CreateSessionEntityTypeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateSessionEntityTypeRequest.Unmarshal(m, b)
@@ -333,7 +337,8 @@ func (m *CreateSessionEntityTypeRequest) GetSessionEntityType() *SessionEntityTy
 	return nil
 }
 
-// The request message for [SessionEntityTypes.UpdateSessionEntityType][google.cloud.dialogflow.v2.SessionEntityTypes.UpdateSessionEntityType].
+// The request message for
+// [SessionEntityTypes.UpdateSessionEntityType][google.cloud.dialogflow.v2.SessionEntityTypes.UpdateSessionEntityType].
 type UpdateSessionEntityTypeRequest struct {
 	// Required. The entity type to update. Format:
 	// `projects/<Project ID>/agent/sessions/<Session ID>/entityTypes/<Entity Type
@@ -350,7 +355,7 @@ func (m *UpdateSessionEntityTypeRequest) Reset()         { *m = UpdateSessionEnt
 func (m *UpdateSessionEntityTypeRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateSessionEntityTypeRequest) ProtoMessage()    {}
 func (*UpdateSessionEntityTypeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_entity_type_f014f04ccf41506d, []int{5}
+	return fileDescriptor_session_entity_type_9381c2422871bc2f, []int{5}
 }
 func (m *UpdateSessionEntityTypeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateSessionEntityTypeRequest.Unmarshal(m, b)
@@ -384,7 +389,8 @@ func (m *UpdateSessionEntityTypeRequest) GetUpdateMask() *field_mask.FieldMask {
 	return nil
 }
 
-// The request message for [SessionEntityTypes.DeleteSessionEntityType][google.cloud.dialogflow.v2.SessionEntityTypes.DeleteSessionEntityType].
+// The request message for
+// [SessionEntityTypes.DeleteSessionEntityType][google.cloud.dialogflow.v2.SessionEntityTypes.DeleteSessionEntityType].
 type DeleteSessionEntityTypeRequest struct {
 	// Required. The name of the entity type to delete. Format:
 	// `projects/<Project ID>/agent/sessions/<Session ID>/entityTypes/<Entity Type
@@ -399,7 +405,7 @@ func (m *DeleteSessionEntityTypeRequest) Reset()         { *m = DeleteSessionEnt
 func (m *DeleteSessionEntityTypeRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteSessionEntityTypeRequest) ProtoMessage()    {}
 func (*DeleteSessionEntityTypeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_entity_type_f014f04ccf41506d, []int{6}
+	return fileDescriptor_session_entity_type_9381c2422871bc2f, []int{6}
 }
 func (m *DeleteSessionEntityTypeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteSessionEntityTypeRequest.Unmarshal(m, b)
@@ -652,10 +658,10 @@ var _SessionEntityTypes_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/dialogflow/v2/session_entity_type.proto", fileDescriptor_session_entity_type_f014f04ccf41506d)
+	proto.RegisterFile("google/cloud/dialogflow/v2/session_entity_type.proto", fileDescriptor_session_entity_type_9381c2422871bc2f)
 }
 
-var fileDescriptor_session_entity_type_f014f04ccf41506d = []byte{
+var fileDescriptor_session_entity_type_9381c2422871bc2f = []byte{
 	// 793 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0xdf, 0x4e, 0xd4, 0x4a,
 	0x18, 0x3f, 0x53, 0xce, 0x21, 0x30, 0xe4, 0x9c, 0x03, 0x73, 0xc8, 0xb2, 0x29, 0x87, 0x75, 0xad,

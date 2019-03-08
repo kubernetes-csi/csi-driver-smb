@@ -34,7 +34,7 @@ func (m *SimilarUserListInfo) Reset()         { *m = SimilarUserListInfo{} }
 func (m *SimilarUserListInfo) String() string { return proto.CompactTextString(m) }
 func (*SimilarUserListInfo) ProtoMessage()    {}
 func (*SimilarUserListInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{0}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{0}
 }
 func (m *SimilarUserListInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimilarUserListInfo.Unmarshal(m, b)
@@ -90,7 +90,7 @@ func (m *CrmBasedUserListInfo) Reset()         { *m = CrmBasedUserListInfo{} }
 func (m *CrmBasedUserListInfo) String() string { return proto.CompactTextString(m) }
 func (*CrmBasedUserListInfo) ProtoMessage()    {}
 func (*CrmBasedUserListInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{1}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{1}
 }
 func (m *CrmBasedUserListInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CrmBasedUserListInfo.Unmarshal(m, b)
@@ -155,7 +155,7 @@ func (m *UserListRuleInfo) Reset()         { *m = UserListRuleInfo{} }
 func (m *UserListRuleInfo) String() string { return proto.CompactTextString(m) }
 func (*UserListRuleInfo) ProtoMessage()    {}
 func (*UserListRuleInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{2}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{2}
 }
 func (m *UserListRuleInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListRuleInfo.Unmarshal(m, b)
@@ -202,7 +202,7 @@ func (m *UserListRuleItemGroupInfo) Reset()         { *m = UserListRuleItemGroup
 func (m *UserListRuleItemGroupInfo) String() string { return proto.CompactTextString(m) }
 func (*UserListRuleItemGroupInfo) ProtoMessage()    {}
 func (*UserListRuleItemGroupInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{3}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{3}
 }
 func (m *UserListRuleItemGroupInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListRuleItemGroupInfo.Unmarshal(m, b)
@@ -256,7 +256,7 @@ func (m *UserListRuleItemInfo) Reset()         { *m = UserListRuleItemInfo{} }
 func (m *UserListRuleItemInfo) String() string { return proto.CompactTextString(m) }
 func (*UserListRuleItemInfo) ProtoMessage()    {}
 func (*UserListRuleItemInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{4}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{4}
 }
 func (m *UserListRuleItemInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListRuleItemInfo.Unmarshal(m, b)
@@ -449,7 +449,7 @@ func (m *UserListDateRuleItemInfo) Reset()         { *m = UserListDateRuleItemIn
 func (m *UserListDateRuleItemInfo) String() string { return proto.CompactTextString(m) }
 func (*UserListDateRuleItemInfo) ProtoMessage()    {}
 func (*UserListDateRuleItemInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{5}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{5}
 }
 func (m *UserListDateRuleItemInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListDateRuleItemInfo.Unmarshal(m, b)
@@ -509,7 +509,7 @@ func (m *UserListNumberRuleItemInfo) Reset()         { *m = UserListNumberRuleIt
 func (m *UserListNumberRuleItemInfo) String() string { return proto.CompactTextString(m) }
 func (*UserListNumberRuleItemInfo) ProtoMessage()    {}
 func (*UserListNumberRuleItemInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{6}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{6}
 }
 func (m *UserListNumberRuleItemInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListNumberRuleItemInfo.Unmarshal(m, b)
@@ -563,7 +563,7 @@ func (m *UserListStringRuleItemInfo) Reset()         { *m = UserListStringRuleIt
 func (m *UserListStringRuleItemInfo) String() string { return proto.CompactTextString(m) }
 func (*UserListStringRuleItemInfo) ProtoMessage()    {}
 func (*UserListStringRuleItemInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{7}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{7}
 }
 func (m *UserListStringRuleItemInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListStringRuleItemInfo.Unmarshal(m, b)
@@ -622,7 +622,7 @@ func (m *CombinedRuleUserListInfo) Reset()         { *m = CombinedRuleUserListIn
 func (m *CombinedRuleUserListInfo) String() string { return proto.CompactTextString(m) }
 func (*CombinedRuleUserListInfo) ProtoMessage()    {}
 func (*CombinedRuleUserListInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{8}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{8}
 }
 func (m *CombinedRuleUserListInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CombinedRuleUserListInfo.Unmarshal(m, b)
@@ -688,7 +688,7 @@ func (m *DateSpecificRuleUserListInfo) Reset()         { *m = DateSpecificRuleUs
 func (m *DateSpecificRuleUserListInfo) String() string { return proto.CompactTextString(m) }
 func (*DateSpecificRuleUserListInfo) ProtoMessage()    {}
 func (*DateSpecificRuleUserListInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{9}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{9}
 }
 func (m *DateSpecificRuleUserListInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DateSpecificRuleUserListInfo.Unmarshal(m, b)
@@ -747,7 +747,7 @@ func (m *ExpressionRuleUserListInfo) Reset()         { *m = ExpressionRuleUserLi
 func (m *ExpressionRuleUserListInfo) String() string { return proto.CompactTextString(m) }
 func (*ExpressionRuleUserListInfo) ProtoMessage()    {}
 func (*ExpressionRuleUserListInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{10}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{10}
 }
 func (m *ExpressionRuleUserListInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExpressionRuleUserListInfo.Unmarshal(m, b)
@@ -801,7 +801,7 @@ func (m *RuleBasedUserListInfo) Reset()         { *m = RuleBasedUserListInfo{} }
 func (m *RuleBasedUserListInfo) String() string { return proto.CompactTextString(m) }
 func (*RuleBasedUserListInfo) ProtoMessage()    {}
 func (*RuleBasedUserListInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{11}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{11}
 }
 func (m *RuleBasedUserListInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RuleBasedUserListInfo.Unmarshal(m, b)
@@ -988,7 +988,7 @@ func (m *LogicalUserListInfo) Reset()         { *m = LogicalUserListInfo{} }
 func (m *LogicalUserListInfo) String() string { return proto.CompactTextString(m) }
 func (*LogicalUserListInfo) ProtoMessage()    {}
 func (*LogicalUserListInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{12}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{12}
 }
 func (m *LogicalUserListInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogicalUserListInfo.Unmarshal(m, b)
@@ -1031,7 +1031,7 @@ func (m *UserListLogicalRuleInfo) Reset()         { *m = UserListLogicalRuleInfo
 func (m *UserListLogicalRuleInfo) String() string { return proto.CompactTextString(m) }
 func (*UserListLogicalRuleInfo) ProtoMessage()    {}
 func (*UserListLogicalRuleInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{13}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{13}
 }
 func (m *UserListLogicalRuleInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListLogicalRuleInfo.Unmarshal(m, b)
@@ -1078,7 +1078,7 @@ func (m *LogicalUserListOperandInfo) Reset()         { *m = LogicalUserListOpera
 func (m *LogicalUserListOperandInfo) String() string { return proto.CompactTextString(m) }
 func (*LogicalUserListOperandInfo) ProtoMessage()    {}
 func (*LogicalUserListOperandInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{14}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{14}
 }
 func (m *LogicalUserListOperandInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogicalUserListOperandInfo.Unmarshal(m, b)
@@ -1118,7 +1118,7 @@ func (m *BasicUserListInfo) Reset()         { *m = BasicUserListInfo{} }
 func (m *BasicUserListInfo) String() string { return proto.CompactTextString(m) }
 func (*BasicUserListInfo) ProtoMessage()    {}
 func (*BasicUserListInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{15}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{15}
 }
 func (m *BasicUserListInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BasicUserListInfo.Unmarshal(m, b)
@@ -1162,7 +1162,7 @@ func (m *UserListActionInfo) Reset()         { *m = UserListActionInfo{} }
 func (m *UserListActionInfo) String() string { return proto.CompactTextString(m) }
 func (*UserListActionInfo) ProtoMessage()    {}
 func (*UserListActionInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_lists_4c0637d2608e3036, []int{16}
+	return fileDescriptor_user_lists_9726443b3eff6f1d, []int{16}
 }
 func (m *UserListActionInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListActionInfo.Unmarshal(m, b)
@@ -1314,10 +1314,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/common/user_lists.proto", fileDescriptor_user_lists_4c0637d2608e3036)
+	proto.RegisterFile("google/ads/googleads/v0/common/user_lists.proto", fileDescriptor_user_lists_9726443b3eff6f1d)
 }
 
-var fileDescriptor_user_lists_4c0637d2608e3036 = []byte{
+var fileDescriptor_user_lists_9726443b3eff6f1d = []byte{
 	// 1293 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x58, 0xc1, 0x6e, 0xdb, 0x46,
 	0x13, 0x36, 0x65, 0x27, 0xb1, 0xc7, 0x8e, 0x7e, 0x67, 0xe3, 0x3f, 0x51, 0xd4, 0x20, 0x08, 0x78,

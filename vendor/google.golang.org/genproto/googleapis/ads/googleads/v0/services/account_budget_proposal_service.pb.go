@@ -40,7 +40,7 @@ func (m *GetAccountBudgetProposalRequest) Reset()         { *m = GetAccountBudge
 func (m *GetAccountBudgetProposalRequest) String() string { return proto.CompactTextString(m) }
 func (*GetAccountBudgetProposalRequest) ProtoMessage()    {}
 func (*GetAccountBudgetProposalRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_account_budget_proposal_service_1f7150e9ae5c0bd6, []int{0}
+	return fileDescriptor_account_budget_proposal_service_e914761b5f55b9ea, []int{0}
 }
 func (m *GetAccountBudgetProposalRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetAccountBudgetProposalRequest.Unmarshal(m, b)
@@ -83,7 +83,7 @@ func (m *MutateAccountBudgetProposalRequest) Reset()         { *m = MutateAccoun
 func (m *MutateAccountBudgetProposalRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateAccountBudgetProposalRequest) ProtoMessage()    {}
 func (*MutateAccountBudgetProposalRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_account_budget_proposal_service_1f7150e9ae5c0bd6, []int{1}
+	return fileDescriptor_account_budget_proposal_service_e914761b5f55b9ea, []int{1}
 }
 func (m *MutateAccountBudgetProposalRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateAccountBudgetProposalRequest.Unmarshal(m, b)
@@ -142,7 +142,7 @@ func (m *AccountBudgetProposalOperation) Reset()         { *m = AccountBudgetPro
 func (m *AccountBudgetProposalOperation) String() string { return proto.CompactTextString(m) }
 func (*AccountBudgetProposalOperation) ProtoMessage()    {}
 func (*AccountBudgetProposalOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_account_budget_proposal_service_1f7150e9ae5c0bd6, []int{2}
+	return fileDescriptor_account_budget_proposal_service_e914761b5f55b9ea, []int{2}
 }
 func (m *AccountBudgetProposalOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountBudgetProposalOperation.Unmarshal(m, b)
@@ -289,7 +289,7 @@ func (m *MutateAccountBudgetProposalResponse) Reset()         { *m = MutateAccou
 func (m *MutateAccountBudgetProposalResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateAccountBudgetProposalResponse) ProtoMessage()    {}
 func (*MutateAccountBudgetProposalResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_account_budget_proposal_service_1f7150e9ae5c0bd6, []int{3}
+	return fileDescriptor_account_budget_proposal_service_e914761b5f55b9ea, []int{3}
 }
 func (m *MutateAccountBudgetProposalResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateAccountBudgetProposalResponse.Unmarshal(m, b)
@@ -329,7 +329,7 @@ func (m *MutateAccountBudgetProposalResult) Reset()         { *m = MutateAccount
 func (m *MutateAccountBudgetProposalResult) String() string { return proto.CompactTextString(m) }
 func (*MutateAccountBudgetProposalResult) ProtoMessage()    {}
 func (*MutateAccountBudgetProposalResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_account_budget_proposal_service_1f7150e9ae5c0bd6, []int{4}
+	return fileDescriptor_account_budget_proposal_service_e914761b5f55b9ea, []int{4}
 }
 func (m *MutateAccountBudgetProposalResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateAccountBudgetProposalResult.Unmarshal(m, b)
@@ -476,10 +476,10 @@ var _AccountBudgetProposalService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/account_budget_proposal_service.proto", fileDescriptor_account_budget_proposal_service_1f7150e9ae5c0bd6)
+	proto.RegisterFile("google/ads/googleads/v0/services/account_budget_proposal_service.proto", fileDescriptor_account_budget_proposal_service_e914761b5f55b9ea)
 }
 
-var fileDescriptor_account_budget_proposal_service_1f7150e9ae5c0bd6 = []byte{
+var fileDescriptor_account_budget_proposal_service_e914761b5f55b9ea = []byte{
 	// 603 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0x3f, 0x6f, 0xd3, 0x40,
 	0x1c, 0xc5, 0xae, 0x14, 0xa9, 0x17, 0x58, 0x6e, 0x8a, 0x42, 0x45, 0x53, 0xb7, 0x43, 0x95, 0xc1,

@@ -152,7 +152,7 @@ func (x UserListErrorEnum_UserListError) String() string {
 	return proto.EnumName(UserListErrorEnum_UserListError_name, int32(x))
 }
 func (UserListErrorEnum_UserListError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_error_e79c5f0b379df020, []int{0, 0}
+	return fileDescriptor_user_list_error_1e016a5195a79925, []int{0, 0}
 }
 
 // Container for enum describing possible user list errors.
@@ -166,7 +166,7 @@ func (m *UserListErrorEnum) Reset()         { *m = UserListErrorEnum{} }
 func (m *UserListErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*UserListErrorEnum) ProtoMessage()    {}
 func (*UserListErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_error_e79c5f0b379df020, []int{0}
+	return fileDescriptor_user_list_error_1e016a5195a79925, []int{0}
 }
 func (m *UserListErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListErrorEnum.Unmarshal(m, b)
@@ -192,10 +192,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/user_list_error.proto", fileDescriptor_user_list_error_e79c5f0b379df020)
+	proto.RegisterFile("google/ads/googleads/v0/errors/user_list_error.proto", fileDescriptor_user_list_error_1e016a5195a79925)
 }
 
-var fileDescriptor_user_list_error_e79c5f0b379df020 = []byte{
+var fileDescriptor_user_list_error_1e016a5195a79925 = []byte{
 	// 723 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0xff, 0x6e, 0xeb, 0x34,
 	0x14, 0x66, 0xbd, 0x70, 0x0b, 0xde, 0xbd, 0x9b, 0x67, 0xc4, 0x26, 0x6d, 0xd0, 0xb1, 0x8e, 0x1f,

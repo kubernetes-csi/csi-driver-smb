@@ -50,7 +50,7 @@ func (x AdGroupBidModifierErrorEnum_AdGroupBidModifierError) String() string {
 	return proto.EnumName(AdGroupBidModifierErrorEnum_AdGroupBidModifierError_name, int32(x))
 }
 func (AdGroupBidModifierErrorEnum_AdGroupBidModifierError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_bid_modifier_error_43fd2d486e1bc612, []int{0, 0}
+	return fileDescriptor_ad_group_bid_modifier_error_58f073e6430eb4c6, []int{0, 0}
 }
 
 // Container for enum describing possible ad group bid modifier errors.
@@ -64,7 +64,7 @@ func (m *AdGroupBidModifierErrorEnum) Reset()         { *m = AdGroupBidModifierE
 func (m *AdGroupBidModifierErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*AdGroupBidModifierErrorEnum) ProtoMessage()    {}
 func (*AdGroupBidModifierErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_bid_modifier_error_43fd2d486e1bc612, []int{0}
+	return fileDescriptor_ad_group_bid_modifier_error_58f073e6430eb4c6, []int{0}
 }
 func (m *AdGroupBidModifierErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdGroupBidModifierErrorEnum.Unmarshal(m, b)
@@ -90,10 +90,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/ad_group_bid_modifier_error.proto", fileDescriptor_ad_group_bid_modifier_error_43fd2d486e1bc612)
+	proto.RegisterFile("google/ads/googleads/v0/errors/ad_group_bid_modifier_error.proto", fileDescriptor_ad_group_bid_modifier_error_58f073e6430eb4c6)
 }
 
-var fileDescriptor_ad_group_bid_modifier_error_43fd2d486e1bc612 = []byte{
+var fileDescriptor_ad_group_bid_modifier_error_58f073e6430eb4c6 = []byte{
 	// 354 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0x41, 0x8a, 0xdb, 0x30,
 	0x14, 0x86, 0x6b, 0x07, 0x5a, 0x50, 0x16, 0x35, 0xde, 0x14, 0xda, 0x92, 0x85, 0x0f, 0x20, 0x1b,

@@ -53,7 +53,7 @@ func (x QuotaErrorEnum_QuotaError) String() string {
 	return proto.EnumName(QuotaErrorEnum_QuotaError_name, int32(x))
 }
 func (QuotaErrorEnum_QuotaError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_quota_error_f7d28594427f7a03, []int{0, 0}
+	return fileDescriptor_quota_error_57e44f2baa0e7c9d, []int{0, 0}
 }
 
 // Container for enum describing possible quota errors.
@@ -67,7 +67,7 @@ func (m *QuotaErrorEnum) Reset()         { *m = QuotaErrorEnum{} }
 func (m *QuotaErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*QuotaErrorEnum) ProtoMessage()    {}
 func (*QuotaErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_quota_error_f7d28594427f7a03, []int{0}
+	return fileDescriptor_quota_error_57e44f2baa0e7c9d, []int{0}
 }
 func (m *QuotaErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_QuotaErrorEnum.Unmarshal(m, b)
@@ -93,10 +93,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/quota_error.proto", fileDescriptor_quota_error_f7d28594427f7a03)
+	proto.RegisterFile("google/ads/googleads/v0/errors/quota_error.proto", fileDescriptor_quota_error_57e44f2baa0e7c9d)
 }
 
-var fileDescriptor_quota_error_f7d28594427f7a03 = []byte{
+var fileDescriptor_quota_error_57e44f2baa0e7c9d = []byte{
 	// 316 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x4f, 0x4e, 0xeb, 0x30,
 	0x18, 0xc4, 0x5f, 0xd2, 0x27, 0x90, 0x5c, 0x89, 0x16, 0x4b, 0xb0, 0xec, 0x22, 0x07, 0x70, 0x2c,

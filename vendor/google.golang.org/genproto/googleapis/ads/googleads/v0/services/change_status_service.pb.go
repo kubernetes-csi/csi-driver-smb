@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for '[ChangeStatusService.GetChangeStatus][google.ads.googleads.v0.services.ChangeStatusService.GetChangeStatus]'.
+// Request message for
+// '[ChangeStatusService.GetChangeStatus][google.ads.googleads.v0.services.ChangeStatusService.GetChangeStatus]'.
 type GetChangeStatusRequest struct {
 	// The resource name of the change status to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetChangeStatusRequest) Reset()         { *m = GetChangeStatusRequest{}
 func (m *GetChangeStatusRequest) String() string { return proto.CompactTextString(m) }
 func (*GetChangeStatusRequest) ProtoMessage()    {}
 func (*GetChangeStatusRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_change_status_service_fbfa8f36cb22e110, []int{0}
+	return fileDescriptor_change_status_service_d3545abf41b37a3c, []int{0}
 }
 func (m *GetChangeStatusRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetChangeStatusRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _ChangeStatusService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/change_status_service.proto", fileDescriptor_change_status_service_fbfa8f36cb22e110)
+	proto.RegisterFile("google/ads/googleads/v0/services/change_status_service.proto", fileDescriptor_change_status_service_d3545abf41b37a3c)
 }
 
-var fileDescriptor_change_status_service_fbfa8f36cb22e110 = []byte{
+var fileDescriptor_change_status_service_d3545abf41b37a3c = []byte{
 	// 360 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x3f, 0x4b, 0xc3, 0x40,
 	0x18, 0xc6, 0x49, 0x04, 0xc1, 0xa0, 0x08, 0x11, 0xa4, 0x14, 0x87, 0x52, 0x3b, 0x48, 0x87, 0xbb,

@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [VideoService.GetVideo][google.ads.googleads.v0.services.VideoService.GetVideo].
+// Request message for
+// [VideoService.GetVideo][google.ads.googleads.v0.services.VideoService.GetVideo].
 type GetVideoRequest struct {
 	// The resource name of the video to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetVideoRequest) Reset()         { *m = GetVideoRequest{} }
 func (m *GetVideoRequest) String() string { return proto.CompactTextString(m) }
 func (*GetVideoRequest) ProtoMessage()    {}
 func (*GetVideoRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_video_service_8b8505c516feb5c1, []int{0}
+	return fileDescriptor_video_service_57cb2291a24ff9e2, []int{0}
 }
 func (m *GetVideoRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetVideoRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _VideoService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/video_service.proto", fileDescriptor_video_service_8b8505c516feb5c1)
+	proto.RegisterFile("google/ads/googleads/v0/services/video_service.proto", fileDescriptor_video_service_57cb2291a24ff9e2)
 }
 
-var fileDescriptor_video_service_8b8505c516feb5c1 = []byte{
+var fileDescriptor_video_service_57cb2291a24ff9e2 = []byte{
 	// 350 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0xcf, 0x4a, 0xf3, 0x40,
 	0x14, 0xc5, 0x49, 0x3e, 0xf8, 0xd0, 0x50, 0x11, 0xb3, 0x92, 0xe2, 0xa2, 0xd4, 0x2e, 0x4a, 0xc1,

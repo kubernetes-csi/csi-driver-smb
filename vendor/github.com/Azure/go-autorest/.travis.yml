@@ -3,13 +3,9 @@ sudo: false
 language: go
 
 go:
-  - master
-  - 1.11.x
   - 1.10.x
-
-matrix:
-  allow_failures:
-    - go: master
+  - 1.11.x
+  - 1.12.x
 
 env:
   - DEP_VERSION="0.5.0"

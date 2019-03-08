@@ -49,7 +49,7 @@ func (x UserListAccessStatusEnum_UserListAccessStatus) String() string {
 	return proto.EnumName(UserListAccessStatusEnum_UserListAccessStatus_name, int32(x))
 }
 func (UserListAccessStatusEnum_UserListAccessStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_access_status_f1a3843b7063332f, []int{0, 0}
+	return fileDescriptor_user_list_access_status_d0339562e8778e00, []int{0, 0}
 }
 
 // Indicates if this client still has access to the list.
@@ -63,7 +63,7 @@ func (m *UserListAccessStatusEnum) Reset()         { *m = UserListAccessStatusEn
 func (m *UserListAccessStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*UserListAccessStatusEnum) ProtoMessage()    {}
 func (*UserListAccessStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_access_status_f1a3843b7063332f, []int{0}
+	return fileDescriptor_user_list_access_status_d0339562e8778e00, []int{0}
 }
 func (m *UserListAccessStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListAccessStatusEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_access_status.proto", fileDescriptor_user_list_access_status_f1a3843b7063332f)
+	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_access_status.proto", fileDescriptor_user_list_access_status_d0339562e8778e00)
 }
 
-var fileDescriptor_user_list_access_status_f1a3843b7063332f = []byte{
+var fileDescriptor_user_list_access_status_d0339562e8778e00 = []byte{
 	// 294 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x6a, 0x83, 0x40,
 	0x14, 0x86, 0xab, 0x81, 0xb6, 0x4c, 0x0a, 0x15, 0xe9, 0xa2, 0x5d, 0x64, 0x91, 0x1c, 0x60, 0x14,

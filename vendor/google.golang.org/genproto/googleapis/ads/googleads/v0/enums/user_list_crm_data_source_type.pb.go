@@ -53,7 +53,7 @@ func (x UserListCrmDataSourceTypeEnum_UserListCrmDataSourceType) String() string
 	return proto.EnumName(UserListCrmDataSourceTypeEnum_UserListCrmDataSourceType_name, int32(x))
 }
 func (UserListCrmDataSourceTypeEnum_UserListCrmDataSourceType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_crm_data_source_type_46aa1159c5eb85d6, []int{0, 0}
+	return fileDescriptor_user_list_crm_data_source_type_a719033496c7b5f6, []int{0, 0}
 }
 
 // Indicates source of Crm upload data.
@@ -67,7 +67,7 @@ func (m *UserListCrmDataSourceTypeEnum) Reset()         { *m = UserListCrmDataSo
 func (m *UserListCrmDataSourceTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*UserListCrmDataSourceTypeEnum) ProtoMessage()    {}
 func (*UserListCrmDataSourceTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_crm_data_source_type_46aa1159c5eb85d6, []int{0}
+	return fileDescriptor_user_list_crm_data_source_type_a719033496c7b5f6, []int{0}
 }
 func (m *UserListCrmDataSourceTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListCrmDataSourceTypeEnum.Unmarshal(m, b)
@@ -93,10 +93,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_crm_data_source_type.proto", fileDescriptor_user_list_crm_data_source_type_46aa1159c5eb85d6)
+	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_crm_data_source_type.proto", fileDescriptor_user_list_crm_data_source_type_a719033496c7b5f6)
 }
 
-var fileDescriptor_user_list_crm_data_source_type_46aa1159c5eb85d6 = []byte{
+var fileDescriptor_user_list_crm_data_source_type_a719033496c7b5f6 = []byte{
 	// 345 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x6a, 0xbb, 0x40,
 	0x18, 0xc5, 0xff, 0x9a, 0x3f, 0x2d, 0x4c, 0x16, 0x15, 0x17, 0x85, 0x14, 0x2c, 0x24, 0x07, 0x18,

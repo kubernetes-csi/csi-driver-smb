@@ -77,7 +77,7 @@ func (x AdvertisingChannelSubTypeEnum_AdvertisingChannelSubType) String() string
 	return proto.EnumName(AdvertisingChannelSubTypeEnum_AdvertisingChannelSubType_name, int32(x))
 }
 func (AdvertisingChannelSubTypeEnum_AdvertisingChannelSubType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_advertising_channel_sub_type_7e92338015ff8fdc, []int{0, 0}
+	return fileDescriptor_advertising_channel_sub_type_f72ec187c684ece1, []int{0, 0}
 }
 
 // An immutable specialization of an Advertising Channel.
@@ -91,7 +91,7 @@ func (m *AdvertisingChannelSubTypeEnum) Reset()         { *m = AdvertisingChanne
 func (m *AdvertisingChannelSubTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*AdvertisingChannelSubTypeEnum) ProtoMessage()    {}
 func (*AdvertisingChannelSubTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_advertising_channel_sub_type_7e92338015ff8fdc, []int{0}
+	return fileDescriptor_advertising_channel_sub_type_f72ec187c684ece1, []int{0}
 }
 func (m *AdvertisingChannelSubTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdvertisingChannelSubTypeEnum.Unmarshal(m, b)
@@ -117,10 +117,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/advertising_channel_sub_type.proto", fileDescriptor_advertising_channel_sub_type_7e92338015ff8fdc)
+	proto.RegisterFile("google/ads/googleads/v0/enums/advertising_channel_sub_type.proto", fileDescriptor_advertising_channel_sub_type_f72ec187c684ece1)
 }
 
-var fileDescriptor_advertising_channel_sub_type_7e92338015ff8fdc = []byte{
+var fileDescriptor_advertising_channel_sub_type_f72ec187c684ece1 = []byte{
 	// 415 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xdf, 0x8a, 0xd3, 0x40,
 	0x14, 0xc6, 0x6d, 0x56, 0x77, 0x75, 0x56, 0xdc, 0x71, 0xd4, 0x05, 0x85, 0x0a, 0xbb, 0x0f, 0x30,

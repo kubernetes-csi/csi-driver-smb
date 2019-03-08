@@ -28,7 +28,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [UserListService.GetUserList][google.ads.googleads.v0.services.UserListService.GetUserList].
+// Request message for
+// [UserListService.GetUserList][google.ads.googleads.v0.services.UserListService.GetUserList].
 type GetUserListRequest struct {
 	// The resource name of the user list to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -41,7 +42,7 @@ func (m *GetUserListRequest) Reset()         { *m = GetUserListRequest{} }
 func (m *GetUserListRequest) String() string { return proto.CompactTextString(m) }
 func (*GetUserListRequest) ProtoMessage()    {}
 func (*GetUserListRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_service_d03c9964b5f5ca0c, []int{0}
+	return fileDescriptor_user_list_service_9007eca8faf25c9a, []int{0}
 }
 func (m *GetUserListRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetUserListRequest.Unmarshal(m, b)
@@ -68,7 +69,8 @@ func (m *GetUserListRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [UserListService.MutateUserLists][google.ads.googleads.v0.services.UserListService.MutateUserLists].
+// Request message for
+// [UserListService.MutateUserLists][google.ads.googleads.v0.services.UserListService.MutateUserLists].
 type MutateUserListsRequest struct {
 	// The ID of the customer whose user lists are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -91,7 +93,7 @@ func (m *MutateUserListsRequest) Reset()         { *m = MutateUserListsRequest{}
 func (m *MutateUserListsRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateUserListsRequest) ProtoMessage()    {}
 func (*MutateUserListsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_service_d03c9964b5f5ca0c, []int{1}
+	return fileDescriptor_user_list_service_9007eca8faf25c9a, []int{1}
 }
 func (m *MutateUserListsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateUserListsRequest.Unmarshal(m, b)
@@ -159,7 +161,7 @@ func (m *UserListOperation) Reset()         { *m = UserListOperation{} }
 func (m *UserListOperation) String() string { return proto.CompactTextString(m) }
 func (*UserListOperation) ProtoMessage()    {}
 func (*UserListOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_service_d03c9964b5f5ca0c, []int{2}
+	return fileDescriptor_user_list_service_9007eca8faf25c9a, []int{2}
 }
 func (m *UserListOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListOperation.Unmarshal(m, b)
@@ -343,7 +345,7 @@ func (m *MutateUserListsResponse) Reset()         { *m = MutateUserListsResponse
 func (m *MutateUserListsResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateUserListsResponse) ProtoMessage()    {}
 func (*MutateUserListsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_service_d03c9964b5f5ca0c, []int{3}
+	return fileDescriptor_user_list_service_9007eca8faf25c9a, []int{3}
 }
 func (m *MutateUserListsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateUserListsResponse.Unmarshal(m, b)
@@ -390,7 +392,7 @@ func (m *MutateUserListResult) Reset()         { *m = MutateUserListResult{} }
 func (m *MutateUserListResult) String() string { return proto.CompactTextString(m) }
 func (*MutateUserListResult) ProtoMessage()    {}
 func (*MutateUserListResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_service_d03c9964b5f5ca0c, []int{4}
+	return fileDescriptor_user_list_service_9007eca8faf25c9a, []int{4}
 }
 func (m *MutateUserListResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateUserListResult.Unmarshal(m, b)
@@ -535,10 +537,10 @@ var _UserListService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/user_list_service.proto", fileDescriptor_user_list_service_d03c9964b5f5ca0c)
+	proto.RegisterFile("google/ads/googleads/v0/services/user_list_service.proto", fileDescriptor_user_list_service_9007eca8faf25c9a)
 }
 
-var fileDescriptor_user_list_service_d03c9964b5f5ca0c = []byte{
+var fileDescriptor_user_list_service_9007eca8faf25c9a = []byte{
 	// 708 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x4f, 0x6b, 0xd4, 0x40,
 	0x14, 0x37, 0xa9, 0x54, 0x3b, 0xa9, 0x16, 0xc7, 0x6a, 0x97, 0x45, 0x74, 0x89, 0x05, 0xcb, 0x16,

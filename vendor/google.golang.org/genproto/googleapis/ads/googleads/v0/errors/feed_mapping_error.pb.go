@@ -110,7 +110,7 @@ func (x FeedMappingErrorEnum_FeedMappingError) String() string {
 	return proto.EnumName(FeedMappingErrorEnum_FeedMappingError_name, int32(x))
 }
 func (FeedMappingErrorEnum_FeedMappingError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_feed_mapping_error_53246c5222fb01a5, []int{0, 0}
+	return fileDescriptor_feed_mapping_error_05e4b3c477cdcd72, []int{0, 0}
 }
 
 // Container for enum describing possible feed item errors.
@@ -124,7 +124,7 @@ func (m *FeedMappingErrorEnum) Reset()         { *m = FeedMappingErrorEnum{} }
 func (m *FeedMappingErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*FeedMappingErrorEnum) ProtoMessage()    {}
 func (*FeedMappingErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_mapping_error_53246c5222fb01a5, []int{0}
+	return fileDescriptor_feed_mapping_error_05e4b3c477cdcd72, []int{0}
 }
 func (m *FeedMappingErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedMappingErrorEnum.Unmarshal(m, b)
@@ -150,10 +150,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/feed_mapping_error.proto", fileDescriptor_feed_mapping_error_53246c5222fb01a5)
+	proto.RegisterFile("google/ads/googleads/v0/errors/feed_mapping_error.proto", fileDescriptor_feed_mapping_error_05e4b3c477cdcd72)
 }
 
-var fileDescriptor_feed_mapping_error_53246c5222fb01a5 = []byte{
+var fileDescriptor_feed_mapping_error_05e4b3c477cdcd72 = []byte{
 	// 538 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x93, 0xdf, 0x6e, 0xd3, 0x30,
 	0x14, 0xc6, 0x69, 0x47, 0x19, 0x9c, 0x02, 0x0b, 0x16, 0xff, 0x37, 0x06, 0x2a, 0x7f, 0x06, 0x43,

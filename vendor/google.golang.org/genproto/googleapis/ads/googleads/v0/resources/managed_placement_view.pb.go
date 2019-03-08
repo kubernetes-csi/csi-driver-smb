@@ -35,7 +35,7 @@ func (m *ManagedPlacementView) Reset()         { *m = ManagedPlacementView{} }
 func (m *ManagedPlacementView) String() string { return proto.CompactTextString(m) }
 func (*ManagedPlacementView) ProtoMessage()    {}
 func (*ManagedPlacementView) Descriptor() ([]byte, []int) {
-	return fileDescriptor_managed_placement_view_24a04ab0a419ff8a, []int{0}
+	return fileDescriptor_managed_placement_view_4bcd4b1e12afaf0c, []int{0}
 }
 func (m *ManagedPlacementView) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ManagedPlacementView.Unmarshal(m, b)
@@ -67,10 +67,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/managed_placement_view.proto", fileDescriptor_managed_placement_view_24a04ab0a419ff8a)
+	proto.RegisterFile("google/ads/googleads/v0/resources/managed_placement_view.proto", fileDescriptor_managed_placement_view_4bcd4b1e12afaf0c)
 }
 
-var fileDescriptor_managed_placement_view_24a04ab0a419ff8a = []byte{
+var fileDescriptor_managed_placement_view_4bcd4b1e12afaf0c = []byte{
 	// 259 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x4b, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xa2, 0xd4,

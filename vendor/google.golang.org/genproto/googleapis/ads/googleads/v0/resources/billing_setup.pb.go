@@ -76,7 +76,7 @@ func (m *BillingSetup) Reset()         { *m = BillingSetup{} }
 func (m *BillingSetup) String() string { return proto.CompactTextString(m) }
 func (*BillingSetup) ProtoMessage()    {}
 func (*BillingSetup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_24e9f67b1f70a676, []int{0}
+	return fileDescriptor_billing_setup_4f967751186eeb13, []int{0}
 }
 func (m *BillingSetup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BillingSetup.Unmarshal(m, b)
@@ -352,7 +352,7 @@ func (m *BillingSetup_PaymentsAccountInfo) Reset()         { *m = BillingSetup_P
 func (m *BillingSetup_PaymentsAccountInfo) String() string { return proto.CompactTextString(m) }
 func (*BillingSetup_PaymentsAccountInfo) ProtoMessage()    {}
 func (*BillingSetup_PaymentsAccountInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_24e9f67b1f70a676, []int{0, 0}
+	return fileDescriptor_billing_setup_4f967751186eeb13, []int{0, 0}
 }
 func (m *BillingSetup_PaymentsAccountInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BillingSetup_PaymentsAccountInfo.Unmarshal(m, b)
@@ -413,10 +413,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/billing_setup.proto", fileDescriptor_billing_setup_24e9f67b1f70a676)
+	proto.RegisterFile("google/ads/googleads/v0/resources/billing_setup.proto", fileDescriptor_billing_setup_4f967751186eeb13)
 }
 
-var fileDescriptor_billing_setup_24e9f67b1f70a676 = []byte{
+var fileDescriptor_billing_setup_4f967751186eeb13 = []byte{
 	// 620 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0xdf, 0x6a, 0xdb, 0x3e,
 	0x14, 0xc7, 0x7f, 0x76, 0x7e, 0x2b, 0xab, 0x9a, 0xb4, 0xab, 0xcb, 0xc0, 0x64, 0x7f, 0x68, 0x37,

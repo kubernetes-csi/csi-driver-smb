@@ -45,7 +45,7 @@ func (x RegionCodeErrorEnum_RegionCodeError) String() string {
 	return proto.EnumName(RegionCodeErrorEnum_RegionCodeError_name, int32(x))
 }
 func (RegionCodeErrorEnum_RegionCodeError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_region_code_error_2820e6f5eb827ccd, []int{0, 0}
+	return fileDescriptor_region_code_error_6722165fc661603e, []int{0, 0}
 }
 
 // Container for enum describing possible region code errors.
@@ -59,7 +59,7 @@ func (m *RegionCodeErrorEnum) Reset()         { *m = RegionCodeErrorEnum{} }
 func (m *RegionCodeErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*RegionCodeErrorEnum) ProtoMessage()    {}
 func (*RegionCodeErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_region_code_error_2820e6f5eb827ccd, []int{0}
+	return fileDescriptor_region_code_error_6722165fc661603e, []int{0}
 }
 func (m *RegionCodeErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RegionCodeErrorEnum.Unmarshal(m, b)
@@ -85,10 +85,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/region_code_error.proto", fileDescriptor_region_code_error_2820e6f5eb827ccd)
+	proto.RegisterFile("google/ads/googleads/v0/errors/region_code_error.proto", fileDescriptor_region_code_error_6722165fc661603e)
 }
 
-var fileDescriptor_region_code_error_2820e6f5eb827ccd = []byte{
+var fileDescriptor_region_code_error_6722165fc661603e = []byte{
 	// 286 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xc1, 0x4a, 0xc3, 0x30,
 	0x18, 0xc7, 0x5d, 0x05, 0x85, 0xec, 0xb0, 0xd2, 0x09, 0xde, 0x76, 0xe8, 0x03, 0xa4, 0x05, 0xc1,

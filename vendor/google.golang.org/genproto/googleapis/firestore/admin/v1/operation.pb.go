@@ -69,7 +69,7 @@ func (x OperationState) String() string {
 	return proto.EnumName(OperationState_name, int32(x))
 }
 func (OperationState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{0}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{0}
 }
 
 // Specifies how the index is changing.
@@ -99,10 +99,11 @@ func (x FieldOperationMetadata_IndexConfigDelta_ChangeType) String() string {
 	return proto.EnumName(FieldOperationMetadata_IndexConfigDelta_ChangeType_name, int32(x))
 }
 func (FieldOperationMetadata_IndexConfigDelta_ChangeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{1, 0, 0}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{1, 0, 0}
 }
 
-// Metadata for [google.longrunning.Operation][google.longrunning.Operation] results from
+// Metadata for [google.longrunning.Operation][google.longrunning.Operation]
+// results from
 // [FirestoreAdmin.CreateIndex][google.firestore.admin.v1.FirestoreAdmin.CreateIndex].
 type IndexOperationMetadata struct {
 	// The time this operation started.
@@ -128,7 +129,7 @@ func (m *IndexOperationMetadata) Reset()         { *m = IndexOperationMetadata{}
 func (m *IndexOperationMetadata) String() string { return proto.CompactTextString(m) }
 func (*IndexOperationMetadata) ProtoMessage()    {}
 func (*IndexOperationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{0}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{0}
 }
 func (m *IndexOperationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IndexOperationMetadata.Unmarshal(m, b)
@@ -190,7 +191,8 @@ func (m *IndexOperationMetadata) GetProgressBytes() *Progress {
 	return nil
 }
 
-// Metadata for [google.longrunning.Operation][google.longrunning.Operation] results from
+// Metadata for [google.longrunning.Operation][google.longrunning.Operation]
+// results from
 // [FirestoreAdmin.UpdateField][google.firestore.admin.v1.FirestoreAdmin.UpdateField].
 type FieldOperationMetadata struct {
 	// The time this operation started.
@@ -201,8 +203,9 @@ type FieldOperationMetadata struct {
 	// The field resource that this operation is acting on. For example:
 	// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/fields/{field_path}`
 	Field string `protobuf:"bytes,3,opt,name=field,proto3" json:"field,omitempty"`
-	// A list of [IndexConfigDelta][google.firestore.admin.v1.FieldOperationMetadata.IndexConfigDelta], which describe the intent of this
-	// operation.
+	// A list of
+	// [IndexConfigDelta][google.firestore.admin.v1.FieldOperationMetadata.IndexConfigDelta],
+	// which describe the intent of this operation.
 	IndexConfigDeltas []*FieldOperationMetadata_IndexConfigDelta `protobuf:"bytes,4,rep,name=index_config_deltas,json=indexConfigDeltas,proto3" json:"index_config_deltas,omitempty"`
 	// The state of the operation.
 	State OperationState `protobuf:"varint,5,opt,name=state,proto3,enum=google.firestore.admin.v1.OperationState" json:"state,omitempty"`
@@ -219,7 +222,7 @@ func (m *FieldOperationMetadata) Reset()         { *m = FieldOperationMetadata{}
 func (m *FieldOperationMetadata) String() string { return proto.CompactTextString(m) }
 func (*FieldOperationMetadata) ProtoMessage()    {}
 func (*FieldOperationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{1}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{1}
 }
 func (m *FieldOperationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldOperationMetadata.Unmarshal(m, b)
@@ -305,7 +308,7 @@ func (m *FieldOperationMetadata_IndexConfigDelta) Reset() {
 func (m *FieldOperationMetadata_IndexConfigDelta) String() string { return proto.CompactTextString(m) }
 func (*FieldOperationMetadata_IndexConfigDelta) ProtoMessage()    {}
 func (*FieldOperationMetadata_IndexConfigDelta) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{1, 0}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{1, 0}
 }
 func (m *FieldOperationMetadata_IndexConfigDelta) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldOperationMetadata_IndexConfigDelta.Unmarshal(m, b)
@@ -339,7 +342,8 @@ func (m *FieldOperationMetadata_IndexConfigDelta) GetIndex() *Index {
 	return nil
 }
 
-// Metadata for [google.longrunning.Operation][google.longrunning.Operation] results from
+// Metadata for [google.longrunning.Operation][google.longrunning.Operation]
+// results from
 // [FirestoreAdmin.ExportDocuments][google.firestore.admin.v1.FirestoreAdmin.ExportDocuments].
 type ExportDocumentsMetadata struct {
 	// The time this operation started.
@@ -366,7 +370,7 @@ func (m *ExportDocumentsMetadata) Reset()         { *m = ExportDocumentsMetadata
 func (m *ExportDocumentsMetadata) String() string { return proto.CompactTextString(m) }
 func (*ExportDocumentsMetadata) ProtoMessage()    {}
 func (*ExportDocumentsMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{2}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{2}
 }
 func (m *ExportDocumentsMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportDocumentsMetadata.Unmarshal(m, b)
@@ -435,7 +439,8 @@ func (m *ExportDocumentsMetadata) GetOutputUriPrefix() string {
 	return ""
 }
 
-// Metadata for [google.longrunning.Operation][google.longrunning.Operation] results from
+// Metadata for [google.longrunning.Operation][google.longrunning.Operation]
+// results from
 // [FirestoreAdmin.ImportDocuments][google.firestore.admin.v1.FirestoreAdmin.ImportDocuments].
 type ImportDocumentsMetadata struct {
 	// The time this operation started.
@@ -462,7 +467,7 @@ func (m *ImportDocumentsMetadata) Reset()         { *m = ImportDocumentsMetadata
 func (m *ImportDocumentsMetadata) String() string { return proto.CompactTextString(m) }
 func (*ImportDocumentsMetadata) ProtoMessage()    {}
 func (*ImportDocumentsMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{3}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{3}
 }
 func (m *ImportDocumentsMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportDocumentsMetadata.Unmarshal(m, b)
@@ -531,7 +536,8 @@ func (m *ImportDocumentsMetadata) GetInputUriPrefix() string {
 	return ""
 }
 
-// Returned in the [google.longrunning.Operation][google.longrunning.Operation] response field.
+// Returned in the [google.longrunning.Operation][google.longrunning.Operation]
+// response field.
 type ExportDocumentsResponse struct {
 	// Location of the output files. This can be used to begin an import
 	// into Cloud Firestore (this project or another project) after the operation
@@ -546,7 +552,7 @@ func (m *ExportDocumentsResponse) Reset()         { *m = ExportDocumentsResponse
 func (m *ExportDocumentsResponse) String() string { return proto.CompactTextString(m) }
 func (*ExportDocumentsResponse) ProtoMessage()    {}
 func (*ExportDocumentsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{4}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{4}
 }
 func (m *ExportDocumentsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportDocumentsResponse.Unmarshal(m, b)
@@ -574,8 +580,8 @@ func (m *ExportDocumentsResponse) GetOutputUriPrefix() string {
 }
 
 // Describes the progress of the operation.
-// Unit of work is generic and must be interpreted based on where [Progress][google.firestore.admin.v1.Progress]
-// is used.
+// Unit of work is generic and must be interpreted based on where
+// [Progress][google.firestore.admin.v1.Progress] is used.
 type Progress struct {
 	// The amount of work estimated.
 	EstimatedWork int64 `protobuf:"varint,1,opt,name=estimated_work,json=estimatedWork,proto3" json:"estimated_work,omitempty"`
@@ -590,7 +596,7 @@ func (m *Progress) Reset()         { *m = Progress{} }
 func (m *Progress) String() string { return proto.CompactTextString(m) }
 func (*Progress) ProtoMessage()    {}
 func (*Progress) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operation_ab210cd74615767a, []int{5}
+	return fileDescriptor_operation_16cd806cb51ca48d, []int{5}
 }
 func (m *Progress) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Progress.Unmarshal(m, b)
@@ -637,10 +643,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/firestore/admin/v1/operation.proto", fileDescriptor_operation_ab210cd74615767a)
+	proto.RegisterFile("google/firestore/admin/v1/operation.proto", fileDescriptor_operation_16cd806cb51ca48d)
 }
 
-var fileDescriptor_operation_ab210cd74615767a = []byte{
+var fileDescriptor_operation_16cd806cb51ca48d = []byte{
 	// 848 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x56, 0x4f, 0x6f, 0xe3, 0x44,
 	0x1c, 0xc5, 0x71, 0x92, 0x6e, 0x7e, 0xa5, 0x59, 0x77, 0x40, 0xdb, 0xd0, 0x05, 0x35, 0x0a, 0x5a,

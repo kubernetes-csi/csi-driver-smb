@@ -44,7 +44,7 @@ func (x DocumentTransform_FieldTransform_ServerValue) String() string {
 	return proto.EnumName(DocumentTransform_FieldTransform_ServerValue_name, int32(x))
 }
 func (DocumentTransform_FieldTransform_ServerValue) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{1, 0, 0}
+	return fileDescriptor_write_73e535b77f3aa557, []int{1, 0, 0}
 }
 
 // A write on a document.
@@ -80,7 +80,7 @@ func (m *Write) Reset()         { *m = Write{} }
 func (m *Write) String() string { return proto.CompactTextString(m) }
 func (*Write) ProtoMessage()    {}
 func (*Write) Descriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{0}
+	return fileDescriptor_write_73e535b77f3aa557, []int{0}
 }
 func (m *Write) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Write.Unmarshal(m, b)
@@ -270,7 +270,7 @@ func (m *DocumentTransform) Reset()         { *m = DocumentTransform{} }
 func (m *DocumentTransform) String() string { return proto.CompactTextString(m) }
 func (*DocumentTransform) ProtoMessage()    {}
 func (*DocumentTransform) Descriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{1}
+	return fileDescriptor_write_73e535b77f3aa557, []int{1}
 }
 func (m *DocumentTransform) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DocumentTransform.Unmarshal(m, b)
@@ -306,8 +306,9 @@ func (m *DocumentTransform) GetFieldTransforms() []*DocumentTransform_FieldTrans
 
 // A transformation of a field of the document.
 type DocumentTransform_FieldTransform struct {
-	// The path of the field. See [Document.fields][google.firestore.v1beta1.Document.fields] for the field path syntax
-	// reference.
+	// The path of the field. See
+	// [Document.fields][google.firestore.v1beta1.Document.fields] for the field
+	// path syntax reference.
 	FieldPath string `protobuf:"bytes,1,opt,name=field_path,json=fieldPath,proto3" json:"field_path,omitempty"`
 	// The transformation to apply on the field.
 	//
@@ -328,7 +329,7 @@ func (m *DocumentTransform_FieldTransform) Reset()         { *m = DocumentTransf
 func (m *DocumentTransform_FieldTransform) String() string { return proto.CompactTextString(m) }
 func (*DocumentTransform_FieldTransform) ProtoMessage()    {}
 func (*DocumentTransform_FieldTransform) Descriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{1, 0}
+	return fileDescriptor_write_73e535b77f3aa557, []int{1, 0}
 }
 func (m *DocumentTransform_FieldTransform) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DocumentTransform_FieldTransform.Unmarshal(m, b)
@@ -601,8 +602,9 @@ type WriteResult struct {
 	// If the write did not actually change the document, this will be the
 	// previous update_time.
 	UpdateTime *timestamp.Timestamp `protobuf:"bytes,1,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
-	// The results of applying each [DocumentTransform.FieldTransform][google.firestore.v1beta1.DocumentTransform.FieldTransform], in the
-	// same order.
+	// The results of applying each
+	// [DocumentTransform.FieldTransform][google.firestore.v1beta1.DocumentTransform.FieldTransform],
+	// in the same order.
 	TransformResults     []*Value `protobuf:"bytes,2,rep,name=transform_results,json=transformResults,proto3" json:"transform_results,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -613,7 +615,7 @@ func (m *WriteResult) Reset()         { *m = WriteResult{} }
 func (m *WriteResult) String() string { return proto.CompactTextString(m) }
 func (*WriteResult) ProtoMessage()    {}
 func (*WriteResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{2}
+	return fileDescriptor_write_73e535b77f3aa557, []int{2}
 }
 func (m *WriteResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_WriteResult.Unmarshal(m, b)
@@ -649,11 +651,13 @@ func (m *WriteResult) GetTransformResults() []*Value {
 
 // A [Document][google.firestore.v1beta1.Document] has changed.
 //
-// May be the result of multiple [writes][google.firestore.v1beta1.Write], including deletes, that
-// ultimately resulted in a new value for the [Document][google.firestore.v1beta1.Document].
+// May be the result of multiple [writes][google.firestore.v1beta1.Write],
+// including deletes, that ultimately resulted in a new value for the
+// [Document][google.firestore.v1beta1.Document].
 //
-// Multiple [DocumentChange][google.firestore.v1beta1.DocumentChange] messages may be returned for the same logical
-// change, if multiple targets are affected.
+// Multiple [DocumentChange][google.firestore.v1beta1.DocumentChange] messages
+// may be returned for the same logical change, if multiple targets are
+// affected.
 type DocumentChange struct {
 	// The new state of the [Document][google.firestore.v1beta1.Document].
 	//
@@ -672,7 +676,7 @@ func (m *DocumentChange) Reset()         { *m = DocumentChange{} }
 func (m *DocumentChange) String() string { return proto.CompactTextString(m) }
 func (*DocumentChange) ProtoMessage()    {}
 func (*DocumentChange) Descriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{3}
+	return fileDescriptor_write_73e535b77f3aa557, []int{3}
 }
 func (m *DocumentChange) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DocumentChange.Unmarshal(m, b)
@@ -715,13 +719,16 @@ func (m *DocumentChange) GetRemovedTargetIds() []int32 {
 
 // A [Document][google.firestore.v1beta1.Document] has been deleted.
 //
-// May be the result of multiple [writes][google.firestore.v1beta1.Write], including updates, the
-// last of which deleted the [Document][google.firestore.v1beta1.Document].
+// May be the result of multiple [writes][google.firestore.v1beta1.Write],
+// including updates, the last of which deleted the
+// [Document][google.firestore.v1beta1.Document].
 //
-// Multiple [DocumentDelete][google.firestore.v1beta1.DocumentDelete] messages may be returned for the same logical
-// delete, if multiple targets are affected.
+// Multiple [DocumentDelete][google.firestore.v1beta1.DocumentDelete] messages
+// may be returned for the same logical delete, if multiple targets are
+// affected.
 type DocumentDelete struct {
-	// The resource name of the [Document][google.firestore.v1beta1.Document] that was deleted.
+	// The resource name of the [Document][google.firestore.v1beta1.Document] that
+	// was deleted.
 	Document string `protobuf:"bytes,1,opt,name=document,proto3" json:"document,omitempty"`
 	// A set of target IDs for targets that previously matched this entity.
 	RemovedTargetIds []int32 `protobuf:"varint,6,rep,packed,name=removed_target_ids,json=removedTargetIds,proto3" json:"removed_target_ids,omitempty"`
@@ -738,7 +745,7 @@ func (m *DocumentDelete) Reset()         { *m = DocumentDelete{} }
 func (m *DocumentDelete) String() string { return proto.CompactTextString(m) }
 func (*DocumentDelete) ProtoMessage()    {}
 func (*DocumentDelete) Descriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{4}
+	return fileDescriptor_write_73e535b77f3aa557, []int{4}
 }
 func (m *DocumentDelete) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DocumentDelete.Unmarshal(m, b)
@@ -779,16 +786,19 @@ func (m *DocumentDelete) GetReadTime() *timestamp.Timestamp {
 	return nil
 }
 
-// A [Document][google.firestore.v1beta1.Document] has been removed from the view of the targets.
+// A [Document][google.firestore.v1beta1.Document] has been removed from the
+// view of the targets.
 //
 // Sent if the document is no longer relevant to a target and is out of view.
 // Can be sent instead of a DocumentDelete or a DocumentChange if the server
 // can not send the new value of the document.
 //
-// Multiple [DocumentRemove][google.firestore.v1beta1.DocumentRemove] messages may be returned for the same logical
-// write or delete, if multiple targets are affected.
+// Multiple [DocumentRemove][google.firestore.v1beta1.DocumentRemove] messages
+// may be returned for the same logical write or delete, if multiple targets are
+// affected.
 type DocumentRemove struct {
-	// The resource name of the [Document][google.firestore.v1beta1.Document] that has gone out of view.
+	// The resource name of the [Document][google.firestore.v1beta1.Document] that
+	// has gone out of view.
 	Document string `protobuf:"bytes,1,opt,name=document,proto3" json:"document,omitempty"`
 	// A set of target IDs for targets that previously matched this document.
 	RemovedTargetIds []int32 `protobuf:"varint,2,rep,packed,name=removed_target_ids,json=removedTargetIds,proto3" json:"removed_target_ids,omitempty"`
@@ -805,7 +815,7 @@ func (m *DocumentRemove) Reset()         { *m = DocumentRemove{} }
 func (m *DocumentRemove) String() string { return proto.CompactTextString(m) }
 func (*DocumentRemove) ProtoMessage()    {}
 func (*DocumentRemove) Descriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{5}
+	return fileDescriptor_write_73e535b77f3aa557, []int{5}
 }
 func (m *DocumentRemove) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DocumentRemove.Unmarshal(m, b)
@@ -850,7 +860,8 @@ func (m *DocumentRemove) GetReadTime() *timestamp.Timestamp {
 type ExistenceFilter struct {
 	// The target ID to which this filter applies.
 	TargetId int32 `protobuf:"varint,1,opt,name=target_id,json=targetId,proto3" json:"target_id,omitempty"`
-	// The total count of documents that match [target_id][google.firestore.v1beta1.ExistenceFilter.target_id].
+	// The total count of documents that match
+	// [target_id][google.firestore.v1beta1.ExistenceFilter.target_id].
 	//
 	// If different from the count of documents in the client that match, the
 	// client must manually determine which documents no longer match the target.
@@ -864,7 +875,7 @@ func (m *ExistenceFilter) Reset()         { *m = ExistenceFilter{} }
 func (m *ExistenceFilter) String() string { return proto.CompactTextString(m) }
 func (*ExistenceFilter) ProtoMessage()    {}
 func (*ExistenceFilter) Descriptor() ([]byte, []int) {
-	return fileDescriptor_write_cc36c9fc71610087, []int{6}
+	return fileDescriptor_write_73e535b77f3aa557, []int{6}
 }
 func (m *ExistenceFilter) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExistenceFilter.Unmarshal(m, b)
@@ -911,10 +922,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/firestore/v1beta1/write.proto", fileDescriptor_write_cc36c9fc71610087)
+	proto.RegisterFile("google/firestore/v1beta1/write.proto", fileDescriptor_write_73e535b77f3aa557)
 }
 
-var fileDescriptor_write_cc36c9fc71610087 = []byte{
+var fileDescriptor_write_73e535b77f3aa557 = []byte{
 	// 866 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xdd, 0x6e, 0xe3, 0x44,
 	0x14, 0x6e, 0xd2, 0x26, 0xdb, 0x9c, 0xa0, 0xd6, 0x3b, 0xb0, 0xc2, 0x0a, 0x5d, 0xb6, 0x8a, 0x16,

@@ -94,7 +94,7 @@ func (x AudioEncoding) String() string {
 	return proto.EnumName(AudioEncoding_name, int32(x))
 }
 func (AudioEncoding) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{0}
+	return fileDescriptor_session_5c89eec6880587a6, []int{0}
 }
 
 // Type of the response message.
@@ -130,7 +130,7 @@ func (x StreamingRecognitionResult_MessageType) String() string {
 	return proto.EnumName(StreamingRecognitionResult_MessageType_name, int32(x))
 }
 func (StreamingRecognitionResult_MessageType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{7, 0}
+	return fileDescriptor_session_5c89eec6880587a6, []int{7, 0}
 }
 
 // The request to detect user's intent.
@@ -165,7 +165,7 @@ func (m *DetectIntentRequest) Reset()         { *m = DetectIntentRequest{} }
 func (m *DetectIntentRequest) String() string { return proto.CompactTextString(m) }
 func (*DetectIntentRequest) ProtoMessage()    {}
 func (*DetectIntentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{0}
+	return fileDescriptor_session_5c89eec6880587a6, []int{0}
 }
 func (m *DetectIntentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DetectIntentRequest.Unmarshal(m, b)
@@ -232,7 +232,7 @@ func (m *DetectIntentResponse) Reset()         { *m = DetectIntentResponse{} }
 func (m *DetectIntentResponse) String() string { return proto.CompactTextString(m) }
 func (*DetectIntentResponse) ProtoMessage()    {}
 func (*DetectIntentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{1}
+	return fileDescriptor_session_5c89eec6880587a6, []int{1}
 }
 func (m *DetectIntentResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DetectIntentResponse.Unmarshal(m, b)
@@ -304,7 +304,7 @@ func (m *QueryParameters) Reset()         { *m = QueryParameters{} }
 func (m *QueryParameters) String() string { return proto.CompactTextString(m) }
 func (*QueryParameters) ProtoMessage()    {}
 func (*QueryParameters) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{2}
+	return fileDescriptor_session_5c89eec6880587a6, []int{2}
 }
 func (m *QueryParameters) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_QueryParameters.Unmarshal(m, b)
@@ -391,7 +391,7 @@ func (m *QueryInput) Reset()         { *m = QueryInput{} }
 func (m *QueryInput) String() string { return proto.CompactTextString(m) }
 func (*QueryInput) ProtoMessage()    {}
 func (*QueryInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{3}
+	return fileDescriptor_session_5c89eec6880587a6, []int{3}
 }
 func (m *QueryInput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_QueryInput.Unmarshal(m, b)
@@ -622,7 +622,7 @@ func (m *QueryResult) Reset()         { *m = QueryResult{} }
 func (m *QueryResult) String() string { return proto.CompactTextString(m) }
 func (*QueryResult) ProtoMessage()    {}
 func (*QueryResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{4}
+	return fileDescriptor_session_5c89eec6880587a6, []int{4}
 }
 func (m *QueryResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_QueryResult.Unmarshal(m, b)
@@ -746,7 +746,8 @@ func (m *QueryResult) GetDiagnosticInfo() *_struct.Struct {
 // Multiple request messages should be sent in order:
 //
 // 1.  The first message must contain `session`, `query_input` plus optionally
-//     `query_params` and/or `single_utterance`. The message must not contain `input_audio`.
+//     `query_params` and/or `single_utterance`. The message must not contain
+//     `input_audio`.
 //
 // 2.  If `query_input` was set to a streaming input audio config,
 //     all subsequent messages must contain only `input_audio`.
@@ -792,7 +793,7 @@ func (m *StreamingDetectIntentRequest) Reset()         { *m = StreamingDetectInt
 func (m *StreamingDetectIntentRequest) String() string { return proto.CompactTextString(m) }
 func (*StreamingDetectIntentRequest) ProtoMessage()    {}
 func (*StreamingDetectIntentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{5}
+	return fileDescriptor_session_5c89eec6880587a6, []int{5}
 }
 func (m *StreamingDetectIntentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamingDetectIntentRequest.Unmarshal(m, b)
@@ -878,7 +879,7 @@ func (m *StreamingDetectIntentResponse) Reset()         { *m = StreamingDetectIn
 func (m *StreamingDetectIntentResponse) String() string { return proto.CompactTextString(m) }
 func (*StreamingDetectIntentResponse) ProtoMessage()    {}
 func (*StreamingDetectIntentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{6}
+	return fileDescriptor_session_5c89eec6880587a6, []int{6}
 }
 func (m *StreamingDetectIntentResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamingDetectIntentResponse.Unmarshal(m, b)
@@ -988,7 +989,7 @@ func (m *StreamingRecognitionResult) Reset()         { *m = StreamingRecognition
 func (m *StreamingRecognitionResult) String() string { return proto.CompactTextString(m) }
 func (*StreamingRecognitionResult) ProtoMessage()    {}
 func (*StreamingRecognitionResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{7}
+	return fileDescriptor_session_5c89eec6880587a6, []int{7}
 }
 func (m *StreamingRecognitionResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamingRecognitionResult.Unmarshal(m, b)
@@ -1064,7 +1065,7 @@ func (m *InputAudioConfig) Reset()         { *m = InputAudioConfig{} }
 func (m *InputAudioConfig) String() string { return proto.CompactTextString(m) }
 func (*InputAudioConfig) ProtoMessage()    {}
 func (*InputAudioConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{8}
+	return fileDescriptor_session_5c89eec6880587a6, []int{8}
 }
 func (m *InputAudioConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InputAudioConfig.Unmarshal(m, b)
@@ -1131,7 +1132,7 @@ func (m *TextInput) Reset()         { *m = TextInput{} }
 func (m *TextInput) String() string { return proto.CompactTextString(m) }
 func (*TextInput) ProtoMessage()    {}
 func (*TextInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{9}
+	return fileDescriptor_session_5c89eec6880587a6, []int{9}
 }
 func (m *TextInput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TextInput.Unmarshal(m, b)
@@ -1189,7 +1190,7 @@ func (m *EventInput) Reset()         { *m = EventInput{} }
 func (m *EventInput) String() string { return proto.CompactTextString(m) }
 func (*EventInput) ProtoMessage()    {}
 func (*EventInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_session_e51df00932adac70, []int{10}
+	return fileDescriptor_session_5c89eec6880587a6, []int{10}
 }
 func (m *EventInput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EventInput.Unmarshal(m, b)
@@ -1399,10 +1400,10 @@ var _Sessions_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/dialogflow/v2/session.proto", fileDescriptor_session_e51df00932adac70)
+	proto.RegisterFile("google/cloud/dialogflow/v2/session.proto", fileDescriptor_session_5c89eec6880587a6)
 }
 
-var fileDescriptor_session_e51df00932adac70 = []byte{
+var fileDescriptor_session_5c89eec6880587a6 = []byte{
 	// 1575 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x57, 0x4f, 0x73, 0x1b, 0x49,
 	0x15, 0xcf, 0xc8, 0xff, 0xe4, 0x27, 0xd9, 0xd2, 0x76, 0xb2, 0x9b, 0x89, 0x9d, 0x84, 0xa0, 0xad,

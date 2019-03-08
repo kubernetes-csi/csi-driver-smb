@@ -45,7 +45,7 @@ func (m *SearchTermView) Reset()         { *m = SearchTermView{} }
 func (m *SearchTermView) String() string { return proto.CompactTextString(m) }
 func (*SearchTermView) ProtoMessage()    {}
 func (*SearchTermView) Descriptor() ([]byte, []int) {
-	return fileDescriptor_search_term_view_3cb0ee904f1d648d, []int{0}
+	return fileDescriptor_search_term_view_8b2a817300d8eb0d, []int{0}
 }
 func (m *SearchTermView) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SearchTermView.Unmarshal(m, b)
@@ -98,10 +98,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/search_term_view.proto", fileDescriptor_search_term_view_3cb0ee904f1d648d)
+	proto.RegisterFile("google/ads/googleads/v0/resources/search_term_view.proto", fileDescriptor_search_term_view_8b2a817300d8eb0d)
 }
 
-var fileDescriptor_search_term_view_3cb0ee904f1d648d = []byte{
+var fileDescriptor_search_term_view_8b2a817300d8eb0d = []byte{
 	// 388 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0x4d, 0x6b, 0xdb, 0x30,
 	0x18, 0xc6, 0xce, 0xc8, 0x36, 0x65, 0xcb, 0xc1, 0xbb, 0x98, 0x30, 0x46, 0xb2, 0x11, 0xc8, 0x49,

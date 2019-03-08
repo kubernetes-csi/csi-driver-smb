@@ -27,7 +27,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// The request for [FirestoreAdmin.CreateIndex][google.firestore.admin.v1beta2.FirestoreAdmin.CreateIndex].
+// The request for
+// [FirestoreAdmin.CreateIndex][google.firestore.admin.v1beta2.FirestoreAdmin.CreateIndex].
 type CreateIndexRequest struct {
 	// A parent name of the form
 	// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}`
@@ -43,7 +44,7 @@ func (m *CreateIndexRequest) Reset()         { *m = CreateIndexRequest{} }
 func (m *CreateIndexRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateIndexRequest) ProtoMessage()    {}
 func (*CreateIndexRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{0}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{0}
 }
 func (m *CreateIndexRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateIndexRequest.Unmarshal(m, b)
@@ -77,7 +78,8 @@ func (m *CreateIndexRequest) GetIndex() *Index {
 	return nil
 }
 
-// The request for [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta2.FirestoreAdmin.ListIndexes].
+// The request for
+// [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta2.FirestoreAdmin.ListIndexes].
 type ListIndexesRequest struct {
 	// A parent name of the form
 	// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}`
@@ -87,8 +89,8 @@ type ListIndexesRequest struct {
 	// The number of results to return.
 	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// A page token, returned from a previous call to
-	// [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta2.FirestoreAdmin.ListIndexes], that may be used to get the next
-	// page of results.
+	// [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta2.FirestoreAdmin.ListIndexes],
+	// that may be used to get the next page of results.
 	PageToken            string   `protobuf:"bytes,4,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -99,7 +101,7 @@ func (m *ListIndexesRequest) Reset()         { *m = ListIndexesRequest{} }
 func (m *ListIndexesRequest) String() string { return proto.CompactTextString(m) }
 func (*ListIndexesRequest) ProtoMessage()    {}
 func (*ListIndexesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{1}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{1}
 }
 func (m *ListIndexesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListIndexesRequest.Unmarshal(m, b)
@@ -147,7 +149,8 @@ func (m *ListIndexesRequest) GetPageToken() string {
 	return ""
 }
 
-// The response for [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta2.FirestoreAdmin.ListIndexes].
+// The response for
+// [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta2.FirestoreAdmin.ListIndexes].
 type ListIndexesResponse struct {
 	// The requested indexes.
 	Indexes []*Index `protobuf:"bytes,1,rep,name=indexes,proto3" json:"indexes,omitempty"`
@@ -163,7 +166,7 @@ func (m *ListIndexesResponse) Reset()         { *m = ListIndexesResponse{} }
 func (m *ListIndexesResponse) String() string { return proto.CompactTextString(m) }
 func (*ListIndexesResponse) ProtoMessage()    {}
 func (*ListIndexesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{2}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{2}
 }
 func (m *ListIndexesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListIndexesResponse.Unmarshal(m, b)
@@ -197,7 +200,8 @@ func (m *ListIndexesResponse) GetNextPageToken() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.GetIndex][google.firestore.admin.v1beta2.FirestoreAdmin.GetIndex].
+// The request for
+// [FirestoreAdmin.GetIndex][google.firestore.admin.v1beta2.FirestoreAdmin.GetIndex].
 type GetIndexRequest struct {
 	// A name of the form
 	// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/indexes/{index_id}`
@@ -211,7 +215,7 @@ func (m *GetIndexRequest) Reset()         { *m = GetIndexRequest{} }
 func (m *GetIndexRequest) String() string { return proto.CompactTextString(m) }
 func (*GetIndexRequest) ProtoMessage()    {}
 func (*GetIndexRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{3}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{3}
 }
 func (m *GetIndexRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetIndexRequest.Unmarshal(m, b)
@@ -238,7 +242,8 @@ func (m *GetIndexRequest) GetName() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.DeleteIndex][google.firestore.admin.v1beta2.FirestoreAdmin.DeleteIndex].
+// The request for
+// [FirestoreAdmin.DeleteIndex][google.firestore.admin.v1beta2.FirestoreAdmin.DeleteIndex].
 type DeleteIndexRequest struct {
 	// A name of the form
 	// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/indexes/{index_id}`
@@ -252,7 +257,7 @@ func (m *DeleteIndexRequest) Reset()         { *m = DeleteIndexRequest{} }
 func (m *DeleteIndexRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteIndexRequest) ProtoMessage()    {}
 func (*DeleteIndexRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{4}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{4}
 }
 func (m *DeleteIndexRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteIndexRequest.Unmarshal(m, b)
@@ -279,7 +284,8 @@ func (m *DeleteIndexRequest) GetName() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.UpdateField][google.firestore.admin.v1beta2.FirestoreAdmin.UpdateField].
+// The request for
+// [FirestoreAdmin.UpdateField][google.firestore.admin.v1beta2.FirestoreAdmin.UpdateField].
 type UpdateFieldRequest struct {
 	// The field to be updated.
 	Field *Field `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
@@ -295,7 +301,7 @@ func (m *UpdateFieldRequest) Reset()         { *m = UpdateFieldRequest{} }
 func (m *UpdateFieldRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateFieldRequest) ProtoMessage()    {}
 func (*UpdateFieldRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{5}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{5}
 }
 func (m *UpdateFieldRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateFieldRequest.Unmarshal(m, b)
@@ -329,7 +335,8 @@ func (m *UpdateFieldRequest) GetUpdateMask() *field_mask.FieldMask {
 	return nil
 }
 
-// The request for [FirestoreAdmin.GetField][google.firestore.admin.v1beta2.FirestoreAdmin.GetField].
+// The request for
+// [FirestoreAdmin.GetField][google.firestore.admin.v1beta2.FirestoreAdmin.GetField].
 type GetFieldRequest struct {
 	// A name of the form
 	// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/fields/{field_id}`
@@ -343,7 +350,7 @@ func (m *GetFieldRequest) Reset()         { *m = GetFieldRequest{} }
 func (m *GetFieldRequest) String() string { return proto.CompactTextString(m) }
 func (*GetFieldRequest) ProtoMessage()    {}
 func (*GetFieldRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{6}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{6}
 }
 func (m *GetFieldRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetFieldRequest.Unmarshal(m, b)
@@ -370,22 +377,24 @@ func (m *GetFieldRequest) GetName() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields].
+// The request for
+// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields].
 type ListFieldsRequest struct {
 	// A parent name of the form
 	// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}`
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The filter to apply to list results. Currently,
-	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields] only supports listing fields
-	// that have been explicitly overridden. To issue this query, call
-	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields] with the filter set to
-	// `indexConfig.usesAncestorConfig:false`.
+	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields]
+	// only supports listing fields that have been explicitly overridden. To issue
+	// this query, call
+	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields]
+	// with the filter set to `indexConfig.usesAncestorConfig:false`.
 	Filter string `protobuf:"bytes,2,opt,name=filter,proto3" json:"filter,omitempty"`
 	// The number of results to return.
 	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// A page token, returned from a previous call to
-	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields], that may be used to get the next
-	// page of results.
+	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields],
+	// that may be used to get the next page of results.
 	PageToken            string   `protobuf:"bytes,4,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -396,7 +405,7 @@ func (m *ListFieldsRequest) Reset()         { *m = ListFieldsRequest{} }
 func (m *ListFieldsRequest) String() string { return proto.CompactTextString(m) }
 func (*ListFieldsRequest) ProtoMessage()    {}
 func (*ListFieldsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{7}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{7}
 }
 func (m *ListFieldsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListFieldsRequest.Unmarshal(m, b)
@@ -444,7 +453,8 @@ func (m *ListFieldsRequest) GetPageToken() string {
 	return ""
 }
 
-// The response for [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields].
+// The response for
+// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields].
 type ListFieldsResponse struct {
 	// The requested fields.
 	Fields []*Field `protobuf:"bytes,1,rep,name=fields,proto3" json:"fields,omitempty"`
@@ -460,7 +470,7 @@ func (m *ListFieldsResponse) Reset()         { *m = ListFieldsResponse{} }
 func (m *ListFieldsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListFieldsResponse) ProtoMessage()    {}
 func (*ListFieldsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{8}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{8}
 }
 func (m *ListFieldsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListFieldsResponse.Unmarshal(m, b)
@@ -494,7 +504,8 @@ func (m *ListFieldsResponse) GetNextPageToken() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.ExportDocuments][google.firestore.admin.v1beta2.FirestoreAdmin.ExportDocuments].
+// The request for
+// [FirestoreAdmin.ExportDocuments][google.firestore.admin.v1beta2.FirestoreAdmin.ExportDocuments].
 type ExportDocumentsRequest struct {
 	// Database to export. Should be of the form:
 	// `projects/{project_id}/databases/{database_id}`.
@@ -519,7 +530,7 @@ func (m *ExportDocumentsRequest) Reset()         { *m = ExportDocumentsRequest{}
 func (m *ExportDocumentsRequest) String() string { return proto.CompactTextString(m) }
 func (*ExportDocumentsRequest) ProtoMessage()    {}
 func (*ExportDocumentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{9}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{9}
 }
 func (m *ExportDocumentsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportDocumentsRequest.Unmarshal(m, b)
@@ -560,7 +571,8 @@ func (m *ExportDocumentsRequest) GetOutputUriPrefix() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.ImportDocuments][google.firestore.admin.v1beta2.FirestoreAdmin.ImportDocuments].
+// The request for
+// [FirestoreAdmin.ImportDocuments][google.firestore.admin.v1beta2.FirestoreAdmin.ImportDocuments].
 type ImportDocumentsRequest struct {
 	// Database to import into. Should be of the form:
 	// `projects/{project_id}/databases/{database_id}`.
@@ -583,7 +595,7 @@ func (m *ImportDocumentsRequest) Reset()         { *m = ImportDocumentsRequest{}
 func (m *ImportDocumentsRequest) String() string { return proto.CompactTextString(m) }
 func (*ImportDocumentsRequest) ProtoMessage()    {}
 func (*ImportDocumentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_7145281113ae4e9b, []int{10}
+	return fileDescriptor_firestore_admin_6e970f5f749e23d0, []int{10}
 }
 func (m *ImportDocumentsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportDocumentsRequest.Unmarshal(m, b)
@@ -650,9 +662,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type FirestoreAdminClient interface {
-	// Creates a composite index. This returns a [google.longrunning.Operation][google.longrunning.Operation]
-	// which may be used to track the status of the creation. The metadata for
-	// the operation will be the type [IndexOperationMetadata][google.firestore.admin.v1beta2.IndexOperationMetadata].
+	// Creates a composite index. This returns a
+	// [google.longrunning.Operation][google.longrunning.Operation] which may be
+	// used to track the status of the creation. The metadata for the operation
+	// will be the type
+	// [IndexOperationMetadata][google.firestore.admin.v1beta2.IndexOperationMetadata].
 	CreateIndex(ctx context.Context, in *CreateIndexRequest, opts ...grpc.CallOption) (*longrunning.Operation, error)
 	// Lists composite indexes.
 	ListIndexes(ctx context.Context, in *ListIndexesRequest, opts ...grpc.CallOption) (*ListIndexesResponse, error)
@@ -664,13 +678,16 @@ type FirestoreAdminClient interface {
 	GetField(ctx context.Context, in *GetFieldRequest, opts ...grpc.CallOption) (*Field, error)
 	// Updates a field configuration. Currently, field updates apply only to
 	// single field index configuration. However, calls to
-	// [FirestoreAdmin.UpdateField][google.firestore.admin.v1beta2.FirestoreAdmin.UpdateField] should provide a field mask to avoid
-	// changing any configuration that the caller isn't aware of. The field mask
-	// should be specified as: `{ paths: "index_config" }`.
+	// [FirestoreAdmin.UpdateField][google.firestore.admin.v1beta2.FirestoreAdmin.UpdateField]
+	// should provide a field mask to avoid changing any configuration that the
+	// caller isn't aware of. The field mask should be specified as: `{ paths:
+	// "index_config" }`.
 	//
-	// This call returns a [google.longrunning.Operation][google.longrunning.Operation] which may be used to
-	// track the status of the field update. The metadata for
-	// the operation will be the type [FieldOperationMetadata][google.firestore.admin.v1beta2.FieldOperationMetadata].
+	// This call returns a
+	// [google.longrunning.Operation][google.longrunning.Operation] which may be
+	// used to track the status of the field update. The metadata for the
+	// operation will be the type
+	// [FieldOperationMetadata][google.firestore.admin.v1beta2.FieldOperationMetadata].
 	//
 	// To configure the default field settings for the database, use
 	// the special `Field` with resource name:
@@ -678,10 +695,12 @@ type FirestoreAdminClient interface {
 	UpdateField(ctx context.Context, in *UpdateFieldRequest, opts ...grpc.CallOption) (*longrunning.Operation, error)
 	// Lists the field configuration and metadata for this database.
 	//
-	// Currently, [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields] only supports listing fields
-	// that have been explicitly overridden. To issue this query, call
-	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields] with the filter set to
-	// `indexConfig.usesAncestorConfig:false`.
+	// Currently,
+	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields]
+	// only supports listing fields that have been explicitly overridden. To issue
+	// this query, call
+	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields]
+	// with the filter set to `indexConfig.usesAncestorConfig:false`.
 	ListFields(ctx context.Context, in *ListFieldsRequest, opts ...grpc.CallOption) (*ListFieldsResponse, error)
 	// Exports a copy of all or a subset of documents from Google Cloud Firestore
 	// to another storage system, such as Google Cloud Storage. Recent updates to
@@ -791,9 +810,11 @@ func (c *firestoreAdminClient) ImportDocuments(ctx context.Context, in *ImportDo
 
 // FirestoreAdminServer is the server API for FirestoreAdmin service.
 type FirestoreAdminServer interface {
-	// Creates a composite index. This returns a [google.longrunning.Operation][google.longrunning.Operation]
-	// which may be used to track the status of the creation. The metadata for
-	// the operation will be the type [IndexOperationMetadata][google.firestore.admin.v1beta2.IndexOperationMetadata].
+	// Creates a composite index. This returns a
+	// [google.longrunning.Operation][google.longrunning.Operation] which may be
+	// used to track the status of the creation. The metadata for the operation
+	// will be the type
+	// [IndexOperationMetadata][google.firestore.admin.v1beta2.IndexOperationMetadata].
 	CreateIndex(context.Context, *CreateIndexRequest) (*longrunning.Operation, error)
 	// Lists composite indexes.
 	ListIndexes(context.Context, *ListIndexesRequest) (*ListIndexesResponse, error)
@@ -805,13 +826,16 @@ type FirestoreAdminServer interface {
 	GetField(context.Context, *GetFieldRequest) (*Field, error)
 	// Updates a field configuration. Currently, field updates apply only to
 	// single field index configuration. However, calls to
-	// [FirestoreAdmin.UpdateField][google.firestore.admin.v1beta2.FirestoreAdmin.UpdateField] should provide a field mask to avoid
-	// changing any configuration that the caller isn't aware of. The field mask
-	// should be specified as: `{ paths: "index_config" }`.
+	// [FirestoreAdmin.UpdateField][google.firestore.admin.v1beta2.FirestoreAdmin.UpdateField]
+	// should provide a field mask to avoid changing any configuration that the
+	// caller isn't aware of. The field mask should be specified as: `{ paths:
+	// "index_config" }`.
 	//
-	// This call returns a [google.longrunning.Operation][google.longrunning.Operation] which may be used to
-	// track the status of the field update. The metadata for
-	// the operation will be the type [FieldOperationMetadata][google.firestore.admin.v1beta2.FieldOperationMetadata].
+	// This call returns a
+	// [google.longrunning.Operation][google.longrunning.Operation] which may be
+	// used to track the status of the field update. The metadata for the
+	// operation will be the type
+	// [FieldOperationMetadata][google.firestore.admin.v1beta2.FieldOperationMetadata].
 	//
 	// To configure the default field settings for the database, use
 	// the special `Field` with resource name:
@@ -819,10 +843,12 @@ type FirestoreAdminServer interface {
 	UpdateField(context.Context, *UpdateFieldRequest) (*longrunning.Operation, error)
 	// Lists the field configuration and metadata for this database.
 	//
-	// Currently, [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields] only supports listing fields
-	// that have been explicitly overridden. To issue this query, call
-	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields] with the filter set to
-	// `indexConfig.usesAncestorConfig:false`.
+	// Currently,
+	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields]
+	// only supports listing fields that have been explicitly overridden. To issue
+	// this query, call
+	// [FirestoreAdmin.ListFields][google.firestore.admin.v1beta2.FirestoreAdmin.ListFields]
+	// with the filter set to `indexConfig.usesAncestorConfig:false`.
 	ListFields(context.Context, *ListFieldsRequest) (*ListFieldsResponse, error)
 	// Exports a copy of all or a subset of documents from Google Cloud Firestore
 	// to another storage system, such as Google Cloud Storage. Recent updates to
@@ -1053,10 +1079,10 @@ var _FirestoreAdmin_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/firestore/admin/v1beta2/firestore_admin.proto", fileDescriptor_firestore_admin_7145281113ae4e9b)
+	proto.RegisterFile("google/firestore/admin/v1beta2/firestore_admin.proto", fileDescriptor_firestore_admin_6e970f5f749e23d0)
 }
 
-var fileDescriptor_firestore_admin_7145281113ae4e9b = []byte{
+var fileDescriptor_firestore_admin_6e970f5f749e23d0 = []byte{
 	// 940 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0xcb, 0x6e, 0x1c, 0x45,
 	0x17, 0x56, 0x8d, 0x2f, 0x7f, 0x7c, 0xe6, 0xc7, 0x26, 0x15, 0x69, 0x34, 0xea, 0x10, 0x34, 0x6a,

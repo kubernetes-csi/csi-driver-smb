@@ -137,7 +137,7 @@ func (x PlaceholderTypeEnum_PlaceholderType) String() string {
 	return proto.EnumName(PlaceholderTypeEnum_PlaceholderType_name, int32(x))
 }
 func (PlaceholderTypeEnum_PlaceholderType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_placeholder_type_4f1de4a996d98018, []int{0, 0}
+	return fileDescriptor_placeholder_type_b2fdad65fed6649f, []int{0, 0}
 }
 
 // Container for enum describing possible placeholder types for a feed mapping.
@@ -151,7 +151,7 @@ func (m *PlaceholderTypeEnum) Reset()         { *m = PlaceholderTypeEnum{} }
 func (m *PlaceholderTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*PlaceholderTypeEnum) ProtoMessage()    {}
 func (*PlaceholderTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_placeholder_type_4f1de4a996d98018, []int{0}
+	return fileDescriptor_placeholder_type_b2fdad65fed6649f, []int{0}
 }
 func (m *PlaceholderTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PlaceholderTypeEnum.Unmarshal(m, b)
@@ -177,10 +177,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/placeholder_type.proto", fileDescriptor_placeholder_type_4f1de4a996d98018)
+	proto.RegisterFile("google/ads/googleads/v0/enums/placeholder_type.proto", fileDescriptor_placeholder_type_b2fdad65fed6649f)
 }
 
-var fileDescriptor_placeholder_type_4f1de4a996d98018 = []byte{
+var fileDescriptor_placeholder_type_b2fdad65fed6649f = []byte{
 	// 473 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xd1, 0x6e, 0xd3, 0x30,
 	0x14, 0x86, 0x59, 0xba, 0xad, 0xad, 0xbb, 0xae, 0xa7, 0xee, 0x80, 0xab, 0x5d, 0x6c, 0x0f, 0x90,

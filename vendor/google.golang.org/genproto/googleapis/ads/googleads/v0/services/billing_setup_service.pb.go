@@ -39,7 +39,7 @@ func (m *GetBillingSetupRequest) Reset()         { *m = GetBillingSetupRequest{}
 func (m *GetBillingSetupRequest) String() string { return proto.CompactTextString(m) }
 func (*GetBillingSetupRequest) ProtoMessage()    {}
 func (*GetBillingSetupRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_service_9363a956ece9fd61, []int{0}
+	return fileDescriptor_billing_setup_service_d261261c49205cc7, []int{0}
 }
 func (m *GetBillingSetupRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetBillingSetupRequest.Unmarshal(m, b)
@@ -81,7 +81,7 @@ func (m *MutateBillingSetupRequest) Reset()         { *m = MutateBillingSetupReq
 func (m *MutateBillingSetupRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateBillingSetupRequest) ProtoMessage()    {}
 func (*MutateBillingSetupRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_service_9363a956ece9fd61, []int{1}
+	return fileDescriptor_billing_setup_service_d261261c49205cc7, []int{1}
 }
 func (m *MutateBillingSetupRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateBillingSetupRequest.Unmarshal(m, b)
@@ -134,7 +134,7 @@ func (m *BillingSetupOperation) Reset()         { *m = BillingSetupOperation{} }
 func (m *BillingSetupOperation) String() string { return proto.CompactTextString(m) }
 func (*BillingSetupOperation) ProtoMessage()    {}
 func (*BillingSetupOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_service_9363a956ece9fd61, []int{2}
+	return fileDescriptor_billing_setup_service_d261261c49205cc7, []int{2}
 }
 func (m *BillingSetupOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BillingSetupOperation.Unmarshal(m, b)
@@ -274,7 +274,7 @@ func (m *MutateBillingSetupResponse) Reset()         { *m = MutateBillingSetupRe
 func (m *MutateBillingSetupResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateBillingSetupResponse) ProtoMessage()    {}
 func (*MutateBillingSetupResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_service_9363a956ece9fd61, []int{3}
+	return fileDescriptor_billing_setup_service_d261261c49205cc7, []int{3}
 }
 func (m *MutateBillingSetupResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateBillingSetupResponse.Unmarshal(m, b)
@@ -314,7 +314,7 @@ func (m *MutateBillingSetupResult) Reset()         { *m = MutateBillingSetupResu
 func (m *MutateBillingSetupResult) String() string { return proto.CompactTextString(m) }
 func (*MutateBillingSetupResult) ProtoMessage()    {}
 func (*MutateBillingSetupResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_service_9363a956ece9fd61, []int{4}
+	return fileDescriptor_billing_setup_service_d261261c49205cc7, []int{4}
 }
 func (m *MutateBillingSetupResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateBillingSetupResult.Unmarshal(m, b)
@@ -459,10 +459,10 @@ var _BillingSetupService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/billing_setup_service.proto", fileDescriptor_billing_setup_service_9363a956ece9fd61)
+	proto.RegisterFile("google/ads/googleads/v0/services/billing_setup_service.proto", fileDescriptor_billing_setup_service_d261261c49205cc7)
 }
 
-var fileDescriptor_billing_setup_service_9363a956ece9fd61 = []byte{
+var fileDescriptor_billing_setup_service_d261261c49205cc7 = []byte{
 	// 546 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x31, 0x6f, 0xd3, 0x40,
 	0x14, 0xe6, 0x52, 0x29, 0x52, 0x2f, 0x20, 0xa4, 0x43, 0xa0, 0x10, 0x21, 0x11, 0x99, 0x0e, 0x55,

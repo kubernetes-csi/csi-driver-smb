@@ -49,7 +49,7 @@ func (x FrequencyCapEventTypeEnum_FrequencyCapEventType) String() string {
 	return proto.EnumName(FrequencyCapEventTypeEnum_FrequencyCapEventType_name, int32(x))
 }
 func (FrequencyCapEventTypeEnum_FrequencyCapEventType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_frequency_cap_event_type_1e16b8cee22d230e, []int{0, 0}
+	return fileDescriptor_frequency_cap_event_type_b041c49805e9f9ed, []int{0, 0}
 }
 
 // Container for enum describing the type of event that the cap applies to.
@@ -63,7 +63,7 @@ func (m *FrequencyCapEventTypeEnum) Reset()         { *m = FrequencyCapEventType
 func (m *FrequencyCapEventTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*FrequencyCapEventTypeEnum) ProtoMessage()    {}
 func (*FrequencyCapEventTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_frequency_cap_event_type_1e16b8cee22d230e, []int{0}
+	return fileDescriptor_frequency_cap_event_type_b041c49805e9f9ed, []int{0}
 }
 func (m *FrequencyCapEventTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FrequencyCapEventTypeEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/frequency_cap_event_type.proto", fileDescriptor_frequency_cap_event_type_1e16b8cee22d230e)
+	proto.RegisterFile("google/ads/googleads/v0/enums/frequency_cap_event_type.proto", fileDescriptor_frequency_cap_event_type_b041c49805e9f9ed)
 }
 
-var fileDescriptor_frequency_cap_event_type_1e16b8cee22d230e = []byte{
+var fileDescriptor_frequency_cap_event_type_b041c49805e9f9ed = []byte{
 	// 305 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x49, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

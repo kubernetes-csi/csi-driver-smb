@@ -42,7 +42,7 @@ func (x KeywordPlanNegativeKeywordErrorEnum_KeywordPlanNegativeKeywordError) Str
 	return proto.EnumName(KeywordPlanNegativeKeywordErrorEnum_KeywordPlanNegativeKeywordError_name, int32(x))
 }
 func (KeywordPlanNegativeKeywordErrorEnum_KeywordPlanNegativeKeywordError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_negative_keyword_error_2475a4422490caeb, []int{0, 0}
+	return fileDescriptor_keyword_plan_negative_keyword_error_585eed7a6029e95c, []int{0, 0}
 }
 
 // Container for enum describing possible errors from applying a keyword plan
@@ -57,7 +57,7 @@ func (m *KeywordPlanNegativeKeywordErrorEnum) Reset()         { *m = KeywordPlan
 func (m *KeywordPlanNegativeKeywordErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanNegativeKeywordErrorEnum) ProtoMessage()    {}
 func (*KeywordPlanNegativeKeywordErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_negative_keyword_error_2475a4422490caeb, []int{0}
+	return fileDescriptor_keyword_plan_negative_keyword_error_585eed7a6029e95c, []int{0}
 }
 func (m *KeywordPlanNegativeKeywordErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanNegativeKeywordErrorEnum.Unmarshal(m, b)
@@ -83,10 +83,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/keyword_plan_negative_keyword_error.proto", fileDescriptor_keyword_plan_negative_keyword_error_2475a4422490caeb)
+	proto.RegisterFile("google/ads/googleads/v0/errors/keyword_plan_negative_keyword_error.proto", fileDescriptor_keyword_plan_negative_keyword_error_585eed7a6029e95c)
 }
 
-var fileDescriptor_keyword_plan_negative_keyword_error_2475a4422490caeb = []byte{
+var fileDescriptor_keyword_plan_negative_keyword_error_585eed7a6029e95c = []byte{
 	// 280 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x90, 0xdf, 0x4a, 0xc3, 0x30,
 	0x14, 0xc6, 0x6d, 0x05, 0x85, 0xec, 0xc2, 0xd1, 0x07, 0x98, 0x50, 0xbd, 0x4e, 0x0b, 0xde, 0xc5,

@@ -71,7 +71,7 @@ func (x CompanySize) String() string {
 	return proto.EnumName(CompanySize_name, int32(x))
 }
 func (CompanySize) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{0}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{0}
 }
 
 // An enum that represents employee benefits included with the job.
@@ -143,7 +143,7 @@ func (x JobBenefit) String() string {
 	return proto.EnumName(JobBenefit_name, int32(x))
 }
 func (JobBenefit) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{1}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{1}
 }
 
 // Educational degree level defined in International Standard Classification
@@ -222,7 +222,7 @@ func (x DegreeType) String() string {
 	return proto.EnumName(DegreeType_name, int32(x))
 }
 func (DegreeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{2}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{2}
 }
 
 // An enum that represents the employment type of a job.
@@ -243,7 +243,8 @@ const (
 	// The job is offered as a contracted position with the understanding
 	// that it's converted into a full-time position at the end of the
 	// contract. Jobs of this type are also returned by a search for
-	// [EmploymentType.CONTRACTOR][google.cloud.talent.v4beta1.EmploymentType.CONTRACTOR] jobs.
+	// [EmploymentType.CONTRACTOR][google.cloud.talent.v4beta1.EmploymentType.CONTRACTOR]
+	// jobs.
 	EmploymentType_CONTRACT_TO_HIRE EmploymentType = 4
 	// The job is offered as a temporary employment opportunity, usually
 	// a short-term engagement.
@@ -297,7 +298,7 @@ func (x EmploymentType) String() string {
 	return proto.EnumName(EmploymentType_name, int32(x))
 }
 func (EmploymentType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{3}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{3}
 }
 
 // An enum that represents the required experience level required for the job.
@@ -341,7 +342,7 @@ func (x JobLevel) String() string {
 	return proto.EnumName(JobLevel_name, int32(x))
 }
 func (JobLevel) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{4}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{4}
 }
 
 // An enum that represents the categorization or primary focus of specific
@@ -486,7 +487,7 @@ func (x JobCategory) String() string {
 	return proto.EnumName(JobCategory_name, int32(x))
 }
 func (JobCategory) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{5}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{5}
 }
 
 // An enum that represents the job posting region. In most cases, job postings
@@ -499,19 +500,22 @@ const (
 	// matches the [LocationFilter][google.cloud.talent.v4beta1.LocationFilter].
 	PostingRegion_POSTING_REGION_UNSPECIFIED PostingRegion = 0
 	// In addition to exact location matching, job posting is returned when the
-	// [LocationFilter][google.cloud.talent.v4beta1.LocationFilter] in the search query is in the same administrative area
-	// as the returned job posting. For example, if a `ADMINISTRATIVE_AREA` job
-	// is posted in "CA, USA", it's returned if [LocationFilter][google.cloud.talent.v4beta1.LocationFilter] has
-	// "Mountain View".
+	// [LocationFilter][google.cloud.talent.v4beta1.LocationFilter] in the search
+	// query is in the same administrative area as the returned job posting. For
+	// example, if a `ADMINISTRATIVE_AREA` job is posted in "CA, USA", it's
+	// returned if [LocationFilter][google.cloud.talent.v4beta1.LocationFilter]
+	// has "Mountain View".
 	//
 	// Administrative area refers to top-level administrative subdivision of this
 	// country. For example, US state, IT region, UK constituent nation and
 	// JP prefecture.
 	PostingRegion_ADMINISTRATIVE_AREA PostingRegion = 1
 	// In addition to exact location matching, job is returned when
-	// [LocationFilter][google.cloud.talent.v4beta1.LocationFilter] in search query is in the same country as this job.
-	// For example, if a `NATION_WIDE` job is posted in "USA", it's
-	// returned if [LocationFilter][google.cloud.talent.v4beta1.LocationFilter] has 'Mountain View'.
+	// [LocationFilter][google.cloud.talent.v4beta1.LocationFilter] in search
+	// query is in the same country as this job. For example, if a `NATION_WIDE`
+	// job is posted in "USA", it's returned if
+	// [LocationFilter][google.cloud.talent.v4beta1.LocationFilter] has 'Mountain
+	// View'.
 	PostingRegion_NATION PostingRegion = 2
 	// Job allows employees to work remotely (telecommute).
 	// If [locations][] are provided with this value, the job is
@@ -536,7 +540,7 @@ func (x PostingRegion) String() string {
 	return proto.EnumName(PostingRegion_name, int32(x))
 }
 func (PostingRegion) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{6}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{6}
 }
 
 // An enum that represents who has view access to the resource.
@@ -572,7 +576,7 @@ func (x Visibility) String() string {
 	return proto.EnumName(Visibility_name, int32(x))
 }
 func (Visibility) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{7}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{7}
 }
 
 // Enum that represents the usage of the contact information.
@@ -606,7 +610,7 @@ func (x ContactInfoUsage) String() string {
 	return proto.EnumName(ContactInfoUsage_name, int32(x))
 }
 func (ContactInfoUsage) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{8}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{8}
 }
 
 // Input only.
@@ -641,7 +645,7 @@ func (x HtmlSanitization) String() string {
 	return proto.EnumName(HtmlSanitization_name, int32(x))
 }
 func (HtmlSanitization) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{9}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{9}
 }
 
 // Method for commute.
@@ -685,7 +689,7 @@ func (x CommuteMethod) String() string {
 	return proto.EnumName(CommuteMethod_name, int32(x))
 }
 func (CommuteMethod) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{10}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{10}
 }
 
 // An enum which represents the type of a location.
@@ -751,7 +755,7 @@ func (x Location_LocationType) String() string {
 	return proto.EnumName(Location_LocationType_name, int32(x))
 }
 func (Location_LocationType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{1, 0}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{1, 0}
 }
 
 // An enumeration describing an API access portal and exposure mechanism.
@@ -800,25 +804,36 @@ func (x DeviceInfo_DeviceType) String() string {
 	return proto.EnumName(DeviceInfo_DeviceType_name, int32(x))
 }
 func (DeviceInfo_DeviceType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{4, 0}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{4, 0}
 }
 
 // The type of compensation.
 //
 // For compensation amounts specified in non-monetary amounts,
-// describe the compensation scheme in the [CompensationEntry.description][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.description].
+// describe the compensation scheme in the
+// [CompensationEntry.description][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.description].
 //
 // For example, tipping format is described in
-// [CompensationEntry.description][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.description] (for example, "expect 15-20% tips based
-// on customer bill.") and an estimate of the tips provided in
-// [CompensationEntry.amount][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.amount] or [CompensationEntry.range][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.range] ($10 per hour).
+// [CompensationEntry.description][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.description]
+// (for example, "expect 15-20% tips based on customer bill.") and an estimate
+// of the tips provided in
+// [CompensationEntry.amount][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.amount]
+// or
+// [CompensationEntry.range][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.range]
+// ($10 per hour).
 //
-// For example, equity is described in [CompensationEntry.description][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.description]
+// For example, equity is described in
+// [CompensationEntry.description][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.description]
 // (for example, "1% - 2% equity vesting over 4 years, 1 year cliff") and
-// value estimated in [CompensationEntry.amount][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.amount] or
-// [CompensationEntry.range][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.range]. If no value estimate is possible, units are
-// [CompensationUnit.COMPENSATION_UNIT_UNSPECIFIED][google.cloud.talent.v4beta1.CompensationInfo.CompensationUnit.COMPENSATION_UNIT_UNSPECIFIED] and then further
-// clarified in [CompensationEntry.description][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.description] field.
+// value estimated in
+// [CompensationEntry.amount][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.amount]
+// or
+// [CompensationEntry.range][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.range].
+// If no value estimate is possible, units are
+// [CompensationUnit.COMPENSATION_UNIT_UNSPECIFIED][google.cloud.talent.v4beta1.CompensationInfo.CompensationUnit.COMPENSATION_UNIT_UNSPECIFIED]
+// and then further clarified in
+// [CompensationEntry.description][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.description]
+// field.
 type CompensationInfo_CompensationType int32
 
 const (
@@ -872,7 +887,7 @@ func (x CompensationInfo_CompensationType) String() string {
 	return proto.EnumName(CompensationInfo_CompensationType_name, int32(x))
 }
 func (CompensationInfo_CompensationType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{7, 0}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{7, 0}
 }
 
 // Pay frequency.
@@ -922,7 +937,7 @@ func (x CompensationInfo_CompensationUnit) String() string {
 	return proto.EnumName(CompensationInfo_CompensationUnit_name, int32(x))
 }
 func (CompensationInfo_CompensationUnit) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{7, 1}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{7, 1}
 }
 
 // Message representing a period of time between two timestamps.
@@ -940,7 +955,7 @@ func (m *TimestampRange) Reset()         { *m = TimestampRange{} }
 func (m *TimestampRange) String() string { return proto.CompactTextString(m) }
 func (*TimestampRange) ProtoMessage()    {}
 func (*TimestampRange) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{0}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{0}
 }
 func (m *TimestampRange) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TimestampRange.Unmarshal(m, b)
@@ -1005,7 +1020,7 @@ func (m *Location) Reset()         { *m = Location{} }
 func (m *Location) String() string { return proto.CompactTextString(m) }
 func (*Location) ProtoMessage()    {}
 func (*Location) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{1}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{1}
 }
 func (m *Location) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Location.Unmarshal(m, b)
@@ -1059,7 +1074,9 @@ func (m *Location) GetRadiusMiles() float64 {
 // conducting the job search. This information is used to improve the
 // performance of the service.
 type RequestMetadata struct {
-	// Required if [allow_missing_ids][google.cloud.talent.v4beta1.RequestMetadata.allow_missing_ids] is unset or `false`.
+	// Required if
+	// [allow_missing_ids][google.cloud.talent.v4beta1.RequestMetadata.allow_missing_ids]
+	// is unset or `false`.
 	//
 	// The client-defined scope or source of the service call, which typically
 	// is the domain on
@@ -1075,7 +1092,9 @@ type RequestMetadata struct {
 	//
 	// The maximum number of allowed characters is 255.
 	Domain string `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
-	// Required if [allow_missing_ids][google.cloud.talent.v4beta1.RequestMetadata.allow_missing_ids] is unset or `false`.
+	// Required if
+	// [allow_missing_ids][google.cloud.talent.v4beta1.RequestMetadata.allow_missing_ids]
+	// is unset or `false`.
 	//
 	// A unique session identification string. A session is defined as the
 	// duration of an end user's interaction with the service over a certain
@@ -1088,7 +1107,9 @@ type RequestMetadata struct {
 	//
 	// The maximum number of allowed characters is 255.
 	SessionId string `protobuf:"bytes,2,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
-	// Required if [allow_missing_ids][google.cloud.talent.v4beta1.RequestMetadata.allow_missing_ids] is unset or `false`.
+	// Required if
+	// [allow_missing_ids][google.cloud.talent.v4beta1.RequestMetadata.allow_missing_ids]
+	// is unset or `false`.
 	//
 	// A unique user identification string, as determined by the client.
 	// To have the strongest positive impact on search quality
@@ -1103,10 +1124,16 @@ type RequestMetadata struct {
 	UserId string `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	// Optional.
 	//
-	// If set to `true`, [domain][google.cloud.talent.v4beta1.RequestMetadata.domain], [session_id][google.cloud.talent.v4beta1.RequestMetadata.session_id] and [user_id][google.cloud.talent.v4beta1.RequestMetadata.user_id] are optional.
-	// Only set when any of these fields isn't available for some reason. It
-	// is highly recommended not to set this field and provide accurate
-	// [domain][google.cloud.talent.v4beta1.RequestMetadata.domain], [session_id][google.cloud.talent.v4beta1.RequestMetadata.session_id] and [user_id][google.cloud.talent.v4beta1.RequestMetadata.user_id] for the best service experience.
+	// If set to `true`,
+	// [domain][google.cloud.talent.v4beta1.RequestMetadata.domain],
+	// [session_id][google.cloud.talent.v4beta1.RequestMetadata.session_id] and
+	// [user_id][google.cloud.talent.v4beta1.RequestMetadata.user_id] are
+	// optional. Only set when any of these fields isn't available for some
+	// reason. It is highly recommended not to set this field and provide accurate
+	// [domain][google.cloud.talent.v4beta1.RequestMetadata.domain],
+	// [session_id][google.cloud.talent.v4beta1.RequestMetadata.session_id] and
+	// [user_id][google.cloud.talent.v4beta1.RequestMetadata.user_id] for the best
+	// service experience.
 	AllowMissingIds bool `protobuf:"varint,4,opt,name=allow_missing_ids,json=allowMissingIds,proto3" json:"allow_missing_ids,omitempty"`
 	// Optional.
 	//
@@ -1122,7 +1149,7 @@ func (m *RequestMetadata) Reset()         { *m = RequestMetadata{} }
 func (m *RequestMetadata) String() string { return proto.CompactTextString(m) }
 func (*RequestMetadata) ProtoMessage()    {}
 func (*RequestMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{2}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{2}
 }
 func (m *RequestMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RequestMetadata.Unmarshal(m, b)
@@ -1193,7 +1220,7 @@ func (m *ResponseMetadata) Reset()         { *m = ResponseMetadata{} }
 func (m *ResponseMetadata) String() string { return proto.CompactTextString(m) }
 func (*ResponseMetadata) ProtoMessage()    {}
 func (*ResponseMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{3}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{3}
 }
 func (m *ResponseMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseMetadata.Unmarshal(m, b)
@@ -1242,7 +1269,7 @@ func (m *DeviceInfo) Reset()         { *m = DeviceInfo{} }
 func (m *DeviceInfo) String() string { return proto.CompactTextString(m) }
 func (*DeviceInfo) ProtoMessage()    {}
 func (*DeviceInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{4}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{4}
 }
 func (m *DeviceInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeviceInfo.Unmarshal(m, b)
@@ -1278,8 +1305,10 @@ func (m *DeviceInfo) GetId() string {
 
 // Custom attribute values that are either filterable or non-filterable.
 type CustomAttribute struct {
-	// Optional but exactly one of [string_values][google.cloud.talent.v4beta1.CustomAttribute.string_values] or [long_values][google.cloud.talent.v4beta1.CustomAttribute.long_values] must
-	// be specified.
+	// Optional but exactly one of
+	// [string_values][google.cloud.talent.v4beta1.CustomAttribute.string_values]
+	// or [long_values][google.cloud.talent.v4beta1.CustomAttribute.long_values]
+	// must be specified.
 	//
 	// This field is used to perform a string match (`CASE_SENSITIVE_MATCH` or
 	// `CASE_INSENSITIVE_MATCH`) search.
@@ -1290,13 +1319,17 @@ type CustomAttribute struct {
 	//
 	// Empty string isn't allowed.
 	StringValues []string `protobuf:"bytes,1,rep,name=string_values,json=stringValues,proto3" json:"string_values,omitempty"`
-	// Optional but exactly one of [string_values][google.cloud.talent.v4beta1.CustomAttribute.string_values] or [long_values][google.cloud.talent.v4beta1.CustomAttribute.long_values] must
-	// be specified.
+	// Optional but exactly one of
+	// [string_values][google.cloud.talent.v4beta1.CustomAttribute.string_values]
+	// or [long_values][google.cloud.talent.v4beta1.CustomAttribute.long_values]
+	// must be specified.
 	//
 	// This field is used to perform number range search.
 	// (`EQ`, `GT`, `GE`, `LE`, `LT`) over filterable `long_value`.
 	//
-	// Currently at most 1 [long_values][google.cloud.talent.v4beta1.CustomAttribute.long_values] is supported.
+	// Currently at most 1
+	// [long_values][google.cloud.talent.v4beta1.CustomAttribute.long_values] is
+	// supported.
 	LongValues []int64 `protobuf:"varint,2,rep,packed,name=long_values,json=longValues,proto3" json:"long_values,omitempty"`
 	// Optional.
 	//
@@ -1314,7 +1347,7 @@ func (m *CustomAttribute) Reset()         { *m = CustomAttribute{} }
 func (m *CustomAttribute) String() string { return proto.CompactTextString(m) }
 func (*CustomAttribute) ProtoMessage()    {}
 func (*CustomAttribute) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{5}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{5}
 }
 func (m *CustomAttribute) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomAttribute.Unmarshal(m, b)
@@ -1380,7 +1413,7 @@ func (m *SpellingCorrection) Reset()         { *m = SpellingCorrection{} }
 func (m *SpellingCorrection) String() string { return proto.CompactTextString(m) }
 func (*SpellingCorrection) ProtoMessage()    {}
 func (*SpellingCorrection) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{6}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{6}
 }
 func (m *SpellingCorrection) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SpellingCorrection.Unmarshal(m, b)
@@ -1428,20 +1461,24 @@ type CompensationInfo struct {
 	// Job compensation information.
 	//
 	// At most one entry can be of type
-	// [CompensationInfo.CompensationType.BASE][google.cloud.talent.v4beta1.CompensationInfo.CompensationType.BASE], which is
-	// referred as ** base compensation entry ** for the job.
+	// [CompensationInfo.CompensationType.BASE][google.cloud.talent.v4beta1.CompensationInfo.CompensationType.BASE],
+	// which is referred as ** base compensation entry ** for the job.
 	Entries []*CompensationInfo_CompensationEntry `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
 	// Output only. Annualized base compensation range. Computed as
 	// base compensation entry's [CompensationEntry.compensation][] times
 	// [CompensationEntry.expected_units_per_year][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.expected_units_per_year].
 	//
-	// See [CompensationEntry][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry] for explanation on compensation annualization.
+	// See
+	// [CompensationEntry][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry]
+	// for explanation on compensation annualization.
 	AnnualizedBaseCompensationRange *CompensationInfo_CompensationRange `protobuf:"bytes,2,opt,name=annualized_base_compensation_range,json=annualizedBaseCompensationRange,proto3" json:"annualized_base_compensation_range,omitempty"`
 	// Output only. Annualized total compensation range. Computed as
 	// all compensation entries' [CompensationEntry.compensation][] times
 	// [CompensationEntry.expected_units_per_year][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.expected_units_per_year].
 	//
-	// See [CompensationEntry][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry] for explanation on compensation annualization.
+	// See
+	// [CompensationEntry][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry]
+	// for explanation on compensation annualization.
 	AnnualizedTotalCompensationRange *CompensationInfo_CompensationRange `protobuf:"bytes,3,opt,name=annualized_total_compensation_range,json=annualizedTotalCompensationRange,proto3" json:"annualized_total_compensation_range,omitempty"`
 	XXX_NoUnkeyedLiteral             struct{}                            `json:"-"`
 	XXX_unrecognized                 []byte                              `json:"-"`
@@ -1452,7 +1489,7 @@ func (m *CompensationInfo) Reset()         { *m = CompensationInfo{} }
 func (m *CompensationInfo) String() string { return proto.CompactTextString(m) }
 func (*CompensationInfo) ProtoMessage()    {}
 func (*CompensationInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{7}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{7}
 }
 func (m *CompensationInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CompensationInfo.Unmarshal(m, b)
@@ -1497,9 +1534,17 @@ func (m *CompensationInfo) GetAnnualizedTotalCompensationRange() *CompensationIn
 // as base pay, bonus, or other compensation type.
 //
 // Annualization: One compensation entry can be annualized if
-// - it contains valid [amount][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.amount] or [range][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.range].
-// - and its [expected_units_per_year][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.expected_units_per_year] is set or can be derived.
-// Its annualized range is determined as ([amount][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.amount] or [range][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.range]) times
+// - it contains valid
+// [amount][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.amount]
+// or
+// [range][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.range].
+// - and its
+// [expected_units_per_year][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.expected_units_per_year]
+// is set or can be derived. Its annualized range is determined as
+// ([amount][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.amount]
+// or
+// [range][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.range])
+// times
 // [expected_units_per_year][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.expected_units_per_year].
 type CompensationInfo_CompensationEntry struct {
 	// Optional.
@@ -1512,7 +1557,8 @@ type CompensationInfo_CompensationEntry struct {
 	//
 	// Frequency of the specified amount.
 	//
-	// Default is [CompensationUnit.OTHER_COMPENSATION_UNIT][google.cloud.talent.v4beta1.CompensationInfo.CompensationUnit.OTHER_COMPENSATION_UNIT].
+	// Default is
+	// [CompensationUnit.OTHER_COMPENSATION_UNIT][google.cloud.talent.v4beta1.CompensationInfo.CompensationUnit.OTHER_COMPENSATION_UNIT].
 	Unit CompensationInfo_CompensationUnit `protobuf:"varint,2,opt,name=unit,proto3,enum=google.cloud.talent.v4beta1.CompensationInfo_CompensationUnit" json:"unit,omitempty"`
 	// Optional.
 	//
@@ -1531,8 +1577,10 @@ type CompensationInfo_CompensationEntry struct {
 	// Optional.
 	//
 	// Expected number of units paid each year. If not specified, when
-	// [Job.employment_types][google.cloud.talent.v4beta1.Job.employment_types] is FULLTIME, a default value is inferred
-	// based on [unit][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.unit]. Default values:
+	// [Job.employment_types][google.cloud.talent.v4beta1.Job.employment_types]
+	// is FULLTIME, a default value is inferred based on
+	// [unit][google.cloud.talent.v4beta1.CompensationInfo.CompensationEntry.unit].
+	// Default values:
 	// - HOURLY: 2080
 	// - DAILY: 260
 	// - WEEKLY: 52
@@ -1548,7 +1596,7 @@ func (m *CompensationInfo_CompensationEntry) Reset()         { *m = Compensation
 func (m *CompensationInfo_CompensationEntry) String() string { return proto.CompactTextString(m) }
 func (*CompensationInfo_CompensationEntry) ProtoMessage()    {}
 func (*CompensationInfo_CompensationEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{7, 0}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{7, 0}
 }
 func (m *CompensationInfo_CompensationEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CompensationInfo_CompensationEntry.Unmarshal(m, b)
@@ -1733,7 +1781,7 @@ func (m *CompensationInfo_CompensationRange) Reset()         { *m = Compensation
 func (m *CompensationInfo_CompensationRange) String() string { return proto.CompactTextString(m) }
 func (*CompensationInfo_CompensationRange) ProtoMessage()    {}
 func (*CompensationInfo_CompensationRange) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_b41ed6eda6765006, []int{7, 1}
+	return fileDescriptor_common_9a8bd73dbaf606cc, []int{7, 1}
 }
 func (m *CompensationInfo_CompensationRange) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CompensationInfo_CompensationRange.Unmarshal(m, b)
@@ -1796,10 +1844,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/talent/v4beta1/common.proto", fileDescriptor_common_b41ed6eda6765006)
+	proto.RegisterFile("google/cloud/talent/v4beta1/common.proto", fileDescriptor_common_9a8bd73dbaf606cc)
 }
 
-var fileDescriptor_common_b41ed6eda6765006 = []byte{
+var fileDescriptor_common_9a8bd73dbaf606cc = []byte{
 	// 2622 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x58, 0xcd, 0x6f, 0xe3, 0xc8,
 	0x95, 0x1f, 0x59, 0xb6, 0x6c, 0x95, 0xbf, 0xaa, 0xd9, 0x1f, 0xf6, 0xb8, 0xbf, 0x3c, 0x9e, 0x5d,

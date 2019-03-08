@@ -46,7 +46,7 @@ func (x BuildSignature_KeyType) String() string {
 	return proto.EnumName(BuildSignature_KeyType_name, int32(x))
 }
 func (BuildSignature_KeyType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_build_739f6c7d44c8a606, []int{1, 0}
+	return fileDescriptor_build_8d41081b7937a156, []int{1, 0}
 }
 
 // Note holding the version of the provider's builder and the signature of the
@@ -66,7 +66,7 @@ func (m *Build) Reset()         { *m = Build{} }
 func (m *Build) String() string { return proto.CompactTextString(m) }
 func (*Build) ProtoMessage()    {}
 func (*Build) Descriptor() ([]byte, []int) {
-	return fileDescriptor_build_739f6c7d44c8a606, []int{0}
+	return fileDescriptor_build_8d41081b7937a156, []int{0}
 }
 func (m *Build) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Build.Unmarshal(m, b)
@@ -136,7 +136,7 @@ func (m *BuildSignature) Reset()         { *m = BuildSignature{} }
 func (m *BuildSignature) String() string { return proto.CompactTextString(m) }
 func (*BuildSignature) ProtoMessage()    {}
 func (*BuildSignature) Descriptor() ([]byte, []int) {
-	return fileDescriptor_build_739f6c7d44c8a606, []int{1}
+	return fileDescriptor_build_8d41081b7937a156, []int{1}
 }
 func (m *BuildSignature) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuildSignature.Unmarshal(m, b)
@@ -209,7 +209,7 @@ func (m *Details) Reset()         { *m = Details{} }
 func (m *Details) String() string { return proto.CompactTextString(m) }
 func (*Details) ProtoMessage()    {}
 func (*Details) Descriptor() ([]byte, []int) {
-	return fileDescriptor_build_739f6c7d44c8a606, []int{2}
+	return fileDescriptor_build_8d41081b7937a156, []int{2}
 }
 func (m *Details) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Details.Unmarshal(m, b)
@@ -251,10 +251,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/devtools/containeranalysis/v1beta1/build/build.proto", fileDescriptor_build_739f6c7d44c8a606)
+	proto.RegisterFile("google/devtools/containeranalysis/v1beta1/build/build.proto", fileDescriptor_build_8d41081b7937a156)
 }
 
-var fileDescriptor_build_739f6c7d44c8a606 = []byte{
+var fileDescriptor_build_8d41081b7937a156 = []byte{
 	// 434 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0x4d, 0x6f, 0xd3, 0x40,
 	0x10, 0xc5, 0x29, 0x6d, 0x9a, 0x69, 0x95, 0x86, 0x15, 0x91, 0x2c, 0x04, 0x52, 0x14, 0x09, 0x11,

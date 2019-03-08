@@ -26,7 +26,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [CustomerManagerLinkService.GetCustomerManagerLink][google.ads.googleads.v0.services.CustomerManagerLinkService.GetCustomerManagerLink].
+// Request message for
+// [CustomerManagerLinkService.GetCustomerManagerLink][google.ads.googleads.v0.services.CustomerManagerLinkService.GetCustomerManagerLink].
 type GetCustomerManagerLinkRequest struct {
 	// The resource name of the CustomerManagerLink to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -39,7 +40,7 @@ func (m *GetCustomerManagerLinkRequest) Reset()         { *m = GetCustomerManage
 func (m *GetCustomerManagerLinkRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCustomerManagerLinkRequest) ProtoMessage()    {}
 func (*GetCustomerManagerLinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_manager_link_service_1ae54c9c35f60cc3, []int{0}
+	return fileDescriptor_customer_manager_link_service_c7fed20b251450d8, []int{0}
 }
 func (m *GetCustomerManagerLinkRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetCustomerManagerLinkRequest.Unmarshal(m, b)
@@ -66,7 +67,8 @@ func (m *GetCustomerManagerLinkRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [CustomerManagerLinkService.MutateCustomerManagerLink][google.ads.googleads.v0.services.CustomerManagerLinkService.MutateCustomerManagerLink].
+// Request message for
+// [CustomerManagerLinkService.MutateCustomerManagerLink][google.ads.googleads.v0.services.CustomerManagerLinkService.MutateCustomerManagerLink].
 type MutateCustomerManagerLinkRequest struct {
 	// The ID of the customer whose customer manager links are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -81,7 +83,7 @@ func (m *MutateCustomerManagerLinkRequest) Reset()         { *m = MutateCustomer
 func (m *MutateCustomerManagerLinkRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateCustomerManagerLinkRequest) ProtoMessage()    {}
 func (*MutateCustomerManagerLinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_manager_link_service_1ae54c9c35f60cc3, []int{1}
+	return fileDescriptor_customer_manager_link_service_c7fed20b251450d8, []int{1}
 }
 func (m *MutateCustomerManagerLinkRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCustomerManagerLinkRequest.Unmarshal(m, b)
@@ -137,7 +139,7 @@ func (m *CustomerManagerLinkOperation) Reset()         { *m = CustomerManagerLin
 func (m *CustomerManagerLinkOperation) String() string { return proto.CompactTextString(m) }
 func (*CustomerManagerLinkOperation) ProtoMessage()    {}
 func (*CustomerManagerLinkOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_manager_link_service_1ae54c9c35f60cc3, []int{2}
+	return fileDescriptor_customer_manager_link_service_c7fed20b251450d8, []int{2}
 }
 func (m *CustomerManagerLinkOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomerManagerLinkOperation.Unmarshal(m, b)
@@ -256,7 +258,7 @@ func (m *MutateCustomerManagerLinkResponse) Reset()         { *m = MutateCustome
 func (m *MutateCustomerManagerLinkResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateCustomerManagerLinkResponse) ProtoMessage()    {}
 func (*MutateCustomerManagerLinkResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_manager_link_service_1ae54c9c35f60cc3, []int{3}
+	return fileDescriptor_customer_manager_link_service_c7fed20b251450d8, []int{3}
 }
 func (m *MutateCustomerManagerLinkResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCustomerManagerLinkResponse.Unmarshal(m, b)
@@ -296,7 +298,7 @@ func (m *MutateCustomerManagerLinkResult) Reset()         { *m = MutateCustomerM
 func (m *MutateCustomerManagerLinkResult) String() string { return proto.CompactTextString(m) }
 func (*MutateCustomerManagerLinkResult) ProtoMessage()    {}
 func (*MutateCustomerManagerLinkResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_manager_link_service_1ae54c9c35f60cc3, []int{4}
+	return fileDescriptor_customer_manager_link_service_c7fed20b251450d8, []int{4}
 }
 func (m *MutateCustomerManagerLinkResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCustomerManagerLinkResult.Unmarshal(m, b)
@@ -441,10 +443,10 @@ var _CustomerManagerLinkService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/customer_manager_link_service.proto", fileDescriptor_customer_manager_link_service_1ae54c9c35f60cc3)
+	proto.RegisterFile("google/ads/googleads/v0/services/customer_manager_link_service.proto", fileDescriptor_customer_manager_link_service_c7fed20b251450d8)
 }
 
-var fileDescriptor_customer_manager_link_service_1ae54c9c35f60cc3 = []byte{
+var fileDescriptor_customer_manager_link_service_c7fed20b251450d8 = []byte{
 	// 597 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0x41, 0x8b, 0xd3, 0x40,
 	0x14, 0x36, 0xa9, 0xac, 0xec, 0x54, 0x2f, 0x73, 0x90, 0x5a, 0x56, 0x1a, 0xe3, 0x1e, 0x4a, 0x0f,

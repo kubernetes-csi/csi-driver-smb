@@ -105,7 +105,7 @@ func (x UserListSizeRangeEnum_UserListSizeRange) String() string {
 	return proto.EnumName(UserListSizeRangeEnum_UserListSizeRange_name, int32(x))
 }
 func (UserListSizeRangeEnum_UserListSizeRange) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_size_range_e42f00a73ad86ac2, []int{0, 0}
+	return fileDescriptor_user_list_size_range_c037cc146baeba94, []int{0, 0}
 }
 
 // Size range in terms of number of users of a UserList.
@@ -119,7 +119,7 @@ func (m *UserListSizeRangeEnum) Reset()         { *m = UserListSizeRangeEnum{} }
 func (m *UserListSizeRangeEnum) String() string { return proto.CompactTextString(m) }
 func (*UserListSizeRangeEnum) ProtoMessage()    {}
 func (*UserListSizeRangeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_size_range_e42f00a73ad86ac2, []int{0}
+	return fileDescriptor_user_list_size_range_c037cc146baeba94, []int{0}
 }
 func (m *UserListSizeRangeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListSizeRangeEnum.Unmarshal(m, b)
@@ -145,10 +145,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_size_range.proto", fileDescriptor_user_list_size_range_e42f00a73ad86ac2)
+	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_size_range.proto", fileDescriptor_user_list_size_range_c037cc146baeba94)
 }
 
-var fileDescriptor_user_list_size_range_e42f00a73ad86ac2 = []byte{
+var fileDescriptor_user_list_size_range_c037cc146baeba94 = []byte{
 	// 488 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x93, 0xcb, 0x6e, 0xd3, 0x40,
 	0x18, 0x85, 0x49, 0x7a, 0x83, 0x3f, 0x40, 0xdd, 0x91, 0xc8, 0xa2, 0x90, 0xb6, 0x09, 0x15, 0x42,

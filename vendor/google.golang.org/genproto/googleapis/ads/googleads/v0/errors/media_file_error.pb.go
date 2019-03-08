@@ -133,7 +133,7 @@ func (x MediaFileErrorEnum_MediaFileError) String() string {
 	return proto.EnumName(MediaFileErrorEnum_MediaFileError_name, int32(x))
 }
 func (MediaFileErrorEnum_MediaFileError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_media_file_error_f139d658c23d7511, []int{0, 0}
+	return fileDescriptor_media_file_error_8a88169be9d50fbb, []int{0, 0}
 }
 
 // Container for enum describing possible media file errors.
@@ -147,7 +147,7 @@ func (m *MediaFileErrorEnum) Reset()         { *m = MediaFileErrorEnum{} }
 func (m *MediaFileErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*MediaFileErrorEnum) ProtoMessage()    {}
 func (*MediaFileErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_media_file_error_f139d658c23d7511, []int{0}
+	return fileDescriptor_media_file_error_8a88169be9d50fbb, []int{0}
 }
 func (m *MediaFileErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MediaFileErrorEnum.Unmarshal(m, b)
@@ -173,10 +173,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/media_file_error.proto", fileDescriptor_media_file_error_f139d658c23d7511)
+	proto.RegisterFile("google/ads/googleads/v0/errors/media_file_error.proto", fileDescriptor_media_file_error_8a88169be9d50fbb)
 }
 
-var fileDescriptor_media_file_error_f139d658c23d7511 = []byte{
+var fileDescriptor_media_file_error_8a88169be9d50fbb = []byte{
 	// 657 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0x5d, 0x6f, 0xd3, 0x48,
 	0x14, 0xdd, 0xa6, 0xbb, 0x69, 0x77, 0xda, 0x6d, 0xa7, 0x93, 0x7e, 0xed, 0xb6, 0x5b, 0x20, 0x88,

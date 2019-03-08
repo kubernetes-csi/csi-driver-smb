@@ -57,7 +57,7 @@ func (x MinuteOfHourEnum_MinuteOfHour) String() string {
 	return proto.EnumName(MinuteOfHourEnum_MinuteOfHour_name, int32(x))
 }
 func (MinuteOfHourEnum_MinuteOfHour) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_minute_of_hour_7c7b8d1718900ccc, []int{0, 0}
+	return fileDescriptor_minute_of_hour_7b7d8b5307e8d14c, []int{0, 0}
 }
 
 // Container for enumeration of quarter-hours.
@@ -71,7 +71,7 @@ func (m *MinuteOfHourEnum) Reset()         { *m = MinuteOfHourEnum{} }
 func (m *MinuteOfHourEnum) String() string { return proto.CompactTextString(m) }
 func (*MinuteOfHourEnum) ProtoMessage()    {}
 func (*MinuteOfHourEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_minute_of_hour_7c7b8d1718900ccc, []int{0}
+	return fileDescriptor_minute_of_hour_7b7d8b5307e8d14c, []int{0}
 }
 func (m *MinuteOfHourEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MinuteOfHourEnum.Unmarshal(m, b)
@@ -97,10 +97,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/minute_of_hour.proto", fileDescriptor_minute_of_hour_7c7b8d1718900ccc)
+	proto.RegisterFile("google/ads/googleads/v0/enums/minute_of_hour.proto", fileDescriptor_minute_of_hour_7b7d8b5307e8d14c)
 }
 
-var fileDescriptor_minute_of_hour_7c7b8d1718900ccc = []byte{
+var fileDescriptor_minute_of_hour_7b7d8b5307e8d14c = []byte{
 	// 305 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x50, 0x4f, 0x4e, 0xb3, 0x40,
 	0x1c, 0xfd, 0x4a, 0xfb, 0x55, 0xf3, 0xab, 0xd1, 0x71, 0xf6, 0x5d, 0xb4, 0x07, 0x18, 0x88, 0xee,

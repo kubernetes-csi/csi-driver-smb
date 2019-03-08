@@ -52,7 +52,7 @@ func (m *OperatingSystemVersionConstant) Reset()         { *m = OperatingSystemV
 func (m *OperatingSystemVersionConstant) String() string { return proto.CompactTextString(m) }
 func (*OperatingSystemVersionConstant) ProtoMessage()    {}
 func (*OperatingSystemVersionConstant) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operating_system_version_constant_15d4da17742d84b8, []int{0}
+	return fileDescriptor_operating_system_version_constant_6e3331dcbb4876e5, []int{0}
 }
 func (m *OperatingSystemVersionConstant) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OperatingSystemVersionConstant.Unmarshal(m, b)
@@ -119,10 +119,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/operating_system_version_constant.proto", fileDescriptor_operating_system_version_constant_15d4da17742d84b8)
+	proto.RegisterFile("google/ads/googleads/v0/resources/operating_system_version_constant.proto", fileDescriptor_operating_system_version_constant_6e3331dcbb4876e5)
 }
 
-var fileDescriptor_operating_system_version_constant_15d4da17742d84b8 = []byte{
+var fileDescriptor_operating_system_version_constant_6e3331dcbb4876e5 = []byte{
 	// 443 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0xdd, 0x6a, 0xd4, 0x40,
 	0x14, 0xc7, 0x49, 0xb6, 0x16, 0x1c, 0xdb, 0x22, 0xb9, 0x0a, 0x55, 0xca, 0xd6, 0x52, 0x58, 0x10,

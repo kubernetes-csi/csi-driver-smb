@@ -53,7 +53,7 @@ func (x GenderTypeEnum_GenderType) String() string {
 	return proto.EnumName(GenderTypeEnum_GenderType_name, int32(x))
 }
 func (GenderTypeEnum_GenderType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_gender_type_20abc54d6a1ebb6a, []int{0, 0}
+	return fileDescriptor_gender_type_c67ee963187cfd84, []int{0, 0}
 }
 
 // Container for enum describing the type of demographic genders.
@@ -67,7 +67,7 @@ func (m *GenderTypeEnum) Reset()         { *m = GenderTypeEnum{} }
 func (m *GenderTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*GenderTypeEnum) ProtoMessage()    {}
 func (*GenderTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gender_type_20abc54d6a1ebb6a, []int{0}
+	return fileDescriptor_gender_type_c67ee963187cfd84, []int{0}
 }
 func (m *GenderTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GenderTypeEnum.Unmarshal(m, b)
@@ -93,10 +93,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/gender_type.proto", fileDescriptor_gender_type_20abc54d6a1ebb6a)
+	proto.RegisterFile("google/ads/googleads/v0/enums/gender_type.proto", fileDescriptor_gender_type_c67ee963187cfd84)
 }
 
-var fileDescriptor_gender_type_20abc54d6a1ebb6a = []byte{
+var fileDescriptor_gender_type_c67ee963187cfd84 = []byte{
 	// 289 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xd2, 0x4f, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0x86, 0x32, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc, 0xd2,

@@ -45,7 +45,7 @@ func (x SharedCriterionErrorEnum_SharedCriterionError) String() string {
 	return proto.EnumName(SharedCriterionErrorEnum_SharedCriterionError_name, int32(x))
 }
 func (SharedCriterionErrorEnum_SharedCriterionError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_shared_criterion_error_6503cd69bab51196, []int{0, 0}
+	return fileDescriptor_shared_criterion_error_2febcb77bc0ead07, []int{0, 0}
 }
 
 // Container for enum describing possible shared criterion errors.
@@ -59,7 +59,7 @@ func (m *SharedCriterionErrorEnum) Reset()         { *m = SharedCriterionErrorEn
 func (m *SharedCriterionErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*SharedCriterionErrorEnum) ProtoMessage()    {}
 func (*SharedCriterionErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_criterion_error_6503cd69bab51196, []int{0}
+	return fileDescriptor_shared_criterion_error_2febcb77bc0ead07, []int{0}
 }
 func (m *SharedCriterionErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SharedCriterionErrorEnum.Unmarshal(m, b)
@@ -85,10 +85,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/shared_criterion_error.proto", fileDescriptor_shared_criterion_error_6503cd69bab51196)
+	proto.RegisterFile("google/ads/googleads/v0/errors/shared_criterion_error.proto", fileDescriptor_shared_criterion_error_2febcb77bc0ead07)
 }
 
-var fileDescriptor_shared_criterion_error_6503cd69bab51196 = []byte{
+var fileDescriptor_shared_criterion_error_2febcb77bc0ead07 = []byte{
 	// 312 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x50, 0x31, 0x4e, 0xc3, 0x30,
 	0x14, 0x25, 0x41, 0x02, 0xc9, 0x1d, 0xa8, 0x22, 0x06, 0x58, 0x3a, 0xe4, 0x00, 0x4e, 0x04, 0x9b,

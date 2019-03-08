@@ -97,7 +97,7 @@ func (x RecommendationErrorEnum_RecommendationError) String() string {
 	return proto.EnumName(RecommendationErrorEnum_RecommendationError_name, int32(x))
 }
 func (RecommendationErrorEnum_RecommendationError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_error_014afe23429b3873, []int{0, 0}
+	return fileDescriptor_recommendation_error_f08d8d745102169d, []int{0, 0}
 }
 
 // Container for enum describing possible errors from applying a recommendation.
@@ -111,7 +111,7 @@ func (m *RecommendationErrorEnum) Reset()         { *m = RecommendationErrorEnum
 func (m *RecommendationErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*RecommendationErrorEnum) ProtoMessage()    {}
 func (*RecommendationErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_error_014afe23429b3873, []int{0}
+	return fileDescriptor_recommendation_error_f08d8d745102169d, []int{0}
 }
 func (m *RecommendationErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecommendationErrorEnum.Unmarshal(m, b)
@@ -137,10 +137,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/recommendation_error.proto", fileDescriptor_recommendation_error_014afe23429b3873)
+	proto.RegisterFile("google/ads/googleads/v0/errors/recommendation_error.proto", fileDescriptor_recommendation_error_f08d8d745102169d)
 }
 
-var fileDescriptor_recommendation_error_014afe23429b3873 = []byte{
+var fileDescriptor_recommendation_error_f08d8d745102169d = []byte{
 	// 485 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xdf, 0x6e, 0xd3, 0x30,
 	0x14, 0xc6, 0x69, 0x0b, 0x1b, 0xb8, 0x1b, 0x18, 0x4f, 0x50, 0xfe, 0x88, 0x0a, 0x2a, 0xae, 0xd3,

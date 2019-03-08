@@ -53,7 +53,7 @@ func (x DeviceEnum_Device) String() string {
 	return proto.EnumName(DeviceEnum_Device_name, int32(x))
 }
 func (DeviceEnum_Device) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_device_6d726a8a981312d4, []int{0, 0}
+	return fileDescriptor_device_73d46066d4fbd368, []int{0, 0}
 }
 
 // Container for enumeration of Google Ads devices available for targeting.
@@ -67,7 +67,7 @@ func (m *DeviceEnum) Reset()         { *m = DeviceEnum{} }
 func (m *DeviceEnum) String() string { return proto.CompactTextString(m) }
 func (*DeviceEnum) ProtoMessage()    {}
 func (*DeviceEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_device_6d726a8a981312d4, []int{0}
+	return fileDescriptor_device_73d46066d4fbd368, []int{0}
 }
 func (m *DeviceEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeviceEnum.Unmarshal(m, b)
@@ -93,10 +93,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/device.proto", fileDescriptor_device_6d726a8a981312d4)
+	proto.RegisterFile("google/ads/googleads/v0/enums/device.proto", fileDescriptor_device_73d46066d4fbd368)
 }
 
-var fileDescriptor_device_6d726a8a981312d4 = []byte{
+var fileDescriptor_device_73d46066d4fbd368 = []byte{
 	// 275 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x8f, 0xc1, 0x4e, 0x83, 0x30,
 	0x00, 0x86, 0x1d, 0x33, 0x98, 0x94, 0x83, 0x84, 0xfb, 0x0e, 0xdb, 0xd1, 0x43, 0x69, 0xe2, 0xad,

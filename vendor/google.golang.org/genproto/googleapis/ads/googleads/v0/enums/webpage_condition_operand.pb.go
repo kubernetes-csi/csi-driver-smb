@@ -61,7 +61,7 @@ func (x WebpageConditionOperandEnum_WebpageConditionOperand) String() string {
 	return proto.EnumName(WebpageConditionOperandEnum_WebpageConditionOperand_name, int32(x))
 }
 func (WebpageConditionOperandEnum_WebpageConditionOperand) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_webpage_condition_operand_c33b7f446ef8416d, []int{0, 0}
+	return fileDescriptor_webpage_condition_operand_eb69a95455d00a96, []int{0, 0}
 }
 
 // Container for enum describing webpage condition operand in webpage criterion.
@@ -75,7 +75,7 @@ func (m *WebpageConditionOperandEnum) Reset()         { *m = WebpageConditionOpe
 func (m *WebpageConditionOperandEnum) String() string { return proto.CompactTextString(m) }
 func (*WebpageConditionOperandEnum) ProtoMessage()    {}
 func (*WebpageConditionOperandEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_webpage_condition_operand_c33b7f446ef8416d, []int{0}
+	return fileDescriptor_webpage_condition_operand_eb69a95455d00a96, []int{0}
 }
 func (m *WebpageConditionOperandEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_WebpageConditionOperandEnum.Unmarshal(m, b)
@@ -101,10 +101,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/webpage_condition_operand.proto", fileDescriptor_webpage_condition_operand_c33b7f446ef8416d)
+	proto.RegisterFile("google/ads/googleads/v0/enums/webpage_condition_operand.proto", fileDescriptor_webpage_condition_operand_eb69a95455d00a96)
 }
 
-var fileDescriptor_webpage_condition_operand_c33b7f446ef8416d = []byte{
+var fileDescriptor_webpage_condition_operand_eb69a95455d00a96 = []byte{
 	// 340 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x6e, 0xe2, 0x30,
 	0x18, 0x85, 0x27, 0x61, 0x06, 0x46, 0x06, 0xcd, 0x58, 0xd9, 0x74, 0xd1, 0xb2, 0x80, 0x03, 0x38,

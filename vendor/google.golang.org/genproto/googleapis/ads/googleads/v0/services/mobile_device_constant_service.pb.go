@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [MobileDeviceConstantService.GetMobileDeviceConstant][google.ads.googleads.v0.services.MobileDeviceConstantService.GetMobileDeviceConstant].
+// Request message for
+// [MobileDeviceConstantService.GetMobileDeviceConstant][google.ads.googleads.v0.services.MobileDeviceConstantService.GetMobileDeviceConstant].
 type GetMobileDeviceConstantRequest struct {
 	// Resource name of the mobile device to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetMobileDeviceConstantRequest) Reset()         { *m = GetMobileDeviceC
 func (m *GetMobileDeviceConstantRequest) String() string { return proto.CompactTextString(m) }
 func (*GetMobileDeviceConstantRequest) ProtoMessage()    {}
 func (*GetMobileDeviceConstantRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_mobile_device_constant_service_09a983f12dae70fa, []int{0}
+	return fileDescriptor_mobile_device_constant_service_d4a2ac5306cc6c06, []int{0}
 }
 func (m *GetMobileDeviceConstantRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetMobileDeviceConstantRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _MobileDeviceConstantService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/mobile_device_constant_service.proto", fileDescriptor_mobile_device_constant_service_09a983f12dae70fa)
+	proto.RegisterFile("google/ads/googleads/v0/services/mobile_device_constant_service.proto", fileDescriptor_mobile_device_constant_service_d4a2ac5306cc6c06)
 }
 
-var fileDescriptor_mobile_device_constant_service_09a983f12dae70fa = []byte{
+var fileDescriptor_mobile_device_constant_service_d4a2ac5306cc6c06 = []byte{
 	// 362 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0xbf, 0x4a, 0xc3, 0x40,
 	0x18, 0x27, 0x11, 0x04, 0x83, 0x2e, 0x59, 0x94, 0x2a, 0x12, 0x6a, 0x07, 0x51, 0xbc, 0x0b, 0x76,

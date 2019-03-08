@@ -49,7 +49,7 @@ func (x KeywordPlanNetworkEnum_KeywordPlanNetwork) String() string {
 	return proto.EnumName(KeywordPlanNetworkEnum_KeywordPlanNetwork_name, int32(x))
 }
 func (KeywordPlanNetworkEnum_KeywordPlanNetwork) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_network_a7bea1d531de34a8, []int{0, 0}
+	return fileDescriptor_keyword_plan_network_64cbb5783fb0f36c, []int{0, 0}
 }
 
 // Container for enumeration of keyword plan forecastable network types.
@@ -63,7 +63,7 @@ func (m *KeywordPlanNetworkEnum) Reset()         { *m = KeywordPlanNetworkEnum{}
 func (m *KeywordPlanNetworkEnum) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanNetworkEnum) ProtoMessage()    {}
 func (*KeywordPlanNetworkEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_network_a7bea1d531de34a8, []int{0}
+	return fileDescriptor_keyword_plan_network_64cbb5783fb0f36c, []int{0}
 }
 func (m *KeywordPlanNetworkEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanNetworkEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/keyword_plan_network.proto", fileDescriptor_keyword_plan_network_a7bea1d531de34a8)
+	proto.RegisterFile("google/ads/googleads/v0/enums/keyword_plan_network.proto", fileDescriptor_keyword_plan_network_64cbb5783fb0f36c)
 }
 
-var fileDescriptor_keyword_plan_network_a7bea1d531de34a8 = []byte{
+var fileDescriptor_keyword_plan_network_64cbb5783fb0f36c = []byte{
 	// 308 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x48, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

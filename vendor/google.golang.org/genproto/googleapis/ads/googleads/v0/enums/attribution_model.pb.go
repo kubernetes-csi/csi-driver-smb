@@ -76,7 +76,7 @@ func (x AttributionModelEnum_AttributionModel) String() string {
 	return proto.EnumName(AttributionModelEnum_AttributionModel_name, int32(x))
 }
 func (AttributionModelEnum_AttributionModel) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_attribution_model_4c1c01dbd2c131fb, []int{0, 0}
+	return fileDescriptor_attribution_model_710acdb5f1419493, []int{0, 0}
 }
 
 // Container for enum representing the attribution model that describes how to
@@ -92,7 +92,7 @@ func (m *AttributionModelEnum) Reset()         { *m = AttributionModelEnum{} }
 func (m *AttributionModelEnum) String() string { return proto.CompactTextString(m) }
 func (*AttributionModelEnum) ProtoMessage()    {}
 func (*AttributionModelEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_attribution_model_4c1c01dbd2c131fb, []int{0}
+	return fileDescriptor_attribution_model_710acdb5f1419493, []int{0}
 }
 func (m *AttributionModelEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AttributionModelEnum.Unmarshal(m, b)
@@ -118,10 +118,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/attribution_model.proto", fileDescriptor_attribution_model_4c1c01dbd2c131fb)
+	proto.RegisterFile("google/ads/googleads/v0/enums/attribution_model.proto", fileDescriptor_attribution_model_710acdb5f1419493)
 }
 
-var fileDescriptor_attribution_model_4c1c01dbd2c131fb = []byte{
+var fileDescriptor_attribution_model_710acdb5f1419493 = []byte{
 	// 391 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xcf, 0x6a, 0xd5, 0x40,
 	0x14, 0xc6, 0xbd, 0x11, 0x54, 0xa6, 0x82, 0xc3, 0x60, 0x17, 0x2e, 0x0a, 0xb6, 0x54, 0xa8, 0x20,

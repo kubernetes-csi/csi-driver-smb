@@ -49,7 +49,7 @@ func (m *MatchingFunction) Reset()         { *m = MatchingFunction{} }
 func (m *MatchingFunction) String() string { return proto.CompactTextString(m) }
 func (*MatchingFunction) ProtoMessage()    {}
 func (*MatchingFunction) Descriptor() ([]byte, []int) {
-	return fileDescriptor_matching_function_9404da13123f2035, []int{0}
+	return fileDescriptor_matching_function_95e7b72e8e7503bc, []int{0}
 }
 func (m *MatchingFunction) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MatchingFunction.Unmarshal(m, b)
@@ -81,10 +81,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/common/matching_function.proto", fileDescriptor_matching_function_9404da13123f2035)
+	proto.RegisterFile("google/ads/googleads/v0/common/matching_function.proto", fileDescriptor_matching_function_95e7b72e8e7503bc)
 }
 
-var fileDescriptor_matching_function_9404da13123f2035 = []byte{
+var fileDescriptor_matching_function_95e7b72e8e7503bc = []byte{
 	// 283 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xcf, 0x4a, 0xc4, 0x30,
 	0x10, 0xc6, 0xe9, 0x0a, 0x1e, 0x2a, 0xa8, 0x2c, 0x08, 0x22, 0xb2, 0x48, 0x4f, 0x9e, 0x26, 0x45,

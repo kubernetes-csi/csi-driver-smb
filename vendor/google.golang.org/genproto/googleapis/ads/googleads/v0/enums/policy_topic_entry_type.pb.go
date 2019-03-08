@@ -64,7 +64,7 @@ func (x PolicyTopicEntryTypeEnum_PolicyTopicEntryType) String() string {
 	return proto.EnumName(PolicyTopicEntryTypeEnum_PolicyTopicEntryType_name, int32(x))
 }
 func (PolicyTopicEntryTypeEnum_PolicyTopicEntryType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_policy_topic_entry_type_bd2891c8710a073a, []int{0, 0}
+	return fileDescriptor_policy_topic_entry_type_cbebbf5824d9149e, []int{0, 0}
 }
 
 // Container for enum describing possible policy topic entry types.
@@ -78,7 +78,7 @@ func (m *PolicyTopicEntryTypeEnum) Reset()         { *m = PolicyTopicEntryTypeEn
 func (m *PolicyTopicEntryTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicEntryTypeEnum) ProtoMessage()    {}
 func (*PolicyTopicEntryTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_topic_entry_type_bd2891c8710a073a, []int{0}
+	return fileDescriptor_policy_topic_entry_type_cbebbf5824d9149e, []int{0}
 }
 func (m *PolicyTopicEntryTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicEntryTypeEnum.Unmarshal(m, b)
@@ -104,10 +104,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/policy_topic_entry_type.proto", fileDescriptor_policy_topic_entry_type_bd2891c8710a073a)
+	proto.RegisterFile("google/ads/googleads/v0/enums/policy_topic_entry_type.proto", fileDescriptor_policy_topic_entry_type_cbebbf5824d9149e)
 }
 
-var fileDescriptor_policy_topic_entry_type_bd2891c8710a073a = []byte{
+var fileDescriptor_policy_topic_entry_type_cbebbf5824d9149e = []byte{
 	// 349 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xd1, 0x6a, 0xea, 0x30,
 	0x1c, 0xc6, 0x4f, 0x7b, 0xce, 0x51, 0x88, 0xb0, 0x95, 0xb2, 0xc1, 0xbc, 0xf0, 0x42, 0x1f, 0x20,

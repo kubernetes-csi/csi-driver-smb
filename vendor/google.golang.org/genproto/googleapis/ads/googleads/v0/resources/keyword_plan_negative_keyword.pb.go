@@ -46,7 +46,7 @@ func (m *KeywordPlanNegativeKeyword) Reset()         { *m = KeywordPlanNegativeK
 func (m *KeywordPlanNegativeKeyword) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanNegativeKeyword) ProtoMessage()    {}
 func (*KeywordPlanNegativeKeyword) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_negative_keyword_402256dcf1389be9, []int{0}
+	return fileDescriptor_keyword_plan_negative_keyword_b7d19f4194ef6279, []int{0}
 }
 func (m *KeywordPlanNegativeKeyword) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanNegativeKeyword.Unmarshal(m, b)
@@ -106,10 +106,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/keyword_plan_negative_keyword.proto", fileDescriptor_keyword_plan_negative_keyword_402256dcf1389be9)
+	proto.RegisterFile("google/ads/googleads/v0/resources/keyword_plan_negative_keyword.proto", fileDescriptor_keyword_plan_negative_keyword_b7d19f4194ef6279)
 }
 
-var fileDescriptor_keyword_plan_negative_keyword_402256dcf1389be9 = []byte{
+var fileDescriptor_keyword_plan_negative_keyword_b7d19f4194ef6279 = []byte{
 	// 421 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0xdd, 0x6a, 0xd4, 0x40,
 	0x18, 0x25, 0xd3, 0x2a, 0x74, 0xfc, 0xb9, 0x88, 0x08, 0x61, 0x15, 0xdd, 0x2a, 0x85, 0x05, 0x61,

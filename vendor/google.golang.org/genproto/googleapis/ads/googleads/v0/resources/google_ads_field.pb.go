@@ -80,7 +80,7 @@ func (m *GoogleAdsField) Reset()         { *m = GoogleAdsField{} }
 func (m *GoogleAdsField) String() string { return proto.CompactTextString(m) }
 func (*GoogleAdsField) ProtoMessage()    {}
 func (*GoogleAdsField) Descriptor() ([]byte, []int) {
-	return fileDescriptor_google_ads_field_b1a3cd01b59ef30b, []int{0}
+	return fileDescriptor_google_ads_field_c22565e2dfed71e8, []int{0}
 }
 func (m *GoogleAdsField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoogleAdsField.Unmarshal(m, b)
@@ -203,10 +203,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/google_ads_field.proto", fileDescriptor_google_ads_field_b1a3cd01b59ef30b)
+	proto.RegisterFile("google/ads/googleads/v0/resources/google_ads_field.proto", fileDescriptor_google_ads_field_c22565e2dfed71e8)
 }
 
-var fileDescriptor_google_ads_field_b1a3cd01b59ef30b = []byte{
+var fileDescriptor_google_ads_field_c22565e2dfed71e8 = []byte{
 	// 569 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xdf, 0x6a, 0xdb, 0x3e,
 	0x14, 0xc7, 0x49, 0xda, 0x5f, 0xe3, 0x2a, 0x6d, 0x7e, 0xa0, 0xde, 0x98, 0x30, 0x46, 0xba, 0x51,

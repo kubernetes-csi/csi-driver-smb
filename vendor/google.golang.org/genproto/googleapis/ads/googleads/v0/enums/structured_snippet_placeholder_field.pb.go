@@ -55,7 +55,7 @@ func (x StructuredSnippetPlaceholderFieldEnum_StructuredSnippetPlaceholderField)
 	return proto.EnumName(StructuredSnippetPlaceholderFieldEnum_StructuredSnippetPlaceholderField_name, int32(x))
 }
 func (StructuredSnippetPlaceholderFieldEnum_StructuredSnippetPlaceholderField) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_structured_snippet_placeholder_field_7be58eaee059536b, []int{0, 0}
+	return fileDescriptor_structured_snippet_placeholder_field_60af2f9ee8f0500c, []int{0, 0}
 }
 
 // Values for Structured Snippet placeholder fields.
@@ -69,7 +69,7 @@ func (m *StructuredSnippetPlaceholderFieldEnum) Reset()         { *m = Structure
 func (m *StructuredSnippetPlaceholderFieldEnum) String() string { return proto.CompactTextString(m) }
 func (*StructuredSnippetPlaceholderFieldEnum) ProtoMessage()    {}
 func (*StructuredSnippetPlaceholderFieldEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_structured_snippet_placeholder_field_7be58eaee059536b, []int{0}
+	return fileDescriptor_structured_snippet_placeholder_field_60af2f9ee8f0500c, []int{0}
 }
 func (m *StructuredSnippetPlaceholderFieldEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StructuredSnippetPlaceholderFieldEnum.Unmarshal(m, b)
@@ -95,10 +95,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/structured_snippet_placeholder_field.proto", fileDescriptor_structured_snippet_placeholder_field_7be58eaee059536b)
+	proto.RegisterFile("google/ads/googleads/v0/enums/structured_snippet_placeholder_field.proto", fileDescriptor_structured_snippet_placeholder_field_60af2f9ee8f0500c)
 }
 
-var fileDescriptor_structured_snippet_placeholder_field_7be58eaee059536b = []byte{
+var fileDescriptor_structured_snippet_placeholder_field_60af2f9ee8f0500c = []byte{
 	// 311 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x90, 0xdf, 0x4a, 0xf3, 0x30,
 	0x00, 0xc5, 0xbf, 0x76, 0xb0, 0x4f, 0x32, 0xc1, 0xd2, 0xfb, 0x5d, 0x6c, 0xa0, 0x97, 0x69, 0xc1,

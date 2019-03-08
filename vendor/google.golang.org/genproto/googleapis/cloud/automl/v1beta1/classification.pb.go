@@ -46,7 +46,7 @@ func (x ClassificationType) String() string {
 	return proto.EnumName(ClassificationType_name, int32(x))
 }
 func (ClassificationType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_classification_3fc2c485b21fa3e7, []int{0}
+	return fileDescriptor_classification_d281a26732969d22, []int{0}
 }
 
 // Contains annotation details specific to classification.
@@ -66,7 +66,7 @@ func (m *ClassificationAnnotation) Reset()         { *m = ClassificationAnnotati
 func (m *ClassificationAnnotation) String() string { return proto.CompactTextString(m) }
 func (*ClassificationAnnotation) ProtoMessage()    {}
 func (*ClassificationAnnotation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_classification_3fc2c485b21fa3e7, []int{0}
+	return fileDescriptor_classification_d281a26732969d22, []int{0}
 }
 func (m *ClassificationAnnotation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClassificationAnnotation.Unmarshal(m, b)
@@ -119,7 +119,7 @@ func (m *ClassificationEvaluationMetrics) Reset()         { *m = ClassificationE
 func (m *ClassificationEvaluationMetrics) String() string { return proto.CompactTextString(m) }
 func (*ClassificationEvaluationMetrics) ProtoMessage()    {}
 func (*ClassificationEvaluationMetrics) Descriptor() ([]byte, []int) {
-	return fileDescriptor_classification_3fc2c485b21fa3e7, []int{1}
+	return fileDescriptor_classification_d281a26732969d22, []int{1}
 }
 func (m *ClassificationEvaluationMetrics) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClassificationEvaluationMetrics.Unmarshal(m, b)
@@ -192,7 +192,10 @@ type ClassificationEvaluationMetrics_ConfidenceMetricsEntry struct {
 	// highest predictionscore and not below the confidence threshold for each
 	// example.
 	PrecisionAt1 float32 `protobuf:"fixed32,6,opt,name=precision_at1,json=precisionAt1,proto3" json:"precision_at1,omitempty"`
-	// Output only. The harmonic mean of [recall_at1][google.cloud.automl.v1beta1.ClassificationEvaluationMetrics.ConfidenceMetricsEntry.recall_at1] and [precision_at1][google.cloud.automl.v1beta1.ClassificationEvaluationMetrics.ConfidenceMetricsEntry.precision_at1].
+	// Output only. The harmonic mean of
+	// [recall_at1][google.cloud.automl.v1beta1.ClassificationEvaluationMetrics.ConfidenceMetricsEntry.recall_at1]
+	// and
+	// [precision_at1][google.cloud.automl.v1beta1.ClassificationEvaluationMetrics.ConfidenceMetricsEntry.precision_at1].
 	F1ScoreAt1           float32  `protobuf:"fixed32,7,opt,name=f1_score_at1,json=f1ScoreAt1,proto3" json:"f1_score_at1,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -207,7 +210,7 @@ func (m *ClassificationEvaluationMetrics_ConfidenceMetricsEntry) String() string
 }
 func (*ClassificationEvaluationMetrics_ConfidenceMetricsEntry) ProtoMessage() {}
 func (*ClassificationEvaluationMetrics_ConfidenceMetricsEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_classification_3fc2c485b21fa3e7, []int{1, 0}
+	return fileDescriptor_classification_d281a26732969d22, []int{1, 0}
 }
 func (m *ClassificationEvaluationMetrics_ConfidenceMetricsEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClassificationEvaluationMetrics_ConfidenceMetricsEntry.Unmarshal(m, b)
@@ -299,7 +302,7 @@ func (m *ClassificationEvaluationMetrics_ConfusionMatrix) String() string {
 }
 func (*ClassificationEvaluationMetrics_ConfusionMatrix) ProtoMessage() {}
 func (*ClassificationEvaluationMetrics_ConfusionMatrix) Descriptor() ([]byte, []int) {
-	return fileDescriptor_classification_3fc2c485b21fa3e7, []int{1, 1}
+	return fileDescriptor_classification_d281a26732969d22, []int{1, 1}
 }
 func (m *ClassificationEvaluationMetrics_ConfusionMatrix) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClassificationEvaluationMetrics_ConfusionMatrix.Unmarshal(m, b)
@@ -352,7 +355,7 @@ func (m *ClassificationEvaluationMetrics_ConfusionMatrix_Row) String() string {
 }
 func (*ClassificationEvaluationMetrics_ConfusionMatrix_Row) ProtoMessage() {}
 func (*ClassificationEvaluationMetrics_ConfusionMatrix_Row) Descriptor() ([]byte, []int) {
-	return fileDescriptor_classification_3fc2c485b21fa3e7, []int{1, 1, 0}
+	return fileDescriptor_classification_d281a26732969d22, []int{1, 1, 0}
 }
 func (m *ClassificationEvaluationMetrics_ConfusionMatrix_Row) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClassificationEvaluationMetrics_ConfusionMatrix_Row.Unmarshal(m, b)
@@ -389,10 +392,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/automl/v1beta1/classification.proto", fileDescriptor_classification_3fc2c485b21fa3e7)
+	proto.RegisterFile("google/cloud/automl/v1beta1/classification.proto", fileDescriptor_classification_d281a26732969d22)
 }
 
-var fileDescriptor_classification_3fc2c485b21fa3e7 = []byte{
+var fileDescriptor_classification_d281a26732969d22 = []byte{
 	// 605 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x4f, 0x4f, 0xdb, 0x30,
 	0x14, 0x5f, 0x5a, 0x5a, 0xc6, 0x83, 0x8d, 0xca, 0x30, 0x94, 0x15, 0x36, 0x2a, 0xb8, 0x54, 0x68,

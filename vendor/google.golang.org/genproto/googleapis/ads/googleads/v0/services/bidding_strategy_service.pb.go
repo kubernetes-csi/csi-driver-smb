@@ -28,7 +28,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [BiddingStrategyService.GetBiddingStrategy][google.ads.googleads.v0.services.BiddingStrategyService.GetBiddingStrategy].
+// Request message for
+// [BiddingStrategyService.GetBiddingStrategy][google.ads.googleads.v0.services.BiddingStrategyService.GetBiddingStrategy].
 type GetBiddingStrategyRequest struct {
 	// The resource name of the bidding strategy to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -41,7 +42,7 @@ func (m *GetBiddingStrategyRequest) Reset()         { *m = GetBiddingStrategyReq
 func (m *GetBiddingStrategyRequest) String() string { return proto.CompactTextString(m) }
 func (*GetBiddingStrategyRequest) ProtoMessage()    {}
 func (*GetBiddingStrategyRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_strategy_service_eec251740fa622d1, []int{0}
+	return fileDescriptor_bidding_strategy_service_2d7048ce4b6e0fc2, []int{0}
 }
 func (m *GetBiddingStrategyRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetBiddingStrategyRequest.Unmarshal(m, b)
@@ -68,7 +69,8 @@ func (m *GetBiddingStrategyRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [BiddingStrategyService.MutateBiddingStrategies][google.ads.googleads.v0.services.BiddingStrategyService.MutateBiddingStrategies].
+// Request message for
+// [BiddingStrategyService.MutateBiddingStrategies][google.ads.googleads.v0.services.BiddingStrategyService.MutateBiddingStrategies].
 type MutateBiddingStrategiesRequest struct {
 	// The ID of the customer whose bidding strategies are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -91,7 +93,7 @@ func (m *MutateBiddingStrategiesRequest) Reset()         { *m = MutateBiddingStr
 func (m *MutateBiddingStrategiesRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateBiddingStrategiesRequest) ProtoMessage()    {}
 func (*MutateBiddingStrategiesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_strategy_service_eec251740fa622d1, []int{1}
+	return fileDescriptor_bidding_strategy_service_2d7048ce4b6e0fc2, []int{1}
 }
 func (m *MutateBiddingStrategiesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateBiddingStrategiesRequest.Unmarshal(m, b)
@@ -159,7 +161,7 @@ func (m *BiddingStrategyOperation) Reset()         { *m = BiddingStrategyOperati
 func (m *BiddingStrategyOperation) String() string { return proto.CompactTextString(m) }
 func (*BiddingStrategyOperation) ProtoMessage()    {}
 func (*BiddingStrategyOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_strategy_service_eec251740fa622d1, []int{2}
+	return fileDescriptor_bidding_strategy_service_2d7048ce4b6e0fc2, []int{2}
 }
 func (m *BiddingStrategyOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BiddingStrategyOperation.Unmarshal(m, b)
@@ -343,7 +345,7 @@ func (m *MutateBiddingStrategiesResponse) Reset()         { *m = MutateBiddingSt
 func (m *MutateBiddingStrategiesResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateBiddingStrategiesResponse) ProtoMessage()    {}
 func (*MutateBiddingStrategiesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_strategy_service_eec251740fa622d1, []int{3}
+	return fileDescriptor_bidding_strategy_service_2d7048ce4b6e0fc2, []int{3}
 }
 func (m *MutateBiddingStrategiesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateBiddingStrategiesResponse.Unmarshal(m, b)
@@ -390,7 +392,7 @@ func (m *MutateBiddingStrategyResult) Reset()         { *m = MutateBiddingStrate
 func (m *MutateBiddingStrategyResult) String() string { return proto.CompactTextString(m) }
 func (*MutateBiddingStrategyResult) ProtoMessage()    {}
 func (*MutateBiddingStrategyResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_strategy_service_eec251740fa622d1, []int{4}
+	return fileDescriptor_bidding_strategy_service_2d7048ce4b6e0fc2, []int{4}
 }
 func (m *MutateBiddingStrategyResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateBiddingStrategyResult.Unmarshal(m, b)
@@ -537,10 +539,10 @@ var _BiddingStrategyService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/bidding_strategy_service.proto", fileDescriptor_bidding_strategy_service_eec251740fa622d1)
+	proto.RegisterFile("google/ads/googleads/v0/services/bidding_strategy_service.proto", fileDescriptor_bidding_strategy_service_2d7048ce4b6e0fc2)
 }
 
-var fileDescriptor_bidding_strategy_service_eec251740fa622d1 = []byte{
+var fileDescriptor_bidding_strategy_service_2d7048ce4b6e0fc2 = []byte{
 	// 721 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x95, 0xd1, 0x6a, 0xd4, 0x4c,
 	0x14, 0xc7, 0xbf, 0x64, 0x3f, 0xaa, 0x9d, 0x54, 0x85, 0x11, 0x6d, 0xdc, 0x4a, 0xbb, 0xc4, 0x82,

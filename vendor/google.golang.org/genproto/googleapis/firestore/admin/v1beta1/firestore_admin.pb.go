@@ -76,7 +76,7 @@ func (x OperationState) String() string {
 	return proto.EnumName(OperationState_name, int32(x))
 }
 func (OperationState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{0}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{0}
 }
 
 // The type of index operation.
@@ -102,11 +102,12 @@ func (x IndexOperationMetadata_OperationType) String() string {
 	return proto.EnumName(IndexOperationMetadata_OperationType_name, int32(x))
 }
 func (IndexOperationMetadata_OperationType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{0, 0}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{0, 0}
 }
 
 // Metadata for index operations. This metadata populates
-// the metadata field of [google.longrunning.Operation][google.longrunning.Operation].
+// the metadata field of
+// [google.longrunning.Operation][google.longrunning.Operation].
 type IndexOperationMetadata struct {
 	// The time that work began on the operation.
 	StartTime *timestamp.Timestamp `protobuf:"bytes,1,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
@@ -120,7 +121,8 @@ type IndexOperationMetadata struct {
 	OperationType IndexOperationMetadata_OperationType `protobuf:"varint,4,opt,name=operation_type,json=operationType,proto3,enum=google.firestore.admin.v1beta1.IndexOperationMetadata_OperationType" json:"operation_type,omitempty"`
 	// True if the [google.longrunning.Operation] was cancelled. If the
 	// cancellation is in progress, cancelled will be true but
-	// [google.longrunning.Operation.done][google.longrunning.Operation.done] will be false.
+	// [google.longrunning.Operation.done][google.longrunning.Operation.done] will
+	// be false.
 	Cancelled bool `protobuf:"varint,5,opt,name=cancelled,proto3" json:"cancelled,omitempty"`
 	// Progress of the existing operation, measured in number of documents.
 	DocumentProgress     *Progress `protobuf:"bytes,6,opt,name=document_progress,json=documentProgress,proto3" json:"document_progress,omitempty"`
@@ -133,7 +135,7 @@ func (m *IndexOperationMetadata) Reset()         { *m = IndexOperationMetadata{}
 func (m *IndexOperationMetadata) String() string { return proto.CompactTextString(m) }
 func (*IndexOperationMetadata) ProtoMessage()    {}
 func (*IndexOperationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{0}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{0}
 }
 func (m *IndexOperationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IndexOperationMetadata.Unmarshal(m, b)
@@ -212,7 +214,7 @@ func (m *Progress) Reset()         { *m = Progress{} }
 func (m *Progress) String() string { return proto.CompactTextString(m) }
 func (*Progress) ProtoMessage()    {}
 func (*Progress) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{1}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{1}
 }
 func (m *Progress) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Progress.Unmarshal(m, b)
@@ -246,7 +248,8 @@ func (m *Progress) GetWorkEstimated() int64 {
 	return 0
 }
 
-// The request for [FirestoreAdmin.CreateIndex][google.firestore.admin.v1beta1.FirestoreAdmin.CreateIndex].
+// The request for
+// [FirestoreAdmin.CreateIndex][google.firestore.admin.v1beta1.FirestoreAdmin.CreateIndex].
 type CreateIndexRequest struct {
 	// The name of the database this index will apply to. For example:
 	// `projects/{project_id}/databases/{database_id}`
@@ -263,7 +266,7 @@ func (m *CreateIndexRequest) Reset()         { *m = CreateIndexRequest{} }
 func (m *CreateIndexRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateIndexRequest) ProtoMessage()    {}
 func (*CreateIndexRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{2}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{2}
 }
 func (m *CreateIndexRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateIndexRequest.Unmarshal(m, b)
@@ -297,7 +300,8 @@ func (m *CreateIndexRequest) GetIndex() *Index {
 	return nil
 }
 
-// The request for [FirestoreAdmin.GetIndex][google.firestore.admin.v1beta1.FirestoreAdmin.GetIndex].
+// The request for
+// [FirestoreAdmin.GetIndex][google.firestore.admin.v1beta1.FirestoreAdmin.GetIndex].
 type GetIndexRequest struct {
 	// The name of the index. For example:
 	// `projects/{project_id}/databases/{database_id}/indexes/{index_id}`
@@ -311,7 +315,7 @@ func (m *GetIndexRequest) Reset()         { *m = GetIndexRequest{} }
 func (m *GetIndexRequest) String() string { return proto.CompactTextString(m) }
 func (*GetIndexRequest) ProtoMessage()    {}
 func (*GetIndexRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{3}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{3}
 }
 func (m *GetIndexRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetIndexRequest.Unmarshal(m, b)
@@ -338,7 +342,8 @@ func (m *GetIndexRequest) GetName() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta1.FirestoreAdmin.ListIndexes].
+// The request for
+// [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta1.FirestoreAdmin.ListIndexes].
 type ListIndexesRequest struct {
 	// The database name. For example:
 	// `projects/{project_id}/databases/{database_id}`
@@ -357,7 +362,7 @@ func (m *ListIndexesRequest) Reset()         { *m = ListIndexesRequest{} }
 func (m *ListIndexesRequest) String() string { return proto.CompactTextString(m) }
 func (*ListIndexesRequest) ProtoMessage()    {}
 func (*ListIndexesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{4}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{4}
 }
 func (m *ListIndexesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListIndexesRequest.Unmarshal(m, b)
@@ -405,7 +410,8 @@ func (m *ListIndexesRequest) GetPageToken() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.DeleteIndex][google.firestore.admin.v1beta1.FirestoreAdmin.DeleteIndex].
+// The request for
+// [FirestoreAdmin.DeleteIndex][google.firestore.admin.v1beta1.FirestoreAdmin.DeleteIndex].
 type DeleteIndexRequest struct {
 	// The index name. For example:
 	// `projects/{project_id}/databases/{database_id}/indexes/{index_id}`
@@ -419,7 +425,7 @@ func (m *DeleteIndexRequest) Reset()         { *m = DeleteIndexRequest{} }
 func (m *DeleteIndexRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteIndexRequest) ProtoMessage()    {}
 func (*DeleteIndexRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{5}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{5}
 }
 func (m *DeleteIndexRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteIndexRequest.Unmarshal(m, b)
@@ -446,7 +452,8 @@ func (m *DeleteIndexRequest) GetName() string {
 	return ""
 }
 
-// The response for [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta1.FirestoreAdmin.ListIndexes].
+// The response for
+// [FirestoreAdmin.ListIndexes][google.firestore.admin.v1beta1.FirestoreAdmin.ListIndexes].
 type ListIndexesResponse struct {
 	// The indexes.
 	Indexes []*Index `protobuf:"bytes,1,rep,name=indexes,proto3" json:"indexes,omitempty"`
@@ -461,7 +468,7 @@ func (m *ListIndexesResponse) Reset()         { *m = ListIndexesResponse{} }
 func (m *ListIndexesResponse) String() string { return proto.CompactTextString(m) }
 func (*ListIndexesResponse) ProtoMessage()    {}
 func (*ListIndexesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{6}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{6}
 }
 func (m *ListIndexesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListIndexesResponse.Unmarshal(m, b)
@@ -495,7 +502,8 @@ func (m *ListIndexesResponse) GetNextPageToken() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.ExportDocuments][google.firestore.admin.v1beta1.FirestoreAdmin.ExportDocuments].
+// The request for
+// [FirestoreAdmin.ExportDocuments][google.firestore.admin.v1beta1.FirestoreAdmin.ExportDocuments].
 type ExportDocumentsRequest struct {
 	// Database to export. Should be of the form:
 	// `projects/{project_id}/databases/{database_id}`.
@@ -520,7 +528,7 @@ func (m *ExportDocumentsRequest) Reset()         { *m = ExportDocumentsRequest{}
 func (m *ExportDocumentsRequest) String() string { return proto.CompactTextString(m) }
 func (*ExportDocumentsRequest) ProtoMessage()    {}
 func (*ExportDocumentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{7}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{7}
 }
 func (m *ExportDocumentsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportDocumentsRequest.Unmarshal(m, b)
@@ -561,7 +569,8 @@ func (m *ExportDocumentsRequest) GetOutputUriPrefix() string {
 	return ""
 }
 
-// The request for [FirestoreAdmin.ImportDocuments][google.firestore.admin.v1beta1.FirestoreAdmin.ImportDocuments].
+// The request for
+// [FirestoreAdmin.ImportDocuments][google.firestore.admin.v1beta1.FirestoreAdmin.ImportDocuments].
 type ImportDocumentsRequest struct {
 	// Database to import into. Should be of the form:
 	// `projects/{project_id}/databases/{database_id}`.
@@ -584,7 +593,7 @@ func (m *ImportDocumentsRequest) Reset()         { *m = ImportDocumentsRequest{}
 func (m *ImportDocumentsRequest) String() string { return proto.CompactTextString(m) }
 func (*ImportDocumentsRequest) ProtoMessage()    {}
 func (*ImportDocumentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{8}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{8}
 }
 func (m *ImportDocumentsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportDocumentsRequest.Unmarshal(m, b)
@@ -625,7 +634,8 @@ func (m *ImportDocumentsRequest) GetInputUriPrefix() string {
 	return ""
 }
 
-// Returned in the [google.longrunning.Operation][google.longrunning.Operation] response field.
+// Returned in the [google.longrunning.Operation][google.longrunning.Operation]
+// response field.
 type ExportDocumentsResponse struct {
 	// Location of the output files. This can be used to begin an import
 	// into Cloud Firestore (this project or another project) after the operation
@@ -640,7 +650,7 @@ func (m *ExportDocumentsResponse) Reset()         { *m = ExportDocumentsResponse
 func (m *ExportDocumentsResponse) String() string { return proto.CompactTextString(m) }
 func (*ExportDocumentsResponse) ProtoMessage()    {}
 func (*ExportDocumentsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{9}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{9}
 }
 func (m *ExportDocumentsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportDocumentsResponse.Unmarshal(m, b)
@@ -693,7 +703,7 @@ func (m *ExportDocumentsMetadata) Reset()         { *m = ExportDocumentsMetadata
 func (m *ExportDocumentsMetadata) String() string { return proto.CompactTextString(m) }
 func (*ExportDocumentsMetadata) ProtoMessage()    {}
 func (*ExportDocumentsMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{10}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{10}
 }
 func (m *ExportDocumentsMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportDocumentsMetadata.Unmarshal(m, b)
@@ -788,7 +798,7 @@ func (m *ImportDocumentsMetadata) Reset()         { *m = ImportDocumentsMetadata
 func (m *ImportDocumentsMetadata) String() string { return proto.CompactTextString(m) }
 func (*ImportDocumentsMetadata) ProtoMessage()    {}
 func (*ImportDocumentsMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_admin_fc9ddf055db6d044, []int{11}
+	return fileDescriptor_firestore_admin_7629276d99883993, []int{11}
 }
 func (m *ImportDocumentsMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportDocumentsMetadata.Unmarshal(m, b)
@@ -888,14 +898,15 @@ const _ = grpc.SupportPackageIsVersion4
 type FirestoreAdminClient interface {
 	// Creates the specified index.
 	// A newly created index's initial state is `CREATING`. On completion of the
-	// returned [google.longrunning.Operation][google.longrunning.Operation], the state will be `READY`.
-	// If the index already exists, the call will return an `ALREADY_EXISTS`
-	// status.
+	// returned [google.longrunning.Operation][google.longrunning.Operation], the
+	// state will be `READY`. If the index already exists, the call will return an
+	// `ALREADY_EXISTS` status.
 	//
 	// During creation, the process could result in an error, in which case the
 	// index will move to the `ERROR` state. The process can be recovered by
 	// fixing the data that caused the error, removing the index with
-	// [delete][google.firestore.admin.v1beta1.FirestoreAdmin.DeleteIndex], then re-creating the index with
+	// [delete][google.firestore.admin.v1beta1.FirestoreAdmin.DeleteIndex], then
+	// re-creating the index with
 	// [create][google.firestore.admin.v1beta1.FirestoreAdmin.CreateIndex].
 	//
 	// Indexes with a single field cannot be created.
@@ -989,14 +1000,15 @@ func (c *firestoreAdminClient) ImportDocuments(ctx context.Context, in *ImportDo
 type FirestoreAdminServer interface {
 	// Creates the specified index.
 	// A newly created index's initial state is `CREATING`. On completion of the
-	// returned [google.longrunning.Operation][google.longrunning.Operation], the state will be `READY`.
-	// If the index already exists, the call will return an `ALREADY_EXISTS`
-	// status.
+	// returned [google.longrunning.Operation][google.longrunning.Operation], the
+	// state will be `READY`. If the index already exists, the call will return an
+	// `ALREADY_EXISTS` status.
 	//
 	// During creation, the process could result in an error, in which case the
 	// index will move to the `ERROR` state. The process can be recovered by
 	// fixing the data that caused the error, removing the index with
-	// [delete][google.firestore.admin.v1beta1.FirestoreAdmin.DeleteIndex], then re-creating the index with
+	// [delete][google.firestore.admin.v1beta1.FirestoreAdmin.DeleteIndex], then
+	// re-creating the index with
 	// [create][google.firestore.admin.v1beta1.FirestoreAdmin.CreateIndex].
 	//
 	// Indexes with a single field cannot be created.
@@ -1170,10 +1182,10 @@ var _FirestoreAdmin_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/firestore/admin/v1beta1/firestore_admin.proto", fileDescriptor_firestore_admin_fc9ddf055db6d044)
+	proto.RegisterFile("google/firestore/admin/v1beta1/firestore_admin.proto", fileDescriptor_firestore_admin_7629276d99883993)
 }
 
-var fileDescriptor_firestore_admin_fc9ddf055db6d044 = []byte{
+var fileDescriptor_firestore_admin_7629276d99883993 = []byte{
 	// 1183 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x57, 0xdd, 0x6e, 0xe3, 0xc4,
 	0x17, 0xff, 0x3b, 0x69, 0x93, 0xe6, 0xf4, 0x9f, 0x34, 0x9d, 0x85, 0x6c, 0x94, 0xfd, 0x20, 0x32,

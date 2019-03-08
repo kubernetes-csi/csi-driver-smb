@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [KeywordViewService.GetKeywordView][google.ads.googleads.v0.services.KeywordViewService.GetKeywordView].
+// Request message for
+// [KeywordViewService.GetKeywordView][google.ads.googleads.v0.services.KeywordViewService.GetKeywordView].
 type GetKeywordViewRequest struct {
 	// The resource name of the keyword view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetKeywordViewRequest) Reset()         { *m = GetKeywordViewRequest{} }
 func (m *GetKeywordViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetKeywordViewRequest) ProtoMessage()    {}
 func (*GetKeywordViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_view_service_0d85734c3381b2fe, []int{0}
+	return fileDescriptor_keyword_view_service_54b973e8c5c2fb26, []int{0}
 }
 func (m *GetKeywordViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetKeywordViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _KeywordViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/keyword_view_service.proto", fileDescriptor_keyword_view_service_0d85734c3381b2fe)
+	proto.RegisterFile("google/ads/googleads/v0/services/keyword_view_service.proto", fileDescriptor_keyword_view_service_54b973e8c5c2fb26)
 }
 
-var fileDescriptor_keyword_view_service_0d85734c3381b2fe = []byte{
+var fileDescriptor_keyword_view_service_54b973e8c5c2fb26 = []byte{
 	// 364 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xb1, 0x4a, 0xfb, 0x50,
 	0x14, 0xc6, 0x49, 0xfe, 0xf0, 0x07, 0x83, 0x3a, 0x04, 0x44, 0x29, 0x0e, 0xa5, 0x76, 0x90, 0x0e,

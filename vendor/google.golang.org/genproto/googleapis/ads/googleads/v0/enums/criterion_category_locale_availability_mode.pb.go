@@ -60,7 +60,7 @@ func (x CriterionCategoryLocaleAvailabilityModeEnum_CriterionCategoryLocaleAvail
 	return proto.EnumName(CriterionCategoryLocaleAvailabilityModeEnum_CriterionCategoryLocaleAvailabilityMode_name, int32(x))
 }
 func (CriterionCategoryLocaleAvailabilityModeEnum_CriterionCategoryLocaleAvailabilityMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_criterion_category_locale_availability_mode_a48a18156046d7ad, []int{0, 0}
+	return fileDescriptor_criterion_category_locale_availability_mode_eae91889b56c99b2, []int{0, 0}
 }
 
 // Describes locale availabilty mode for a criterion availability - whether
@@ -80,7 +80,7 @@ func (m *CriterionCategoryLocaleAvailabilityModeEnum) String() string {
 }
 func (*CriterionCategoryLocaleAvailabilityModeEnum) ProtoMessage() {}
 func (*CriterionCategoryLocaleAvailabilityModeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_criterion_category_locale_availability_mode_a48a18156046d7ad, []int{0}
+	return fileDescriptor_criterion_category_locale_availability_mode_eae91889b56c99b2, []int{0}
 }
 func (m *CriterionCategoryLocaleAvailabilityModeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CriterionCategoryLocaleAvailabilityModeEnum.Unmarshal(m, b)
@@ -106,10 +106,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/criterion_category_locale_availability_mode.proto", fileDescriptor_criterion_category_locale_availability_mode_a48a18156046d7ad)
+	proto.RegisterFile("google/ads/googleads/v0/enums/criterion_category_locale_availability_mode.proto", fileDescriptor_criterion_category_locale_availability_mode_eae91889b56c99b2)
 }
 
-var fileDescriptor_criterion_category_locale_availability_mode_a48a18156046d7ad = []byte{
+var fileDescriptor_criterion_category_locale_availability_mode_eae91889b56c99b2 = []byte{
 	// 363 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0x41, 0x4b, 0xf3, 0x30,
 	0x1c, 0xc6, 0xdf, 0x76, 0xef, 0xfb, 0x0a, 0xd9, 0xc1, 0x52, 0x3c, 0xa8, 0x30, 0x61, 0xbb, 0x78,

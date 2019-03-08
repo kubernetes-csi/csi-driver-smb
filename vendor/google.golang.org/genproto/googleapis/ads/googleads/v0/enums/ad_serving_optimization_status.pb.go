@@ -66,7 +66,7 @@ func (x AdServingOptimizationStatusEnum_AdServingOptimizationStatus) String() st
 	return proto.EnumName(AdServingOptimizationStatusEnum_AdServingOptimizationStatus_name, int32(x))
 }
 func (AdServingOptimizationStatusEnum_AdServingOptimizationStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_ad_serving_optimization_status_28618b0ffcd14ece, []int{0, 0}
+	return fileDescriptor_ad_serving_optimization_status_a16561ddb5fd2591, []int{0, 0}
 }
 
 // Possible ad serving statuses of a campaign.
@@ -80,7 +80,7 @@ func (m *AdServingOptimizationStatusEnum) Reset()         { *m = AdServingOptimi
 func (m *AdServingOptimizationStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*AdServingOptimizationStatusEnum) ProtoMessage()    {}
 func (*AdServingOptimizationStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_serving_optimization_status_28618b0ffcd14ece, []int{0}
+	return fileDescriptor_ad_serving_optimization_status_a16561ddb5fd2591, []int{0}
 }
 func (m *AdServingOptimizationStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdServingOptimizationStatusEnum.Unmarshal(m, b)
@@ -106,10 +106,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/ad_serving_optimization_status.proto", fileDescriptor_ad_serving_optimization_status_28618b0ffcd14ece)
+	proto.RegisterFile("google/ads/googleads/v0/enums/ad_serving_optimization_status.proto", fileDescriptor_ad_serving_optimization_status_a16561ddb5fd2591)
 }
 
-var fileDescriptor_ad_serving_optimization_status_28618b0ffcd14ece = []byte{
+var fileDescriptor_ad_serving_optimization_status_a16561ddb5fd2591 = []byte{
 	// 352 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xb1, 0x4e, 0xeb, 0x30,
 	0x18, 0x85, 0x6f, 0xd2, 0x7b, 0x7b, 0x91, 0x8b, 0x44, 0x14, 0x06, 0x06, 0x54, 0x41, 0xfb, 0x00,

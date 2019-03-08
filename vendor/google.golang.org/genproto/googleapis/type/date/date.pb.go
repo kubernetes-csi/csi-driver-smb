@@ -23,8 +23,9 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 // is relative to the Proleptic Gregorian Calendar. The day may be 0 to
 // represent a year and month where the day is not significant, e.g. credit card
 // expiration date. The year may be 0 to represent a month and day independent
-// of year, e.g. anniversary date. Related types are [google.type.TimeOfDay][google.type.TimeOfDay]
-// and `google.protobuf.Timestamp`.
+// of year, e.g. anniversary date. Related types are
+// [google.type.TimeOfDay][google.type.TimeOfDay] and
+// `google.protobuf.Timestamp`.
 type Date struct {
 	// Year of date. Must be from 1 to 9999, or 0 if specifying a date without
 	// a year.
@@ -43,7 +44,7 @@ func (m *Date) Reset()         { *m = Date{} }
 func (m *Date) String() string { return proto.CompactTextString(m) }
 func (*Date) ProtoMessage()    {}
 func (*Date) Descriptor() ([]byte, []int) {
-	return fileDescriptor_date_7d25862cee0f408d, []int{0}
+	return fileDescriptor_date_bb7972959c40caee, []int{0}
 }
 func (m *Date) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Date.Unmarshal(m, b)
@@ -88,9 +89,9 @@ func init() {
 	proto.RegisterType((*Date)(nil), "google.type.Date")
 }
 
-func init() { proto.RegisterFile("google/type/date.proto", fileDescriptor_date_7d25862cee0f408d) }
+func init() { proto.RegisterFile("google/type/date.proto", fileDescriptor_date_bb7972959c40caee) }
 
-var fileDescriptor_date_7d25862cee0f408d = []byte{
+var fileDescriptor_date_bb7972959c40caee = []byte{
 	// 172 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4b, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x2f, 0xa9, 0x2c, 0x48, 0xd5, 0x4f, 0x49, 0x2c, 0x49, 0xd5, 0x2b, 0x28, 0xca,

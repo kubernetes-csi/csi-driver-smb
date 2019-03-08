@@ -28,7 +28,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [CampaignService.GetCampaign][google.ads.googleads.v0.services.CampaignService.GetCampaign].
+// Request message for
+// [CampaignService.GetCampaign][google.ads.googleads.v0.services.CampaignService.GetCampaign].
 type GetCampaignRequest struct {
 	// The resource name of the campaign to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -41,7 +42,7 @@ func (m *GetCampaignRequest) Reset()         { *m = GetCampaignRequest{} }
 func (m *GetCampaignRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCampaignRequest) ProtoMessage()    {}
 func (*GetCampaignRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_service_8156e5db600976d1, []int{0}
+	return fileDescriptor_campaign_service_568fd27aee04fe9b, []int{0}
 }
 func (m *GetCampaignRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetCampaignRequest.Unmarshal(m, b)
@@ -68,7 +69,8 @@ func (m *GetCampaignRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [CampaignService.MutateCampaigns][google.ads.googleads.v0.services.CampaignService.MutateCampaigns].
+// Request message for
+// [CampaignService.MutateCampaigns][google.ads.googleads.v0.services.CampaignService.MutateCampaigns].
 type MutateCampaignsRequest struct {
 	// The ID of the customer whose campaigns are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -91,7 +93,7 @@ func (m *MutateCampaignsRequest) Reset()         { *m = MutateCampaignsRequest{}
 func (m *MutateCampaignsRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateCampaignsRequest) ProtoMessage()    {}
 func (*MutateCampaignsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_service_8156e5db600976d1, []int{1}
+	return fileDescriptor_campaign_service_568fd27aee04fe9b, []int{1}
 }
 func (m *MutateCampaignsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCampaignsRequest.Unmarshal(m, b)
@@ -159,7 +161,7 @@ func (m *CampaignOperation) Reset()         { *m = CampaignOperation{} }
 func (m *CampaignOperation) String() string { return proto.CompactTextString(m) }
 func (*CampaignOperation) ProtoMessage()    {}
 func (*CampaignOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_service_8156e5db600976d1, []int{2}
+	return fileDescriptor_campaign_service_568fd27aee04fe9b, []int{2}
 }
 func (m *CampaignOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CampaignOperation.Unmarshal(m, b)
@@ -343,7 +345,7 @@ func (m *MutateCampaignsResponse) Reset()         { *m = MutateCampaignsResponse
 func (m *MutateCampaignsResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateCampaignsResponse) ProtoMessage()    {}
 func (*MutateCampaignsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_service_8156e5db600976d1, []int{3}
+	return fileDescriptor_campaign_service_568fd27aee04fe9b, []int{3}
 }
 func (m *MutateCampaignsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCampaignsResponse.Unmarshal(m, b)
@@ -390,7 +392,7 @@ func (m *MutateCampaignResult) Reset()         { *m = MutateCampaignResult{} }
 func (m *MutateCampaignResult) String() string { return proto.CompactTextString(m) }
 func (*MutateCampaignResult) ProtoMessage()    {}
 func (*MutateCampaignResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_service_8156e5db600976d1, []int{4}
+	return fileDescriptor_campaign_service_568fd27aee04fe9b, []int{4}
 }
 func (m *MutateCampaignResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCampaignResult.Unmarshal(m, b)
@@ -535,10 +537,10 @@ var _CampaignService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/campaign_service.proto", fileDescriptor_campaign_service_8156e5db600976d1)
+	proto.RegisterFile("google/ads/googleads/v0/services/campaign_service.proto", fileDescriptor_campaign_service_568fd27aee04fe9b)
 }
 
-var fileDescriptor_campaign_service_8156e5db600976d1 = []byte{
+var fileDescriptor_campaign_service_568fd27aee04fe9b = []byte{
 	// 702 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x4d, 0x6b, 0xd4, 0x40,
 	0x18, 0x36, 0xa9, 0x54, 0x3b, 0xa9, 0x16, 0xc7, 0x6a, 0x97, 0x45, 0x74, 0x89, 0x05, 0xcb, 0x16,

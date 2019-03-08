@@ -61,7 +61,7 @@ func (x Document_KnowledgeType) String() string {
 	return proto.EnumName(Document_KnowledgeType_name, int32(x))
 }
 func (Document_KnowledgeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{0, 0}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{0, 0}
 }
 
 // States of the operation.
@@ -95,7 +95,7 @@ func (x KnowledgeOperationMetadata_State) String() string {
 	return proto.EnumName(KnowledgeOperationMetadata_State_name, int32(x))
 }
 func (KnowledgeOperationMetadata_State) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{6, 0}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{6, 0}
 }
 
 // A document resource.
@@ -127,7 +127,7 @@ func (m *Document) Reset()         { *m = Document{} }
 func (m *Document) String() string { return proto.CompactTextString(m) }
 func (*Document) ProtoMessage()    {}
 func (*Document) Descriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{0}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{0}
 }
 func (m *Document) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Document.Unmarshal(m, b)
@@ -278,7 +278,8 @@ func _Document_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// Request message for [Documents.ListDocuments][google.cloud.dialogflow.v2beta1.Documents.ListDocuments].
+// Request message for
+// [Documents.ListDocuments][google.cloud.dialogflow.v2beta1.Documents.ListDocuments].
 type ListDocumentsRequest struct {
 	// Required. The knowledge base to list all documents for.
 	// Format: `projects/<Project ID>/knowledgeBases/<Knowledge Base ID>`.
@@ -297,7 +298,7 @@ func (m *ListDocumentsRequest) Reset()         { *m = ListDocumentsRequest{} }
 func (m *ListDocumentsRequest) String() string { return proto.CompactTextString(m) }
 func (*ListDocumentsRequest) ProtoMessage()    {}
 func (*ListDocumentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{1}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{1}
 }
 func (m *ListDocumentsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListDocumentsRequest.Unmarshal(m, b)
@@ -338,7 +339,8 @@ func (m *ListDocumentsRequest) GetPageToken() string {
 	return ""
 }
 
-// Response message for [Documents.ListDocuments][google.cloud.dialogflow.v2beta1.Documents.ListDocuments].
+// Response message for
+// [Documents.ListDocuments][google.cloud.dialogflow.v2beta1.Documents.ListDocuments].
 type ListDocumentsResponse struct {
 	// The list of documents.
 	Documents []*Document `protobuf:"bytes,1,rep,name=documents,proto3" json:"documents,omitempty"`
@@ -354,7 +356,7 @@ func (m *ListDocumentsResponse) Reset()         { *m = ListDocumentsResponse{} }
 func (m *ListDocumentsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListDocumentsResponse) ProtoMessage()    {}
 func (*ListDocumentsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{2}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{2}
 }
 func (m *ListDocumentsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListDocumentsResponse.Unmarshal(m, b)
@@ -388,7 +390,8 @@ func (m *ListDocumentsResponse) GetNextPageToken() string {
 	return ""
 }
 
-// Request message for [Documents.GetDocument][google.cloud.dialogflow.v2beta1.Documents.GetDocument].
+// Request message for
+// [Documents.GetDocument][google.cloud.dialogflow.v2beta1.Documents.GetDocument].
 type GetDocumentRequest struct {
 	// Required. The name of the document to retrieve.
 	// Format `projects/<Project ID>/knowledgeBases/<Knowledge Base
@@ -403,7 +406,7 @@ func (m *GetDocumentRequest) Reset()         { *m = GetDocumentRequest{} }
 func (m *GetDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*GetDocumentRequest) ProtoMessage()    {}
 func (*GetDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{3}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{3}
 }
 func (m *GetDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetDocumentRequest.Unmarshal(m, b)
@@ -430,7 +433,8 @@ func (m *GetDocumentRequest) GetName() string {
 	return ""
 }
 
-// Request message for [Documents.CreateDocument][google.cloud.dialogflow.v2beta1.Documents.CreateDocument].
+// Request message for
+// [Documents.CreateDocument][google.cloud.dialogflow.v2beta1.Documents.CreateDocument].
 type CreateDocumentRequest struct {
 	// Required. The knoweldge base to create a document for.
 	// Format: `projects/<Project ID>/knowledgeBases/<Knowledge Base ID>`.
@@ -446,7 +450,7 @@ func (m *CreateDocumentRequest) Reset()         { *m = CreateDocumentRequest{} }
 func (m *CreateDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateDocumentRequest) ProtoMessage()    {}
 func (*CreateDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{4}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{4}
 }
 func (m *CreateDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateDocumentRequest.Unmarshal(m, b)
@@ -480,7 +484,8 @@ func (m *CreateDocumentRequest) GetDocument() *Document {
 	return nil
 }
 
-// Request message for [Documents.DeleteDocument][google.cloud.dialogflow.v2beta1.Documents.DeleteDocument].
+// Request message for
+// [Documents.DeleteDocument][google.cloud.dialogflow.v2beta1.Documents.DeleteDocument].
 type DeleteDocumentRequest struct {
 	// The name of the document to delete.
 	// Format: `projects/<Project ID>/knowledgeBases/<Knowledge Base
@@ -495,7 +500,7 @@ func (m *DeleteDocumentRequest) Reset()         { *m = DeleteDocumentRequest{} }
 func (m *DeleteDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteDocumentRequest) ProtoMessage()    {}
 func (*DeleteDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{5}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{5}
 }
 func (m *DeleteDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteDocumentRequest.Unmarshal(m, b)
@@ -535,7 +540,7 @@ func (m *KnowledgeOperationMetadata) Reset()         { *m = KnowledgeOperationMe
 func (m *KnowledgeOperationMetadata) String() string { return proto.CompactTextString(m) }
 func (*KnowledgeOperationMetadata) ProtoMessage()    {}
 func (*KnowledgeOperationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_document_3131c12790f8bf44, []int{6}
+	return fileDescriptor_document_ba4cdd9fc6087c18, []int{6}
 }
 func (m *KnowledgeOperationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KnowledgeOperationMetadata.Unmarshal(m, b)
@@ -593,12 +598,14 @@ type DocumentsClient interface {
 	// Creates a new document.
 	//
 	// Operation <response: [Document][google.cloud.dialogflow.v2beta1.Document],
-	//            metadata: [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata]>
+	//            metadata:
+	//            [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata]>
 	CreateDocument(ctx context.Context, in *CreateDocumentRequest, opts ...grpc.CallOption) (*longrunning.Operation, error)
 	// Deletes the specified document.
 	//
 	// Operation <response: [google.protobuf.Empty][google.protobuf.Empty],
-	//            metadata: [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata]>
+	//            metadata:
+	//            [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata]>
 	DeleteDocument(ctx context.Context, in *DeleteDocumentRequest, opts ...grpc.CallOption) (*longrunning.Operation, error)
 }
 
@@ -655,12 +662,14 @@ type DocumentsServer interface {
 	// Creates a new document.
 	//
 	// Operation <response: [Document][google.cloud.dialogflow.v2beta1.Document],
-	//            metadata: [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata]>
+	//            metadata:
+	//            [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata]>
 	CreateDocument(context.Context, *CreateDocumentRequest) (*longrunning.Operation, error)
 	// Deletes the specified document.
 	//
 	// Operation <response: [google.protobuf.Empty][google.protobuf.Empty],
-	//            metadata: [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata]>
+	//            metadata:
+	//            [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata]>
 	DeleteDocument(context.Context, *DeleteDocumentRequest) (*longrunning.Operation, error)
 }
 
@@ -766,10 +775,10 @@ var _Documents_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/dialogflow/v2beta1/document.proto", fileDescriptor_document_3131c12790f8bf44)
+	proto.RegisterFile("google/cloud/dialogflow/v2beta1/document.proto", fileDescriptor_document_ba4cdd9fc6087c18)
 }
 
-var fileDescriptor_document_3131c12790f8bf44 = []byte{
+var fileDescriptor_document_ba4cdd9fc6087c18 = []byte{
 	// 885 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x56, 0xcd, 0x6e, 0x1b, 0x55,
 	0x14, 0xee, 0x1d, 0xe7, 0xc7, 0x39, 0xc6, 0xae, 0x7b, 0x45, 0x90, 0xe5, 0x52, 0x9a, 0x4e, 0x25,

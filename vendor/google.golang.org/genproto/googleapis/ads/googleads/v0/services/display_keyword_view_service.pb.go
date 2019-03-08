@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [DisplayKeywordViewService.GetDisplayKeywordView][google.ads.googleads.v0.services.DisplayKeywordViewService.GetDisplayKeywordView].
+// Request message for
+// [DisplayKeywordViewService.GetDisplayKeywordView][google.ads.googleads.v0.services.DisplayKeywordViewService.GetDisplayKeywordView].
 type GetDisplayKeywordViewRequest struct {
 	// The resource name of the display keyword view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetDisplayKeywordViewRequest) Reset()         { *m = GetDisplayKeywordV
 func (m *GetDisplayKeywordViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetDisplayKeywordViewRequest) ProtoMessage()    {}
 func (*GetDisplayKeywordViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_display_keyword_view_service_67df35913f3a15c1, []int{0}
+	return fileDescriptor_display_keyword_view_service_556daad34baedb81, []int{0}
 }
 func (m *GetDisplayKeywordViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetDisplayKeywordViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _DisplayKeywordViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/display_keyword_view_service.proto", fileDescriptor_display_keyword_view_service_67df35913f3a15c1)
+	proto.RegisterFile("google/ads/googleads/v0/services/display_keyword_view_service.proto", fileDescriptor_display_keyword_view_service_556daad34baedb81)
 }
 
-var fileDescriptor_display_keyword_view_service_67df35913f3a15c1 = []byte{
+var fileDescriptor_display_keyword_view_service_556daad34baedb81 = []byte{
 	// 373 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0xcf, 0x4a, 0xc3, 0x30,
 	0x18, 0xa7, 0x15, 0x04, 0x8b, 0x5e, 0x0a, 0x82, 0x8e, 0x21, 0x63, 0xee, 0x20, 0x3b, 0x24, 0x45,

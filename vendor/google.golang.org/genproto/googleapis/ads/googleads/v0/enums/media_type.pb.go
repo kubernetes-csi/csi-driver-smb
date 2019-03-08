@@ -67,7 +67,7 @@ func (x MediaTypeEnum_MediaType) String() string {
 	return proto.EnumName(MediaTypeEnum_MediaType_name, int32(x))
 }
 func (MediaTypeEnum_MediaType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_media_type_d58f7d7081f942b4, []int{0, 0}
+	return fileDescriptor_media_type_aee5d3f8bbc5ce94, []int{0, 0}
 }
 
 // Container for enum describing the types of media.
@@ -81,7 +81,7 @@ func (m *MediaTypeEnum) Reset()         { *m = MediaTypeEnum{} }
 func (m *MediaTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*MediaTypeEnum) ProtoMessage()    {}
 func (*MediaTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_media_type_d58f7d7081f942b4, []int{0}
+	return fileDescriptor_media_type_aee5d3f8bbc5ce94, []int{0}
 }
 func (m *MediaTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MediaTypeEnum.Unmarshal(m, b)
@@ -107,10 +107,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/media_type.proto", fileDescriptor_media_type_d58f7d7081f942b4)
+	proto.RegisterFile("google/ads/googleads/v0/enums/media_type.proto", fileDescriptor_media_type_aee5d3f8bbc5ce94)
 }
 
-var fileDescriptor_media_type_d58f7d7081f942b4 = []byte{
+var fileDescriptor_media_type_aee5d3f8bbc5ce94 = []byte{
 	// 321 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x4d, 0x4e, 0xc3, 0x30,
 	0x14, 0x84, 0x49, 0xfa, 0x47, 0x5d, 0x0a, 0xc6, 0xfb, 0x2e, 0xda, 0x03, 0x38, 0x91, 0xd8, 0x99,

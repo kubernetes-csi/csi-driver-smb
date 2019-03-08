@@ -120,7 +120,7 @@ func (m *CampaignBudget) Reset()         { *m = CampaignBudget{} }
 func (m *CampaignBudget) String() string { return proto.CompactTextString(m) }
 func (*CampaignBudget) ProtoMessage()    {}
 func (*CampaignBudget) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_budget_ff71560de998a5e7, []int{0}
+	return fileDescriptor_campaign_budget_f46174f50b4674ec, []int{0}
 }
 func (m *CampaignBudget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CampaignBudget.Unmarshal(m, b)
@@ -257,10 +257,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/campaign_budget.proto", fileDescriptor_campaign_budget_ff71560de998a5e7)
+	proto.RegisterFile("google/ads/googleads/v0/resources/campaign_budget.proto", fileDescriptor_campaign_budget_f46174f50b4674ec)
 }
 
-var fileDescriptor_campaign_budget_ff71560de998a5e7 = []byte{
+var fileDescriptor_campaign_budget_f46174f50b4674ec = []byte{
 	// 707 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x95, 0xdd, 0x4e, 0xd4, 0x40,
 	0x18, 0x86, 0xd3, 0x05, 0x51, 0x06, 0x58, 0xa0, 0x18, 0xd3, 0xe0, 0x4f, 0x16, 0x0d, 0x09, 0x09,

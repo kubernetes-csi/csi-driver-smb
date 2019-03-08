@@ -61,7 +61,7 @@ func (x ListingCustomAttributeIndexEnum_ListingCustomAttributeIndex) String() st
 	return proto.EnumName(ListingCustomAttributeIndexEnum_ListingCustomAttributeIndex_name, int32(x))
 }
 func (ListingCustomAttributeIndexEnum_ListingCustomAttributeIndex) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_listing_custom_attribute_index_4267de733b53b11d, []int{0, 0}
+	return fileDescriptor_listing_custom_attribute_index_1f2b3fe2c45b5932, []int{0, 0}
 }
 
 // Container for enum describing the index of the listing custom attribute.
@@ -75,7 +75,7 @@ func (m *ListingCustomAttributeIndexEnum) Reset()         { *m = ListingCustomAt
 func (m *ListingCustomAttributeIndexEnum) String() string { return proto.CompactTextString(m) }
 func (*ListingCustomAttributeIndexEnum) ProtoMessage()    {}
 func (*ListingCustomAttributeIndexEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_listing_custom_attribute_index_4267de733b53b11d, []int{0}
+	return fileDescriptor_listing_custom_attribute_index_1f2b3fe2c45b5932, []int{0}
 }
 func (m *ListingCustomAttributeIndexEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListingCustomAttributeIndexEnum.Unmarshal(m, b)
@@ -101,10 +101,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/listing_custom_attribute_index.proto", fileDescriptor_listing_custom_attribute_index_4267de733b53b11d)
+	proto.RegisterFile("google/ads/googleads/v0/enums/listing_custom_attribute_index.proto", fileDescriptor_listing_custom_attribute_index_1f2b3fe2c45b5932)
 }
 
-var fileDescriptor_listing_custom_attribute_index_4267de733b53b11d = []byte{
+var fileDescriptor_listing_custom_attribute_index_1f2b3fe2c45b5932 = []byte{
 	// 328 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xc1, 0x4a, 0xc3, 0x30,
 	0x1c, 0xc6, 0x6d, 0xa7, 0x13, 0xb2, 0x83, 0xa1, 0x07, 0x2f, 0x32, 0x74, 0x7b, 0x80, 0xb4, 0x3a,

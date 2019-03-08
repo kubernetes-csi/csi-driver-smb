@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [AgeRangeViewService.GetAgeRangeView][google.ads.googleads.v0.services.AgeRangeViewService.GetAgeRangeView].
+// Request message for
+// [AgeRangeViewService.GetAgeRangeView][google.ads.googleads.v0.services.AgeRangeViewService.GetAgeRangeView].
 type GetAgeRangeViewRequest struct {
 	// The resource name of the age range view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetAgeRangeViewRequest) Reset()         { *m = GetAgeRangeViewRequest{}
 func (m *GetAgeRangeViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetAgeRangeViewRequest) ProtoMessage()    {}
 func (*GetAgeRangeViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_age_range_view_service_03e808c8027c0fec, []int{0}
+	return fileDescriptor_age_range_view_service_c5ed166d0158ab8e, []int{0}
 }
 func (m *GetAgeRangeViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetAgeRangeViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _AgeRangeViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/age_range_view_service.proto", fileDescriptor_age_range_view_service_03e808c8027c0fec)
+	proto.RegisterFile("google/ads/googleads/v0/services/age_range_view_service.proto", fileDescriptor_age_range_view_service_c5ed166d0158ab8e)
 }
 
-var fileDescriptor_age_range_view_service_03e808c8027c0fec = []byte{
+var fileDescriptor_age_range_view_service_c5ed166d0158ab8e = []byte{
 	// 366 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xcf, 0x4a, 0xf3, 0x40,
 	0x14, 0xc5, 0x49, 0x3e, 0xf8, 0xc0, 0xa0, 0x08, 0x11, 0xa4, 0x14, 0x17, 0xa5, 0x76, 0x21, 0x5d,

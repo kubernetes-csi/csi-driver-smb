@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [TopicViewService.GetTopicView][google.ads.googleads.v0.services.TopicViewService.GetTopicView].
+// Request message for
+// [TopicViewService.GetTopicView][google.ads.googleads.v0.services.TopicViewService.GetTopicView].
 type GetTopicViewRequest struct {
 	// The resource name of the topic view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetTopicViewRequest) Reset()         { *m = GetTopicViewRequest{} }
 func (m *GetTopicViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetTopicViewRequest) ProtoMessage()    {}
 func (*GetTopicViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_topic_view_service_6b9178bb6dd3a0eb, []int{0}
+	return fileDescriptor_topic_view_service_425a20f8d4116c2e, []int{0}
 }
 func (m *GetTopicViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetTopicViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _TopicViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/topic_view_service.proto", fileDescriptor_topic_view_service_6b9178bb6dd3a0eb)
+	proto.RegisterFile("google/ads/googleads/v0/services/topic_view_service.proto", fileDescriptor_topic_view_service_425a20f8d4116c2e)
 }
 
-var fileDescriptor_topic_view_service_6b9178bb6dd3a0eb = []byte{
+var fileDescriptor_topic_view_service_425a20f8d4116c2e = []byte{
 	// 363 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x4c, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xe2, 0xd4,

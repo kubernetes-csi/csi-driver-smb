@@ -55,7 +55,7 @@ func (m *ModelEvaluation) Reset()         { *m = ModelEvaluation{} }
 func (m *ModelEvaluation) String() string { return proto.CompactTextString(m) }
 func (*ModelEvaluation) ProtoMessage()    {}
 func (*ModelEvaluation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_model_evaluation_0e495b83a4998d51, []int{0}
+	return fileDescriptor_model_evaluation_1263308439036312, []int{0}
 }
 func (m *ModelEvaluation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ModelEvaluation.Unmarshal(m, b)
@@ -219,10 +219,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/automl/v1beta1/model_evaluation.proto", fileDescriptor_model_evaluation_0e495b83a4998d51)
+	proto.RegisterFile("google/cloud/automl/v1beta1/model_evaluation.proto", fileDescriptor_model_evaluation_1263308439036312)
 }
 
-var fileDescriptor_model_evaluation_0e495b83a4998d51 = []byte{
+var fileDescriptor_model_evaluation_1263308439036312 = []byte{
 	// 410 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0x4d, 0x8b, 0x13, 0x31,
 	0x18, 0x36, 0xab, 0xbb, 0xda, 0xec, 0x41, 0x09, 0x88, 0xc3, 0xec, 0x62, 0xab, 0xa7, 0x1e, 0x34,

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v11.5.1
+
+### Bug Fixes
+
+- In `Client.sender()` set the minimum TLS version on HTTP clients to 1.2.
+
 ## v11.5.0
 
 ### New Features

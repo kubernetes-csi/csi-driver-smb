@@ -42,7 +42,7 @@ func (m *LanguageConstant) Reset()         { *m = LanguageConstant{} }
 func (m *LanguageConstant) String() string { return proto.CompactTextString(m) }
 func (*LanguageConstant) ProtoMessage()    {}
 func (*LanguageConstant) Descriptor() ([]byte, []int) {
-	return fileDescriptor_language_constant_ca38b0c170ae8d31, []int{0}
+	return fileDescriptor_language_constant_f99f4e02e7918979, []int{0}
 }
 func (m *LanguageConstant) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LanguageConstant.Unmarshal(m, b)
@@ -95,10 +95,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/language_constant.proto", fileDescriptor_language_constant_ca38b0c170ae8d31)
+	proto.RegisterFile("google/ads/googleads/v0/resources/language_constant.proto", fileDescriptor_language_constant_f99f4e02e7918979)
 }
 
-var fileDescriptor_language_constant_ca38b0c170ae8d31 = []byte{
+var fileDescriptor_language_constant_f99f4e02e7918979 = []byte{
 	// 332 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0xd1, 0x4a, 0xf3, 0x30,
 	0x1c, 0xc5, 0x69, 0x36, 0x3e, 0xf8, 0xaa, 0x82, 0x14, 0x84, 0xa1, 0x22, 0x9b, 0x32, 0x18, 0x08,

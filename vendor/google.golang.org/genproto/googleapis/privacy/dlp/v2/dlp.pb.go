@@ -59,7 +59,7 @@ func (x ContentOption) String() string {
 	return proto.EnumName(ContentOption_name, int32(x))
 }
 func (ContentOption) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{0}
 }
 
 // Type of the match which can be applied to different ways of matching, like
@@ -107,7 +107,7 @@ func (x MatchingType) String() string {
 	return proto.EnumName(MatchingType_name, int32(x))
 }
 func (MatchingType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{1}
 }
 
 // Parts of the APIs which use certain infoTypes.
@@ -136,7 +136,7 @@ func (x InfoTypeSupportedBy) String() string {
 	return proto.EnumName(InfoTypeSupportedBy_name, int32(x))
 }
 func (InfoTypeSupportedBy) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{2}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{2}
 }
 
 // Operators available for comparing the value of fields.
@@ -185,7 +185,7 @@ func (x RelationalOperator) String() string {
 	return proto.EnumName(RelationalOperator_name, int32(x))
 }
 func (RelationalOperator) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{3}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{3}
 }
 
 // An enum to represent the various type of DLP jobs.
@@ -214,7 +214,7 @@ func (x DlpJobType) String() string {
 	return proto.EnumName(DlpJobType_name, int32(x))
 }
 func (DlpJobType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{4}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{4}
 }
 
 // State of a StoredInfoType version.
@@ -254,7 +254,7 @@ func (x StoredInfoTypeState) String() string {
 	return proto.EnumName(StoredInfoTypeState_name, int32(x))
 }
 func (StoredInfoTypeState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{5}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{5}
 }
 
 type ByteContentItem_BytesType int32
@@ -292,7 +292,7 @@ func (x ByteContentItem_BytesType) String() string {
 	return proto.EnumName(ByteContentItem_BytesType_name, int32(x))
 }
 func (ByteContentItem_BytesType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{5, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{5, 0}
 }
 
 // Predefined schemas for storing findings.
@@ -334,7 +334,7 @@ func (x OutputStorageConfig_OutputSchema) String() string {
 	return proto.EnumName(OutputStorageConfig_OutputSchema_name, int32(x))
 }
 func (OutputStorageConfig_OutputSchema) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{27, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{27, 0}
 }
 
 type TimePartConfig_TimePart int32
@@ -378,7 +378,7 @@ func (x TimePartConfig_TimePart) String() string {
 	return proto.EnumName(TimePartConfig_TimePart_name, int32(x))
 }
 func (TimePartConfig_TimePart) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{44, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{44, 0}
 }
 
 type CharsToIgnore_CommonCharsToIgnore int32
@@ -418,7 +418,7 @@ func (x CharsToIgnore_CommonCharsToIgnore) String() string {
 	return proto.EnumName(CharsToIgnore_CommonCharsToIgnore_name, int32(x))
 }
 func (CharsToIgnore_CommonCharsToIgnore) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{49, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{49, 0}
 }
 
 // These are commonly used subsets of the alphabet that the FFX mode
@@ -457,7 +457,7 @@ func (x CryptoReplaceFfxFpeConfig_FfxCommonNativeAlphabet) String() string {
 	return proto.EnumName(CryptoReplaceFfxFpeConfig_FfxCommonNativeAlphabet_name, int32(x))
 }
 func (CryptoReplaceFfxFpeConfig_FfxCommonNativeAlphabet) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{53, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{53, 0}
 }
 
 type RecordCondition_Expressions_LogicalOperator int32
@@ -480,7 +480,7 @@ func (x RecordCondition_Expressions_LogicalOperator) String() string {
 	return proto.EnumName(RecordCondition_Expressions_LogicalOperator_name, int32(x))
 }
 func (RecordCondition_Expressions_LogicalOperator) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{63, 2, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{63, 2, 0}
 }
 
 // Possible outcomes of transformations.
@@ -507,7 +507,7 @@ func (x TransformationSummary_TransformationResultCode) String() string {
 	return proto.EnumName(TransformationSummary_TransformationResultCode_name, int32(x))
 }
 func (TransformationSummary_TransformationResultCode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{65, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{65, 0}
 }
 
 // Whether the trigger is currently active. If PAUSED or CANCELLED, no jobs
@@ -543,7 +543,7 @@ func (x JobTrigger_Status) String() string {
 	return proto.EnumName(JobTrigger_Status_name, int32(x))
 }
 func (JobTrigger_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{70, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{70, 0}
 }
 
 type DlpJob_JobState int32
@@ -583,7 +583,7 @@ func (x DlpJob_JobState) String() string {
 	return proto.EnumName(DlpJob_JobState_name, int32(x))
 }
 func (DlpJob_JobState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{87, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{87, 0}
 }
 
 // List of exclude infoTypes.
@@ -606,7 +606,7 @@ func (m *ExcludeInfoTypes) Reset()         { *m = ExcludeInfoTypes{} }
 func (m *ExcludeInfoTypes) String() string { return proto.CompactTextString(m) }
 func (*ExcludeInfoTypes) ProtoMessage()    {}
 func (*ExcludeInfoTypes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{0}
 }
 func (m *ExcludeInfoTypes) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExcludeInfoTypes.Unmarshal(m, b)
@@ -652,7 +652,7 @@ func (m *ExclusionRule) Reset()         { *m = ExclusionRule{} }
 func (m *ExclusionRule) String() string { return proto.CompactTextString(m) }
 func (*ExclusionRule) ProtoMessage()    {}
 func (*ExclusionRule) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{1}
 }
 func (m *ExclusionRule) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExclusionRule.Unmarshal(m, b)
@@ -838,7 +838,7 @@ func (m *InspectionRule) Reset()         { *m = InspectionRule{} }
 func (m *InspectionRule) String() string { return proto.CompactTextString(m) }
 func (*InspectionRule) ProtoMessage()    {}
 func (*InspectionRule) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{2}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{2}
 }
 func (m *InspectionRule) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectionRule.Unmarshal(m, b)
@@ -985,7 +985,7 @@ func (m *InspectionRuleSet) Reset()         { *m = InspectionRuleSet{} }
 func (m *InspectionRuleSet) String() string { return proto.CompactTextString(m) }
 func (*InspectionRuleSet) ProtoMessage()    {}
 func (*InspectionRuleSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{3}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{3}
 }
 func (m *InspectionRuleSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectionRuleSet.Unmarshal(m, b)
@@ -1065,7 +1065,7 @@ func (m *InspectConfig) Reset()         { *m = InspectConfig{} }
 func (m *InspectConfig) String() string { return proto.CompactTextString(m) }
 func (*InspectConfig) ProtoMessage()    {}
 func (*InspectConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{4}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{4}
 }
 func (m *InspectConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectConfig.Unmarshal(m, b)
@@ -1162,7 +1162,7 @@ func (m *InspectConfig_FindingLimits) Reset()         { *m = InspectConfig_Findi
 func (m *InspectConfig_FindingLimits) String() string { return proto.CompactTextString(m) }
 func (*InspectConfig_FindingLimits) ProtoMessage()    {}
 func (*InspectConfig_FindingLimits) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{4, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{4, 0}
 }
 func (m *InspectConfig_FindingLimits) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectConfig_FindingLimits.Unmarshal(m, b)
@@ -1224,7 +1224,7 @@ func (m *InspectConfig_FindingLimits_InfoTypeLimit) Reset() {
 func (m *InspectConfig_FindingLimits_InfoTypeLimit) String() string { return proto.CompactTextString(m) }
 func (*InspectConfig_FindingLimits_InfoTypeLimit) ProtoMessage()    {}
 func (*InspectConfig_FindingLimits_InfoTypeLimit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{4, 0, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{4, 0, 0}
 }
 func (m *InspectConfig_FindingLimits_InfoTypeLimit) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectConfig_FindingLimits_InfoTypeLimit.Unmarshal(m, b)
@@ -1273,7 +1273,7 @@ func (m *ByteContentItem) Reset()         { *m = ByteContentItem{} }
 func (m *ByteContentItem) String() string { return proto.CompactTextString(m) }
 func (*ByteContentItem) ProtoMessage()    {}
 func (*ByteContentItem) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{5}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{5}
 }
 func (m *ByteContentItem) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ByteContentItem.Unmarshal(m, b)
@@ -1325,7 +1325,7 @@ func (m *ContentItem) Reset()         { *m = ContentItem{} }
 func (m *ContentItem) String() string { return proto.CompactTextString(m) }
 func (*ContentItem) ProtoMessage()    {}
 func (*ContentItem) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{6}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{6}
 }
 func (m *ContentItem) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContentItem.Unmarshal(m, b)
@@ -1499,7 +1499,7 @@ func (m *Table) Reset()         { *m = Table{} }
 func (m *Table) String() string { return proto.CompactTextString(m) }
 func (*Table) ProtoMessage()    {}
 func (*Table) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{7}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{7}
 }
 func (m *Table) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Table.Unmarshal(m, b)
@@ -1544,7 +1544,7 @@ func (m *Table_Row) Reset()         { *m = Table_Row{} }
 func (m *Table_Row) String() string { return proto.CompactTextString(m) }
 func (*Table_Row) ProtoMessage()    {}
 func (*Table_Row) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{7, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{7, 0}
 }
 func (m *Table_Row) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Table_Row.Unmarshal(m, b)
@@ -1591,7 +1591,7 @@ func (m *InspectResult) Reset()         { *m = InspectResult{} }
 func (m *InspectResult) String() string { return proto.CompactTextString(m) }
 func (*InspectResult) ProtoMessage()    {}
 func (*InspectResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{8}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{8}
 }
 func (m *InspectResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectResult.Unmarshal(m, b)
@@ -1655,7 +1655,7 @@ func (m *Finding) Reset()         { *m = Finding{} }
 func (m *Finding) String() string { return proto.CompactTextString(m) }
 func (*Finding) ProtoMessage()    {}
 func (*Finding) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{9}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{9}
 }
 func (m *Finding) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Finding.Unmarshal(m, b)
@@ -1741,7 +1741,7 @@ func (m *Location) Reset()         { *m = Location{} }
 func (m *Location) String() string { return proto.CompactTextString(m) }
 func (*Location) ProtoMessage()    {}
 func (*Location) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{10}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{10}
 }
 func (m *Location) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Location.Unmarshal(m, b)
@@ -1819,7 +1819,7 @@ func (m *ContentLocation) Reset()         { *m = ContentLocation{} }
 func (m *ContentLocation) String() string { return proto.CompactTextString(m) }
 func (*ContentLocation) ProtoMessage()    {}
 func (*ContentLocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{11}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{11}
 }
 func (m *ContentLocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContentLocation.Unmarshal(m, b)
@@ -2017,7 +2017,7 @@ func (m *DocumentLocation) Reset()         { *m = DocumentLocation{} }
 func (m *DocumentLocation) String() string { return proto.CompactTextString(m) }
 func (*DocumentLocation) ProtoMessage()    {}
 func (*DocumentLocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{12}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{12}
 }
 func (m *DocumentLocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DocumentLocation.Unmarshal(m, b)
@@ -2061,7 +2061,7 @@ func (m *RecordLocation) Reset()         { *m = RecordLocation{} }
 func (m *RecordLocation) String() string { return proto.CompactTextString(m) }
 func (*RecordLocation) ProtoMessage()    {}
 func (*RecordLocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{13}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{13}
 }
 func (m *RecordLocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecordLocation.Unmarshal(m, b)
@@ -2115,7 +2115,7 @@ func (m *TableLocation) Reset()         { *m = TableLocation{} }
 func (m *TableLocation) String() string { return proto.CompactTextString(m) }
 func (*TableLocation) ProtoMessage()    {}
 func (*TableLocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{14}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{14}
 }
 func (m *TableLocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TableLocation.Unmarshal(m, b)
@@ -2157,7 +2157,7 @@ func (m *Range) Reset()         { *m = Range{} }
 func (m *Range) String() string { return proto.CompactTextString(m) }
 func (*Range) ProtoMessage()    {}
 func (*Range) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{15}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{15}
 }
 func (m *Range) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Range.Unmarshal(m, b)
@@ -2204,7 +2204,7 @@ func (m *ImageLocation) Reset()         { *m = ImageLocation{} }
 func (m *ImageLocation) String() string { return proto.CompactTextString(m) }
 func (*ImageLocation) ProtoMessage()    {}
 func (*ImageLocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{16}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{16}
 }
 func (m *ImageLocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImageLocation.Unmarshal(m, b)
@@ -2250,7 +2250,7 @@ func (m *BoundingBox) Reset()         { *m = BoundingBox{} }
 func (m *BoundingBox) String() string { return proto.CompactTextString(m) }
 func (*BoundingBox) ProtoMessage()    {}
 func (*BoundingBox) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{17}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{17}
 }
 func (m *BoundingBox) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BoundingBox.Unmarshal(m, b)
@@ -2321,7 +2321,7 @@ func (m *RedactImageRequest) Reset()         { *m = RedactImageRequest{} }
 func (m *RedactImageRequest) String() string { return proto.CompactTextString(m) }
 func (*RedactImageRequest) ProtoMessage()    {}
 func (*RedactImageRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{18}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{18}
 }
 func (m *RedactImageRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RedactImageRequest.Unmarshal(m, b)
@@ -2398,7 +2398,7 @@ func (m *RedactImageRequest_ImageRedactionConfig) Reset() {
 func (m *RedactImageRequest_ImageRedactionConfig) String() string { return proto.CompactTextString(m) }
 func (*RedactImageRequest_ImageRedactionConfig) ProtoMessage()    {}
 func (*RedactImageRequest_ImageRedactionConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{18, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{18, 0}
 }
 func (m *RedactImageRequest_ImageRedactionConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RedactImageRequest_ImageRedactionConfig.Unmarshal(m, b)
@@ -2554,7 +2554,7 @@ func (m *Color) Reset()         { *m = Color{} }
 func (m *Color) String() string { return proto.CompactTextString(m) }
 func (*Color) ProtoMessage()    {}
 func (*Color) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{19}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{19}
 }
 func (m *Color) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Color.Unmarshal(m, b)
@@ -2614,7 +2614,7 @@ func (m *RedactImageResponse) Reset()         { *m = RedactImageResponse{} }
 func (m *RedactImageResponse) String() string { return proto.CompactTextString(m) }
 func (*RedactImageResponse) ProtoMessage()    {}
 func (*RedactImageResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{20}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{20}
 }
 func (m *RedactImageResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RedactImageResponse.Unmarshal(m, b)
@@ -2690,7 +2690,7 @@ func (m *DeidentifyContentRequest) Reset()         { *m = DeidentifyContentReque
 func (m *DeidentifyContentRequest) String() string { return proto.CompactTextString(m) }
 func (*DeidentifyContentRequest) ProtoMessage()    {}
 func (*DeidentifyContentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{21}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{21}
 }
 func (m *DeidentifyContentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeidentifyContentRequest.Unmarshal(m, b)
@@ -2767,7 +2767,7 @@ func (m *DeidentifyContentResponse) Reset()         { *m = DeidentifyContentResp
 func (m *DeidentifyContentResponse) String() string { return proto.CompactTextString(m) }
 func (*DeidentifyContentResponse) ProtoMessage()    {}
 func (*DeidentifyContentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{22}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{22}
 }
 func (m *DeidentifyContentResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeidentifyContentResponse.Unmarshal(m, b)
@@ -2841,7 +2841,7 @@ func (m *ReidentifyContentRequest) Reset()         { *m = ReidentifyContentReque
 func (m *ReidentifyContentRequest) String() string { return proto.CompactTextString(m) }
 func (*ReidentifyContentRequest) ProtoMessage()    {}
 func (*ReidentifyContentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{23}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{23}
 }
 func (m *ReidentifyContentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReidentifyContentRequest.Unmarshal(m, b)
@@ -2918,7 +2918,7 @@ func (m *ReidentifyContentResponse) Reset()         { *m = ReidentifyContentResp
 func (m *ReidentifyContentResponse) String() string { return proto.CompactTextString(m) }
 func (*ReidentifyContentResponse) ProtoMessage()    {}
 func (*ReidentifyContentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{24}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{24}
 }
 func (m *ReidentifyContentResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReidentifyContentResponse.Unmarshal(m, b)
@@ -2976,7 +2976,7 @@ func (m *InspectContentRequest) Reset()         { *m = InspectContentRequest{} }
 func (m *InspectContentRequest) String() string { return proto.CompactTextString(m) }
 func (*InspectContentRequest) ProtoMessage()    {}
 func (*InspectContentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{25}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{25}
 }
 func (m *InspectContentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectContentRequest.Unmarshal(m, b)
@@ -3037,7 +3037,7 @@ func (m *InspectContentResponse) Reset()         { *m = InspectContentResponse{}
 func (m *InspectContentResponse) String() string { return proto.CompactTextString(m) }
 func (*InspectContentResponse) ProtoMessage()    {}
 func (*InspectContentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{26}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{26}
 }
 func (m *InspectContentResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectContentResponse.Unmarshal(m, b)
@@ -3088,7 +3088,7 @@ func (m *OutputStorageConfig) Reset()         { *m = OutputStorageConfig{} }
 func (m *OutputStorageConfig) String() string { return proto.CompactTextString(m) }
 func (*OutputStorageConfig) ProtoMessage()    {}
 func (*OutputStorageConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{27}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{27}
 }
 func (m *OutputStorageConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OutputStorageConfig.Unmarshal(m, b)
@@ -3209,7 +3209,7 @@ func (m *InfoTypeStats) Reset()         { *m = InfoTypeStats{} }
 func (m *InfoTypeStats) String() string { return proto.CompactTextString(m) }
 func (*InfoTypeStats) ProtoMessage()    {}
 func (*InfoTypeStats) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{28}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{28}
 }
 func (m *InfoTypeStats) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InfoTypeStats.Unmarshal(m, b)
@@ -3258,7 +3258,7 @@ func (m *InspectDataSourceDetails) Reset()         { *m = InspectDataSourceDetai
 func (m *InspectDataSourceDetails) String() string { return proto.CompactTextString(m) }
 func (*InspectDataSourceDetails) ProtoMessage()    {}
 func (*InspectDataSourceDetails) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{29}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{29}
 }
 func (m *InspectDataSourceDetails) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectDataSourceDetails.Unmarshal(m, b)
@@ -3308,7 +3308,7 @@ func (m *InspectDataSourceDetails_RequestedOptions) Reset() {
 func (m *InspectDataSourceDetails_RequestedOptions) String() string { return proto.CompactTextString(m) }
 func (*InspectDataSourceDetails_RequestedOptions) ProtoMessage()    {}
 func (*InspectDataSourceDetails_RequestedOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{29, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{29, 0}
 }
 func (m *InspectDataSourceDetails_RequestedOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectDataSourceDetails_RequestedOptions.Unmarshal(m, b)
@@ -3359,7 +3359,7 @@ func (m *InspectDataSourceDetails_Result) Reset()         { *m = InspectDataSour
 func (m *InspectDataSourceDetails_Result) String() string { return proto.CompactTextString(m) }
 func (*InspectDataSourceDetails_Result) ProtoMessage()    {}
 func (*InspectDataSourceDetails_Result) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{29, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{29, 1}
 }
 func (m *InspectDataSourceDetails_Result) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectDataSourceDetails_Result.Unmarshal(m, b)
@@ -3420,7 +3420,7 @@ func (m *InfoTypeDescription) Reset()         { *m = InfoTypeDescription{} }
 func (m *InfoTypeDescription) String() string { return proto.CompactTextString(m) }
 func (*InfoTypeDescription) ProtoMessage()    {}
 func (*InfoTypeDescription) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{30}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{30}
 }
 func (m *InfoTypeDescription) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InfoTypeDescription.Unmarshal(m, b)
@@ -3486,7 +3486,7 @@ func (m *ListInfoTypesRequest) Reset()         { *m = ListInfoTypesRequest{} }
 func (m *ListInfoTypesRequest) String() string { return proto.CompactTextString(m) }
 func (*ListInfoTypesRequest) ProtoMessage()    {}
 func (*ListInfoTypesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{31}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{31}
 }
 func (m *ListInfoTypesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListInfoTypesRequest.Unmarshal(m, b)
@@ -3533,7 +3533,7 @@ func (m *ListInfoTypesResponse) Reset()         { *m = ListInfoTypesResponse{} }
 func (m *ListInfoTypesResponse) String() string { return proto.CompactTextString(m) }
 func (*ListInfoTypesResponse) ProtoMessage()    {}
 func (*ListInfoTypesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{32}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{32}
 }
 func (m *ListInfoTypesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListInfoTypesResponse.Unmarshal(m, b)
@@ -3579,7 +3579,7 @@ func (m *RiskAnalysisJobConfig) Reset()         { *m = RiskAnalysisJobConfig{} }
 func (m *RiskAnalysisJobConfig) String() string { return proto.CompactTextString(m) }
 func (*RiskAnalysisJobConfig) ProtoMessage()    {}
 func (*RiskAnalysisJobConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{33}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{33}
 }
 func (m *RiskAnalysisJobConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RiskAnalysisJobConfig.Unmarshal(m, b)
@@ -3642,7 +3642,7 @@ func (m *QuasiId) Reset()         { *m = QuasiId{} }
 func (m *QuasiId) String() string { return proto.CompactTextString(m) }
 func (*QuasiId) ProtoMessage()    {}
 func (*QuasiId) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{34}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{34}
 }
 func (m *QuasiId) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_QuasiId.Unmarshal(m, b)
@@ -3833,7 +3833,7 @@ func (m *StatisticalTable) Reset()         { *m = StatisticalTable{} }
 func (m *StatisticalTable) String() string { return proto.CompactTextString(m) }
 func (*StatisticalTable) ProtoMessage()    {}
 func (*StatisticalTable) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{35}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{35}
 }
 func (m *StatisticalTable) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StatisticalTable.Unmarshal(m, b)
@@ -3888,7 +3888,7 @@ func (m *StatisticalTable_QuasiIdentifierField) Reset()         { *m = Statistic
 func (m *StatisticalTable_QuasiIdentifierField) String() string { return proto.CompactTextString(m) }
 func (*StatisticalTable_QuasiIdentifierField) ProtoMessage()    {}
 func (*StatisticalTable_QuasiIdentifierField) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{35, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{35, 0}
 }
 func (m *StatisticalTable_QuasiIdentifierField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StatisticalTable_QuasiIdentifierField.Unmarshal(m, b)
@@ -3941,7 +3941,7 @@ func (m *PrivacyMetric) Reset()         { *m = PrivacyMetric{} }
 func (m *PrivacyMetric) String() string { return proto.CompactTextString(m) }
 func (*PrivacyMetric) ProtoMessage()    {}
 func (*PrivacyMetric) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36}
 }
 func (m *PrivacyMetric) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric.Unmarshal(m, b)
@@ -4215,7 +4215,7 @@ func (m *PrivacyMetric_NumericalStatsConfig) Reset()         { *m = PrivacyMetri
 func (m *PrivacyMetric_NumericalStatsConfig) String() string { return proto.CompactTextString(m) }
 func (*PrivacyMetric_NumericalStatsConfig) ProtoMessage()    {}
 func (*PrivacyMetric_NumericalStatsConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 0}
 }
 func (m *PrivacyMetric_NumericalStatsConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_NumericalStatsConfig.Unmarshal(m, b)
@@ -4259,7 +4259,7 @@ func (m *PrivacyMetric_CategoricalStatsConfig) Reset()         { *m = PrivacyMet
 func (m *PrivacyMetric_CategoricalStatsConfig) String() string { return proto.CompactTextString(m) }
 func (*PrivacyMetric_CategoricalStatsConfig) ProtoMessage()    {}
 func (*PrivacyMetric_CategoricalStatsConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 1}
 }
 func (m *PrivacyMetric_CategoricalStatsConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_CategoricalStatsConfig.Unmarshal(m, b)
@@ -4314,7 +4314,7 @@ func (m *PrivacyMetric_KAnonymityConfig) Reset()         { *m = PrivacyMetric_KA
 func (m *PrivacyMetric_KAnonymityConfig) String() string { return proto.CompactTextString(m) }
 func (*PrivacyMetric_KAnonymityConfig) ProtoMessage()    {}
 func (*PrivacyMetric_KAnonymityConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 2}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 2}
 }
 func (m *PrivacyMetric_KAnonymityConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_KAnonymityConfig.Unmarshal(m, b)
@@ -4365,7 +4365,7 @@ func (m *PrivacyMetric_LDiversityConfig) Reset()         { *m = PrivacyMetric_LD
 func (m *PrivacyMetric_LDiversityConfig) String() string { return proto.CompactTextString(m) }
 func (*PrivacyMetric_LDiversityConfig) ProtoMessage()    {}
 func (*PrivacyMetric_LDiversityConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 3}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 3}
 }
 func (m *PrivacyMetric_LDiversityConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_LDiversityConfig.Unmarshal(m, b)
@@ -4427,7 +4427,7 @@ func (m *PrivacyMetric_KMapEstimationConfig) Reset()         { *m = PrivacyMetri
 func (m *PrivacyMetric_KMapEstimationConfig) String() string { return proto.CompactTextString(m) }
 func (*PrivacyMetric_KMapEstimationConfig) ProtoMessage()    {}
 func (*PrivacyMetric_KMapEstimationConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 4}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 4}
 }
 func (m *PrivacyMetric_KMapEstimationConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_KMapEstimationConfig.Unmarshal(m, b)
@@ -4493,7 +4493,7 @@ func (m *PrivacyMetric_KMapEstimationConfig_TaggedField) String() string {
 }
 func (*PrivacyMetric_KMapEstimationConfig_TaggedField) ProtoMessage() {}
 func (*PrivacyMetric_KMapEstimationConfig_TaggedField) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 4, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 4, 0}
 }
 func (m *PrivacyMetric_KMapEstimationConfig_TaggedField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_KMapEstimationConfig_TaggedField.Unmarshal(m, b)
@@ -4691,7 +4691,7 @@ func (m *PrivacyMetric_KMapEstimationConfig_AuxiliaryTable) String() string {
 }
 func (*PrivacyMetric_KMapEstimationConfig_AuxiliaryTable) ProtoMessage() {}
 func (*PrivacyMetric_KMapEstimationConfig_AuxiliaryTable) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 4, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 4, 1}
 }
 func (m *PrivacyMetric_KMapEstimationConfig_AuxiliaryTable) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_KMapEstimationConfig_AuxiliaryTable.Unmarshal(m, b)
@@ -4750,7 +4750,7 @@ func (m *PrivacyMetric_KMapEstimationConfig_AuxiliaryTable_QuasiIdField) String(
 }
 func (*PrivacyMetric_KMapEstimationConfig_AuxiliaryTable_QuasiIdField) ProtoMessage() {}
 func (*PrivacyMetric_KMapEstimationConfig_AuxiliaryTable_QuasiIdField) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 4, 1, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 4, 1, 0}
 }
 func (m *PrivacyMetric_KMapEstimationConfig_AuxiliaryTable_QuasiIdField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_KMapEstimationConfig_AuxiliaryTable_QuasiIdField.Unmarshal(m, b)
@@ -4813,7 +4813,7 @@ func (m *PrivacyMetric_DeltaPresenceEstimationConfig) String() string {
 }
 func (*PrivacyMetric_DeltaPresenceEstimationConfig) ProtoMessage() {}
 func (*PrivacyMetric_DeltaPresenceEstimationConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{36, 5}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{36, 5}
 }
 func (m *PrivacyMetric_DeltaPresenceEstimationConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrivacyMetric_DeltaPresenceEstimationConfig.Unmarshal(m, b)
@@ -4879,7 +4879,7 @@ func (m *AnalyzeDataSourceRiskDetails) Reset()         { *m = AnalyzeDataSourceR
 func (m *AnalyzeDataSourceRiskDetails) String() string { return proto.CompactTextString(m) }
 func (*AnalyzeDataSourceRiskDetails) ProtoMessage()    {}
 func (*AnalyzeDataSourceRiskDetails) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37}
 }
 func (m *AnalyzeDataSourceRiskDetails) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails.Unmarshal(m, b)
@@ -5175,7 +5175,7 @@ func (m *AnalyzeDataSourceRiskDetails_NumericalStatsResult) String() string {
 }
 func (*AnalyzeDataSourceRiskDetails_NumericalStatsResult) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_NumericalStatsResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 0}
 }
 func (m *AnalyzeDataSourceRiskDetails_NumericalStatsResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_NumericalStatsResult.Unmarshal(m, b)
@@ -5233,7 +5233,7 @@ func (m *AnalyzeDataSourceRiskDetails_CategoricalStatsResult) String() string {
 }
 func (*AnalyzeDataSourceRiskDetails_CategoricalStatsResult) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_CategoricalStatsResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 1}
 }
 func (m *AnalyzeDataSourceRiskDetails_CategoricalStatsResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_CategoricalStatsResult.Unmarshal(m, b)
@@ -5286,7 +5286,7 @@ func (m *AnalyzeDataSourceRiskDetails_CategoricalStatsResult_CategoricalStatsHis
 func (*AnalyzeDataSourceRiskDetails_CategoricalStatsResult_CategoricalStatsHistogramBucket) ProtoMessage() {
 }
 func (*AnalyzeDataSourceRiskDetails_CategoricalStatsResult_CategoricalStatsHistogramBucket) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 1, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 1, 0}
 }
 func (m *AnalyzeDataSourceRiskDetails_CategoricalStatsResult_CategoricalStatsHistogramBucket) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_CategoricalStatsResult_CategoricalStatsHistogramBucket.Unmarshal(m, b)
@@ -5358,7 +5358,7 @@ func (m *AnalyzeDataSourceRiskDetails_KAnonymityResult) String() string {
 }
 func (*AnalyzeDataSourceRiskDetails_KAnonymityResult) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_KAnonymityResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 2}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 2}
 }
 func (m *AnalyzeDataSourceRiskDetails_KAnonymityResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_KAnonymityResult.Unmarshal(m, b)
@@ -5407,7 +5407,7 @@ func (m *AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityEquivalenceClas
 }
 func (*AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityEquivalenceClass) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityEquivalenceClass) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 2, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 2, 0}
 }
 func (m *AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityEquivalenceClass) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityEquivalenceClass.Unmarshal(m, b)
@@ -5466,7 +5466,7 @@ func (m *AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityHistogramBucket
 }
 func (*AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityHistogramBucket) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityHistogramBucket) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 2, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 2, 1}
 }
 func (m *AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityHistogramBucket) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_KAnonymityResult_KAnonymityHistogramBucket.Unmarshal(m, b)
@@ -5538,7 +5538,7 @@ func (m *AnalyzeDataSourceRiskDetails_LDiversityResult) String() string {
 }
 func (*AnalyzeDataSourceRiskDetails_LDiversityResult) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_LDiversityResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 3}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 3}
 }
 func (m *AnalyzeDataSourceRiskDetails_LDiversityResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_LDiversityResult.Unmarshal(m, b)
@@ -5589,7 +5589,7 @@ func (m *AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityEquivalenceClas
 }
 func (*AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityEquivalenceClass) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityEquivalenceClass) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 3, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 3, 0}
 }
 func (m *AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityEquivalenceClass) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityEquivalenceClass.Unmarshal(m, b)
@@ -5664,7 +5664,7 @@ func (m *AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityHistogramBucket
 }
 func (*AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityHistogramBucket) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityHistogramBucket) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 3, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 3, 1}
 }
 func (m *AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityHistogramBucket) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_LDiversityResult_LDiversityHistogramBucket.Unmarshal(m, b)
@@ -5744,7 +5744,7 @@ func (m *AnalyzeDataSourceRiskDetails_KMapEstimationResult) String() string {
 }
 func (*AnalyzeDataSourceRiskDetails_KMapEstimationResult) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_KMapEstimationResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 4}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 4}
 }
 func (m *AnalyzeDataSourceRiskDetails_KMapEstimationResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_KMapEstimationResult.Unmarshal(m, b)
@@ -5790,7 +5790,7 @@ func (m *AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationQuasiId
 }
 func (*AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationQuasiIdValues) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationQuasiIdValues) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 4, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 4, 0}
 }
 func (m *AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationQuasiIdValues) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationQuasiIdValues.Unmarshal(m, b)
@@ -5858,7 +5858,7 @@ func (m *AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationHistogr
 func (*AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationHistogramBucket) ProtoMessage() {
 }
 func (*AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationHistogramBucket) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 4, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 4, 1}
 }
 func (m *AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationHistogramBucket) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_KMapEstimationResult_KMapEstimationHistogramBucket.Unmarshal(m, b)
@@ -5938,7 +5938,7 @@ func (m *AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult) String() st
 }
 func (*AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult) ProtoMessage() {}
 func (*AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 5}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 5}
 }
 func (m *AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult.Unmarshal(m, b)
@@ -5992,7 +5992,7 @@ func (m *AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenc
 func (*AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenceEstimationQuasiIdValues) ProtoMessage() {
 }
 func (*AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenceEstimationQuasiIdValues) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 5, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 5, 0}
 }
 func (m *AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenceEstimationQuasiIdValues) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenceEstimationQuasiIdValues.Unmarshal(m, b)
@@ -6061,7 +6061,7 @@ func (m *AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenc
 func (*AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenceEstimationHistogramBucket) ProtoMessage() {
 }
 func (*AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenceEstimationHistogramBucket) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{37, 5, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{37, 5, 1}
 }
 func (m *AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenceEstimationHistogramBucket) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnalyzeDataSourceRiskDetails_DeltaPresenceEstimationResult_DeltaPresenceEstimationHistogramBucket.Unmarshal(m, b)
@@ -6131,7 +6131,7 @@ func (m *ValueFrequency) Reset()         { *m = ValueFrequency{} }
 func (m *ValueFrequency) String() string { return proto.CompactTextString(m) }
 func (*ValueFrequency) ProtoMessage()    {}
 func (*ValueFrequency) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{38}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{38}
 }
 func (m *ValueFrequency) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ValueFrequency.Unmarshal(m, b)
@@ -6191,7 +6191,7 @@ func (m *Value) Reset()         { *m = Value{} }
 func (m *Value) String() string { return proto.CompactTextString(m) }
 func (*Value) ProtoMessage()    {}
 func (*Value) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{39}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{39}
 }
 func (m *Value) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Value.Unmarshal(m, b)
@@ -6510,7 +6510,7 @@ func (m *QuoteInfo) Reset()         { *m = QuoteInfo{} }
 func (m *QuoteInfo) String() string { return proto.CompactTextString(m) }
 func (*QuoteInfo) ProtoMessage()    {}
 func (*QuoteInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{40}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{40}
 }
 func (m *QuoteInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_QuoteInfo.Unmarshal(m, b)
@@ -6627,7 +6627,7 @@ func (m *DateTime) Reset()         { *m = DateTime{} }
 func (m *DateTime) String() string { return proto.CompactTextString(m) }
 func (*DateTime) ProtoMessage()    {}
 func (*DateTime) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{41}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{41}
 }
 func (m *DateTime) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DateTime.Unmarshal(m, b)
@@ -6688,7 +6688,7 @@ func (m *DateTime_TimeZone) Reset()         { *m = DateTime_TimeZone{} }
 func (m *DateTime_TimeZone) String() string { return proto.CompactTextString(m) }
 func (*DateTime_TimeZone) ProtoMessage()    {}
 func (*DateTime_TimeZone) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{41, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{41, 0}
 }
 func (m *DateTime_TimeZone) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DateTime_TimeZone.Unmarshal(m, b)
@@ -6730,7 +6730,7 @@ func (m *DeidentifyConfig) Reset()         { *m = DeidentifyConfig{} }
 func (m *DeidentifyConfig) String() string { return proto.CompactTextString(m) }
 func (*DeidentifyConfig) ProtoMessage()    {}
 func (*DeidentifyConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{42}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{42}
 }
 func (m *DeidentifyConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeidentifyConfig.Unmarshal(m, b)
@@ -6884,7 +6884,7 @@ func (m *PrimitiveTransformation) Reset()         { *m = PrimitiveTransformation
 func (m *PrimitiveTransformation) String() string { return proto.CompactTextString(m) }
 func (*PrimitiveTransformation) ProtoMessage()    {}
 func (*PrimitiveTransformation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{43}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{43}
 }
 func (m *PrimitiveTransformation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PrimitiveTransformation.Unmarshal(m, b)
@@ -7284,7 +7284,7 @@ func (m *TimePartConfig) Reset()         { *m = TimePartConfig{} }
 func (m *TimePartConfig) String() string { return proto.CompactTextString(m) }
 func (*TimePartConfig) ProtoMessage()    {}
 func (*TimePartConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{44}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{44}
 }
 func (m *TimePartConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TimePartConfig.Unmarshal(m, b)
@@ -7330,7 +7330,7 @@ func (m *CryptoHashConfig) Reset()         { *m = CryptoHashConfig{} }
 func (m *CryptoHashConfig) String() string { return proto.CompactTextString(m) }
 func (*CryptoHashConfig) ProtoMessage()    {}
 func (*CryptoHashConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{45}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{45}
 }
 func (m *CryptoHashConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CryptoHashConfig.Unmarshal(m, b)
@@ -7370,7 +7370,7 @@ func (m *ReplaceValueConfig) Reset()         { *m = ReplaceValueConfig{} }
 func (m *ReplaceValueConfig) String() string { return proto.CompactTextString(m) }
 func (*ReplaceValueConfig) ProtoMessage()    {}
 func (*ReplaceValueConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{46}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{46}
 }
 func (m *ReplaceValueConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReplaceValueConfig.Unmarshal(m, b)
@@ -7408,7 +7408,7 @@ func (m *ReplaceWithInfoTypeConfig) Reset()         { *m = ReplaceWithInfoTypeCo
 func (m *ReplaceWithInfoTypeConfig) String() string { return proto.CompactTextString(m) }
 func (*ReplaceWithInfoTypeConfig) ProtoMessage()    {}
 func (*ReplaceWithInfoTypeConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{47}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{47}
 }
 func (m *ReplaceWithInfoTypeConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReplaceWithInfoTypeConfig.Unmarshal(m, b)
@@ -7441,7 +7441,7 @@ func (m *RedactConfig) Reset()         { *m = RedactConfig{} }
 func (m *RedactConfig) String() string { return proto.CompactTextString(m) }
 func (*RedactConfig) ProtoMessage()    {}
 func (*RedactConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{48}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{48}
 }
 func (m *RedactConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RedactConfig.Unmarshal(m, b)
@@ -7477,7 +7477,7 @@ func (m *CharsToIgnore) Reset()         { *m = CharsToIgnore{} }
 func (m *CharsToIgnore) String() string { return proto.CompactTextString(m) }
 func (*CharsToIgnore) ProtoMessage()    {}
 func (*CharsToIgnore) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{49}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{49}
 }
 func (m *CharsToIgnore) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CharsToIgnore.Unmarshal(m, b)
@@ -7633,7 +7633,7 @@ func (m *CharacterMaskConfig) Reset()         { *m = CharacterMaskConfig{} }
 func (m *CharacterMaskConfig) String() string { return proto.CompactTextString(m) }
 func (*CharacterMaskConfig) ProtoMessage()    {}
 func (*CharacterMaskConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{50}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{50}
 }
 func (m *CharacterMaskConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CharacterMaskConfig.Unmarshal(m, b)
@@ -7721,7 +7721,7 @@ func (m *FixedSizeBucketingConfig) Reset()         { *m = FixedSizeBucketingConf
 func (m *FixedSizeBucketingConfig) String() string { return proto.CompactTextString(m) }
 func (*FixedSizeBucketingConfig) ProtoMessage()    {}
 func (*FixedSizeBucketingConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{51}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{51}
 }
 func (m *FixedSizeBucketingConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FixedSizeBucketingConfig.Unmarshal(m, b)
@@ -7783,7 +7783,7 @@ func (m *BucketingConfig) Reset()         { *m = BucketingConfig{} }
 func (m *BucketingConfig) String() string { return proto.CompactTextString(m) }
 func (*BucketingConfig) ProtoMessage()    {}
 func (*BucketingConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{52}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{52}
 }
 func (m *BucketingConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BucketingConfig.Unmarshal(m, b)
@@ -7829,7 +7829,7 @@ func (m *BucketingConfig_Bucket) Reset()         { *m = BucketingConfig_Bucket{}
 func (m *BucketingConfig_Bucket) String() string { return proto.CompactTextString(m) }
 func (*BucketingConfig_Bucket) ProtoMessage()    {}
 func (*BucketingConfig_Bucket) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{52, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{52, 0}
 }
 func (m *BucketingConfig_Bucket) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BucketingConfig_Bucket.Unmarshal(m, b)
@@ -7944,7 +7944,7 @@ func (m *CryptoReplaceFfxFpeConfig) Reset()         { *m = CryptoReplaceFfxFpeCo
 func (m *CryptoReplaceFfxFpeConfig) String() string { return proto.CompactTextString(m) }
 func (*CryptoReplaceFfxFpeConfig) ProtoMessage()    {}
 func (*CryptoReplaceFfxFpeConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{53}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{53}
 }
 func (m *CryptoReplaceFfxFpeConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CryptoReplaceFfxFpeConfig.Unmarshal(m, b)
@@ -8134,7 +8134,7 @@ func (m *CryptoKey) Reset()         { *m = CryptoKey{} }
 func (m *CryptoKey) String() string { return proto.CompactTextString(m) }
 func (*CryptoKey) ProtoMessage()    {}
 func (*CryptoKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{54}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{54}
 }
 func (m *CryptoKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CryptoKey.Unmarshal(m, b)
@@ -8316,7 +8316,7 @@ func (m *TransientCryptoKey) Reset()         { *m = TransientCryptoKey{} }
 func (m *TransientCryptoKey) String() string { return proto.CompactTextString(m) }
 func (*TransientCryptoKey) ProtoMessage()    {}
 func (*TransientCryptoKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{55}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{55}
 }
 func (m *TransientCryptoKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TransientCryptoKey.Unmarshal(m, b)
@@ -8357,7 +8357,7 @@ func (m *UnwrappedCryptoKey) Reset()         { *m = UnwrappedCryptoKey{} }
 func (m *UnwrappedCryptoKey) String() string { return proto.CompactTextString(m) }
 func (*UnwrappedCryptoKey) ProtoMessage()    {}
 func (*UnwrappedCryptoKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{56}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{56}
 }
 func (m *UnwrappedCryptoKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UnwrappedCryptoKey.Unmarshal(m, b)
@@ -8402,7 +8402,7 @@ func (m *KmsWrappedCryptoKey) Reset()         { *m = KmsWrappedCryptoKey{} }
 func (m *KmsWrappedCryptoKey) String() string { return proto.CompactTextString(m) }
 func (*KmsWrappedCryptoKey) ProtoMessage()    {}
 func (*KmsWrappedCryptoKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{57}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{57}
 }
 func (m *KmsWrappedCryptoKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KmsWrappedCryptoKey.Unmarshal(m, b)
@@ -8469,7 +8469,7 @@ func (m *DateShiftConfig) Reset()         { *m = DateShiftConfig{} }
 func (m *DateShiftConfig) String() string { return proto.CompactTextString(m) }
 func (*DateShiftConfig) ProtoMessage()    {}
 func (*DateShiftConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{58}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{58}
 }
 func (m *DateShiftConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DateShiftConfig.Unmarshal(m, b)
@@ -8606,7 +8606,7 @@ func (m *InfoTypeTransformations) Reset()         { *m = InfoTypeTransformations
 func (m *InfoTypeTransformations) String() string { return proto.CompactTextString(m) }
 func (*InfoTypeTransformations) ProtoMessage()    {}
 func (*InfoTypeTransformations) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{59}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{59}
 }
 func (m *InfoTypeTransformations) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InfoTypeTransformations.Unmarshal(m, b)
@@ -8655,7 +8655,7 @@ func (m *InfoTypeTransformations_InfoTypeTransformation) String() string {
 }
 func (*InfoTypeTransformations_InfoTypeTransformation) ProtoMessage() {}
 func (*InfoTypeTransformations_InfoTypeTransformation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{59, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{59, 0}
 }
 func (m *InfoTypeTransformations_InfoTypeTransformation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InfoTypeTransformations_InfoTypeTransformation.Unmarshal(m, b)
@@ -8718,7 +8718,7 @@ func (m *FieldTransformation) Reset()         { *m = FieldTransformation{} }
 func (m *FieldTransformation) String() string { return proto.CompactTextString(m) }
 func (*FieldTransformation) ProtoMessage()    {}
 func (*FieldTransformation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{60}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{60}
 }
 func (m *FieldTransformation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTransformation.Unmarshal(m, b)
@@ -8880,7 +8880,7 @@ func (m *RecordTransformations) Reset()         { *m = RecordTransformations{} }
 func (m *RecordTransformations) String() string { return proto.CompactTextString(m) }
 func (*RecordTransformations) ProtoMessage()    {}
 func (*RecordTransformations) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{61}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{61}
 }
 func (m *RecordTransformations) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecordTransformations.Unmarshal(m, b)
@@ -8929,7 +8929,7 @@ func (m *RecordSuppression) Reset()         { *m = RecordSuppression{} }
 func (m *RecordSuppression) String() string { return proto.CompactTextString(m) }
 func (*RecordSuppression) ProtoMessage()    {}
 func (*RecordSuppression) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{62}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{62}
 }
 func (m *RecordSuppression) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecordSuppression.Unmarshal(m, b)
@@ -8970,7 +8970,7 @@ func (m *RecordCondition) Reset()         { *m = RecordCondition{} }
 func (m *RecordCondition) String() string { return proto.CompactTextString(m) }
 func (*RecordCondition) ProtoMessage()    {}
 func (*RecordCondition) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{63}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{63}
 }
 func (m *RecordCondition) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecordCondition.Unmarshal(m, b)
@@ -9032,7 +9032,7 @@ func (m *RecordCondition_Condition) Reset()         { *m = RecordCondition_Condi
 func (m *RecordCondition_Condition) String() string { return proto.CompactTextString(m) }
 func (*RecordCondition_Condition) ProtoMessage()    {}
 func (*RecordCondition_Condition) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{63, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{63, 0}
 }
 func (m *RecordCondition_Condition) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecordCondition_Condition.Unmarshal(m, b)
@@ -9085,7 +9085,7 @@ func (m *RecordCondition_Conditions) Reset()         { *m = RecordCondition_Cond
 func (m *RecordCondition_Conditions) String() string { return proto.CompactTextString(m) }
 func (*RecordCondition_Conditions) ProtoMessage()    {}
 func (*RecordCondition_Conditions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{63, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{63, 1}
 }
 func (m *RecordCondition_Conditions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecordCondition_Conditions.Unmarshal(m, b)
@@ -9129,7 +9129,7 @@ func (m *RecordCondition_Expressions) Reset()         { *m = RecordCondition_Exp
 func (m *RecordCondition_Expressions) String() string { return proto.CompactTextString(m) }
 func (*RecordCondition_Expressions) ProtoMessage()    {}
 func (*RecordCondition_Expressions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{63, 2}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{63, 2}
 }
 func (m *RecordCondition_Expressions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecordCondition_Expressions.Unmarshal(m, b)
@@ -9250,7 +9250,7 @@ func (m *TransformationOverview) Reset()         { *m = TransformationOverview{}
 func (m *TransformationOverview) String() string { return proto.CompactTextString(m) }
 func (*TransformationOverview) ProtoMessage()    {}
 func (*TransformationOverview) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{64}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{64}
 }
 func (m *TransformationOverview) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TransformationOverview.Unmarshal(m, b)
@@ -9312,7 +9312,7 @@ func (m *TransformationSummary) Reset()         { *m = TransformationSummary{} }
 func (m *TransformationSummary) String() string { return proto.CompactTextString(m) }
 func (*TransformationSummary) ProtoMessage()    {}
 func (*TransformationSummary) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{65}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{65}
 }
 func (m *TransformationSummary) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TransformationSummary.Unmarshal(m, b)
@@ -9398,7 +9398,7 @@ func (m *TransformationSummary_SummaryResult) Reset()         { *m = Transformat
 func (m *TransformationSummary_SummaryResult) String() string { return proto.CompactTextString(m) }
 func (*TransformationSummary_SummaryResult) ProtoMessage()    {}
 func (*TransformationSummary_SummaryResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{65, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{65, 0}
 }
 func (m *TransformationSummary_SummaryResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TransformationSummary_SummaryResult.Unmarshal(m, b)
@@ -9453,7 +9453,7 @@ func (m *Schedule) Reset()         { *m = Schedule{} }
 func (m *Schedule) String() string { return proto.CompactTextString(m) }
 func (*Schedule) ProtoMessage()    {}
 func (*Schedule) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{66}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{66}
 }
 func (m *Schedule) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Schedule.Unmarshal(m, b)
@@ -9582,7 +9582,7 @@ func (m *InspectTemplate) Reset()         { *m = InspectTemplate{} }
 func (m *InspectTemplate) String() string { return proto.CompactTextString(m) }
 func (*InspectTemplate) ProtoMessage()    {}
 func (*InspectTemplate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{67}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{67}
 }
 func (m *InspectTemplate) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectTemplate.Unmarshal(m, b)
@@ -9672,7 +9672,7 @@ func (m *DeidentifyTemplate) Reset()         { *m = DeidentifyTemplate{} }
 func (m *DeidentifyTemplate) String() string { return proto.CompactTextString(m) }
 func (*DeidentifyTemplate) ProtoMessage()    {}
 func (*DeidentifyTemplate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{68}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{68}
 }
 func (m *DeidentifyTemplate) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeidentifyTemplate.Unmarshal(m, b)
@@ -9750,7 +9750,7 @@ func (m *Error) Reset()         { *m = Error{} }
 func (m *Error) String() string { return proto.CompactTextString(m) }
 func (*Error) ProtoMessage()    {}
 func (*Error) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{69}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{69}
 }
 func (m *Error) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Error.Unmarshal(m, b)
@@ -9826,7 +9826,7 @@ func (m *JobTrigger) Reset()         { *m = JobTrigger{} }
 func (m *JobTrigger) String() string { return proto.CompactTextString(m) }
 func (*JobTrigger) ProtoMessage()    {}
 func (*JobTrigger) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{70}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{70}
 }
 func (m *JobTrigger) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_JobTrigger.Unmarshal(m, b)
@@ -10002,7 +10002,7 @@ func (m *JobTrigger_Trigger) Reset()         { *m = JobTrigger_Trigger{} }
 func (m *JobTrigger_Trigger) String() string { return proto.CompactTextString(m) }
 func (*JobTrigger_Trigger) ProtoMessage()    {}
 func (*JobTrigger_Trigger) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{70, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{70, 0}
 }
 func (m *JobTrigger_Trigger) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_JobTrigger_Trigger.Unmarshal(m, b)
@@ -10119,7 +10119,7 @@ func (m *Action) Reset()         { *m = Action{} }
 func (m *Action) String() string { return proto.CompactTextString(m) }
 func (*Action) ProtoMessage()    {}
 func (*Action) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{71}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{71}
 }
 func (m *Action) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Action.Unmarshal(m, b)
@@ -10329,7 +10329,7 @@ func (m *Action_SaveFindings) Reset()         { *m = Action_SaveFindings{} }
 func (m *Action_SaveFindings) String() string { return proto.CompactTextString(m) }
 func (*Action_SaveFindings) ProtoMessage()    {}
 func (*Action_SaveFindings) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{71, 0}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{71, 0}
 }
 func (m *Action_SaveFindings) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Action_SaveFindings.Unmarshal(m, b)
@@ -10373,7 +10373,7 @@ func (m *Action_PublishToPubSub) Reset()         { *m = Action_PublishToPubSub{}
 func (m *Action_PublishToPubSub) String() string { return proto.CompactTextString(m) }
 func (*Action_PublishToPubSub) ProtoMessage()    {}
 func (*Action_PublishToPubSub) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{71, 1}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{71, 1}
 }
 func (m *Action_PublishToPubSub) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Action_PublishToPubSub.Unmarshal(m, b)
@@ -10420,7 +10420,7 @@ func (m *Action_PublishSummaryToCscc) Reset()         { *m = Action_PublishSumma
 func (m *Action_PublishSummaryToCscc) String() string { return proto.CompactTextString(m) }
 func (*Action_PublishSummaryToCscc) ProtoMessage()    {}
 func (*Action_PublishSummaryToCscc) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{71, 2}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{71, 2}
 }
 func (m *Action_PublishSummaryToCscc) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Action_PublishSummaryToCscc.Unmarshal(m, b)
@@ -10452,7 +10452,7 @@ func (m *Action_JobNotificationEmails) Reset()         { *m = Action_JobNotifica
 func (m *Action_JobNotificationEmails) String() string { return proto.CompactTextString(m) }
 func (*Action_JobNotificationEmails) ProtoMessage()    {}
 func (*Action_JobNotificationEmails) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{71, 3}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{71, 3}
 }
 func (m *Action_JobNotificationEmails) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Action_JobNotificationEmails.Unmarshal(m, b)
@@ -10493,7 +10493,7 @@ func (m *CreateInspectTemplateRequest) Reset()         { *m = CreateInspectTempl
 func (m *CreateInspectTemplateRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateInspectTemplateRequest) ProtoMessage()    {}
 func (*CreateInspectTemplateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{72}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{72}
 }
 func (m *CreateInspectTemplateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateInspectTemplateRequest.Unmarshal(m, b)
@@ -10553,7 +10553,7 @@ func (m *UpdateInspectTemplateRequest) Reset()         { *m = UpdateInspectTempl
 func (m *UpdateInspectTemplateRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateInspectTemplateRequest) ProtoMessage()    {}
 func (*UpdateInspectTemplateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{73}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{73}
 }
 func (m *UpdateInspectTemplateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateInspectTemplateRequest.Unmarshal(m, b)
@@ -10609,7 +10609,7 @@ func (m *GetInspectTemplateRequest) Reset()         { *m = GetInspectTemplateReq
 func (m *GetInspectTemplateRequest) String() string { return proto.CompactTextString(m) }
 func (*GetInspectTemplateRequest) ProtoMessage()    {}
 func (*GetInspectTemplateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{74}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{74}
 }
 func (m *GetInspectTemplateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetInspectTemplateRequest.Unmarshal(m, b)
@@ -10670,7 +10670,7 @@ func (m *ListInspectTemplatesRequest) Reset()         { *m = ListInspectTemplate
 func (m *ListInspectTemplatesRequest) String() string { return proto.CompactTextString(m) }
 func (*ListInspectTemplatesRequest) ProtoMessage()    {}
 func (*ListInspectTemplatesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{75}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{75}
 }
 func (m *ListInspectTemplatesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListInspectTemplatesRequest.Unmarshal(m, b)
@@ -10734,7 +10734,7 @@ func (m *ListInspectTemplatesResponse) Reset()         { *m = ListInspectTemplat
 func (m *ListInspectTemplatesResponse) String() string { return proto.CompactTextString(m) }
 func (*ListInspectTemplatesResponse) ProtoMessage()    {}
 func (*ListInspectTemplatesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{76}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{76}
 }
 func (m *ListInspectTemplatesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListInspectTemplatesResponse.Unmarshal(m, b)
@@ -10783,7 +10783,7 @@ func (m *DeleteInspectTemplateRequest) Reset()         { *m = DeleteInspectTempl
 func (m *DeleteInspectTemplateRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteInspectTemplateRequest) ProtoMessage()    {}
 func (*DeleteInspectTemplateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{77}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{77}
 }
 func (m *DeleteInspectTemplateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteInspectTemplateRequest.Unmarshal(m, b)
@@ -10830,7 +10830,7 @@ func (m *CreateJobTriggerRequest) Reset()         { *m = CreateJobTriggerRequest
 func (m *CreateJobTriggerRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateJobTriggerRequest) ProtoMessage()    {}
 func (*CreateJobTriggerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{78}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{78}
 }
 func (m *CreateJobTriggerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateJobTriggerRequest.Unmarshal(m, b)
@@ -10885,7 +10885,7 @@ func (m *ActivateJobTriggerRequest) Reset()         { *m = ActivateJobTriggerReq
 func (m *ActivateJobTriggerRequest) String() string { return proto.CompactTextString(m) }
 func (*ActivateJobTriggerRequest) ProtoMessage()    {}
 func (*ActivateJobTriggerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{79}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{79}
 }
 func (m *ActivateJobTriggerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ActivateJobTriggerRequest.Unmarshal(m, b)
@@ -10930,7 +10930,7 @@ func (m *UpdateJobTriggerRequest) Reset()         { *m = UpdateJobTriggerRequest
 func (m *UpdateJobTriggerRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateJobTriggerRequest) ProtoMessage()    {}
 func (*UpdateJobTriggerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{80}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{80}
 }
 func (m *UpdateJobTriggerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateJobTriggerRequest.Unmarshal(m, b)
@@ -10985,7 +10985,7 @@ func (m *GetJobTriggerRequest) Reset()         { *m = GetJobTriggerRequest{} }
 func (m *GetJobTriggerRequest) String() string { return proto.CompactTextString(m) }
 func (*GetJobTriggerRequest) ProtoMessage()    {}
 func (*GetJobTriggerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{81}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{81}
 }
 func (m *GetJobTriggerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetJobTriggerRequest.Unmarshal(m, b)
@@ -11038,7 +11038,7 @@ func (m *CreateDlpJobRequest) Reset()         { *m = CreateDlpJobRequest{} }
 func (m *CreateDlpJobRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateDlpJobRequest) ProtoMessage()    {}
 func (*CreateDlpJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{82}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{82}
 }
 func (m *CreateDlpJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateDlpJobRequest.Unmarshal(m, b)
@@ -11243,7 +11243,7 @@ func (m *ListJobTriggersRequest) Reset()         { *m = ListJobTriggersRequest{}
 func (m *ListJobTriggersRequest) String() string { return proto.CompactTextString(m) }
 func (*ListJobTriggersRequest) ProtoMessage()    {}
 func (*ListJobTriggersRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{83}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{83}
 }
 func (m *ListJobTriggersRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListJobTriggersRequest.Unmarshal(m, b)
@@ -11314,7 +11314,7 @@ func (m *ListJobTriggersResponse) Reset()         { *m = ListJobTriggersResponse
 func (m *ListJobTriggersResponse) String() string { return proto.CompactTextString(m) }
 func (*ListJobTriggersResponse) ProtoMessage()    {}
 func (*ListJobTriggersResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{84}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{84}
 }
 func (m *ListJobTriggersResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListJobTriggersResponse.Unmarshal(m, b)
@@ -11362,7 +11362,7 @@ func (m *DeleteJobTriggerRequest) Reset()         { *m = DeleteJobTriggerRequest
 func (m *DeleteJobTriggerRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteJobTriggerRequest) ProtoMessage()    {}
 func (*DeleteJobTriggerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{85}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{85}
 }
 func (m *DeleteJobTriggerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteJobTriggerRequest.Unmarshal(m, b)
@@ -11410,7 +11410,7 @@ func (m *InspectJobConfig) Reset()         { *m = InspectJobConfig{} }
 func (m *InspectJobConfig) String() string { return proto.CompactTextString(m) }
 func (*InspectJobConfig) ProtoMessage()    {}
 func (*InspectJobConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{86}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{86}
 }
 func (m *InspectJobConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InspectJobConfig.Unmarshal(m, b)
@@ -11490,7 +11490,7 @@ func (m *DlpJob) Reset()         { *m = DlpJob{} }
 func (m *DlpJob) String() string { return proto.CompactTextString(m) }
 func (*DlpJob) ProtoMessage()    {}
 func (*DlpJob) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{87}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{87}
 }
 func (m *DlpJob) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DlpJob.Unmarshal(m, b)
@@ -11690,7 +11690,7 @@ func (m *GetDlpJobRequest) Reset()         { *m = GetDlpJobRequest{} }
 func (m *GetDlpJobRequest) String() string { return proto.CompactTextString(m) }
 func (*GetDlpJobRequest) ProtoMessage()    {}
 func (*GetDlpJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{88}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{88}
 }
 func (m *GetDlpJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetDlpJobRequest.Unmarshal(m, b)
@@ -11774,7 +11774,7 @@ func (m *ListDlpJobsRequest) Reset()         { *m = ListDlpJobsRequest{} }
 func (m *ListDlpJobsRequest) String() string { return proto.CompactTextString(m) }
 func (*ListDlpJobsRequest) ProtoMessage()    {}
 func (*ListDlpJobsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{89}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{89}
 }
 func (m *ListDlpJobsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListDlpJobsRequest.Unmarshal(m, b)
@@ -11851,7 +11851,7 @@ func (m *ListDlpJobsResponse) Reset()         { *m = ListDlpJobsResponse{} }
 func (m *ListDlpJobsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListDlpJobsResponse) ProtoMessage()    {}
 func (*ListDlpJobsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{90}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{90}
 }
 func (m *ListDlpJobsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListDlpJobsResponse.Unmarshal(m, b)
@@ -11898,7 +11898,7 @@ func (m *CancelDlpJobRequest) Reset()         { *m = CancelDlpJobRequest{} }
 func (m *CancelDlpJobRequest) String() string { return proto.CompactTextString(m) }
 func (*CancelDlpJobRequest) ProtoMessage()    {}
 func (*CancelDlpJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{91}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{91}
 }
 func (m *CancelDlpJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CancelDlpJobRequest.Unmarshal(m, b)
@@ -11938,7 +11938,7 @@ func (m *DeleteDlpJobRequest) Reset()         { *m = DeleteDlpJobRequest{} }
 func (m *DeleteDlpJobRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteDlpJobRequest) ProtoMessage()    {}
 func (*DeleteDlpJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{92}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{92}
 }
 func (m *DeleteDlpJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteDlpJobRequest.Unmarshal(m, b)
@@ -11986,7 +11986,7 @@ func (m *CreateDeidentifyTemplateRequest) Reset()         { *m = CreateDeidentif
 func (m *CreateDeidentifyTemplateRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateDeidentifyTemplateRequest) ProtoMessage()    {}
 func (*CreateDeidentifyTemplateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{93}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{93}
 }
 func (m *CreateDeidentifyTemplateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateDeidentifyTemplateRequest.Unmarshal(m, b)
@@ -12046,7 +12046,7 @@ func (m *UpdateDeidentifyTemplateRequest) Reset()         { *m = UpdateDeidentif
 func (m *UpdateDeidentifyTemplateRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateDeidentifyTemplateRequest) ProtoMessage()    {}
 func (*UpdateDeidentifyTemplateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{94}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{94}
 }
 func (m *UpdateDeidentifyTemplateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateDeidentifyTemplateRequest.Unmarshal(m, b)
@@ -12102,7 +12102,7 @@ func (m *GetDeidentifyTemplateRequest) Reset()         { *m = GetDeidentifyTempl
 func (m *GetDeidentifyTemplateRequest) String() string { return proto.CompactTextString(m) }
 func (*GetDeidentifyTemplateRequest) ProtoMessage()    {}
 func (*GetDeidentifyTemplateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{95}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{95}
 }
 func (m *GetDeidentifyTemplateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetDeidentifyTemplateRequest.Unmarshal(m, b)
@@ -12163,7 +12163,7 @@ func (m *ListDeidentifyTemplatesRequest) Reset()         { *m = ListDeidentifyTe
 func (m *ListDeidentifyTemplatesRequest) String() string { return proto.CompactTextString(m) }
 func (*ListDeidentifyTemplatesRequest) ProtoMessage()    {}
 func (*ListDeidentifyTemplatesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{96}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{96}
 }
 func (m *ListDeidentifyTemplatesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListDeidentifyTemplatesRequest.Unmarshal(m, b)
@@ -12228,7 +12228,7 @@ func (m *ListDeidentifyTemplatesResponse) Reset()         { *m = ListDeidentifyT
 func (m *ListDeidentifyTemplatesResponse) String() string { return proto.CompactTextString(m) }
 func (*ListDeidentifyTemplatesResponse) ProtoMessage()    {}
 func (*ListDeidentifyTemplatesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{97}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{97}
 }
 func (m *ListDeidentifyTemplatesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListDeidentifyTemplatesResponse.Unmarshal(m, b)
@@ -12277,7 +12277,7 @@ func (m *DeleteDeidentifyTemplateRequest) Reset()         { *m = DeleteDeidentif
 func (m *DeleteDeidentifyTemplateRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteDeidentifyTemplateRequest) ProtoMessage()    {}
 func (*DeleteDeidentifyTemplateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{98}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{98}
 }
 func (m *DeleteDeidentifyTemplateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteDeidentifyTemplateRequest.Unmarshal(m, b)
@@ -12329,7 +12329,7 @@ func (m *LargeCustomDictionaryConfig) Reset()         { *m = LargeCustomDictiona
 func (m *LargeCustomDictionaryConfig) String() string { return proto.CompactTextString(m) }
 func (*LargeCustomDictionaryConfig) ProtoMessage()    {}
 func (*LargeCustomDictionaryConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{99}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{99}
 }
 func (m *LargeCustomDictionaryConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LargeCustomDictionaryConfig.Unmarshal(m, b)
@@ -12485,7 +12485,7 @@ func (m *StoredInfoTypeConfig) Reset()         { *m = StoredInfoTypeConfig{} }
 func (m *StoredInfoTypeConfig) String() string { return proto.CompactTextString(m) }
 func (*StoredInfoTypeConfig) ProtoMessage()    {}
 func (*StoredInfoTypeConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{100}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{100}
 }
 func (m *StoredInfoTypeConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StoredInfoTypeConfig.Unmarshal(m, b)
@@ -12630,7 +12630,7 @@ func (m *StoredInfoTypeVersion) Reset()         { *m = StoredInfoTypeVersion{} }
 func (m *StoredInfoTypeVersion) String() string { return proto.CompactTextString(m) }
 func (*StoredInfoTypeVersion) ProtoMessage()    {}
 func (*StoredInfoTypeVersion) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{101}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{101}
 }
 func (m *StoredInfoTypeVersion) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StoredInfoTypeVersion.Unmarshal(m, b)
@@ -12697,7 +12697,7 @@ func (m *StoredInfoType) Reset()         { *m = StoredInfoType{} }
 func (m *StoredInfoType) String() string { return proto.CompactTextString(m) }
 func (*StoredInfoType) ProtoMessage()    {}
 func (*StoredInfoType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{102}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{102}
 }
 func (m *StoredInfoType) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StoredInfoType.Unmarshal(m, b)
@@ -12759,7 +12759,7 @@ func (m *CreateStoredInfoTypeRequest) Reset()         { *m = CreateStoredInfoTyp
 func (m *CreateStoredInfoTypeRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateStoredInfoTypeRequest) ProtoMessage()    {}
 func (*CreateStoredInfoTypeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{103}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{103}
 }
 func (m *CreateStoredInfoTypeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateStoredInfoTypeRequest.Unmarshal(m, b)
@@ -12821,7 +12821,7 @@ func (m *UpdateStoredInfoTypeRequest) Reset()         { *m = UpdateStoredInfoTyp
 func (m *UpdateStoredInfoTypeRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateStoredInfoTypeRequest) ProtoMessage()    {}
 func (*UpdateStoredInfoTypeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{104}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{104}
 }
 func (m *UpdateStoredInfoTypeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateStoredInfoTypeRequest.Unmarshal(m, b)
@@ -12877,7 +12877,7 @@ func (m *GetStoredInfoTypeRequest) Reset()         { *m = GetStoredInfoTypeReque
 func (m *GetStoredInfoTypeRequest) String() string { return proto.CompactTextString(m) }
 func (*GetStoredInfoTypeRequest) ProtoMessage()    {}
 func (*GetStoredInfoTypeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{105}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{105}
 }
 func (m *GetStoredInfoTypeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetStoredInfoTypeRequest.Unmarshal(m, b)
@@ -12939,7 +12939,7 @@ func (m *ListStoredInfoTypesRequest) Reset()         { *m = ListStoredInfoTypesR
 func (m *ListStoredInfoTypesRequest) String() string { return proto.CompactTextString(m) }
 func (*ListStoredInfoTypesRequest) ProtoMessage()    {}
 func (*ListStoredInfoTypesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{106}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{106}
 }
 func (m *ListStoredInfoTypesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListStoredInfoTypesRequest.Unmarshal(m, b)
@@ -13003,7 +13003,7 @@ func (m *ListStoredInfoTypesResponse) Reset()         { *m = ListStoredInfoTypes
 func (m *ListStoredInfoTypesResponse) String() string { return proto.CompactTextString(m) }
 func (*ListStoredInfoTypesResponse) ProtoMessage()    {}
 func (*ListStoredInfoTypesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{107}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{107}
 }
 func (m *ListStoredInfoTypesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListStoredInfoTypesResponse.Unmarshal(m, b)
@@ -13052,7 +13052,7 @@ func (m *DeleteStoredInfoTypeRequest) Reset()         { *m = DeleteStoredInfoTyp
 func (m *DeleteStoredInfoTypeRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteStoredInfoTypeRequest) ProtoMessage()    {}
 func (*DeleteStoredInfoTypeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dlp_51f64f0cee619d6b, []int{108}
+	return fileDescriptor_dlp_9184f835f60c3220, []int{108}
 }
 func (m *DeleteStoredInfoTypeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteStoredInfoTypeRequest.Unmarshal(m, b)
@@ -14534,10 +14534,10 @@ var _DlpService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/privacy/dlp/v2/dlp.proto", fileDescriptor_dlp_51f64f0cee619d6b)
+	proto.RegisterFile("google/privacy/dlp/v2/dlp.proto", fileDescriptor_dlp_9184f835f60c3220)
 }
 
-var fileDescriptor_dlp_51f64f0cee619d6b = []byte{
+var fileDescriptor_dlp_9184f835f60c3220 = []byte{
 	// 9262 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x7d, 0x5b, 0x8c, 0x1b, 0x59,
 	0x76, 0x58, 0x17, 0xd9, 0xec, 0x26, 0x0f, 0x9b, 0x6c, 0xf6, 0xed, 0x87, 0x5a, 0x94, 0xb4, 0xd2,

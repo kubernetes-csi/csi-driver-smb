@@ -49,7 +49,7 @@ func (x PageOnePromotedStrategyGoalEnum_PageOnePromotedStrategyGoal) String() st
 	return proto.EnumName(PageOnePromotedStrategyGoalEnum_PageOnePromotedStrategyGoal_name, int32(x))
 }
 func (PageOnePromotedStrategyGoalEnum_PageOnePromotedStrategyGoal) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_page_one_promoted_strategy_goal_bff5c4b87c036f82, []int{0, 0}
+	return fileDescriptor_page_one_promoted_strategy_goal_dfdc26f09d26e671, []int{0, 0}
 }
 
 // Container for enum describing possible strategy goals: where impressions are
@@ -64,7 +64,7 @@ func (m *PageOnePromotedStrategyGoalEnum) Reset()         { *m = PageOnePromoted
 func (m *PageOnePromotedStrategyGoalEnum) String() string { return proto.CompactTextString(m) }
 func (*PageOnePromotedStrategyGoalEnum) ProtoMessage()    {}
 func (*PageOnePromotedStrategyGoalEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_page_one_promoted_strategy_goal_bff5c4b87c036f82, []int{0}
+	return fileDescriptor_page_one_promoted_strategy_goal_dfdc26f09d26e671, []int{0}
 }
 func (m *PageOnePromotedStrategyGoalEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PageOnePromotedStrategyGoalEnum.Unmarshal(m, b)
@@ -90,10 +90,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/page_one_promoted_strategy_goal.proto", fileDescriptor_page_one_promoted_strategy_goal_bff5c4b87c036f82)
+	proto.RegisterFile("google/ads/googleads/v0/enums/page_one_promoted_strategy_goal.proto", fileDescriptor_page_one_promoted_strategy_goal_dfdc26f09d26e671)
 }
 
-var fileDescriptor_page_one_promoted_strategy_goal_bff5c4b87c036f82 = []byte{
+var fileDescriptor_page_one_promoted_strategy_goal_dfdc26f09d26e671 = []byte{
 	// 316 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xdf, 0x4a, 0xfb, 0x30,
 	0x1c, 0xc5, 0x7f, 0xed, 0xe0, 0x27, 0x64, 0xa0, 0xa5, 0x5e, 0x78, 0x21, 0x43, 0xb7, 0x07, 0x48,

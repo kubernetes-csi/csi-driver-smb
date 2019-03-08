@@ -49,7 +49,7 @@ func (x VanityPharmaDisplayUrlModeEnum_VanityPharmaDisplayUrlMode) String() stri
 	return proto.EnumName(VanityPharmaDisplayUrlModeEnum_VanityPharmaDisplayUrlMode_name, int32(x))
 }
 func (VanityPharmaDisplayUrlModeEnum_VanityPharmaDisplayUrlMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_vanity_pharma_display_url_mode_4b3dfe4db7ed1377, []int{0, 0}
+	return fileDescriptor_vanity_pharma_display_url_mode_c77c1862e858dd6d, []int{0, 0}
 }
 
 // The display mode for vanity pharma URLs.
@@ -63,7 +63,7 @@ func (m *VanityPharmaDisplayUrlModeEnum) Reset()         { *m = VanityPharmaDisp
 func (m *VanityPharmaDisplayUrlModeEnum) String() string { return proto.CompactTextString(m) }
 func (*VanityPharmaDisplayUrlModeEnum) ProtoMessage()    {}
 func (*VanityPharmaDisplayUrlModeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_vanity_pharma_display_url_mode_4b3dfe4db7ed1377, []int{0}
+	return fileDescriptor_vanity_pharma_display_url_mode_c77c1862e858dd6d, []int{0}
 }
 func (m *VanityPharmaDisplayUrlModeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VanityPharmaDisplayUrlModeEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/vanity_pharma_display_url_mode.proto", fileDescriptor_vanity_pharma_display_url_mode_4b3dfe4db7ed1377)
+	proto.RegisterFile("google/ads/googleads/v0/enums/vanity_pharma_display_url_mode.proto", fileDescriptor_vanity_pharma_display_url_mode_c77c1862e858dd6d)
 }
 
-var fileDescriptor_vanity_pharma_display_url_mode_4b3dfe4db7ed1377 = []byte{
+var fileDescriptor_vanity_pharma_display_url_mode_c77c1862e858dd6d = []byte{
 	// 331 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x4a, 0xf3, 0x40,
 	0x1c, 0xc5, 0xbf, 0xa4, 0xf0, 0x09, 0xd3, 0x85, 0x21, 0x2e, 0x14, 0xb1, 0x4a, 0x7b, 0x80, 0x49,

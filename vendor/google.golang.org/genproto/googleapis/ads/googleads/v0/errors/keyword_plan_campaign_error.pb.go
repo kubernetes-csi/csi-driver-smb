@@ -63,7 +63,7 @@ func (x KeywordPlanCampaignErrorEnum_KeywordPlanCampaignError) String() string {
 	return proto.EnumName(KeywordPlanCampaignErrorEnum_KeywordPlanCampaignError_name, int32(x))
 }
 func (KeywordPlanCampaignErrorEnum_KeywordPlanCampaignError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_campaign_error_78bf876335016644, []int{0, 0}
+	return fileDescriptor_keyword_plan_campaign_error_d952d0b9847e6439, []int{0, 0}
 }
 
 // Container for enum describing possible errors from applying a keyword plan
@@ -78,7 +78,7 @@ func (m *KeywordPlanCampaignErrorEnum) Reset()         { *m = KeywordPlanCampaig
 func (m *KeywordPlanCampaignErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanCampaignErrorEnum) ProtoMessage()    {}
 func (*KeywordPlanCampaignErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_campaign_error_78bf876335016644, []int{0}
+	return fileDescriptor_keyword_plan_campaign_error_d952d0b9847e6439, []int{0}
 }
 func (m *KeywordPlanCampaignErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanCampaignErrorEnum.Unmarshal(m, b)
@@ -104,10 +104,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/keyword_plan_campaign_error.proto", fileDescriptor_keyword_plan_campaign_error_78bf876335016644)
+	proto.RegisterFile("google/ads/googleads/v0/errors/keyword_plan_campaign_error.proto", fileDescriptor_keyword_plan_campaign_error_d952d0b9847e6439)
 }
 
-var fileDescriptor_keyword_plan_campaign_error_78bf876335016644 = []byte{
+var fileDescriptor_keyword_plan_campaign_error_d952d0b9847e6439 = []byte{
 	// 350 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0x41, 0x4b, 0xfb, 0x30,
 	0x18, 0xc6, 0xff, 0xed, 0xfe, 0x4e, 0xc8, 0x44, 0x6b, 0x41, 0xf0, 0xa0, 0x3b, 0xf4, 0x03, 0xa4,

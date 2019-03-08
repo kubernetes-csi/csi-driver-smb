@@ -53,7 +53,7 @@ func (x CampaignStatusEnum_CampaignStatus) String() string {
 	return proto.EnumName(CampaignStatusEnum_CampaignStatus_name, int32(x))
 }
 func (CampaignStatusEnum_CampaignStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_status_71c8f2698532ad78, []int{0, 0}
+	return fileDescriptor_campaign_status_de6520fc2606be46, []int{0, 0}
 }
 
 // Container for enum describing possible statuses of a campaign.
@@ -67,7 +67,7 @@ func (m *CampaignStatusEnum) Reset()         { *m = CampaignStatusEnum{} }
 func (m *CampaignStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*CampaignStatusEnum) ProtoMessage()    {}
 func (*CampaignStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_status_71c8f2698532ad78, []int{0}
+	return fileDescriptor_campaign_status_de6520fc2606be46, []int{0}
 }
 func (m *CampaignStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CampaignStatusEnum.Unmarshal(m, b)
@@ -93,10 +93,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/campaign_status.proto", fileDescriptor_campaign_status_71c8f2698532ad78)
+	proto.RegisterFile("google/ads/googleads/v0/enums/campaign_status.proto", fileDescriptor_campaign_status_de6520fc2606be46)
 }
 
-var fileDescriptor_campaign_status_71c8f2698532ad78 = []byte{
+var fileDescriptor_campaign_status_de6520fc2606be46 = []byte{
 	// 291 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xd1, 0x4a, 0xc3, 0x30,
 	0x14, 0x86, 0x6d, 0x27, 0x13, 0x32, 0xd0, 0x52, 0xaf, 0x77, 0xb1, 0x3d, 0x40, 0x5a, 0xd8, 0x5d,

@@ -49,7 +49,7 @@ func (x UserListCombinedRuleOperatorEnum_UserListCombinedRuleOperator) String() 
 	return proto.EnumName(UserListCombinedRuleOperatorEnum_UserListCombinedRuleOperator_name, int32(x))
 }
 func (UserListCombinedRuleOperatorEnum_UserListCombinedRuleOperator) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_combined_rule_operator_fb43ff327143f06f, []int{0, 0}
+	return fileDescriptor_user_list_combined_rule_operator_696057f0bc641c4f, []int{0, 0}
 }
 
 // Logical operator connecting two rules.
@@ -63,7 +63,7 @@ func (m *UserListCombinedRuleOperatorEnum) Reset()         { *m = UserListCombin
 func (m *UserListCombinedRuleOperatorEnum) String() string { return proto.CompactTextString(m) }
 func (*UserListCombinedRuleOperatorEnum) ProtoMessage()    {}
 func (*UserListCombinedRuleOperatorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_combined_rule_operator_fb43ff327143f06f, []int{0}
+	return fileDescriptor_user_list_combined_rule_operator_696057f0bc641c4f, []int{0}
 }
 func (m *UserListCombinedRuleOperatorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListCombinedRuleOperatorEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_combined_rule_operator.proto", fileDescriptor_user_list_combined_rule_operator_fb43ff327143f06f)
+	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_combined_rule_operator.proto", fileDescriptor_user_list_combined_rule_operator_696057f0bc641c4f)
 }
 
-var fileDescriptor_user_list_combined_rule_operator_fb43ff327143f06f = []byte{
+var fileDescriptor_user_list_combined_rule_operator_696057f0bc641c4f = []byte{
 	// 302 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xc1, 0x6a, 0xb3, 0x40,
 	0x14, 0x85, 0xff, 0x18, 0xf8, 0x03, 0x93, 0x45, 0xc5, 0x75, 0x03, 0x4d, 0x1e, 0x60, 0x14, 0xba,

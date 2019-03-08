@@ -69,7 +69,7 @@ func (x IncomeRangeTypeEnum_IncomeRangeType) String() string {
 	return proto.EnumName(IncomeRangeTypeEnum_IncomeRangeType_name, int32(x))
 }
 func (IncomeRangeTypeEnum_IncomeRangeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_income_range_type_a81ee32c7919954d, []int{0, 0}
+	return fileDescriptor_income_range_type_96ed882d8bd36d78, []int{0, 0}
 }
 
 // Container for enum describing the type of demographic income ranges.
@@ -83,7 +83,7 @@ func (m *IncomeRangeTypeEnum) Reset()         { *m = IncomeRangeTypeEnum{} }
 func (m *IncomeRangeTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*IncomeRangeTypeEnum) ProtoMessage()    {}
 func (*IncomeRangeTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_income_range_type_a81ee32c7919954d, []int{0}
+	return fileDescriptor_income_range_type_96ed882d8bd36d78, []int{0}
 }
 func (m *IncomeRangeTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IncomeRangeTypeEnum.Unmarshal(m, b)
@@ -109,10 +109,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/income_range_type.proto", fileDescriptor_income_range_type_a81ee32c7919954d)
+	proto.RegisterFile("google/ads/googleads/v0/enums/income_range_type.proto", fileDescriptor_income_range_type_96ed882d8bd36d78)
 }
 
-var fileDescriptor_income_range_type_a81ee32c7919954d = []byte{
+var fileDescriptor_income_range_type_96ed882d8bd36d78 = []byte{
 	// 366 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xcd, 0xaa, 0xda, 0x40,
 	0x1c, 0xc5, 0x9b, 0x14, 0x5a, 0x18, 0x17, 0x4e, 0xd3, 0x42, 0xdb, 0x85, 0x04, 0x7d, 0x80, 0xc9,

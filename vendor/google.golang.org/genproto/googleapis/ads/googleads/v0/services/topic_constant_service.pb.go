@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [TopicConstantService.GetTopicConstant][google.ads.googleads.v0.services.TopicConstantService.GetTopicConstant].
+// Request message for
+// [TopicConstantService.GetTopicConstant][google.ads.googleads.v0.services.TopicConstantService.GetTopicConstant].
 type GetTopicConstantRequest struct {
 	// Resource name of the Topic to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetTopicConstantRequest) Reset()         { *m = GetTopicConstantRequest
 func (m *GetTopicConstantRequest) String() string { return proto.CompactTextString(m) }
 func (*GetTopicConstantRequest) ProtoMessage()    {}
 func (*GetTopicConstantRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_topic_constant_service_8bf77bcf67597eb4, []int{0}
+	return fileDescriptor_topic_constant_service_d052687b73cc34a6, []int{0}
 }
 func (m *GetTopicConstantRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetTopicConstantRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _TopicConstantService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/topic_constant_service.proto", fileDescriptor_topic_constant_service_8bf77bcf67597eb4)
+	proto.RegisterFile("google/ads/googleads/v0/services/topic_constant_service.proto", fileDescriptor_topic_constant_service_d052687b73cc34a6)
 }
 
-var fileDescriptor_topic_constant_service_8bf77bcf67597eb4 = []byte{
+var fileDescriptor_topic_constant_service_d052687b73cc34a6 = []byte{
 	// 354 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x4d, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xe2, 0xd4,

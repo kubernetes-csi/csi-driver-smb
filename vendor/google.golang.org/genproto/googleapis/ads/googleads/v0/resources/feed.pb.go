@@ -47,7 +47,7 @@ func (x FeedAttributeOperation_Operator) String() string {
 	return proto.EnumName(FeedAttributeOperation_Operator_name, int32(x))
 }
 func (FeedAttributeOperation_Operator) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_feed_b678fdeff2ffe52b, []int{2, 0}
+	return fileDescriptor_feed_936759060ffa240e, []int{2, 0}
 }
 
 // A feed.
@@ -89,7 +89,7 @@ func (m *Feed) Reset()         { *m = Feed{} }
 func (m *Feed) String() string { return proto.CompactTextString(m) }
 func (*Feed) ProtoMessage()    {}
 func (*Feed) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_b678fdeff2ffe52b, []int{0}
+	return fileDescriptor_feed_936759060ffa240e, []int{0}
 }
 func (m *Feed) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Feed.Unmarshal(m, b)
@@ -307,7 +307,7 @@ func (m *Feed_PlacesLocationFeedData) Reset()         { *m = Feed_PlacesLocation
 func (m *Feed_PlacesLocationFeedData) String() string { return proto.CompactTextString(m) }
 func (*Feed_PlacesLocationFeedData) ProtoMessage()    {}
 func (*Feed_PlacesLocationFeedData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_b678fdeff2ffe52b, []int{0, 0}
+	return fileDescriptor_feed_936759060ffa240e, []int{0, 0}
 }
 func (m *Feed_PlacesLocationFeedData) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Feed_PlacesLocationFeedData.Unmarshal(m, b)
@@ -386,7 +386,7 @@ func (m *Feed_PlacesLocationFeedData_OAuthInfo) Reset()         { *m = Feed_Plac
 func (m *Feed_PlacesLocationFeedData_OAuthInfo) String() string { return proto.CompactTextString(m) }
 func (*Feed_PlacesLocationFeedData_OAuthInfo) ProtoMessage()    {}
 func (*Feed_PlacesLocationFeedData_OAuthInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_b678fdeff2ffe52b, []int{0, 0, 0}
+	return fileDescriptor_feed_936759060ffa240e, []int{0, 0, 0}
 }
 func (m *Feed_PlacesLocationFeedData_OAuthInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Feed_PlacesLocationFeedData_OAuthInfo.Unmarshal(m, b)
@@ -444,7 +444,7 @@ func (m *Feed_AffiliateLocationFeedData) Reset()         { *m = Feed_AffiliateLo
 func (m *Feed_AffiliateLocationFeedData) String() string { return proto.CompactTextString(m) }
 func (*Feed_AffiliateLocationFeedData) ProtoMessage()    {}
 func (*Feed_AffiliateLocationFeedData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_b678fdeff2ffe52b, []int{0, 1}
+	return fileDescriptor_feed_936759060ffa240e, []int{0, 1}
 }
 func (m *Feed_AffiliateLocationFeedData) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Feed_AffiliateLocationFeedData.Unmarshal(m, b)
@@ -503,7 +503,7 @@ func (m *FeedAttribute) Reset()         { *m = FeedAttribute{} }
 func (m *FeedAttribute) String() string { return proto.CompactTextString(m) }
 func (*FeedAttribute) ProtoMessage()    {}
 func (*FeedAttribute) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_b678fdeff2ffe52b, []int{1}
+	return fileDescriptor_feed_936759060ffa240e, []int{1}
 }
 func (m *FeedAttribute) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedAttribute.Unmarshal(m, b)
@@ -566,7 +566,7 @@ func (m *FeedAttributeOperation) Reset()         { *m = FeedAttributeOperation{}
 func (m *FeedAttributeOperation) String() string { return proto.CompactTextString(m) }
 func (*FeedAttributeOperation) ProtoMessage()    {}
 func (*FeedAttributeOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_b678fdeff2ffe52b, []int{2}
+	return fileDescriptor_feed_936759060ffa240e, []int{2}
 }
 func (m *FeedAttributeOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedAttributeOperation.Unmarshal(m, b)
@@ -611,10 +611,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/feed.proto", fileDescriptor_feed_b678fdeff2ffe52b)
+	proto.RegisterFile("google/ads/googleads/v0/resources/feed.proto", fileDescriptor_feed_936759060ffa240e)
 }
 
-var fileDescriptor_feed_b678fdeff2ffe52b = []byte{
+var fileDescriptor_feed_936759060ffa240e = []byte{
 	// 1018 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x96, 0xcf, 0x6f, 0xe3, 0x44,
 	0x14, 0xc7, 0xd7, 0xe9, 0xcf, 0xbc, 0xb4, 0xdd, 0xec, 0xec, 0xaa, 0xb8, 0xd9, 0x05, 0x75, 0x8b,

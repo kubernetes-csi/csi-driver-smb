@@ -58,7 +58,7 @@ func (x Likelihood) String() string {
 	return proto.EnumName(Likelihood_name, int32(x))
 }
 func (Likelihood) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{0}
 }
 
 // Definitions of file type groups to scan.
@@ -99,7 +99,7 @@ func (x FileType) String() string {
 	return proto.EnumName(FileType_name, int32(x))
 }
 func (FileType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{1}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{1}
 }
 
 type CustomInfoType_ExclusionType int32
@@ -125,7 +125,7 @@ func (x CustomInfoType_ExclusionType) String() string {
 	return proto.EnumName(CustomInfoType_ExclusionType_name, int32(x))
 }
 func (CustomInfoType_ExclusionType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 0}
 }
 
 // How to sample bytes if not all bytes are scanned. Meaningful only when used
@@ -157,7 +157,7 @@ func (x CloudStorageOptions_SampleMethod) String() string {
 	return proto.EnumName(CloudStorageOptions_SampleMethod_name, int32(x))
 }
 func (CloudStorageOptions_SampleMethod) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{8, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{8, 0}
 }
 
 // How to sample rows if not all rows are scanned. Meaningful only when used
@@ -188,7 +188,7 @@ func (x BigQueryOptions_SampleMethod) String() string {
 	return proto.EnumName(BigQueryOptions_SampleMethod_name, int32(x))
 }
 func (BigQueryOptions_SampleMethod) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{11, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{11, 0}
 }
 
 // Type of information detected by the API.
@@ -208,7 +208,7 @@ func (m *InfoType) Reset()         { *m = InfoType{} }
 func (m *InfoType) String() string { return proto.CompactTextString(m) }
 func (*InfoType) ProtoMessage()    {}
 func (*InfoType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{0}
 }
 func (m *InfoType) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InfoType.Unmarshal(m, b)
@@ -253,7 +253,7 @@ func (m *StoredType) Reset()         { *m = StoredType{} }
 func (m *StoredType) String() string { return proto.CompactTextString(m) }
 func (*StoredType) ProtoMessage()    {}
 func (*StoredType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{1}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{1}
 }
 func (m *StoredType) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StoredType.Unmarshal(m, b)
@@ -323,7 +323,7 @@ func (m *CustomInfoType) Reset()         { *m = CustomInfoType{} }
 func (m *CustomInfoType) String() string { return proto.CompactTextString(m) }
 func (*CustomInfoType) ProtoMessage()    {}
 func (*CustomInfoType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2}
 }
 func (m *CustomInfoType) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType.Unmarshal(m, b)
@@ -583,7 +583,7 @@ func (m *CustomInfoType_Dictionary) Reset()         { *m = CustomInfoType_Dictio
 func (m *CustomInfoType_Dictionary) String() string { return proto.CompactTextString(m) }
 func (*CustomInfoType_Dictionary) ProtoMessage()    {}
 func (*CustomInfoType_Dictionary) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 0}
 }
 func (m *CustomInfoType_Dictionary) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType_Dictionary.Unmarshal(m, b)
@@ -729,7 +729,7 @@ func (m *CustomInfoType_Dictionary_WordList) Reset()         { *m = CustomInfoTy
 func (m *CustomInfoType_Dictionary_WordList) String() string { return proto.CompactTextString(m) }
 func (*CustomInfoType_Dictionary_WordList) ProtoMessage()    {}
 func (*CustomInfoType_Dictionary_WordList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 0, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 0, 0}
 }
 func (m *CustomInfoType_Dictionary_WordList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType_Dictionary_WordList.Unmarshal(m, b)
@@ -774,7 +774,7 @@ func (m *CustomInfoType_Regex) Reset()         { *m = CustomInfoType_Regex{} }
 func (m *CustomInfoType_Regex) String() string { return proto.CompactTextString(m) }
 func (*CustomInfoType_Regex) ProtoMessage()    {}
 func (*CustomInfoType_Regex) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 1}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 1}
 }
 func (m *CustomInfoType_Regex) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType_Regex.Unmarshal(m, b)
@@ -826,7 +826,7 @@ func (m *CustomInfoType_SurrogateType) Reset()         { *m = CustomInfoType_Sur
 func (m *CustomInfoType_SurrogateType) String() string { return proto.CompactTextString(m) }
 func (*CustomInfoType_SurrogateType) ProtoMessage()    {}
 func (*CustomInfoType_SurrogateType) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 2}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 2}
 }
 func (m *CustomInfoType_SurrogateType) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType_SurrogateType.Unmarshal(m, b)
@@ -862,7 +862,7 @@ func (m *CustomInfoType_DetectionRule) Reset()         { *m = CustomInfoType_Det
 func (m *CustomInfoType_DetectionRule) String() string { return proto.CompactTextString(m) }
 func (*CustomInfoType_DetectionRule) ProtoMessage()    {}
 func (*CustomInfoType_DetectionRule) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 3}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 3}
 }
 func (m *CustomInfoType_DetectionRule) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType_DetectionRule.Unmarshal(m, b)
@@ -979,7 +979,7 @@ func (m *CustomInfoType_DetectionRule_Proximity) Reset() {
 func (m *CustomInfoType_DetectionRule_Proximity) String() string { return proto.CompactTextString(m) }
 func (*CustomInfoType_DetectionRule_Proximity) ProtoMessage()    {}
 func (*CustomInfoType_DetectionRule_Proximity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 3, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 3, 0}
 }
 func (m *CustomInfoType_DetectionRule_Proximity) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType_DetectionRule_Proximity.Unmarshal(m, b)
@@ -1033,7 +1033,7 @@ func (m *CustomInfoType_DetectionRule_LikelihoodAdjustment) String() string {
 }
 func (*CustomInfoType_DetectionRule_LikelihoodAdjustment) ProtoMessage() {}
 func (*CustomInfoType_DetectionRule_LikelihoodAdjustment) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 3, 1}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 3, 1}
 }
 func (m *CustomInfoType_DetectionRule_LikelihoodAdjustment) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType_DetectionRule_LikelihoodAdjustment.Unmarshal(m, b)
@@ -1183,7 +1183,7 @@ func (m *CustomInfoType_DetectionRule_HotwordRule) Reset() {
 func (m *CustomInfoType_DetectionRule_HotwordRule) String() string { return proto.CompactTextString(m) }
 func (*CustomInfoType_DetectionRule_HotwordRule) ProtoMessage()    {}
 func (*CustomInfoType_DetectionRule_HotwordRule) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{2, 3, 2}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{2, 3, 2}
 }
 func (m *CustomInfoType_DetectionRule_HotwordRule) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomInfoType_DetectionRule_HotwordRule.Unmarshal(m, b)
@@ -1237,7 +1237,7 @@ func (m *FieldId) Reset()         { *m = FieldId{} }
 func (m *FieldId) String() string { return proto.CompactTextString(m) }
 func (*FieldId) ProtoMessage()    {}
 func (*FieldId) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{3}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{3}
 }
 func (m *FieldId) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldId.Unmarshal(m, b)
@@ -1284,7 +1284,7 @@ func (m *PartitionId) Reset()         { *m = PartitionId{} }
 func (m *PartitionId) String() string { return proto.CompactTextString(m) }
 func (*PartitionId) ProtoMessage()    {}
 func (*PartitionId) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{4}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{4}
 }
 func (m *PartitionId) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PartitionId.Unmarshal(m, b)
@@ -1331,7 +1331,7 @@ func (m *KindExpression) Reset()         { *m = KindExpression{} }
 func (m *KindExpression) String() string { return proto.CompactTextString(m) }
 func (*KindExpression) ProtoMessage()    {}
 func (*KindExpression) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{5}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{5}
 }
 func (m *KindExpression) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KindExpression.Unmarshal(m, b)
@@ -1374,7 +1374,7 @@ func (m *DatastoreOptions) Reset()         { *m = DatastoreOptions{} }
 func (m *DatastoreOptions) String() string { return proto.CompactTextString(m) }
 func (*DatastoreOptions) ProtoMessage()    {}
 func (*DatastoreOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{6}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{6}
 }
 func (m *DatastoreOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DatastoreOptions.Unmarshal(m, b)
@@ -1470,7 +1470,7 @@ func (m *CloudStorageRegexFileSet) Reset()         { *m = CloudStorageRegexFileS
 func (m *CloudStorageRegexFileSet) String() string { return proto.CompactTextString(m) }
 func (*CloudStorageRegexFileSet) ProtoMessage()    {}
 func (*CloudStorageRegexFileSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{7}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{7}
 }
 func (m *CloudStorageRegexFileSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CloudStorageRegexFileSet.Unmarshal(m, b)
@@ -1544,7 +1544,7 @@ func (m *CloudStorageOptions) Reset()         { *m = CloudStorageOptions{} }
 func (m *CloudStorageOptions) String() string { return proto.CompactTextString(m) }
 func (*CloudStorageOptions) ProtoMessage()    {}
 func (*CloudStorageOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{8}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{8}
 }
 func (m *CloudStorageOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CloudStorageOptions.Unmarshal(m, b)
@@ -1631,7 +1631,7 @@ func (m *CloudStorageOptions_FileSet) Reset()         { *m = CloudStorageOptions
 func (m *CloudStorageOptions_FileSet) String() string { return proto.CompactTextString(m) }
 func (*CloudStorageOptions_FileSet) ProtoMessage()    {}
 func (*CloudStorageOptions_FileSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{8, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{8, 0}
 }
 func (m *CloudStorageOptions_FileSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CloudStorageOptions_FileSet.Unmarshal(m, b)
@@ -1679,7 +1679,7 @@ func (m *CloudStorageFileSet) Reset()         { *m = CloudStorageFileSet{} }
 func (m *CloudStorageFileSet) String() string { return proto.CompactTextString(m) }
 func (*CloudStorageFileSet) ProtoMessage()    {}
 func (*CloudStorageFileSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{9}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{9}
 }
 func (m *CloudStorageFileSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CloudStorageFileSet.Unmarshal(m, b)
@@ -1720,7 +1720,7 @@ func (m *CloudStoragePath) Reset()         { *m = CloudStoragePath{} }
 func (m *CloudStoragePath) String() string { return proto.CompactTextString(m) }
 func (*CloudStoragePath) ProtoMessage()    {}
 func (*CloudStoragePath) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{10}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{10}
 }
 func (m *CloudStoragePath) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CloudStoragePath.Unmarshal(m, b)
@@ -1778,7 +1778,7 @@ func (m *BigQueryOptions) Reset()         { *m = BigQueryOptions{} }
 func (m *BigQueryOptions) String() string { return proto.CompactTextString(m) }
 func (*BigQueryOptions) ProtoMessage()    {}
 func (*BigQueryOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{11}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{11}
 }
 func (m *BigQueryOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BigQueryOptions.Unmarshal(m, b)
@@ -1857,7 +1857,7 @@ func (m *StorageConfig) Reset()         { *m = StorageConfig{} }
 func (m *StorageConfig) String() string { return proto.CompactTextString(m) }
 func (*StorageConfig) ProtoMessage()    {}
 func (*StorageConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{12}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{12}
 }
 func (m *StorageConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StorageConfig.Unmarshal(m, b)
@@ -2059,7 +2059,7 @@ func (m *StorageConfig_TimespanConfig) Reset()         { *m = StorageConfig_Time
 func (m *StorageConfig_TimespanConfig) String() string { return proto.CompactTextString(m) }
 func (*StorageConfig_TimespanConfig) ProtoMessage()    {}
 func (*StorageConfig_TimespanConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{12, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{12, 0}
 }
 func (m *StorageConfig_TimespanConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StorageConfig_TimespanConfig.Unmarshal(m, b)
@@ -2123,7 +2123,7 @@ func (m *BigQueryKey) Reset()         { *m = BigQueryKey{} }
 func (m *BigQueryKey) String() string { return proto.CompactTextString(m) }
 func (*BigQueryKey) ProtoMessage()    {}
 func (*BigQueryKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{13}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{13}
 }
 func (m *BigQueryKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BigQueryKey.Unmarshal(m, b)
@@ -2170,7 +2170,7 @@ func (m *DatastoreKey) Reset()         { *m = DatastoreKey{} }
 func (m *DatastoreKey) String() string { return proto.CompactTextString(m) }
 func (*DatastoreKey) ProtoMessage()    {}
 func (*DatastoreKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{14}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{14}
 }
 func (m *DatastoreKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DatastoreKey.Unmarshal(m, b)
@@ -2225,7 +2225,7 @@ func (m *Key) Reset()         { *m = Key{} }
 func (m *Key) String() string { return proto.CompactTextString(m) }
 func (*Key) ProtoMessage()    {}
 func (*Key) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{15}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{15}
 }
 func (m *Key) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Key.Unmarshal(m, b)
@@ -2284,7 +2284,7 @@ func (m *Key_PathElement) Reset()         { *m = Key_PathElement{} }
 func (m *Key_PathElement) String() string { return proto.CompactTextString(m) }
 func (*Key_PathElement) ProtoMessage()    {}
 func (*Key_PathElement) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{15, 0}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{15, 0}
 }
 func (m *Key_PathElement) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Key_PathElement.Unmarshal(m, b)
@@ -2431,7 +2431,7 @@ func (m *RecordKey) Reset()         { *m = RecordKey{} }
 func (m *RecordKey) String() string { return proto.CompactTextString(m) }
 func (*RecordKey) ProtoMessage()    {}
 func (*RecordKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{16}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{16}
 }
 func (m *RecordKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecordKey.Unmarshal(m, b)
@@ -2591,7 +2591,7 @@ func (m *BigQueryTable) Reset()         { *m = BigQueryTable{} }
 func (m *BigQueryTable) String() string { return proto.CompactTextString(m) }
 func (*BigQueryTable) ProtoMessage()    {}
 func (*BigQueryTable) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{17}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{17}
 }
 func (m *BigQueryTable) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BigQueryTable.Unmarshal(m, b)
@@ -2647,7 +2647,7 @@ func (m *BigQueryField) Reset()         { *m = BigQueryField{} }
 func (m *BigQueryField) String() string { return proto.CompactTextString(m) }
 func (*BigQueryField) ProtoMessage()    {}
 func (*BigQueryField) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{18}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{18}
 }
 func (m *BigQueryField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BigQueryField.Unmarshal(m, b)
@@ -2698,7 +2698,7 @@ func (m *EntityId) Reset()         { *m = EntityId{} }
 func (m *EntityId) String() string { return proto.CompactTextString(m) }
 func (*EntityId) ProtoMessage()    {}
 func (*EntityId) Descriptor() ([]byte, []int) {
-	return fileDescriptor_storage_c1f843134f27cfc8, []int{19}
+	return fileDescriptor_storage_52cecd7bd8b89c9a, []int{19}
 }
 func (m *EntityId) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EntityId.Unmarshal(m, b)
@@ -2765,10 +2765,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/privacy/dlp/v2/storage.proto", fileDescriptor_storage_c1f843134f27cfc8)
+	proto.RegisterFile("google/privacy/dlp/v2/storage.proto", fileDescriptor_storage_52cecd7bd8b89c9a)
 }
 
-var fileDescriptor_storage_c1f843134f27cfc8 = []byte{
+var fileDescriptor_storage_52cecd7bd8b89c9a = []byte{
 	// 2067 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x58, 0xdd, 0x72, 0x1b, 0x49,
 	0xf5, 0xd7, 0x48, 0x96, 0x2d, 0x1d, 0x7d, 0x58, 0xee, 0x38, 0x5b, 0x8a, 0xfe, 0x9b, 0xc4, 0x2b,

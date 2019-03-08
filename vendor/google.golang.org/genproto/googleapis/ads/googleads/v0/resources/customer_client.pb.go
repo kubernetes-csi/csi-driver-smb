@@ -47,7 +47,7 @@ func (m *CustomerClient) Reset()         { *m = CustomerClient{} }
 func (m *CustomerClient) String() string { return proto.CompactTextString(m) }
 func (*CustomerClient) ProtoMessage()    {}
 func (*CustomerClient) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_client_c5f79edd80741868, []int{0}
+	return fileDescriptor_customer_client_b474fc80928b30c9, []int{0}
 }
 func (m *CustomerClient) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomerClient.Unmarshal(m, b)
@@ -100,10 +100,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/customer_client.proto", fileDescriptor_customer_client_c5f79edd80741868)
+	proto.RegisterFile("google/ads/googleads/v0/resources/customer_client.proto", fileDescriptor_customer_client_b474fc80928b30c9)
 }
 
-var fileDescriptor_customer_client_c5f79edd80741868 = []byte{
+var fileDescriptor_customer_client_b474fc80928b30c9 = []byte{
 	// 351 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0x41, 0x4b, 0xf3, 0x30,
 	0x18, 0xc7, 0x69, 0xf7, 0x6e, 0xf0, 0x56, 0x9d, 0x50, 0x2f, 0x65, 0x8a, 0x6c, 0xca, 0x60, 0xa7,

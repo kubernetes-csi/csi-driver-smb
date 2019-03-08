@@ -47,7 +47,7 @@ func (x GeoTargetingRestrictionEnum_GeoTargetingRestriction) String() string {
 	return proto.EnumName(GeoTargetingRestrictionEnum_GeoTargetingRestriction_name, int32(x))
 }
 func (GeoTargetingRestrictionEnum_GeoTargetingRestriction) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_geo_targeting_restriction_d6393bfb1ab356e3, []int{0, 0}
+	return fileDescriptor_geo_targeting_restriction_b4c66b7ceca1a5eb, []int{0, 0}
 }
 
 // Message describing feed item geo targeting restriction.
@@ -61,7 +61,7 @@ func (m *GeoTargetingRestrictionEnum) Reset()         { *m = GeoTargetingRestric
 func (m *GeoTargetingRestrictionEnum) String() string { return proto.CompactTextString(m) }
 func (*GeoTargetingRestrictionEnum) ProtoMessage()    {}
 func (*GeoTargetingRestrictionEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_targeting_restriction_d6393bfb1ab356e3, []int{0}
+	return fileDescriptor_geo_targeting_restriction_b4c66b7ceca1a5eb, []int{0}
 }
 func (m *GeoTargetingRestrictionEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GeoTargetingRestrictionEnum.Unmarshal(m, b)
@@ -87,10 +87,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/geo_targeting_restriction.proto", fileDescriptor_geo_targeting_restriction_d6393bfb1ab356e3)
+	proto.RegisterFile("google/ads/googleads/v0/enums/geo_targeting_restriction.proto", fileDescriptor_geo_targeting_restriction_b4c66b7ceca1a5eb)
 }
 
-var fileDescriptor_geo_targeting_restriction_d6393bfb1ab356e3 = []byte{
+var fileDescriptor_geo_targeting_restriction_b4c66b7ceca1a5eb = []byte{
 	// 298 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x4d, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

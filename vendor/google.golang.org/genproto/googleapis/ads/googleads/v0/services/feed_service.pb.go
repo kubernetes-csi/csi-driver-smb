@@ -28,7 +28,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [FeedService.GetFeed][google.ads.googleads.v0.services.FeedService.GetFeed].
+// Request message for
+// [FeedService.GetFeed][google.ads.googleads.v0.services.FeedService.GetFeed].
 type GetFeedRequest struct {
 	// The resource name of the feed to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -41,7 +42,7 @@ func (m *GetFeedRequest) Reset()         { *m = GetFeedRequest{} }
 func (m *GetFeedRequest) String() string { return proto.CompactTextString(m) }
 func (*GetFeedRequest) ProtoMessage()    {}
 func (*GetFeedRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_service_dff6ab5365713504, []int{0}
+	return fileDescriptor_feed_service_9fbf4e9c6d5c4c96, []int{0}
 }
 func (m *GetFeedRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetFeedRequest.Unmarshal(m, b)
@@ -68,7 +69,8 @@ func (m *GetFeedRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [FeedService.MutateFeeds][google.ads.googleads.v0.services.FeedService.MutateFeeds].
+// Request message for
+// [FeedService.MutateFeeds][google.ads.googleads.v0.services.FeedService.MutateFeeds].
 type MutateFeedsRequest struct {
 	// The ID of the customer whose feeds are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -91,7 +93,7 @@ func (m *MutateFeedsRequest) Reset()         { *m = MutateFeedsRequest{} }
 func (m *MutateFeedsRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedsRequest) ProtoMessage()    {}
 func (*MutateFeedsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_service_dff6ab5365713504, []int{1}
+	return fileDescriptor_feed_service_9fbf4e9c6d5c4c96, []int{1}
 }
 func (m *MutateFeedsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedsRequest.Unmarshal(m, b)
@@ -159,7 +161,7 @@ func (m *FeedOperation) Reset()         { *m = FeedOperation{} }
 func (m *FeedOperation) String() string { return proto.CompactTextString(m) }
 func (*FeedOperation) ProtoMessage()    {}
 func (*FeedOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_service_dff6ab5365713504, []int{2}
+	return fileDescriptor_feed_service_9fbf4e9c6d5c4c96, []int{2}
 }
 func (m *FeedOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedOperation.Unmarshal(m, b)
@@ -343,7 +345,7 @@ func (m *MutateFeedsResponse) Reset()         { *m = MutateFeedsResponse{} }
 func (m *MutateFeedsResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedsResponse) ProtoMessage()    {}
 func (*MutateFeedsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_service_dff6ab5365713504, []int{3}
+	return fileDescriptor_feed_service_9fbf4e9c6d5c4c96, []int{3}
 }
 func (m *MutateFeedsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedsResponse.Unmarshal(m, b)
@@ -390,7 +392,7 @@ func (m *MutateFeedResult) Reset()         { *m = MutateFeedResult{} }
 func (m *MutateFeedResult) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedResult) ProtoMessage()    {}
 func (*MutateFeedResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_service_dff6ab5365713504, []int{4}
+	return fileDescriptor_feed_service_9fbf4e9c6d5c4c96, []int{4}
 }
 func (m *MutateFeedResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedResult.Unmarshal(m, b)
@@ -537,10 +539,10 @@ var _FeedService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/feed_service.proto", fileDescriptor_feed_service_dff6ab5365713504)
+	proto.RegisterFile("google/ads/googleads/v0/services/feed_service.proto", fileDescriptor_feed_service_9fbf4e9c6d5c4c96)
 }
 
-var fileDescriptor_feed_service_dff6ab5365713504 = []byte{
+var fileDescriptor_feed_service_9fbf4e9c6d5c4c96 = []byte{
 	// 695 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0x41, 0x6b, 0x13, 0x4f,
 	0x14, 0xff, 0x6f, 0xfa, 0xa7, 0xb5, 0xb3, 0x6d, 0x2d, 0x53, 0xc4, 0x10, 0x44, 0xc3, 0x5a, 0x68,

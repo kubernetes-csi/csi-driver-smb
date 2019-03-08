@@ -45,7 +45,7 @@ func (x NotEmptyErrorEnum_NotEmptyError) String() string {
 	return proto.EnumName(NotEmptyErrorEnum_NotEmptyError_name, int32(x))
 }
 func (NotEmptyErrorEnum_NotEmptyError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_not_empty_error_61aa0b402be553fb, []int{0, 0}
+	return fileDescriptor_not_empty_error_e40309e1a1a9f13f, []int{0, 0}
 }
 
 // Container for enum describing possible not empty errors.
@@ -59,7 +59,7 @@ func (m *NotEmptyErrorEnum) Reset()         { *m = NotEmptyErrorEnum{} }
 func (m *NotEmptyErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*NotEmptyErrorEnum) ProtoMessage()    {}
 func (*NotEmptyErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_not_empty_error_61aa0b402be553fb, []int{0}
+	return fileDescriptor_not_empty_error_e40309e1a1a9f13f, []int{0}
 }
 func (m *NotEmptyErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NotEmptyErrorEnum.Unmarshal(m, b)
@@ -85,10 +85,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/not_empty_error.proto", fileDescriptor_not_empty_error_61aa0b402be553fb)
+	proto.RegisterFile("google/ads/googleads/v0/errors/not_empty_error.proto", fileDescriptor_not_empty_error_e40309e1a1a9f13f)
 }
 
-var fileDescriptor_not_empty_error_61aa0b402be553fb = []byte{
+var fileDescriptor_not_empty_error_e40309e1a1a9f13f = []byte{
 	// 275 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x49, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xa2,

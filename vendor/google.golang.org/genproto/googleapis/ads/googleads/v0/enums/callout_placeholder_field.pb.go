@@ -45,7 +45,7 @@ func (x CalloutPlaceholderFieldEnum_CalloutPlaceholderField) String() string {
 	return proto.EnumName(CalloutPlaceholderFieldEnum_CalloutPlaceholderField_name, int32(x))
 }
 func (CalloutPlaceholderFieldEnum_CalloutPlaceholderField) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_callout_placeholder_field_f98f6370b402f3cf, []int{0, 0}
+	return fileDescriptor_callout_placeholder_field_6178c5a3730faf6f, []int{0, 0}
 }
 
 // Values for Callout placeholder fields.
@@ -59,7 +59,7 @@ func (m *CalloutPlaceholderFieldEnum) Reset()         { *m = CalloutPlaceholderF
 func (m *CalloutPlaceholderFieldEnum) String() string { return proto.CompactTextString(m) }
 func (*CalloutPlaceholderFieldEnum) ProtoMessage()    {}
 func (*CalloutPlaceholderFieldEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_callout_placeholder_field_f98f6370b402f3cf, []int{0}
+	return fileDescriptor_callout_placeholder_field_6178c5a3730faf6f, []int{0}
 }
 func (m *CalloutPlaceholderFieldEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CalloutPlaceholderFieldEnum.Unmarshal(m, b)
@@ -85,10 +85,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/callout_placeholder_field.proto", fileDescriptor_callout_placeholder_field_f98f6370b402f3cf)
+	proto.RegisterFile("google/ads/googleads/v0/enums/callout_placeholder_field.proto", fileDescriptor_callout_placeholder_field_6178c5a3730faf6f)
 }
 
-var fileDescriptor_callout_placeholder_field_f98f6370b402f3cf = []byte{
+var fileDescriptor_callout_placeholder_field_6178c5a3730faf6f = []byte{
 	// 290 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x4d, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

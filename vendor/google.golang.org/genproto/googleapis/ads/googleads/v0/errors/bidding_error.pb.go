@@ -130,7 +130,7 @@ func (x BiddingErrorEnum_BiddingError) String() string {
 	return proto.EnumName(BiddingErrorEnum_BiddingError_name, int32(x))
 }
 func (BiddingErrorEnum_BiddingError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_error_cc21c20ff3a8c6a1, []int{0, 0}
+	return fileDescriptor_bidding_error_d0cef9752ce8e4a4, []int{0, 0}
 }
 
 // Container for enum describing possible bidding errors.
@@ -144,7 +144,7 @@ func (m *BiddingErrorEnum) Reset()         { *m = BiddingErrorEnum{} }
 func (m *BiddingErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*BiddingErrorEnum) ProtoMessage()    {}
 func (*BiddingErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_error_cc21c20ff3a8c6a1, []int{0}
+	return fileDescriptor_bidding_error_d0cef9752ce8e4a4, []int{0}
 }
 func (m *BiddingErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BiddingErrorEnum.Unmarshal(m, b)
@@ -170,10 +170,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/bidding_error.proto", fileDescriptor_bidding_error_cc21c20ff3a8c6a1)
+	proto.RegisterFile("google/ads/googleads/v0/errors/bidding_error.proto", fileDescriptor_bidding_error_d0cef9752ce8e4a4)
 }
 
-var fileDescriptor_bidding_error_cc21c20ff3a8c6a1 = []byte{
+var fileDescriptor_bidding_error_d0cef9752ce8e4a4 = []byte{
 	// 697 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0xdb, 0x6e, 0x2b, 0x35,
 	0x14, 0xa5, 0x41, 0x22, 0x92, 0x0f, 0x17, 0xd7, 0x07, 0x38, 0x70, 0xe0, 0xa4, 0x6d, 0x40, 0x42,

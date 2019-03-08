@@ -52,7 +52,7 @@ func (x FeedOriginEnum_FeedOrigin) String() string {
 	return proto.EnumName(FeedOriginEnum_FeedOrigin_name, int32(x))
 }
 func (FeedOriginEnum_FeedOrigin) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_feed_origin_ebd6dc41326e27b0, []int{0, 0}
+	return fileDescriptor_feed_origin_be73592e537c6492, []int{0, 0}
 }
 
 // Container for enum describing possible values for a feed origin.
@@ -66,7 +66,7 @@ func (m *FeedOriginEnum) Reset()         { *m = FeedOriginEnum{} }
 func (m *FeedOriginEnum) String() string { return proto.CompactTextString(m) }
 func (*FeedOriginEnum) ProtoMessage()    {}
 func (*FeedOriginEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_origin_ebd6dc41326e27b0, []int{0}
+	return fileDescriptor_feed_origin_be73592e537c6492, []int{0}
 }
 func (m *FeedOriginEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedOriginEnum.Unmarshal(m, b)
@@ -92,10 +92,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/feed_origin.proto", fileDescriptor_feed_origin_ebd6dc41326e27b0)
+	proto.RegisterFile("google/ads/googleads/v0/enums/feed_origin.proto", fileDescriptor_feed_origin_be73592e537c6492)
 }
 
-var fileDescriptor_feed_origin_ebd6dc41326e27b0 = []byte{
+var fileDescriptor_feed_origin_be73592e537c6492 = []byte{
 	// 276 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xd2, 0x4f, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0x86, 0x32, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc, 0xd2,

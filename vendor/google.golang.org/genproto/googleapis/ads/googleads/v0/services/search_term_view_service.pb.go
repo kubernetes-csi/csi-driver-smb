@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [SearchTermViewService.GetSearchTermView][google.ads.googleads.v0.services.SearchTermViewService.GetSearchTermView].
+// Request message for
+// [SearchTermViewService.GetSearchTermView][google.ads.googleads.v0.services.SearchTermViewService.GetSearchTermView].
 type GetSearchTermViewRequest struct {
 	// The resource name of the search term view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetSearchTermViewRequest) Reset()         { *m = GetSearchTermViewReque
 func (m *GetSearchTermViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetSearchTermViewRequest) ProtoMessage()    {}
 func (*GetSearchTermViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_search_term_view_service_e67ac2f76bd7ef4b, []int{0}
+	return fileDescriptor_search_term_view_service_b0e8f585aa350d3e, []int{0}
 }
 func (m *GetSearchTermViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetSearchTermViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _SearchTermViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/search_term_view_service.proto", fileDescriptor_search_term_view_service_e67ac2f76bd7ef4b)
+	proto.RegisterFile("google/ads/googleads/v0/services/search_term_view_service.proto", fileDescriptor_search_term_view_service_b0e8f585aa350d3e)
 }
 
-var fileDescriptor_search_term_view_service_e67ac2f76bd7ef4b = []byte{
+var fileDescriptor_search_term_view_service_b0e8f585aa350d3e = []byte{
 	// 373 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0x31, 0x6a, 0xe3, 0x40,
 	0x14, 0x45, 0x5a, 0x58, 0x58, 0xb1, 0x5b, 0xac, 0x60, 0xc1, 0x88, 0x2d, 0x8c, 0xd7, 0xc5, 0xe2,

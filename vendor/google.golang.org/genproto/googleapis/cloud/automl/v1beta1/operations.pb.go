@@ -50,7 +50,7 @@ func (m *OperationMetadata) Reset()         { *m = OperationMetadata{} }
 func (m *OperationMetadata) String() string { return proto.CompactTextString(m) }
 func (*OperationMetadata) ProtoMessage()    {}
 func (*OperationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operations_45b6bac60e2a57c5, []int{0}
+	return fileDescriptor_operations_18c3abc801957895, []int{0}
 }
 func (m *OperationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OperationMetadata.Unmarshal(m, b)
@@ -188,7 +188,7 @@ func (m *CreateModelOperationMetadata) Reset()         { *m = CreateModelOperati
 func (m *CreateModelOperationMetadata) String() string { return proto.CompactTextString(m) }
 func (*CreateModelOperationMetadata) ProtoMessage()    {}
 func (*CreateModelOperationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operations_45b6bac60e2a57c5, []int{1}
+	return fileDescriptor_operations_18c3abc801957895, []int{1}
 }
 func (m *CreateModelOperationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateModelOperationMetadata.Unmarshal(m, b)
@@ -214,10 +214,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/automl/v1beta1/operations.proto", fileDescriptor_operations_45b6bac60e2a57c5)
+	proto.RegisterFile("google/cloud/automl/v1beta1/operations.proto", fileDescriptor_operations_18c3abc801957895)
 }
 
-var fileDescriptor_operations_45b6bac60e2a57c5 = []byte{
+var fileDescriptor_operations_18c3abc801957895 = []byte{
 	// 409 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x5f, 0x6b, 0xd4, 0x40,
 	0x14, 0xc5, 0xcd, 0xd6, 0x3f, 0x38, 0x8b, 0xb4, 0x06, 0xc1, 0xb0, 0x2d, 0x76, 0xe9, 0x8b, 0x2b,

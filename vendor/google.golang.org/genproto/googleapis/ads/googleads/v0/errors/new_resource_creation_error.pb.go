@@ -54,7 +54,7 @@ func (x NewResourceCreationErrorEnum_NewResourceCreationError) String() string {
 	return proto.EnumName(NewResourceCreationErrorEnum_NewResourceCreationError_name, int32(x))
 }
 func (NewResourceCreationErrorEnum_NewResourceCreationError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_new_resource_creation_error_4baa5f28e5a43c8a, []int{0, 0}
+	return fileDescriptor_new_resource_creation_error_c53e81c213476e90, []int{0, 0}
 }
 
 // Container for enum describing possible new resource creation errors.
@@ -68,7 +68,7 @@ func (m *NewResourceCreationErrorEnum) Reset()         { *m = NewResourceCreatio
 func (m *NewResourceCreationErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*NewResourceCreationErrorEnum) ProtoMessage()    {}
 func (*NewResourceCreationErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_new_resource_creation_error_4baa5f28e5a43c8a, []int{0}
+	return fileDescriptor_new_resource_creation_error_c53e81c213476e90, []int{0}
 }
 func (m *NewResourceCreationErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewResourceCreationErrorEnum.Unmarshal(m, b)
@@ -94,10 +94,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/new_resource_creation_error.proto", fileDescriptor_new_resource_creation_error_4baa5f28e5a43c8a)
+	proto.RegisterFile("google/ads/googleads/v0/errors/new_resource_creation_error.proto", fileDescriptor_new_resource_creation_error_c53e81c213476e90)
 }
 
-var fileDescriptor_new_resource_creation_error_4baa5f28e5a43c8a = []byte{
+var fileDescriptor_new_resource_creation_error_c53e81c213476e90 = []byte{
 	// 351 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x4d, 0x6e, 0xa3, 0x30,
 	0x18, 0x86, 0x07, 0x32, 0x9a, 0x91, 0x9c, 0xc5, 0x20, 0x16, 0xa3, 0x48, 0x93, 0xc9, 0x48, 0x1c,

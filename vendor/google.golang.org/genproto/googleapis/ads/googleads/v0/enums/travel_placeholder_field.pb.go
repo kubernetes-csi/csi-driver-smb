@@ -143,7 +143,7 @@ func (x TravelPlaceholderFieldEnum_TravelPlaceholderField) String() string {
 	return proto.EnumName(TravelPlaceholderFieldEnum_TravelPlaceholderField_name, int32(x))
 }
 func (TravelPlaceholderFieldEnum_TravelPlaceholderField) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_travel_placeholder_field_c8ea22c580ab8ff1, []int{0, 0}
+	return fileDescriptor_travel_placeholder_field_594dea4d1f5c75b8, []int{0, 0}
 }
 
 // Values for Travel placeholder fields.
@@ -159,7 +159,7 @@ func (m *TravelPlaceholderFieldEnum) Reset()         { *m = TravelPlaceholderFie
 func (m *TravelPlaceholderFieldEnum) String() string { return proto.CompactTextString(m) }
 func (*TravelPlaceholderFieldEnum) ProtoMessage()    {}
 func (*TravelPlaceholderFieldEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_travel_placeholder_field_c8ea22c580ab8ff1, []int{0}
+	return fileDescriptor_travel_placeholder_field_594dea4d1f5c75b8, []int{0}
 }
 func (m *TravelPlaceholderFieldEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TravelPlaceholderFieldEnum.Unmarshal(m, b)
@@ -185,10 +185,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/travel_placeholder_field.proto", fileDescriptor_travel_placeholder_field_c8ea22c580ab8ff1)
+	proto.RegisterFile("google/ads/googleads/v0/enums/travel_placeholder_field.proto", fileDescriptor_travel_placeholder_field_594dea4d1f5c75b8)
 }
 
-var fileDescriptor_travel_placeholder_field_c8ea22c580ab8ff1 = []byte{
+var fileDescriptor_travel_placeholder_field_594dea4d1f5c75b8 = []byte{
 	// 507 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0xdd, 0x6e, 0xd3, 0x30,
 	0x14, 0x66, 0x2d, 0xfb, 0xa9, 0xdb, 0xb5, 0x9e, 0xdb, 0x31, 0xc4, 0xb4, 0x8b, 0xed, 0x01, 0xd2,

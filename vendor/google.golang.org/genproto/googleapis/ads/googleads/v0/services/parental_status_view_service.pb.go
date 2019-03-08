@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [ParentalStatusViewService.GetParentalStatusView][google.ads.googleads.v0.services.ParentalStatusViewService.GetParentalStatusView].
+// Request message for
+// [ParentalStatusViewService.GetParentalStatusView][google.ads.googleads.v0.services.ParentalStatusViewService.GetParentalStatusView].
 type GetParentalStatusViewRequest struct {
 	// The resource name of the parental status view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetParentalStatusViewRequest) Reset()         { *m = GetParentalStatusV
 func (m *GetParentalStatusViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetParentalStatusViewRequest) ProtoMessage()    {}
 func (*GetParentalStatusViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_parental_status_view_service_890466421849afed, []int{0}
+	return fileDescriptor_parental_status_view_service_9f56ca8ded89b71f, []int{0}
 }
 func (m *GetParentalStatusViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetParentalStatusViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _ParentalStatusViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/parental_status_view_service.proto", fileDescriptor_parental_status_view_service_890466421849afed)
+	proto.RegisterFile("google/ads/googleads/v0/services/parental_status_view_service.proto", fileDescriptor_parental_status_view_service_9f56ca8ded89b71f)
 }
 
-var fileDescriptor_parental_status_view_service_890466421849afed = []byte{
+var fileDescriptor_parental_status_view_service_9f56ca8ded89b71f = []byte{
 	// 371 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0xcf, 0x4a, 0xc3, 0x30,
 	0x18, 0xa7, 0x15, 0x04, 0x8b, 0x5e, 0x0a, 0x82, 0x8e, 0x21, 0x63, 0xee, 0x20, 0x3b, 0x24, 0x45,

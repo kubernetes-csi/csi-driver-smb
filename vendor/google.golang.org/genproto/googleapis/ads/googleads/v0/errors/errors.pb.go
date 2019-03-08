@@ -34,7 +34,7 @@ func (m *GoogleAdsFailure) Reset()         { *m = GoogleAdsFailure{} }
 func (m *GoogleAdsFailure) String() string { return proto.CompactTextString(m) }
 func (*GoogleAdsFailure) ProtoMessage()    {}
 func (*GoogleAdsFailure) Descriptor() ([]byte, []int) {
-	return fileDescriptor_errors_5c1c6d3bf60f70e9, []int{0}
+	return fileDescriptor_errors_e28c2463b12800fb, []int{0}
 }
 func (m *GoogleAdsFailure) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoogleAdsFailure.Unmarshal(m, b)
@@ -83,7 +83,7 @@ func (m *GoogleAdsError) Reset()         { *m = GoogleAdsError{} }
 func (m *GoogleAdsError) String() string { return proto.CompactTextString(m) }
 func (*GoogleAdsError) ProtoMessage()    {}
 func (*GoogleAdsError) Descriptor() ([]byte, []int) {
-	return fileDescriptor_errors_5c1c6d3bf60f70e9, []int{1}
+	return fileDescriptor_errors_e28c2463b12800fb, []int{1}
 }
 func (m *GoogleAdsError) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoogleAdsError.Unmarshal(m, b)
@@ -236,7 +236,7 @@ func (m *ErrorCode) Reset()         { *m = ErrorCode{} }
 func (m *ErrorCode) String() string { return proto.CompactTextString(m) }
 func (*ErrorCode) ProtoMessage()    {}
 func (*ErrorCode) Descriptor() ([]byte, []int) {
-	return fileDescriptor_errors_5c1c6d3bf60f70e9, []int{2}
+	return fileDescriptor_errors_e28c2463b12800fb, []int{2}
 }
 func (m *ErrorCode) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ErrorCode.Unmarshal(m, b)
@@ -2557,7 +2557,7 @@ func (m *ErrorLocation) Reset()         { *m = ErrorLocation{} }
 func (m *ErrorLocation) String() string { return proto.CompactTextString(m) }
 func (*ErrorLocation) ProtoMessage()    {}
 func (*ErrorLocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_errors_5c1c6d3bf60f70e9, []int{3}
+	return fileDescriptor_errors_e28c2463b12800fb, []int{3}
 }
 func (m *ErrorLocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ErrorLocation.Unmarshal(m, b)
@@ -2599,7 +2599,7 @@ func (m *ErrorLocation_FieldPathElement) Reset()         { *m = ErrorLocation_Fi
 func (m *ErrorLocation_FieldPathElement) String() string { return proto.CompactTextString(m) }
 func (*ErrorLocation_FieldPathElement) ProtoMessage()    {}
 func (*ErrorLocation_FieldPathElement) Descriptor() ([]byte, []int) {
-	return fileDescriptor_errors_5c1c6d3bf60f70e9, []int{3, 0}
+	return fileDescriptor_errors_e28c2463b12800fb, []int{3, 0}
 }
 func (m *ErrorLocation_FieldPathElement) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ErrorLocation_FieldPathElement.Unmarshal(m, b)
@@ -2651,7 +2651,7 @@ func (m *ErrorDetails) Reset()         { *m = ErrorDetails{} }
 func (m *ErrorDetails) String() string { return proto.CompactTextString(m) }
 func (*ErrorDetails) ProtoMessage()    {}
 func (*ErrorDetails) Descriptor() ([]byte, []int) {
-	return fileDescriptor_errors_5c1c6d3bf60f70e9, []int{4}
+	return fileDescriptor_errors_e28c2463b12800fb, []int{4}
 }
 func (m *ErrorDetails) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ErrorDetails.Unmarshal(m, b)
@@ -2714,7 +2714,7 @@ func (m *PolicyViolationDetails) Reset()         { *m = PolicyViolationDetails{}
 func (m *PolicyViolationDetails) String() string { return proto.CompactTextString(m) }
 func (*PolicyViolationDetails) ProtoMessage()    {}
 func (*PolicyViolationDetails) Descriptor() ([]byte, []int) {
-	return fileDescriptor_errors_5c1c6d3bf60f70e9, []int{5}
+	return fileDescriptor_errors_e28c2463b12800fb, []int{5}
 }
 func (m *PolicyViolationDetails) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyViolationDetails.Unmarshal(m, b)
@@ -2779,7 +2779,7 @@ func (m *PolicyFindingDetails) Reset()         { *m = PolicyFindingDetails{} }
 func (m *PolicyFindingDetails) String() string { return proto.CompactTextString(m) }
 func (*PolicyFindingDetails) ProtoMessage()    {}
 func (*PolicyFindingDetails) Descriptor() ([]byte, []int) {
-	return fileDescriptor_errors_5c1c6d3bf60f70e9, []int{6}
+	return fileDescriptor_errors_e28c2463b12800fb, []int{6}
 }
 func (m *PolicyFindingDetails) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyFindingDetails.Unmarshal(m, b)
@@ -2818,10 +2818,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/errors.proto", fileDescriptor_errors_5c1c6d3bf60f70e9)
+	proto.RegisterFile("google/ads/googleads/v0/errors/errors.proto", fileDescriptor_errors_e28c2463b12800fb)
 }
 
-var fileDescriptor_errors_5c1c6d3bf60f70e9 = []byte{
+var fileDescriptor_errors_e28c2463b12800fb = []byte{
 	// 3472 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x5b, 0x4b, 0x73, 0x1c, 0xb7,
 	0xf1, 0xdf, 0x95, 0xfe, 0xb6, 0x44, 0x50, 0xa2, 0x24, 0x88, 0x92, 0x21, 0xe9, 0x6f, 0x5b, 0xa1,

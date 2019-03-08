@@ -53,7 +53,7 @@ func (x QualityScoreBucketEnum_QualityScoreBucket) String() string {
 	return proto.EnumName(QualityScoreBucketEnum_QualityScoreBucket_name, int32(x))
 }
 func (QualityScoreBucketEnum_QualityScoreBucket) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_quality_score_bucket_1b7c53da445ce73c, []int{0, 0}
+	return fileDescriptor_quality_score_bucket_cc1138c59aa802ad, []int{0, 0}
 }
 
 // The relative performance compared to other advertisers.
@@ -67,7 +67,7 @@ func (m *QualityScoreBucketEnum) Reset()         { *m = QualityScoreBucketEnum{}
 func (m *QualityScoreBucketEnum) String() string { return proto.CompactTextString(m) }
 func (*QualityScoreBucketEnum) ProtoMessage()    {}
 func (*QualityScoreBucketEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_quality_score_bucket_1b7c53da445ce73c, []int{0}
+	return fileDescriptor_quality_score_bucket_cc1138c59aa802ad, []int{0}
 }
 func (m *QualityScoreBucketEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_QualityScoreBucketEnum.Unmarshal(m, b)
@@ -93,10 +93,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/quality_score_bucket.proto", fileDescriptor_quality_score_bucket_1b7c53da445ce73c)
+	proto.RegisterFile("google/ads/googleads/v0/enums/quality_score_bucket.proto", fileDescriptor_quality_score_bucket_cc1138c59aa802ad)
 }
 
-var fileDescriptor_quality_score_bucket_1b7c53da445ce73c = []byte{
+var fileDescriptor_quality_score_bucket_cc1138c59aa802ad = []byte{
 	// 300 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x48, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

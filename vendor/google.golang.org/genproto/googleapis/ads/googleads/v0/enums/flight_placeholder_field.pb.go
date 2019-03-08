@@ -130,7 +130,7 @@ func (x FlightPlaceholderFieldEnum_FlightPlaceholderField) String() string {
 	return proto.EnumName(FlightPlaceholderFieldEnum_FlightPlaceholderField_name, int32(x))
 }
 func (FlightPlaceholderFieldEnum_FlightPlaceholderField) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_flight_placeholder_field_f22958fde6697c70, []int{0, 0}
+	return fileDescriptor_flight_placeholder_field_efb23411d2983b01, []int{0, 0}
 }
 
 // Values for Flight placeholder fields.
@@ -146,7 +146,7 @@ func (m *FlightPlaceholderFieldEnum) Reset()         { *m = FlightPlaceholderFie
 func (m *FlightPlaceholderFieldEnum) String() string { return proto.CompactTextString(m) }
 func (*FlightPlaceholderFieldEnum) ProtoMessage()    {}
 func (*FlightPlaceholderFieldEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_flight_placeholder_field_f22958fde6697c70, []int{0}
+	return fileDescriptor_flight_placeholder_field_efb23411d2983b01, []int{0}
 }
 func (m *FlightPlaceholderFieldEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FlightPlaceholderFieldEnum.Unmarshal(m, b)
@@ -172,10 +172,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/flight_placeholder_field.proto", fileDescriptor_flight_placeholder_field_f22958fde6697c70)
+	proto.RegisterFile("google/ads/googleads/v0/enums/flight_placeholder_field.proto", fileDescriptor_flight_placeholder_field_efb23411d2983b01)
 }
 
-var fileDescriptor_flight_placeholder_field_f22958fde6697c70 = []byte{
+var fileDescriptor_flight_placeholder_field_efb23411d2983b01 = []byte{
 	// 481 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0xc1, 0x6e, 0xd3, 0x40,
 	0x10, 0x25, 0x09, 0xb4, 0x74, 0xd2, 0x26, 0xdb, 0xa5, 0x14, 0x04, 0xf4, 0xd0, 0x7e, 0x80, 0x6d,

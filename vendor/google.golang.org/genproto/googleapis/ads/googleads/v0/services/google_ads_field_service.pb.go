@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [GoogleAdsFieldService.GetGoogleAdsField][google.ads.googleads.v0.services.GoogleAdsFieldService.GetGoogleAdsField].
+// Request message for
+// [GoogleAdsFieldService.GetGoogleAdsField][google.ads.googleads.v0.services.GoogleAdsFieldService.GetGoogleAdsField].
 type GetGoogleAdsFieldRequest struct {
 	// The resource name of the field to get.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetGoogleAdsFieldRequest) Reset()         { *m = GetGoogleAdsFieldReque
 func (m *GetGoogleAdsFieldRequest) String() string { return proto.CompactTextString(m) }
 func (*GetGoogleAdsFieldRequest) ProtoMessage()    {}
 func (*GetGoogleAdsFieldRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_google_ads_field_service_754a158d817e1db4, []int{0}
+	return fileDescriptor_google_ads_field_service_d89cb2ddce8b241d, []int{0}
 }
 func (m *GetGoogleAdsFieldRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetGoogleAdsFieldRequest.Unmarshal(m, b)
@@ -65,7 +66,8 @@ func (m *GetGoogleAdsFieldRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [GoogleAdsFieldService.SearchGoogleAdsFields][google.ads.googleads.v0.services.GoogleAdsFieldService.SearchGoogleAdsFields].
+// Request message for
+// [GoogleAdsFieldService.SearchGoogleAdsFields][google.ads.googleads.v0.services.GoogleAdsFieldService.SearchGoogleAdsFields].
 type SearchGoogleAdsFieldsRequest struct {
 	// The query string.
 	Query string `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
@@ -86,7 +88,7 @@ func (m *SearchGoogleAdsFieldsRequest) Reset()         { *m = SearchGoogleAdsFie
 func (m *SearchGoogleAdsFieldsRequest) String() string { return proto.CompactTextString(m) }
 func (*SearchGoogleAdsFieldsRequest) ProtoMessage()    {}
 func (*SearchGoogleAdsFieldsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_google_ads_field_service_754a158d817e1db4, []int{1}
+	return fileDescriptor_google_ads_field_service_d89cb2ddce8b241d, []int{1}
 }
 func (m *SearchGoogleAdsFieldsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SearchGoogleAdsFieldsRequest.Unmarshal(m, b)
@@ -127,7 +129,8 @@ func (m *SearchGoogleAdsFieldsRequest) GetPageSize() int32 {
 	return 0
 }
 
-// Response message for [GoogleAdsFieldService.SearchGoogleAdsFields][google.ads.googleads.v0.services.GoogleAdsFieldService.SearchGoogleAdsFields].
+// Response message for
+// [GoogleAdsFieldService.SearchGoogleAdsFields][google.ads.googleads.v0.services.GoogleAdsFieldService.SearchGoogleAdsFields].
 type SearchGoogleAdsFieldsResponse struct {
 	// The list of fields that matched the query.
 	Results []*resources.GoogleAdsField `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
@@ -146,7 +149,7 @@ func (m *SearchGoogleAdsFieldsResponse) Reset()         { *m = SearchGoogleAdsFi
 func (m *SearchGoogleAdsFieldsResponse) String() string { return proto.CompactTextString(m) }
 func (*SearchGoogleAdsFieldsResponse) ProtoMessage()    {}
 func (*SearchGoogleAdsFieldsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_google_ads_field_service_754a158d817e1db4, []int{2}
+	return fileDescriptor_google_ads_field_service_d89cb2ddce8b241d, []int{2}
 }
 func (m *SearchGoogleAdsFieldsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SearchGoogleAdsFieldsResponse.Unmarshal(m, b)
@@ -303,10 +306,10 @@ var _GoogleAdsFieldService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/google_ads_field_service.proto", fileDescriptor_google_ads_field_service_754a158d817e1db4)
+	proto.RegisterFile("google/ads/googleads/v0/services/google_ads_field_service.proto", fileDescriptor_google_ads_field_service_d89cb2ddce8b241d)
 }
 
-var fileDescriptor_google_ads_field_service_754a158d817e1db4 = []byte{
+var fileDescriptor_google_ads_field_service_d89cb2ddce8b241d = []byte{
 	// 539 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x41, 0x8b, 0xd3, 0x4e,
 	0x14, 0x27, 0x29, 0xfb, 0xff, 0xbb, 0xa3, 0x8b, 0xec, 0xe8, 0x42, 0x89, 0xbb, 0x58, 0xe2, 0xae,

@@ -94,7 +94,7 @@ func (x ResourceCountLimitExceededErrorEnum_ResourceCountLimitExceededError) Str
 	return proto.EnumName(ResourceCountLimitExceededErrorEnum_ResourceCountLimitExceededError_name, int32(x))
 }
 func (ResourceCountLimitExceededErrorEnum_ResourceCountLimitExceededError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_resource_count_limit_exceeded_error_78e157e8f7acfe78, []int{0, 0}
+	return fileDescriptor_resource_count_limit_exceeded_error_483ed17123eb8279, []int{0, 0}
 }
 
 // Container for enum describing possible resource count limit exceeded errors.
@@ -108,7 +108,7 @@ func (m *ResourceCountLimitExceededErrorEnum) Reset()         { *m = ResourceCou
 func (m *ResourceCountLimitExceededErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*ResourceCountLimitExceededErrorEnum) ProtoMessage()    {}
 func (*ResourceCountLimitExceededErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resource_count_limit_exceeded_error_78e157e8f7acfe78, []int{0}
+	return fileDescriptor_resource_count_limit_exceeded_error_483ed17123eb8279, []int{0}
 }
 func (m *ResourceCountLimitExceededErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResourceCountLimitExceededErrorEnum.Unmarshal(m, b)
@@ -134,10 +134,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/resource_count_limit_exceeded_error.proto", fileDescriptor_resource_count_limit_exceeded_error_78e157e8f7acfe78)
+	proto.RegisterFile("google/ads/googleads/v0/errors/resource_count_limit_exceeded_error.proto", fileDescriptor_resource_count_limit_exceeded_error_483ed17123eb8279)
 }
 
-var fileDescriptor_resource_count_limit_exceeded_error_78e157e8f7acfe78 = []byte{
+var fileDescriptor_resource_count_limit_exceeded_error_483ed17123eb8279 = []byte{
 	// 411 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xcf, 0x6e, 0xd3, 0x30,
 	0x1c, 0xc7, 0x69, 0x06, 0x1b, 0x78, 0x02, 0x32, 0x0b, 0x04, 0xd2, 0xd0, 0x26, 0x15, 0xce, 0x4e,

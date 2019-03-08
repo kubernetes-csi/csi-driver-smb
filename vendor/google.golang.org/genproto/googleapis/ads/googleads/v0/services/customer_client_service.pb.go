@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [CustomerClientService.GetCustomerClient][google.ads.googleads.v0.services.CustomerClientService.GetCustomerClient].
+// Request message for
+// [CustomerClientService.GetCustomerClient][google.ads.googleads.v0.services.CustomerClientService.GetCustomerClient].
 type GetCustomerClientRequest struct {
 	// The resource name of the client to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetCustomerClientRequest) Reset()         { *m = GetCustomerClientReque
 func (m *GetCustomerClientRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCustomerClientRequest) ProtoMessage()    {}
 func (*GetCustomerClientRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_client_service_8c18661e62536bf2, []int{0}
+	return fileDescriptor_customer_client_service_681e719e1b9cfd67, []int{0}
 }
 func (m *GetCustomerClientRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetCustomerClientRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _CustomerClientService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/customer_client_service.proto", fileDescriptor_customer_client_service_8c18661e62536bf2)
+	proto.RegisterFile("google/ads/googleads/v0/services/customer_client_service.proto", fileDescriptor_customer_client_service_681e719e1b9cfd67)
 }
 
-var fileDescriptor_customer_client_service_8c18661e62536bf2 = []byte{
+var fileDescriptor_customer_client_service_681e719e1b9cfd67 = []byte{
 	// 361 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xbf, 0x4a, 0xc3, 0x40,
 	0x1c, 0xc7, 0x49, 0x04, 0xc1, 0xa0, 0x83, 0x01, 0xa1, 0x04, 0x87, 0x52, 0x3b, 0x48, 0x87, 0xbb,

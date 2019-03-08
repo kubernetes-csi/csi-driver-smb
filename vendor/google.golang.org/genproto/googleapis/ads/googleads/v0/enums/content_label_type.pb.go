@@ -101,7 +101,7 @@ func (x ContentLabelTypeEnum_ContentLabelType) String() string {
 	return proto.EnumName(ContentLabelTypeEnum_ContentLabelType_name, int32(x))
 }
 func (ContentLabelTypeEnum_ContentLabelType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_content_label_type_ff84b8e2607e1015, []int{0, 0}
+	return fileDescriptor_content_label_type_a2a6588cd66e69c7, []int{0, 0}
 }
 
 // Container for enum describing content label types in ContentLabel.
@@ -115,7 +115,7 @@ func (m *ContentLabelTypeEnum) Reset()         { *m = ContentLabelTypeEnum{} }
 func (m *ContentLabelTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*ContentLabelTypeEnum) ProtoMessage()    {}
 func (*ContentLabelTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_content_label_type_ff84b8e2607e1015, []int{0}
+	return fileDescriptor_content_label_type_a2a6588cd66e69c7, []int{0}
 }
 func (m *ContentLabelTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContentLabelTypeEnum.Unmarshal(m, b)
@@ -141,10 +141,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/content_label_type.proto", fileDescriptor_content_label_type_ff84b8e2607e1015)
+	proto.RegisterFile("google/ads/googleads/v0/enums/content_label_type.proto", fileDescriptor_content_label_type_a2a6588cd66e69c7)
 }
 
-var fileDescriptor_content_label_type_ff84b8e2607e1015 = []byte{
+var fileDescriptor_content_label_type_a2a6588cd66e69c7 = []byte{
 	// 456 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0xcd, 0x6e, 0x9b, 0x40,
 	0x10, 0xae, 0xc9, 0x9f, 0xbd, 0x8e, 0x93, 0xcd, 0x36, 0x69, 0x7b, 0xc9, 0x21, 0x79, 0x00, 0x40,

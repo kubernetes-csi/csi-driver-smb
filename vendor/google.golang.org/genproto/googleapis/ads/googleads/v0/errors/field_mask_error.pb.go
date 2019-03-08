@@ -59,7 +59,7 @@ func (x FieldMaskErrorEnum_FieldMaskError) String() string {
 	return proto.EnumName(FieldMaskErrorEnum_FieldMaskError_name, int32(x))
 }
 func (FieldMaskErrorEnum_FieldMaskError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_field_mask_error_d9b3176d02579364, []int{0, 0}
+	return fileDescriptor_field_mask_error_6d7662fd786fde5a, []int{0, 0}
 }
 
 // Container for enum describing possible field mask errors.
@@ -73,7 +73,7 @@ func (m *FieldMaskErrorEnum) Reset()         { *m = FieldMaskErrorEnum{} }
 func (m *FieldMaskErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*FieldMaskErrorEnum) ProtoMessage()    {}
 func (*FieldMaskErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_field_mask_error_d9b3176d02579364, []int{0}
+	return fileDescriptor_field_mask_error_6d7662fd786fde5a, []int{0}
 }
 func (m *FieldMaskErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldMaskErrorEnum.Unmarshal(m, b)
@@ -99,10 +99,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/field_mask_error.proto", fileDescriptor_field_mask_error_d9b3176d02579364)
+	proto.RegisterFile("google/ads/googleads/v0/errors/field_mask_error.proto", fileDescriptor_field_mask_error_6d7662fd786fde5a)
 }
 
-var fileDescriptor_field_mask_error_d9b3176d02579364 = []byte{
+var fileDescriptor_field_mask_error_6d7662fd786fde5a = []byte{
 	// 334 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xdd, 0x4a, 0xc3, 0x30,
 	0x1c, 0xc5, 0x6d, 0xe7, 0x07, 0x64, 0xe0, 0x4a, 0x06, 0x13, 0xbc, 0xd8, 0x45, 0x1f, 0x20, 0x2d,

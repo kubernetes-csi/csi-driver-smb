@@ -27,7 +27,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [SharedCriterionService.GetSharedCriterion][google.ads.googleads.v0.services.SharedCriterionService.GetSharedCriterion].
+// Request message for
+// [SharedCriterionService.GetSharedCriterion][google.ads.googleads.v0.services.SharedCriterionService.GetSharedCriterion].
 type GetSharedCriterionRequest struct {
 	// The resource name of the shared criterion to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -40,7 +41,7 @@ func (m *GetSharedCriterionRequest) Reset()         { *m = GetSharedCriterionReq
 func (m *GetSharedCriterionRequest) String() string { return proto.CompactTextString(m) }
 func (*GetSharedCriterionRequest) ProtoMessage()    {}
 func (*GetSharedCriterionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_criterion_service_68a8a8e00f38db53, []int{0}
+	return fileDescriptor_shared_criterion_service_eb7666e13a33cd20, []int{0}
 }
 func (m *GetSharedCriterionRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetSharedCriterionRequest.Unmarshal(m, b)
@@ -67,7 +68,8 @@ func (m *GetSharedCriterionRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [SharedCriterionService.MutateSharedCriteria][google.ads.googleads.v0.services.SharedCriterionService.MutateSharedCriteria].
+// Request message for
+// [SharedCriterionService.MutateSharedCriteria][google.ads.googleads.v0.services.SharedCriterionService.MutateSharedCriteria].
 type MutateSharedCriteriaRequest struct {
 	// The ID of the customer whose shared criteria are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -90,7 +92,7 @@ func (m *MutateSharedCriteriaRequest) Reset()         { *m = MutateSharedCriteri
 func (m *MutateSharedCriteriaRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateSharedCriteriaRequest) ProtoMessage()    {}
 func (*MutateSharedCriteriaRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_criterion_service_68a8a8e00f38db53, []int{1}
+	return fileDescriptor_shared_criterion_service_eb7666e13a33cd20, []int{1}
 }
 func (m *MutateSharedCriteriaRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateSharedCriteriaRequest.Unmarshal(m, b)
@@ -155,7 +157,7 @@ func (m *SharedCriterionOperation) Reset()         { *m = SharedCriterionOperati
 func (m *SharedCriterionOperation) String() string { return proto.CompactTextString(m) }
 func (*SharedCriterionOperation) ProtoMessage()    {}
 func (*SharedCriterionOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_criterion_service_68a8a8e00f38db53, []int{2}
+	return fileDescriptor_shared_criterion_service_eb7666e13a33cd20, []int{2}
 }
 func (m *SharedCriterionOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SharedCriterionOperation.Unmarshal(m, b)
@@ -300,7 +302,7 @@ func (m *MutateSharedCriteriaResponse) Reset()         { *m = MutateSharedCriter
 func (m *MutateSharedCriteriaResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateSharedCriteriaResponse) ProtoMessage()    {}
 func (*MutateSharedCriteriaResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_criterion_service_68a8a8e00f38db53, []int{3}
+	return fileDescriptor_shared_criterion_service_eb7666e13a33cd20, []int{3}
 }
 func (m *MutateSharedCriteriaResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateSharedCriteriaResponse.Unmarshal(m, b)
@@ -347,7 +349,7 @@ func (m *MutateSharedCriterionResult) Reset()         { *m = MutateSharedCriteri
 func (m *MutateSharedCriterionResult) String() string { return proto.CompactTextString(m) }
 func (*MutateSharedCriterionResult) ProtoMessage()    {}
 func (*MutateSharedCriterionResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_criterion_service_68a8a8e00f38db53, []int{4}
+	return fileDescriptor_shared_criterion_service_eb7666e13a33cd20, []int{4}
 }
 func (m *MutateSharedCriterionResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateSharedCriterionResult.Unmarshal(m, b)
@@ -492,10 +494,10 @@ var _SharedCriterionService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/shared_criterion_service.proto", fileDescriptor_shared_criterion_service_68a8a8e00f38db53)
+	proto.RegisterFile("google/ads/googleads/v0/services/shared_criterion_service.proto", fileDescriptor_shared_criterion_service_eb7666e13a33cd20)
 }
 
-var fileDescriptor_shared_criterion_service_68a8a8e00f38db53 = []byte{
+var fileDescriptor_shared_criterion_service_eb7666e13a33cd20 = []byte{
 	// 664 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0xcf, 0x6a, 0xd4, 0x40,
 	0x18, 0x37, 0x59, 0xa9, 0x76, 0xb6, 0x2a, 0x8c, 0xff, 0xe2, 0xb6, 0xe8, 0x12, 0x0b, 0x96, 0x3d,

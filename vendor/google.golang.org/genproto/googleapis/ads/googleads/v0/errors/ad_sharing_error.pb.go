@@ -54,7 +54,7 @@ func (x AdSharingErrorEnum_AdSharingError) String() string {
 	return proto.EnumName(AdSharingErrorEnum_AdSharingError_name, int32(x))
 }
 func (AdSharingErrorEnum_AdSharingError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_ad_sharing_error_6c3b740b8a44f794, []int{0, 0}
+	return fileDescriptor_ad_sharing_error_3f7faf3f8120664b, []int{0, 0}
 }
 
 // Container for enum describing possible ad sharing errors.
@@ -68,7 +68,7 @@ func (m *AdSharingErrorEnum) Reset()         { *m = AdSharingErrorEnum{} }
 func (m *AdSharingErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*AdSharingErrorEnum) ProtoMessage()    {}
 func (*AdSharingErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_sharing_error_6c3b740b8a44f794, []int{0}
+	return fileDescriptor_ad_sharing_error_3f7faf3f8120664b, []int{0}
 }
 func (m *AdSharingErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdSharingErrorEnum.Unmarshal(m, b)
@@ -94,10 +94,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/ad_sharing_error.proto", fileDescriptor_ad_sharing_error_6c3b740b8a44f794)
+	proto.RegisterFile("google/ads/googleads/v0/errors/ad_sharing_error.proto", fileDescriptor_ad_sharing_error_3f7faf3f8120664b)
 }
 
-var fileDescriptor_ad_sharing_error_6c3b740b8a44f794 = []byte{
+var fileDescriptor_ad_sharing_error_3f7faf3f8120664b = []byte{
 	// 342 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xcd, 0x4a, 0xeb, 0x40,
 	0x1c, 0xc5, 0x6f, 0xd2, 0xcb, 0xbd, 0x30, 0x85, 0x7b, 0x43, 0xdc, 0xb8, 0x28, 0x45, 0xf2, 0x00,

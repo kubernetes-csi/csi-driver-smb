@@ -67,12 +67,13 @@ func (x HttpMethod) String() string {
 	return proto.EnumName(HttpMethod_name, int32(x))
 }
 func (HttpMethod) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_target_9c53d8b0fc6698b4, []int{0}
+	return fileDescriptor_target_ccd5bd51b24cf4b9, []int{0}
 }
 
 // Http target. The job will be pushed to the job handler by means of
-// an HTTP request via an [http_method][google.cloud.scheduler.v1beta1.HttpTarget.http_method] such as HTTP
-// POST, HTTP GET, etc. The job is acknowledged by means of an HTTP
+// an HTTP request via an
+// [http_method][google.cloud.scheduler.v1beta1.HttpTarget.http_method] such as
+// HTTP POST, HTTP GET, etc. The job is acknowledged by means of an HTTP
 // response code in the range [200 - 299]. A failure to receive a response
 // constitutes a failed execution. For a redirected request, the response
 // returned by the redirected request is considered.
@@ -117,7 +118,7 @@ func (m *HttpTarget) Reset()         { *m = HttpTarget{} }
 func (m *HttpTarget) String() string { return proto.CompactTextString(m) }
 func (*HttpTarget) ProtoMessage()    {}
 func (*HttpTarget) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_9c53d8b0fc6698b4, []int{0}
+	return fileDescriptor_target_ccd5bd51b24cf4b9, []int{0}
 }
 func (m *HttpTarget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HttpTarget.Unmarshal(m, b)
@@ -166,14 +167,14 @@ func (m *HttpTarget) GetBody() []byte {
 }
 
 // App Engine target. The job will be pushed to a job handler by means
-// of an HTTP request via an [http_method][google.cloud.scheduler.v1beta1.AppEngineHttpTarget.http_method] such
-// as HTTP POST, HTTP GET, etc. The job is acknowledged by means of an
-// HTTP response code in the range [200 - 299]. Error 503 is
-// considered an App Engine system error instead of an application
-// error. Requests returning error 503 will be retried regardless of
-// retry configuration and not counted against retry counts. Any other
-// response code, or a failure to receive a response before the
-// deadline, constitutes a failed attempt.
+// of an HTTP request via an
+// [http_method][google.cloud.scheduler.v1beta1.AppEngineHttpTarget.http_method]
+// such as HTTP POST, HTTP GET, etc. The job is acknowledged by means of an HTTP
+// response code in the range [200 - 299]. Error 503 is considered an App Engine
+// system error instead of an application error. Requests returning error 503
+// will be retried regardless of retry configuration and not counted against
+// retry counts. Any other response code, or a failure to receive a response
+// before the deadline, constitutes a failed attempt.
 type AppEngineHttpTarget struct {
 	// The HTTP method to use for the request. PATCH and OPTIONS are not
 	// permitted.
@@ -200,8 +201,9 @@ type AppEngineHttpTarget struct {
 	//   `"AppEngine-Google; (+http://code.google.com/appengine)"` to the
 	//   modified `User-Agent`.
 	//
-	// If the job has an [body][google.cloud.scheduler.v1beta1.AppEngineHttpTarget.body], Cloud Scheduler sets the
-	// following headers:
+	// If the job has an
+	// [body][google.cloud.scheduler.v1beta1.AppEngineHttpTarget.body], Cloud
+	// Scheduler sets the following headers:
 	//
 	// * `Content-Type`: By default, the `Content-Type` header is set to
 	//   `"application/octet-stream"`. The default can be overridden by explictly
@@ -215,17 +217,20 @@ type AppEngineHttpTarget struct {
 	//
 	// * `X-Google-*`: For Google internal use only.
 	// * `X-AppEngine-*`: For Google internal use only. See
-	//   [Reading request headers](https://cloud.google.com/appengine/docs/python/taskqueue/push/creating-handlers#reading_request_headers).
+	//   [Reading request
+	//   headers](https://cloud.google.com/appengine/docs/python/taskqueue/push/creating-handlers#reading_request_headers).
 	//
 	// In addition, some App Engine headers, which contain
 	// job-specific information, are also be sent to the job handler; see
-	// [request headers](https://cloud.google.com/appengine/docs/standard/python/config/cron#securing_urls_for_cron).
+	// [request
+	// headers](https://cloud.google.com/appengine/docs/standard/python/config/cron#securing_urls_for_cron).
 	Headers map[string]string `protobuf:"bytes,4,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Body.
 	//
 	// HTTP request body. A request body is allowed only if the HTTP method is
 	// POST or PUT. It will result in invalid argument error to set a body on a
-	// job with an incompatible [HttpMethod][google.cloud.scheduler.v1beta1.HttpMethod].
+	// job with an incompatible
+	// [HttpMethod][google.cloud.scheduler.v1beta1.HttpMethod].
 	Body                 []byte   `protobuf:"bytes,5,opt,name=body,proto3" json:"body,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -236,7 +241,7 @@ func (m *AppEngineHttpTarget) Reset()         { *m = AppEngineHttpTarget{} }
 func (m *AppEngineHttpTarget) String() string { return proto.CompactTextString(m) }
 func (*AppEngineHttpTarget) ProtoMessage()    {}
 func (*AppEngineHttpTarget) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_9c53d8b0fc6698b4, []int{1}
+	return fileDescriptor_target_ccd5bd51b24cf4b9, []int{1}
 }
 func (m *AppEngineHttpTarget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppEngineHttpTarget.Unmarshal(m, b)
@@ -323,7 +328,7 @@ func (m *PubsubTarget) Reset()         { *m = PubsubTarget{} }
 func (m *PubsubTarget) String() string { return proto.CompactTextString(m) }
 func (*PubsubTarget) ProtoMessage()    {}
 func (*PubsubTarget) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_9c53d8b0fc6698b4, []int{2}
+	return fileDescriptor_target_ccd5bd51b24cf4b9, []int{2}
 }
 func (m *PubsubTarget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PubsubTarget.Unmarshal(m, b)
@@ -367,10 +372,14 @@ func (m *PubsubTarget) GetAttributes() map[string]string {
 // App Engine Routing.
 //
 // For more information about services, versions, and instances see
-// [An Overview of App Engine](https://cloud.google.com/appengine/docs/python/an-overview-of-app-engine),
-// [Microservices Architecture on Google App Engine](https://cloud.google.com/appengine/docs/python/microservices-on-app-engine),
-// [App Engine Standard request routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed), and
-// [App Engine Flex request routing](https://cloud.google.com/appengine/docs/flexible/python/how-requests-are-routed).
+// [An Overview of App
+// Engine](https://cloud.google.com/appengine/docs/python/an-overview-of-app-engine),
+// [Microservices Architecture on Google App
+// Engine](https://cloud.google.com/appengine/docs/python/microservices-on-app-engine),
+// [App Engine Standard request
+// routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed),
+// and [App Engine Flex request
+// routing](https://cloud.google.com/appengine/docs/flexible/python/how-requests-are-routed).
 type AppEngineRouting struct {
 	// App service.
 	//
@@ -388,10 +397,13 @@ type AppEngineRouting struct {
 	// the job is attempted.
 	//
 	// Requests can only be sent to a specific instance if
-	// [manual scaling is used in App Engine Standard](https://cloud.google.com/appengine/docs/python/an-overview-of-app-engine?hl=en_US#scaling_types_and_instance_classes).
+	// [manual scaling is used in App Engine
+	// Standard](https://cloud.google.com/appengine/docs/python/an-overview-of-app-engine?hl=en_US#scaling_types_and_instance_classes).
 	// App Engine Flex does not support instances. For more information, see
-	// [App Engine Standard request routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed) and
-	// [App Engine Flex request routing](https://cloud.google.com/appengine/docs/flexible/python/how-requests-are-routed).
+	// [App Engine Standard request
+	// routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed)
+	// and [App Engine Flex request
+	// routing](https://cloud.google.com/appengine/docs/flexible/python/how-requests-are-routed).
 	Instance string `protobuf:"bytes,3,opt,name=instance,proto3" json:"instance,omitempty"`
 	// Output only. The host that the job is sent to.
 	//
@@ -414,43 +426,51 @@ type AppEngineRouting struct {
 	//   example <app-id>.appspot.com, which is associated with the
 	//   job's project ID.
 	//
-	// * `service =` [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service]
+	// * `service =`
+	// [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service]
 	//
-	// * `version =` [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version]
+	// * `version =`
+	// [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version]
 	//
 	// * `version_dot_service =`
-	//   [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version] `+ '.' +`
-	//   [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service]
+	//   [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version] `+ '.'
+	//   +` [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service]
 	//
-	// * `instance =` [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance]
+	// * `instance =`
+	// [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance]
 	//
 	// * `instance_dot_service =`
-	//   [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] `+ '.' +`
-	//   [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service]
+	//   [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] `+
+	//   '.' +` [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service]
 	//
 	// * `instance_dot_version =`
-	//   [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] `+ '.' +`
-	//   [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version]
+	//   [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] `+
+	//   '.' +` [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version]
 	//
 	// * `instance_dot_version_dot_service =`
-	//   [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] `+ '.' +`
-	//   [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version] `+ '.' +`
+	//   [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] `+
+	//   '.' +` [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version]
+	//   `+ '.' +`
 	//   [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service]
 	//
 	//
-	// If [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service] is empty, then the job will be sent
-	// to the service which is the default service when the job is attempted.
+	// If [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service] is
+	// empty, then the job will be sent to the service which is the default
+	// service when the job is attempted.
 	//
-	// If [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version] is empty, then the job will be sent
-	// to the version which is the default version when the job is attempted.
+	// If [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version] is
+	// empty, then the job will be sent to the version which is the default
+	// version when the job is attempted.
 	//
-	// If [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] is empty, then the job will be
-	// sent to an instance which is available when the job is attempted.
+	// If [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] is
+	// empty, then the job will be sent to an instance which is available when the
+	// job is attempted.
 	//
 	// If [service][google.cloud.scheduler.v1beta1.AppEngineRouting.service],
 	// [version][google.cloud.scheduler.v1beta1.AppEngineRouting.version], or
-	// [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] is invalid, then the job will be sent
-	// to the default version of the default service when the job is attempted.
+	// [instance][google.cloud.scheduler.v1beta1.AppEngineRouting.instance] is
+	// invalid, then the job will be sent to the default version of the default
+	// service when the job is attempted.
 	Host                 string   `protobuf:"bytes,4,opt,name=host,proto3" json:"host,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -461,7 +481,7 @@ func (m *AppEngineRouting) Reset()         { *m = AppEngineRouting{} }
 func (m *AppEngineRouting) String() string { return proto.CompactTextString(m) }
 func (*AppEngineRouting) ProtoMessage()    {}
 func (*AppEngineRouting) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_9c53d8b0fc6698b4, []int{3}
+	return fileDescriptor_target_ccd5bd51b24cf4b9, []int{3}
 }
 func (m *AppEngineRouting) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppEngineRouting.Unmarshal(m, b)
@@ -521,10 +541,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/scheduler/v1beta1/target.proto", fileDescriptor_target_9c53d8b0fc6698b4)
+	proto.RegisterFile("google/cloud/scheduler/v1beta1/target.proto", fileDescriptor_target_ccd5bd51b24cf4b9)
 }
 
-var fileDescriptor_target_9c53d8b0fc6698b4 = []byte{
+var fileDescriptor_target_ccd5bd51b24cf4b9 = []byte{
 	// 623 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xdb, 0x6e, 0xd3, 0x4c,
 	0x10, 0xfe, 0x1d, 0x27, 0x4d, 0x33, 0x89, 0x7e, 0xac, 0x05, 0x89, 0x10, 0x0e, 0x0a, 0xbd, 0x8a,

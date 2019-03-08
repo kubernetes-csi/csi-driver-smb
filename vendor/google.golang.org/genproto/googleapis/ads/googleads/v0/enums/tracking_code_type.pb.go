@@ -56,7 +56,7 @@ func (x TrackingCodeTypeEnum_TrackingCodeType) String() string {
 	return proto.EnumName(TrackingCodeTypeEnum_TrackingCodeType_name, int32(x))
 }
 func (TrackingCodeTypeEnum_TrackingCodeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_tracking_code_type_3636ffab06f8465a, []int{0, 0}
+	return fileDescriptor_tracking_code_type_42b1ddf10f6421dd, []int{0, 0}
 }
 
 // Container for enum describing the type of the generated tag snippets for
@@ -71,7 +71,7 @@ func (m *TrackingCodeTypeEnum) Reset()         { *m = TrackingCodeTypeEnum{} }
 func (m *TrackingCodeTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*TrackingCodeTypeEnum) ProtoMessage()    {}
 func (*TrackingCodeTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_tracking_code_type_3636ffab06f8465a, []int{0}
+	return fileDescriptor_tracking_code_type_42b1ddf10f6421dd, []int{0}
 }
 func (m *TrackingCodeTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TrackingCodeTypeEnum.Unmarshal(m, b)
@@ -97,10 +97,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/tracking_code_type.proto", fileDescriptor_tracking_code_type_3636ffab06f8465a)
+	proto.RegisterFile("google/ads/googleads/v0/enums/tracking_code_type.proto", fileDescriptor_tracking_code_type_42b1ddf10f6421dd)
 }
 
-var fileDescriptor_tracking_code_type_3636ffab06f8465a = []byte{
+var fileDescriptor_tracking_code_type_42b1ddf10f6421dd = []byte{
 	// 309 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x50, 0xc1, 0x6a, 0xb3, 0x40,
 	0x18, 0xfc, 0x63, 0x7e, 0x5a, 0xd8, 0x50, 0xb2, 0xb5, 0xed, 0x31, 0x87, 0xe4, 0x01, 0x56, 0xa1,

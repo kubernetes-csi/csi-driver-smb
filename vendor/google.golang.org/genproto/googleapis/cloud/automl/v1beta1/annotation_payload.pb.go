@@ -32,11 +32,12 @@ type AnnotationPayload struct {
 	// this annotation pertains to. The annotation spec comes from either an
 	// ancestor dataset, or the dataset that was used to train the model in use.
 	AnnotationSpecId string `protobuf:"bytes,1,opt,name=annotation_spec_id,json=annotationSpecId,proto3" json:"annotation_spec_id,omitempty"`
-	// Output only. The value of [AnnotationSpec.display_name][google.cloud.automl.v1beta1.AnnotationSpec.display_name] when the model
-	// was trained. Because this field returns a value at model training time,
-	// for different models trained using the same dataset, the returned value
-	// could be different as model owner could update the display_name between
-	// any two model training.
+	// Output only. The value of
+	// [AnnotationSpec.display_name][google.cloud.automl.v1beta1.AnnotationSpec.display_name]
+	// when the model was trained. Because this field returns a value at model
+	// training time, for different models trained using the same dataset, the
+	// returned value could be different as model owner could update the
+	// display_name between any two model training.
 	DisplayName          string   `protobuf:"bytes,5,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -47,7 +48,7 @@ func (m *AnnotationPayload) Reset()         { *m = AnnotationPayload{} }
 func (m *AnnotationPayload) String() string { return proto.CompactTextString(m) }
 func (*AnnotationPayload) ProtoMessage()    {}
 func (*AnnotationPayload) Descriptor() ([]byte, []int) {
-	return fileDescriptor_annotation_payload_f7dca833885c28d5, []int{0}
+	return fileDescriptor_annotation_payload_8605e6a29f89bedf, []int{0}
 }
 func (m *AnnotationPayload) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AnnotationPayload.Unmarshal(m, b)
@@ -197,10 +198,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/automl/v1beta1/annotation_payload.proto", fileDescriptor_annotation_payload_f7dca833885c28d5)
+	proto.RegisterFile("google/cloud/automl/v1beta1/annotation_payload.proto", fileDescriptor_annotation_payload_8605e6a29f89bedf)
 }
 
-var fileDescriptor_annotation_payload_f7dca833885c28d5 = []byte{
+var fileDescriptor_annotation_payload_8605e6a29f89bedf = []byte{
 	// 320 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0x41, 0x4b, 0xc3, 0x30,
 	0x14, 0xc7, 0xed, 0xc4, 0xa1, 0x99, 0x88, 0xf6, 0x54, 0x36, 0xc1, 0xe9, 0x69, 0x07, 0x4d, 0xdd,

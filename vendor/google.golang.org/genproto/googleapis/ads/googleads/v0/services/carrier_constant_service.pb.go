@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [CarrierConstantService.GetCarrierConstant][google.ads.googleads.v0.services.CarrierConstantService.GetCarrierConstant].
+// Request message for
+// [CarrierConstantService.GetCarrierConstant][google.ads.googleads.v0.services.CarrierConstantService.GetCarrierConstant].
 type GetCarrierConstantRequest struct {
 	// Resource name of the carrier constant to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetCarrierConstantRequest) Reset()         { *m = GetCarrierConstantReq
 func (m *GetCarrierConstantRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCarrierConstantRequest) ProtoMessage()    {}
 func (*GetCarrierConstantRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_carrier_constant_service_b048e91c5bbedbb7, []int{0}
+	return fileDescriptor_carrier_constant_service_f107d8a55b6664af, []int{0}
 }
 func (m *GetCarrierConstantRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetCarrierConstantRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _CarrierConstantService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/carrier_constant_service.proto", fileDescriptor_carrier_constant_service_b048e91c5bbedbb7)
+	proto.RegisterFile("google/ads/googleads/v0/services/carrier_constant_service.proto", fileDescriptor_carrier_constant_service_f107d8a55b6664af)
 }
 
-var fileDescriptor_carrier_constant_service_b048e91c5bbedbb7 = []byte{
+var fileDescriptor_carrier_constant_service_f107d8a55b6664af = []byte{
 	// 356 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0xc1, 0x4a, 0xf3, 0x40,
 	0x18, 0x24, 0xf9, 0xe1, 0x07, 0x83, 0x5e, 0x72, 0x10, 0xad, 0x1e, 0x4a, 0x2d, 0x52, 0x3c, 0xec,

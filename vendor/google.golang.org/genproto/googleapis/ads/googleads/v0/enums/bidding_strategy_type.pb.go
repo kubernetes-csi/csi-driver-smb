@@ -109,7 +109,7 @@ func (x BiddingStrategyTypeEnum_BiddingStrategyType) String() string {
 	return proto.EnumName(BiddingStrategyTypeEnum_BiddingStrategyType_name, int32(x))
 }
 func (BiddingStrategyTypeEnum_BiddingStrategyType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_strategy_type_16e7934fd7b18f2d, []int{0, 0}
+	return fileDescriptor_bidding_strategy_type_e0546c0777be83b2, []int{0, 0}
 }
 
 // Container for enum describing possible bidding strategy types.
@@ -123,7 +123,7 @@ func (m *BiddingStrategyTypeEnum) Reset()         { *m = BiddingStrategyTypeEnum
 func (m *BiddingStrategyTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*BiddingStrategyTypeEnum) ProtoMessage()    {}
 func (*BiddingStrategyTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bidding_strategy_type_16e7934fd7b18f2d, []int{0}
+	return fileDescriptor_bidding_strategy_type_e0546c0777be83b2, []int{0}
 }
 func (m *BiddingStrategyTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BiddingStrategyTypeEnum.Unmarshal(m, b)
@@ -149,10 +149,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/bidding_strategy_type.proto", fileDescriptor_bidding_strategy_type_16e7934fd7b18f2d)
+	proto.RegisterFile("google/ads/googleads/v0/enums/bidding_strategy_type.proto", fileDescriptor_bidding_strategy_type_e0546c0777be83b2)
 }
 
-var fileDescriptor_bidding_strategy_type_16e7934fd7b18f2d = []byte{
+var fileDescriptor_bidding_strategy_type_e0546c0777be83b2 = []byte{
 	// 426 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0xcd, 0x6e, 0xd3, 0x40,
 	0x18, 0x24, 0x2e, 0xb4, 0xb0, 0x29, 0x65, 0x31, 0x20, 0xca, 0x21, 0x87, 0xf6, 0x01, 0xd6, 0x96,

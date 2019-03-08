@@ -53,7 +53,7 @@ func (x FeedItemValidationStatusEnum_FeedItemValidationStatus) String() string {
 	return proto.EnumName(FeedItemValidationStatusEnum_FeedItemValidationStatus_name, int32(x))
 }
 func (FeedItemValidationStatusEnum_FeedItemValidationStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_validation_status_e7326aa07a57f5a5, []int{0, 0}
+	return fileDescriptor_feed_item_validation_status_6ebc7d99cf9f9f43, []int{0, 0}
 }
 
 // Container for enum describing possible validation statuses of a feed item.
@@ -67,7 +67,7 @@ func (m *FeedItemValidationStatusEnum) Reset()         { *m = FeedItemValidation
 func (m *FeedItemValidationStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*FeedItemValidationStatusEnum) ProtoMessage()    {}
 func (*FeedItemValidationStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_validation_status_e7326aa07a57f5a5, []int{0}
+	return fileDescriptor_feed_item_validation_status_6ebc7d99cf9f9f43, []int{0}
 }
 func (m *FeedItemValidationStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedItemValidationStatusEnum.Unmarshal(m, b)
@@ -93,10 +93,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/feed_item_validation_status.proto", fileDescriptor_feed_item_validation_status_e7326aa07a57f5a5)
+	proto.RegisterFile("google/ads/googleads/v0/enums/feed_item_validation_status.proto", fileDescriptor_feed_item_validation_status_6ebc7d99cf9f9f43)
 }
 
-var fileDescriptor_feed_item_validation_status_e7326aa07a57f5a5 = []byte{
+var fileDescriptor_feed_item_validation_status_6ebc7d99cf9f9f43 = []byte{
 	// 306 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xb1, 0x4e, 0xf3, 0x30,
 	0x14, 0x85, 0xff, 0xa6, 0x3f, 0x20, 0xdc, 0x81, 0x28, 0x13, 0x03, 0x1d, 0xda, 0x07, 0x70, 0x22,

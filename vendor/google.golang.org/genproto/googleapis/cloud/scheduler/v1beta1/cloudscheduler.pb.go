@@ -26,7 +26,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for listing jobs using [ListJobs][google.cloud.scheduler.v1beta1.CloudScheduler.ListJobs].
+// Request message for listing jobs using
+// [ListJobs][google.cloud.scheduler.v1beta1.CloudScheduler.ListJobs].
 type ListJobsRequest struct {
 	// Required.
 	//
@@ -43,10 +44,13 @@ type ListJobsRequest struct {
 	// A token identifying a page of results the server will return. To
 	// request the first page results, page_token must be empty. To
 	// request the next page of results, page_token must be the value of
-	// [next_page_token][google.cloud.scheduler.v1beta1.ListJobsResponse.next_page_token] returned from
-	// the previous call to [ListJobs][google.cloud.scheduler.v1beta1.CloudScheduler.ListJobs]. It is an error to
-	// switch the value of [filter][google.cloud.scheduler.v1beta1.ListJobsRequest.filter] or
-	// [order_by][google.cloud.scheduler.v1beta1.ListJobsRequest.order_by] while iterating through pages.
+	// [next_page_token][google.cloud.scheduler.v1beta1.ListJobsResponse.next_page_token]
+	// returned from the previous call to
+	// [ListJobs][google.cloud.scheduler.v1beta1.CloudScheduler.ListJobs]. It is
+	// an error to switch the value of
+	// [filter][google.cloud.scheduler.v1beta1.ListJobsRequest.filter] or
+	// [order_by][google.cloud.scheduler.v1beta1.ListJobsRequest.order_by] while
+	// iterating through pages.
 	PageToken            string   `protobuf:"bytes,6,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -57,7 +61,7 @@ func (m *ListJobsRequest) Reset()         { *m = ListJobsRequest{} }
 func (m *ListJobsRequest) String() string { return proto.CompactTextString(m) }
 func (*ListJobsRequest) ProtoMessage()    {}
 func (*ListJobsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{0}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{0}
 }
 func (m *ListJobsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListJobsRequest.Unmarshal(m, b)
@@ -98,15 +102,17 @@ func (m *ListJobsRequest) GetPageToken() string {
 	return ""
 }
 
-// Response message for listing jobs using [ListJobs][google.cloud.scheduler.v1beta1.CloudScheduler.ListJobs].
+// Response message for listing jobs using
+// [ListJobs][google.cloud.scheduler.v1beta1.CloudScheduler.ListJobs].
 type ListJobsResponse struct {
 	// The list of jobs.
 	Jobs []*Job `protobuf:"bytes,1,rep,name=jobs,proto3" json:"jobs,omitempty"`
 	// A token to retrieve next page of results. Pass this value in the
-	// [page_token][google.cloud.scheduler.v1beta1.ListJobsRequest.page_token] field in the subsequent call to
-	// [ListJobs][google.cloud.scheduler.v1beta1.CloudScheduler.ListJobs] to retrieve the next page of results.
-	// If this is empty it indicates that there are no more results
-	// through which to paginate.
+	// [page_token][google.cloud.scheduler.v1beta1.ListJobsRequest.page_token]
+	// field in the subsequent call to
+	// [ListJobs][google.cloud.scheduler.v1beta1.CloudScheduler.ListJobs] to
+	// retrieve the next page of results. If this is empty it indicates that there
+	// are no more results through which to paginate.
 	//
 	// The page token is valid for only 2 hours.
 	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
@@ -119,7 +125,7 @@ func (m *ListJobsResponse) Reset()         { *m = ListJobsResponse{} }
 func (m *ListJobsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListJobsResponse) ProtoMessage()    {}
 func (*ListJobsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{1}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{1}
 }
 func (m *ListJobsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListJobsResponse.Unmarshal(m, b)
@@ -153,7 +159,8 @@ func (m *ListJobsResponse) GetNextPageToken() string {
 	return ""
 }
 
-// Request message for [GetJob][google.cloud.scheduler.v1beta1.CloudScheduler.GetJob].
+// Request message for
+// [GetJob][google.cloud.scheduler.v1beta1.CloudScheduler.GetJob].
 type GetJobRequest struct {
 	// Required.
 	//
@@ -169,7 +176,7 @@ func (m *GetJobRequest) Reset()         { *m = GetJobRequest{} }
 func (m *GetJobRequest) String() string { return proto.CompactTextString(m) }
 func (*GetJobRequest) ProtoMessage()    {}
 func (*GetJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{2}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{2}
 }
 func (m *GetJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetJobRequest.Unmarshal(m, b)
@@ -196,7 +203,8 @@ func (m *GetJobRequest) GetName() string {
 	return ""
 }
 
-// Request message for [CreateJob][google.cloud.scheduler.v1beta1.CloudScheduler.CreateJob].
+// Request message for
+// [CreateJob][google.cloud.scheduler.v1beta1.CloudScheduler.CreateJob].
 type CreateJobRequest struct {
 	// Required.
 	//
@@ -206,7 +214,8 @@ type CreateJobRequest struct {
 	// Required.
 	//
 	// The job to add. The user can optionally specify a name for the
-	// job in [name][google.cloud.scheduler.v1beta1.Job.name]. [name][google.cloud.scheduler.v1beta1.Job.name] cannot be the same as an
+	// job in [name][google.cloud.scheduler.v1beta1.Job.name].
+	// [name][google.cloud.scheduler.v1beta1.Job.name] cannot be the same as an
 	// existing job. If a name is not specified then the system will
 	// generate a random unique name that will be returned
 	// ([name][google.cloud.scheduler.v1beta1.Job.name]) in the response.
@@ -220,7 +229,7 @@ func (m *CreateJobRequest) Reset()         { *m = CreateJobRequest{} }
 func (m *CreateJobRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateJobRequest) ProtoMessage()    {}
 func (*CreateJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{3}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{3}
 }
 func (m *CreateJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateJobRequest.Unmarshal(m, b)
@@ -254,11 +263,13 @@ func (m *CreateJobRequest) GetJob() *Job {
 	return nil
 }
 
-// Request message for [UpdateJob][google.cloud.scheduler.v1beta1.CloudScheduler.UpdateJob].
+// Request message for
+// [UpdateJob][google.cloud.scheduler.v1beta1.CloudScheduler.UpdateJob].
 type UpdateJobRequest struct {
 	// Required.
 	//
-	// The new job properties. [name][google.cloud.scheduler.v1beta1.Job.name] must be specified.
+	// The new job properties. [name][google.cloud.scheduler.v1beta1.Job.name]
+	// must be specified.
 	//
 	// Output only fields cannot be modified using UpdateJob.
 	// Any value specified for an output only field will be ignored.
@@ -274,7 +285,7 @@ func (m *UpdateJobRequest) Reset()         { *m = UpdateJobRequest{} }
 func (m *UpdateJobRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateJobRequest) ProtoMessage()    {}
 func (*UpdateJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{4}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{4}
 }
 func (m *UpdateJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateJobRequest.Unmarshal(m, b)
@@ -325,7 +336,7 @@ func (m *DeleteJobRequest) Reset()         { *m = DeleteJobRequest{} }
 func (m *DeleteJobRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteJobRequest) ProtoMessage()    {}
 func (*DeleteJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{5}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{5}
 }
 func (m *DeleteJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteJobRequest.Unmarshal(m, b)
@@ -352,7 +363,8 @@ func (m *DeleteJobRequest) GetName() string {
 	return ""
 }
 
-// Request message for [PauseJob][google.cloud.scheduler.v1beta1.CloudScheduler.PauseJob].
+// Request message for
+// [PauseJob][google.cloud.scheduler.v1beta1.CloudScheduler.PauseJob].
 type PauseJobRequest struct {
 	// Required.
 	//
@@ -368,7 +380,7 @@ func (m *PauseJobRequest) Reset()         { *m = PauseJobRequest{} }
 func (m *PauseJobRequest) String() string { return proto.CompactTextString(m) }
 func (*PauseJobRequest) ProtoMessage()    {}
 func (*PauseJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{6}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{6}
 }
 func (m *PauseJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PauseJobRequest.Unmarshal(m, b)
@@ -395,7 +407,8 @@ func (m *PauseJobRequest) GetName() string {
 	return ""
 }
 
-// Request message for [ResumeJob][google.cloud.scheduler.v1beta1.CloudScheduler.ResumeJob].
+// Request message for
+// [ResumeJob][google.cloud.scheduler.v1beta1.CloudScheduler.ResumeJob].
 type ResumeJobRequest struct {
 	// Required.
 	//
@@ -411,7 +424,7 @@ func (m *ResumeJobRequest) Reset()         { *m = ResumeJobRequest{} }
 func (m *ResumeJobRequest) String() string { return proto.CompactTextString(m) }
 func (*ResumeJobRequest) ProtoMessage()    {}
 func (*ResumeJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{7}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{7}
 }
 func (m *ResumeJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResumeJobRequest.Unmarshal(m, b)
@@ -455,7 +468,7 @@ func (m *RunJobRequest) Reset()         { *m = RunJobRequest{} }
 func (m *RunJobRequest) String() string { return proto.CompactTextString(m) }
 func (*RunJobRequest) ProtoMessage()    {}
 func (*RunJobRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloudscheduler_1ba8688798d8aa5e, []int{8}
+	return fileDescriptor_cloudscheduler_84d16d9e901d635d, []int{8}
 }
 func (m *RunJobRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RunJobRequest.Unmarshal(m, b)
@@ -514,30 +527,40 @@ type CloudSchedulerClient interface {
 	CreateJob(ctx context.Context, in *CreateJobRequest, opts ...grpc.CallOption) (*Job, error)
 	// Updates a job.
 	//
-	// If successful, the updated [Job][google.cloud.scheduler.v1beta1.Job] is returned. If the job does
-	// not exist, `NOT_FOUND` is returned.
+	// If successful, the updated [Job][google.cloud.scheduler.v1beta1.Job] is
+	// returned. If the job does not exist, `NOT_FOUND` is returned.
 	//
 	// If UpdateJob does not successfully return, it is possible for the
-	// job to be in an [Job.State.UPDATE_FAILED][google.cloud.scheduler.v1beta1.Job.State.UPDATE_FAILED] state. A job in this state may
-	// not be executed. If this happens, retry the UpdateJob request
-	// until a successful response is received.
+	// job to be in an
+	// [Job.State.UPDATE_FAILED][google.cloud.scheduler.v1beta1.Job.State.UPDATE_FAILED]
+	// state. A job in this state may not be executed. If this happens, retry the
+	// UpdateJob request until a successful response is received.
 	UpdateJob(ctx context.Context, in *UpdateJobRequest, opts ...grpc.CallOption) (*Job, error)
 	// Deletes a job.
 	DeleteJob(ctx context.Context, in *DeleteJobRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	// Pauses a job.
 	//
 	// If a job is paused then the system will stop executing the job
-	// until it is re-enabled via [ResumeJob][google.cloud.scheduler.v1beta1.CloudScheduler.ResumeJob]. The
-	// state of the job is stored in [state][google.cloud.scheduler.v1beta1.Job.state]; if paused it
-	// will be set to [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED]. A job must be in [Job.State.ENABLED][google.cloud.scheduler.v1beta1.Job.State.ENABLED]
-	// to be paused.
+	// until it is re-enabled via
+	// [ResumeJob][google.cloud.scheduler.v1beta1.CloudScheduler.ResumeJob]. The
+	// state of the job is stored in
+	// [state][google.cloud.scheduler.v1beta1.Job.state]; if paused it will be set
+	// to [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED]. A
+	// job must be in
+	// [Job.State.ENABLED][google.cloud.scheduler.v1beta1.Job.State.ENABLED] to be
+	// paused.
 	PauseJob(ctx context.Context, in *PauseJobRequest, opts ...grpc.CallOption) (*Job, error)
 	// Resume a job.
 	//
-	// This method reenables a job after it has been [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED]. The
-	// state of a job is stored in [Job.state][google.cloud.scheduler.v1beta1.Job.state]; after calling this method it
-	// will be set to [Job.State.ENABLED][google.cloud.scheduler.v1beta1.Job.State.ENABLED]. A job must be in
-	// [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED] to be resumed.
+	// This method reenables a job after it has been
+	// [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED]. The
+	// state of a job is stored in
+	// [Job.state][google.cloud.scheduler.v1beta1.Job.state]; after calling this
+	// method it will be set to
+	// [Job.State.ENABLED][google.cloud.scheduler.v1beta1.Job.State.ENABLED]. A
+	// job must be in
+	// [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED] to be
+	// resumed.
 	ResumeJob(ctx context.Context, in *ResumeJobRequest, opts ...grpc.CallOption) (*Job, error)
 	// Forces a job to run now.
 	//
@@ -636,30 +659,40 @@ type CloudSchedulerServer interface {
 	CreateJob(context.Context, *CreateJobRequest) (*Job, error)
 	// Updates a job.
 	//
-	// If successful, the updated [Job][google.cloud.scheduler.v1beta1.Job] is returned. If the job does
-	// not exist, `NOT_FOUND` is returned.
+	// If successful, the updated [Job][google.cloud.scheduler.v1beta1.Job] is
+	// returned. If the job does not exist, `NOT_FOUND` is returned.
 	//
 	// If UpdateJob does not successfully return, it is possible for the
-	// job to be in an [Job.State.UPDATE_FAILED][google.cloud.scheduler.v1beta1.Job.State.UPDATE_FAILED] state. A job in this state may
-	// not be executed. If this happens, retry the UpdateJob request
-	// until a successful response is received.
+	// job to be in an
+	// [Job.State.UPDATE_FAILED][google.cloud.scheduler.v1beta1.Job.State.UPDATE_FAILED]
+	// state. A job in this state may not be executed. If this happens, retry the
+	// UpdateJob request until a successful response is received.
 	UpdateJob(context.Context, *UpdateJobRequest) (*Job, error)
 	// Deletes a job.
 	DeleteJob(context.Context, *DeleteJobRequest) (*empty.Empty, error)
 	// Pauses a job.
 	//
 	// If a job is paused then the system will stop executing the job
-	// until it is re-enabled via [ResumeJob][google.cloud.scheduler.v1beta1.CloudScheduler.ResumeJob]. The
-	// state of the job is stored in [state][google.cloud.scheduler.v1beta1.Job.state]; if paused it
-	// will be set to [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED]. A job must be in [Job.State.ENABLED][google.cloud.scheduler.v1beta1.Job.State.ENABLED]
-	// to be paused.
+	// until it is re-enabled via
+	// [ResumeJob][google.cloud.scheduler.v1beta1.CloudScheduler.ResumeJob]. The
+	// state of the job is stored in
+	// [state][google.cloud.scheduler.v1beta1.Job.state]; if paused it will be set
+	// to [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED]. A
+	// job must be in
+	// [Job.State.ENABLED][google.cloud.scheduler.v1beta1.Job.State.ENABLED] to be
+	// paused.
 	PauseJob(context.Context, *PauseJobRequest) (*Job, error)
 	// Resume a job.
 	//
-	// This method reenables a job after it has been [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED]. The
-	// state of a job is stored in [Job.state][google.cloud.scheduler.v1beta1.Job.state]; after calling this method it
-	// will be set to [Job.State.ENABLED][google.cloud.scheduler.v1beta1.Job.State.ENABLED]. A job must be in
-	// [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED] to be resumed.
+	// This method reenables a job after it has been
+	// [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED]. The
+	// state of a job is stored in
+	// [Job.state][google.cloud.scheduler.v1beta1.Job.state]; after calling this
+	// method it will be set to
+	// [Job.State.ENABLED][google.cloud.scheduler.v1beta1.Job.State.ENABLED]. A
+	// job must be in
+	// [Job.State.PAUSED][google.cloud.scheduler.v1beta1.Job.State.PAUSED] to be
+	// resumed.
 	ResumeJob(context.Context, *ResumeJobRequest) (*Job, error)
 	// Forces a job to run now.
 	//
@@ -858,10 +891,10 @@ var _CloudScheduler_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/scheduler/v1beta1/cloudscheduler.proto", fileDescriptor_cloudscheduler_1ba8688798d8aa5e)
+	proto.RegisterFile("google/cloud/scheduler/v1beta1/cloudscheduler.proto", fileDescriptor_cloudscheduler_84d16d9e901d635d)
 }
 
-var fileDescriptor_cloudscheduler_1ba8688798d8aa5e = []byte{
+var fileDescriptor_cloudscheduler_84d16d9e901d635d = []byte{
 	// 718 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x56, 0x4b, 0x4f, 0xdb, 0x4a,
 	0x14, 0xd6, 0xf0, 0x88, 0xc8, 0x41, 0x40, 0x34, 0x0b, 0x14, 0x85, 0x7b, 0xaf, 0x22, 0xa3, 0x8b,

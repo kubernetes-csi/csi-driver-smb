@@ -58,7 +58,7 @@ func (m *ChangeStatus) Reset()         { *m = ChangeStatus{} }
 func (m *ChangeStatus) String() string { return proto.CompactTextString(m) }
 func (*ChangeStatus) ProtoMessage()    {}
 func (*ChangeStatus) Descriptor() ([]byte, []int) {
-	return fileDescriptor_change_status_558457b70433db0d, []int{0}
+	return fileDescriptor_change_status_835f588a9485472b, []int{0}
 }
 func (m *ChangeStatus) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ChangeStatus.Unmarshal(m, b)
@@ -160,10 +160,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/change_status.proto", fileDescriptor_change_status_558457b70433db0d)
+	proto.RegisterFile("google/ads/googleads/v0/resources/change_status.proto", fileDescriptor_change_status_835f588a9485472b)
 }
 
-var fileDescriptor_change_status_558457b70433db0d = []byte{
+var fileDescriptor_change_status_835f588a9485472b = []byte{
 	// 535 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0xd1, 0x6a, 0xdb, 0x30,
 	0x14, 0x86, 0x71, 0xda, 0x65, 0x89, 0x92, 0x76, 0xab, 0x60, 0x60, 0xca, 0x18, 0xe9, 0x46, 0x21,

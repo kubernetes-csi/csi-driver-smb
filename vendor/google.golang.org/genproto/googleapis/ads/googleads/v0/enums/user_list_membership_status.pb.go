@@ -49,7 +49,7 @@ func (x UserListMembershipStatusEnum_UserListMembershipStatus) String() string {
 	return proto.EnumName(UserListMembershipStatusEnum_UserListMembershipStatus_name, int32(x))
 }
 func (UserListMembershipStatusEnum_UserListMembershipStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_membership_status_4c6ac2e08a898134, []int{0, 0}
+	return fileDescriptor_user_list_membership_status_05a99903af6ab6dc, []int{0, 0}
 }
 
 // Membership status of this user list. Indicates whether a user list is open
@@ -65,7 +65,7 @@ func (m *UserListMembershipStatusEnum) Reset()         { *m = UserListMembership
 func (m *UserListMembershipStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*UserListMembershipStatusEnum) ProtoMessage()    {}
 func (*UserListMembershipStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_membership_status_4c6ac2e08a898134, []int{0}
+	return fileDescriptor_user_list_membership_status_05a99903af6ab6dc, []int{0}
 }
 func (m *UserListMembershipStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListMembershipStatusEnum.Unmarshal(m, b)
@@ -91,10 +91,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_membership_status.proto", fileDescriptor_user_list_membership_status_4c6ac2e08a898134)
+	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_membership_status.proto", fileDescriptor_user_list_membership_status_05a99903af6ab6dc)
 }
 
-var fileDescriptor_user_list_membership_status_4c6ac2e08a898134 = []byte{
+var fileDescriptor_user_list_membership_status_05a99903af6ab6dc = []byte{
 	// 298 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xc1, 0x4e, 0x83, 0x40,
 	0x10, 0x86, 0x85, 0x9a, 0x6a, 0xb6, 0x07, 0x09, 0x27, 0x0f, 0x72, 0x68, 0x1f, 0x60, 0x21, 0xf1,

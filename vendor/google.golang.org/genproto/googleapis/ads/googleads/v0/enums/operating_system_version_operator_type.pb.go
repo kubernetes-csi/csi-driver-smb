@@ -49,7 +49,7 @@ func (x OperatingSystemVersionOperatorTypeEnum_OperatingSystemVersionOperatorTyp
 	return proto.EnumName(OperatingSystemVersionOperatorTypeEnum_OperatingSystemVersionOperatorType_name, int32(x))
 }
 func (OperatingSystemVersionOperatorTypeEnum_OperatingSystemVersionOperatorType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_operating_system_version_operator_type_f746666ec051bec7, []int{0, 0}
+	return fileDescriptor_operating_system_version_operator_type_c4f8bcb733c5f6bd, []int{0, 0}
 }
 
 // Container for enum describing the type of OS operators.
@@ -65,7 +65,7 @@ func (m *OperatingSystemVersionOperatorTypeEnum) Reset() {
 func (m *OperatingSystemVersionOperatorTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*OperatingSystemVersionOperatorTypeEnum) ProtoMessage()    {}
 func (*OperatingSystemVersionOperatorTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operating_system_version_operator_type_f746666ec051bec7, []int{0}
+	return fileDescriptor_operating_system_version_operator_type_c4f8bcb733c5f6bd, []int{0}
 }
 func (m *OperatingSystemVersionOperatorTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OperatingSystemVersionOperatorTypeEnum.Unmarshal(m, b)
@@ -91,10 +91,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/operating_system_version_operator_type.proto", fileDescriptor_operating_system_version_operator_type_f746666ec051bec7)
+	proto.RegisterFile("google/ads/googleads/v0/enums/operating_system_version_operator_type.proto", fileDescriptor_operating_system_version_operator_type_c4f8bcb733c5f6bd)
 }
 
-var fileDescriptor_operating_system_version_operator_type_f746666ec051bec7 = []byte{
+var fileDescriptor_operating_system_version_operator_type_c4f8bcb733c5f6bd = []byte{
 	// 320 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x90, 0xc1, 0x4a, 0xc3, 0x30,
 	0x1c, 0xc6, 0x6d, 0x15, 0xc5, 0x0c, 0x71, 0xf4, 0xe0, 0x41, 0xd8, 0x61, 0x3b, 0xe8, 0x2d, 0x2d,

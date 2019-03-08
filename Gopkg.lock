@@ -24,7 +24,7 @@
   version = "v21.3.0"
 
 [[projects]]
-  digest = "1:f24d900a7aeff07f60d783a3e1c394e494ab119ab66278c69da9848b40626734"
+  digest = "1:8925353b2f4f447a4f9c781f5a18b5cc0acaefd7e478612e09e8e58c0407a3e8"
   name = "github.com/Azure/go-autorest"
   packages = [
     "autorest",
@@ -37,8 +37,8 @@
     "tracing",
   ]
   pruneopts = ""
-  revision = "f4369d4c79bf40df5e86def1e0f54c7ef261a51c"
-  version = "v11.5.0"
+  revision = "134ac34d5a96fc72758c0f157f38f87cbdb3f532"
+  version = "v11.5.1"
 
 [[projects]]
   branch = "master"
@@ -356,7 +356,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:77fcea0d2af2dc0020fe673c4f83cd78765b97cd04bc001dcd8193f58eaf367c"
+  digest = "1:a29813277de981ce33148b3f1906bba492af2ce97237c050f62a6b48cfdae721"
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
@@ -366,7 +366,7 @@
     "xfs",
   ]
   pruneopts = ""
-  revision = "bbced9601137e764853b2fad7ec3e2dc4c504e02"
+  revision = "d0f344d83b0c80a1bc03b547a2374a9ec6711144"
 
 [[projects]]
   branch = "master"
@@ -477,14 +477,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e9f4395061c4001e3a32b7ab02cb4fa62b50bafaa3245e3f84cc80f637df61a6"
+  digest = "1:b723a8ef66371461da4327c018f8b7a879fc59e525f6ac4b03a9f6411a7155ff"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = ""
-  revision = "b6889370fb1098ed892bd3400d189bb6a3355813"
+  revision = "584f3b12f43e1e55248c90e84804777009eed0a4"
 
 [[projects]]
   digest = "1:5acd3512b047305d49e8763eef7ba423901e85d5dd2fd1e71778a0ea8de10bd4"
@@ -555,11 +555,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:bedc60c52eb064eca6d7ce3321602522c5f50b6635aa7bc93c5624f1e65f9eda"
+  digest = "1:6a8803e2481c92e20f9fc654b8ddfbd5a2a802c0454d0bc5b7a018b218282205"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = ""
-  revision = "4f5b463f9597cbe0dd13a6a2cd4f85e788d27508"
+  revision = "5fe7a883aa19554f42890211544aa549836af7b7"
 
 [[projects]]
   digest = "1:b6c17b0c657f047118ae59b358950b28515914512cf3de02388cc42e33a92520"
@@ -685,7 +685,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f6cff2ad20557e5cc220dc07bdacbac786db472b27f92a2e09e02e57a7950efa"
+  digest = "1:99fdfd76b3fe65c845820a8dcae7d29fb6bcfc33335baae8b3c9feffcb9fab48"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/errors",
@@ -733,7 +733,7 @@
     "third_party/forked/golang/reflect",
   ]
   pruneopts = ""
-  revision = "2f7e9cae4418a86ea03618fea183bfe9fe43c574"
+  revision = "4519e5924e99cd805e0e5e1dc8e43170c3f94909"
 
 [[projects]]
   digest = "1:f2333764374be9cff9789a067acd08529229bb10e9472cc6be9e7479b6b70d15"
@@ -886,15 +886,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e9db0f88148b8f92b13d72ba28c1535be330fba88677def6c392e468bd74d15f"
+  digest = "1:ad717009b831813ba424ee1161b226c023fa443e9970136e9b3c53dc7d0909f5"
   name = "k8s.io/cloud-provider"
   packages = ["."]
   pruneopts = ""
-  revision = "8f30ec879f0bed52ac8c95c19eb553509615e1a3"
+  revision = "05ccf96446f8116f80ce38f792d7a4239f1140f7"
 
 [[projects]]
   branch = "master"
-  digest = "1:f1e76cf66516ae0faf7861f9fc72c323c572ce70cdf16ea5bc8a11dbbd45e373"
+  digest = "1:869c20f46f994e015c7216bea590bfd69f06092797473112f27ea03a060b6aa7"
   name = "k8s.io/csi-api"
   packages = [
     "pkg/apis/csi/v1alpha1",
@@ -903,7 +903,7 @@
     "pkg/client/clientset/versioned/typed/csi/v1alpha1",
   ]
   pruneopts = ""
-  revision = "a37926bd22154f4a8e21fda60bec9f3973c29fec"
+  revision = "999cd1696c0bdbf86788cc495699babfbc23b531"
 
 [[projects]]
   digest = "1:5afb58506f8972419a6e93f051513854291127189f04607aac1388eb378c0608"
@@ -915,11 +915,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:59cce16b16002977ebfa3cbc6a72922d04704d3d4b9ee85ec916057d6b52762e"
+  digest = "1:199c4a3508ac049896ac06f518c99113e8404723ecf1891dd0c81c3cc17ba410"
   name = "k8s.io/kube-openapi"
   packages = ["pkg/util/proto"]
   pruneopts = ""
-  revision = "b3a7cee44a305be0a69e1b9ac03018307287e1b0"
+  revision = "15615b16d372105f0c69ff47dfe7402926a65aaa"
 
 [[projects]]
   digest = "1:113377a13e13aef7691004b547cc526b75dc8dbaa78deabb1a499c5a8b76f26a"

@@ -55,7 +55,7 @@ func (m *GenerateKeywordIdeasRequest) Reset()         { *m = GenerateKeywordIdea
 func (m *GenerateKeywordIdeasRequest) String() string { return proto.CompactTextString(m) }
 func (*GenerateKeywordIdeasRequest) ProtoMessage()    {}
 func (*GenerateKeywordIdeasRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_idea_service_38c7d525539da993, []int{0}
+	return fileDescriptor_keyword_plan_idea_service_b9927177ccf30eb2, []int{0}
 }
 func (m *GenerateKeywordIdeasRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GenerateKeywordIdeasRequest.Unmarshal(m, b)
@@ -261,7 +261,7 @@ func (m *KeywordAndUrlSeed) Reset()         { *m = KeywordAndUrlSeed{} }
 func (m *KeywordAndUrlSeed) String() string { return proto.CompactTextString(m) }
 func (*KeywordAndUrlSeed) ProtoMessage()    {}
 func (*KeywordAndUrlSeed) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_idea_service_38c7d525539da993, []int{1}
+	return fileDescriptor_keyword_plan_idea_service_b9927177ccf30eb2, []int{1}
 }
 func (m *KeywordAndUrlSeed) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordAndUrlSeed.Unmarshal(m, b)
@@ -308,7 +308,7 @@ func (m *KeywordSeed) Reset()         { *m = KeywordSeed{} }
 func (m *KeywordSeed) String() string { return proto.CompactTextString(m) }
 func (*KeywordSeed) ProtoMessage()    {}
 func (*KeywordSeed) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_idea_service_38c7d525539da993, []int{2}
+	return fileDescriptor_keyword_plan_idea_service_b9927177ccf30eb2, []int{2}
 }
 func (m *KeywordSeed) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordSeed.Unmarshal(m, b)
@@ -348,7 +348,7 @@ func (m *UrlSeed) Reset()         { *m = UrlSeed{} }
 func (m *UrlSeed) String() string { return proto.CompactTextString(m) }
 func (*UrlSeed) ProtoMessage()    {}
 func (*UrlSeed) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_idea_service_38c7d525539da993, []int{3}
+	return fileDescriptor_keyword_plan_idea_service_b9927177ccf30eb2, []int{3}
 }
 func (m *UrlSeed) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UrlSeed.Unmarshal(m, b)
@@ -388,7 +388,7 @@ func (m *GenerateKeywordIdeaResponse) Reset()         { *m = GenerateKeywordIdea
 func (m *GenerateKeywordIdeaResponse) String() string { return proto.CompactTextString(m) }
 func (*GenerateKeywordIdeaResponse) ProtoMessage()    {}
 func (*GenerateKeywordIdeaResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_idea_service_38c7d525539da993, []int{4}
+	return fileDescriptor_keyword_plan_idea_service_b9927177ccf30eb2, []int{4}
 }
 func (m *GenerateKeywordIdeaResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GenerateKeywordIdeaResponse.Unmarshal(m, b)
@@ -433,7 +433,7 @@ func (m *GenerateKeywordIdeaResult) Reset()         { *m = GenerateKeywordIdeaRe
 func (m *GenerateKeywordIdeaResult) String() string { return proto.CompactTextString(m) }
 func (*GenerateKeywordIdeaResult) ProtoMessage()    {}
 func (*GenerateKeywordIdeaResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_idea_service_38c7d525539da993, []int{5}
+	return fileDescriptor_keyword_plan_idea_service_b9927177ccf30eb2, []int{5}
 }
 func (m *GenerateKeywordIdeaResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GenerateKeywordIdeaResult.Unmarshal(m, b)
@@ -551,10 +551,10 @@ var _KeywordPlanIdeaService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/keyword_plan_idea_service.proto", fileDescriptor_keyword_plan_idea_service_38c7d525539da993)
+	proto.RegisterFile("google/ads/googleads/v0/services/keyword_plan_idea_service.proto", fileDescriptor_keyword_plan_idea_service_b9927177ccf30eb2)
 }
 
-var fileDescriptor_keyword_plan_idea_service_38c7d525539da993 = []byte{
+var fileDescriptor_keyword_plan_idea_service_b9927177ccf30eb2 = []byte{
 	// 725 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xcd, 0x6e, 0xd3, 0x40,
 	0x10, 0xc6, 0x49, 0x69, 0xda, 0x0d, 0x42, 0xea, 0xaa, 0x42, 0xa1, 0xad, 0x20, 0x8a, 0x7a, 0x28,

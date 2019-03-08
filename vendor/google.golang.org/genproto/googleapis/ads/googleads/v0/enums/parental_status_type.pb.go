@@ -53,7 +53,7 @@ func (x ParentalStatusTypeEnum_ParentalStatusType) String() string {
 	return proto.EnumName(ParentalStatusTypeEnum_ParentalStatusType_name, int32(x))
 }
 func (ParentalStatusTypeEnum_ParentalStatusType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_parental_status_type_8726732c6d1f087d, []int{0, 0}
+	return fileDescriptor_parental_status_type_7c08bf952e61f743, []int{0, 0}
 }
 
 // Container for enum describing the type of demographic parental statuses.
@@ -67,7 +67,7 @@ func (m *ParentalStatusTypeEnum) Reset()         { *m = ParentalStatusTypeEnum{}
 func (m *ParentalStatusTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*ParentalStatusTypeEnum) ProtoMessage()    {}
 func (*ParentalStatusTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_parental_status_type_8726732c6d1f087d, []int{0}
+	return fileDescriptor_parental_status_type_7c08bf952e61f743, []int{0}
 }
 func (m *ParentalStatusTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ParentalStatusTypeEnum.Unmarshal(m, b)
@@ -93,10 +93,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/parental_status_type.proto", fileDescriptor_parental_status_type_8726732c6d1f087d)
+	proto.RegisterFile("google/ads/googleads/v0/enums/parental_status_type.proto", fileDescriptor_parental_status_type_7c08bf952e61f743)
 }
 
-var fileDescriptor_parental_status_type_8726732c6d1f087d = []byte{
+var fileDescriptor_parental_status_type_7c08bf952e61f743 = []byte{
 	// 308 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x50, 0xcf, 0x4a, 0xc3, 0x30,
 	0x1c, 0x76, 0x15, 0x26, 0x64, 0x82, 0x35, 0x07, 0x3d, 0xed, 0xb0, 0x3d, 0x40, 0x5a, 0xf0, 0x22,

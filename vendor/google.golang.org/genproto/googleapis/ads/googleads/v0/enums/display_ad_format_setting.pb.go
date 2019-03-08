@@ -54,7 +54,7 @@ func (x DisplayAdFormatSettingEnum_DisplayAdFormatSetting) String() string {
 	return proto.EnumName(DisplayAdFormatSettingEnum_DisplayAdFormatSetting_name, int32(x))
 }
 func (DisplayAdFormatSettingEnum_DisplayAdFormatSetting) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_display_ad_format_setting_7b5f6590c96d9abd, []int{0, 0}
+	return fileDescriptor_display_ad_format_setting_c38e066267521bdb, []int{0, 0}
 }
 
 // Container for display ad format settings.
@@ -68,7 +68,7 @@ func (m *DisplayAdFormatSettingEnum) Reset()         { *m = DisplayAdFormatSetti
 func (m *DisplayAdFormatSettingEnum) String() string { return proto.CompactTextString(m) }
 func (*DisplayAdFormatSettingEnum) ProtoMessage()    {}
 func (*DisplayAdFormatSettingEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_display_ad_format_setting_7b5f6590c96d9abd, []int{0}
+	return fileDescriptor_display_ad_format_setting_c38e066267521bdb, []int{0}
 }
 func (m *DisplayAdFormatSettingEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DisplayAdFormatSettingEnum.Unmarshal(m, b)
@@ -94,10 +94,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/display_ad_format_setting.proto", fileDescriptor_display_ad_format_setting_7b5f6590c96d9abd)
+	proto.RegisterFile("google/ads/googleads/v0/enums/display_ad_format_setting.proto", fileDescriptor_display_ad_format_setting_c38e066267521bdb)
 }
 
-var fileDescriptor_display_ad_format_setting_7b5f6590c96d9abd = []byte{
+var fileDescriptor_display_ad_format_setting_c38e066267521bdb = []byte{
 	// 313 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x4a, 0xf3, 0x40,
 	0x1c, 0xc5, 0xbf, 0xa4, 0x1f, 0x15, 0xa6, 0xa0, 0x21, 0x0b, 0x17, 0x4a, 0x17, 0xed, 0x01, 0x26,

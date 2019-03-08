@@ -48,7 +48,7 @@ func (m *CampaignSharedSet) Reset()         { *m = CampaignSharedSet{} }
 func (m *CampaignSharedSet) String() string { return proto.CompactTextString(m) }
 func (*CampaignSharedSet) ProtoMessage()    {}
 func (*CampaignSharedSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_shared_set_1ef4decd046d0572, []int{0}
+	return fileDescriptor_campaign_shared_set_e941c935a4673601, []int{0}
 }
 func (m *CampaignSharedSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CampaignSharedSet.Unmarshal(m, b)
@@ -101,10 +101,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/campaign_shared_set.proto", fileDescriptor_campaign_shared_set_1ef4decd046d0572)
+	proto.RegisterFile("google/ads/googleads/v0/resources/campaign_shared_set.proto", fileDescriptor_campaign_shared_set_e941c935a4673601)
 }
 
-var fileDescriptor_campaign_shared_set_1ef4decd046d0572 = []byte{
+var fileDescriptor_campaign_shared_set_e941c935a4673601 = []byte{
 	// 371 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0xd1, 0x4a, 0xf3, 0x30,
 	0x18, 0xa5, 0xdd, 0xcf, 0xf8, 0x97, 0xff, 0x57, 0xb0, 0x17, 0x52, 0x86, 0xc8, 0xa6, 0x0c, 0x76,

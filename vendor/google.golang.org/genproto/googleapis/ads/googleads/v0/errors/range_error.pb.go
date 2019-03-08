@@ -49,7 +49,7 @@ func (x RangeErrorEnum_RangeError) String() string {
 	return proto.EnumName(RangeErrorEnum_RangeError_name, int32(x))
 }
 func (RangeErrorEnum_RangeError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_range_error_0e47a2b1f8983dc9, []int{0, 0}
+	return fileDescriptor_range_error_18eba858ffbdb363, []int{0, 0}
 }
 
 // Container for enum describing possible range errors.
@@ -63,7 +63,7 @@ func (m *RangeErrorEnum) Reset()         { *m = RangeErrorEnum{} }
 func (m *RangeErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*RangeErrorEnum) ProtoMessage()    {}
 func (*RangeErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_range_error_0e47a2b1f8983dc9, []int{0}
+	return fileDescriptor_range_error_18eba858ffbdb363, []int{0}
 }
 func (m *RangeErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RangeErrorEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/range_error.proto", fileDescriptor_range_error_0e47a2b1f8983dc9)
+	proto.RegisterFile("google/ads/googleads/v0/errors/range_error.proto", fileDescriptor_range_error_18eba858ffbdb363)
 }
 
-var fileDescriptor_range_error_0e47a2b1f8983dc9 = []byte{
+var fileDescriptor_range_error_18eba858ffbdb363 = []byte{
 	// 274 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xd1, 0x4a, 0xc3, 0x30,
 	0x14, 0x86, 0x6d, 0x07, 0x2a, 0x99, 0xb8, 0xd2, 0x07, 0xd8, 0x45, 0x1f, 0xe0, 0x34, 0xe0, 0x5d,

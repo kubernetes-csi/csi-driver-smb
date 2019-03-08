@@ -54,7 +54,7 @@ func (x FrequencyCapLevelEnum_FrequencyCapLevel) String() string {
 	return proto.EnumName(FrequencyCapLevelEnum_FrequencyCapLevel_name, int32(x))
 }
 func (FrequencyCapLevelEnum_FrequencyCapLevel) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_frequency_cap_level_ca8c642a1d3010c4, []int{0, 0}
+	return fileDescriptor_frequency_cap_level_474565ea1c4f0d21, []int{0, 0}
 }
 
 // Container for enum describing the level on which the cap is to be applied.
@@ -68,7 +68,7 @@ func (m *FrequencyCapLevelEnum) Reset()         { *m = FrequencyCapLevelEnum{} }
 func (m *FrequencyCapLevelEnum) String() string { return proto.CompactTextString(m) }
 func (*FrequencyCapLevelEnum) ProtoMessage()    {}
 func (*FrequencyCapLevelEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_frequency_cap_level_ca8c642a1d3010c4, []int{0}
+	return fileDescriptor_frequency_cap_level_474565ea1c4f0d21, []int{0}
 }
 func (m *FrequencyCapLevelEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FrequencyCapLevelEnum.Unmarshal(m, b)
@@ -94,10 +94,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/frequency_cap_level.proto", fileDescriptor_frequency_cap_level_ca8c642a1d3010c4)
+	proto.RegisterFile("google/ads/googleads/v0/enums/frequency_cap_level.proto", fileDescriptor_frequency_cap_level_474565ea1c4f0d21)
 }
 
-var fileDescriptor_frequency_cap_level_ca8c642a1d3010c4 = []byte{
+var fileDescriptor_frequency_cap_level_474565ea1c4f0d21 = []byte{
 	// 300 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x4f, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

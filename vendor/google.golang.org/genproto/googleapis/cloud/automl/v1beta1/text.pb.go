@@ -33,7 +33,7 @@ func (m *TextClassificationDatasetMetadata) Reset()         { *m = TextClassific
 func (m *TextClassificationDatasetMetadata) String() string { return proto.CompactTextString(m) }
 func (*TextClassificationDatasetMetadata) ProtoMessage()    {}
 func (*TextClassificationDatasetMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_text_6aaf13d2f30170b9, []int{0}
+	return fileDescriptor_text_11ac4f99f444a22c, []int{0}
 }
 func (m *TextClassificationDatasetMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TextClassificationDatasetMetadata.Unmarshal(m, b)
@@ -71,7 +71,7 @@ func (m *TextClassificationModelMetadata) Reset()         { *m = TextClassificat
 func (m *TextClassificationModelMetadata) String() string { return proto.CompactTextString(m) }
 func (*TextClassificationModelMetadata) ProtoMessage()    {}
 func (*TextClassificationModelMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_text_6aaf13d2f30170b9, []int{1}
+	return fileDescriptor_text_11ac4f99f444a22c, []int{1}
 }
 func (m *TextClassificationModelMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TextClassificationModelMetadata.Unmarshal(m, b)
@@ -97,10 +97,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/automl/v1beta1/text.proto", fileDescriptor_text_6aaf13d2f30170b9)
+	proto.RegisterFile("google/cloud/automl/v1beta1/text.proto", fileDescriptor_text_11ac4f99f444a22c)
 }
 
-var fileDescriptor_text_6aaf13d2f30170b9 = []byte{
+var fileDescriptor_text_11ac4f99f444a22c = []byte{
 	// 265 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x31, 0x4b, 0x03, 0x41,
 	0x10, 0x85, 0x39, 0x0b, 0xc1, 0x2b, 0x2c, 0xce, 0x46, 0x12, 0x21, 0x26, 0x85, 0x58, 0xed, 0x1a,

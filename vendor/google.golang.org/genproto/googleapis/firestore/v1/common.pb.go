@@ -24,10 +24,12 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 // Used to restrict a get or update operation on a document to a subset of its
 // fields.
 // This is different from standard field masks, as this is always scoped to a
-// [Document][google.firestore.v1.Document], and takes in account the dynamic nature of [Value][google.firestore.v1.Value].
+// [Document][google.firestore.v1.Document], and takes in account the dynamic
+// nature of [Value][google.firestore.v1.Value].
 type DocumentMask struct {
-	// The list of field paths in the mask. See [Document.fields][google.firestore.v1.Document.fields] for a field
-	// path syntax reference.
+	// The list of field paths in the mask. See
+	// [Document.fields][google.firestore.v1.Document.fields] for a field path
+	// syntax reference.
 	FieldPaths           []string `protobuf:"bytes,1,rep,name=field_paths,json=fieldPaths,proto3" json:"field_paths,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -38,7 +40,7 @@ func (m *DocumentMask) Reset()         { *m = DocumentMask{} }
 func (m *DocumentMask) String() string { return proto.CompactTextString(m) }
 func (*DocumentMask) ProtoMessage()    {}
 func (*DocumentMask) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_d742b1674d6d5f16, []int{0}
+	return fileDescriptor_common_7c29f511f79b8786, []int{0}
 }
 func (m *DocumentMask) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DocumentMask.Unmarshal(m, b)
@@ -82,7 +84,7 @@ func (m *Precondition) Reset()         { *m = Precondition{} }
 func (m *Precondition) String() string { return proto.CompactTextString(m) }
 func (*Precondition) ProtoMessage()    {}
 func (*Precondition) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_d742b1674d6d5f16, []int{1}
+	return fileDescriptor_common_7c29f511f79b8786, []int{1}
 }
 func (m *Precondition) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Precondition.Unmarshal(m, b)
@@ -229,7 +231,7 @@ func (m *TransactionOptions) Reset()         { *m = TransactionOptions{} }
 func (m *TransactionOptions) String() string { return proto.CompactTextString(m) }
 func (*TransactionOptions) ProtoMessage()    {}
 func (*TransactionOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_d742b1674d6d5f16, []int{2}
+	return fileDescriptor_common_7c29f511f79b8786, []int{2}
 }
 func (m *TransactionOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TransactionOptions.Unmarshal(m, b)
@@ -373,7 +375,7 @@ func (m *TransactionOptions_ReadWrite) Reset()         { *m = TransactionOptions
 func (m *TransactionOptions_ReadWrite) String() string { return proto.CompactTextString(m) }
 func (*TransactionOptions_ReadWrite) ProtoMessage()    {}
 func (*TransactionOptions_ReadWrite) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_d742b1674d6d5f16, []int{2, 0}
+	return fileDescriptor_common_7c29f511f79b8786, []int{2, 0}
 }
 func (m *TransactionOptions_ReadWrite) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TransactionOptions_ReadWrite.Unmarshal(m, b)
@@ -417,7 +419,7 @@ func (m *TransactionOptions_ReadOnly) Reset()         { *m = TransactionOptions_
 func (m *TransactionOptions_ReadOnly) String() string { return proto.CompactTextString(m) }
 func (*TransactionOptions_ReadOnly) ProtoMessage()    {}
 func (*TransactionOptions_ReadOnly) Descriptor() ([]byte, []int) {
-	return fileDescriptor_common_d742b1674d6d5f16, []int{2, 1}
+	return fileDescriptor_common_7c29f511f79b8786, []int{2, 1}
 }
 func (m *TransactionOptions_ReadOnly) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TransactionOptions_ReadOnly.Unmarshal(m, b)
@@ -525,10 +527,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/firestore/v1/common.proto", fileDescriptor_common_d742b1674d6d5f16)
+	proto.RegisterFile("google/firestore/v1/common.proto", fileDescriptor_common_7c29f511f79b8786)
 }
 
-var fileDescriptor_common_d742b1674d6d5f16 = []byte{
+var fileDescriptor_common_7c29f511f79b8786 = []byte{
 	// 459 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0xd1, 0x8a, 0xd3, 0x40,
 	0x14, 0x6d, 0xba, 0x4b, 0x69, 0x6f, 0x8b, 0xac, 0x51, 0xb4, 0x06, 0x61, 0x4b, 0x9f, 0x0a, 0xc2,

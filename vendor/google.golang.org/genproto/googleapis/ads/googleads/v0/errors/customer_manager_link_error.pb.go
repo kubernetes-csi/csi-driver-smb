@@ -76,7 +76,7 @@ func (x CustomerManagerLinkErrorEnum_CustomerManagerLinkError) String() string {
 	return proto.EnumName(CustomerManagerLinkErrorEnum_CustomerManagerLinkError_name, int32(x))
 }
 func (CustomerManagerLinkErrorEnum_CustomerManagerLinkError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_customer_manager_link_error_f8222b0dc9abaf46, []int{0, 0}
+	return fileDescriptor_customer_manager_link_error_6e4a9e1e36cd1ffb, []int{0, 0}
 }
 
 // Container for enum describing possible CustomerManagerLink errors.
@@ -90,7 +90,7 @@ func (m *CustomerManagerLinkErrorEnum) Reset()         { *m = CustomerManagerLin
 func (m *CustomerManagerLinkErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*CustomerManagerLinkErrorEnum) ProtoMessage()    {}
 func (*CustomerManagerLinkErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_manager_link_error_f8222b0dc9abaf46, []int{0}
+	return fileDescriptor_customer_manager_link_error_6e4a9e1e36cd1ffb, []int{0}
 }
 func (m *CustomerManagerLinkErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomerManagerLinkErrorEnum.Unmarshal(m, b)
@@ -116,10 +116,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/customer_manager_link_error.proto", fileDescriptor_customer_manager_link_error_f8222b0dc9abaf46)
+	proto.RegisterFile("google/ads/googleads/v0/errors/customer_manager_link_error.proto", fileDescriptor_customer_manager_link_error_6e4a9e1e36cd1ffb)
 }
 
-var fileDescriptor_customer_manager_link_error_f8222b0dc9abaf46 = []byte{
+var fileDescriptor_customer_manager_link_error_6e4a9e1e36cd1ffb = []byte{
 	// 479 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0x41, 0x8b, 0xd3, 0x40,
 	0x1c, 0xc5, 0xdd, 0x56, 0x77, 0x75, 0xf6, 0x60, 0x0c, 0x2c, 0x28, 0xe8, 0x1e, 0xea, 0x61, 0x11,

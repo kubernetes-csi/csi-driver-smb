@@ -27,7 +27,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [FeedMappingService.GetFeedMapping][google.ads.googleads.v0.services.FeedMappingService.GetFeedMapping].
+// Request message for
+// [FeedMappingService.GetFeedMapping][google.ads.googleads.v0.services.FeedMappingService.GetFeedMapping].
 type GetFeedMappingRequest struct {
 	// The resource name of the feed mapping to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -40,7 +41,7 @@ func (m *GetFeedMappingRequest) Reset()         { *m = GetFeedMappingRequest{} }
 func (m *GetFeedMappingRequest) String() string { return proto.CompactTextString(m) }
 func (*GetFeedMappingRequest) ProtoMessage()    {}
 func (*GetFeedMappingRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_mapping_service_0f3de8fce9e30788, []int{0}
+	return fileDescriptor_feed_mapping_service_be319f3aef939115, []int{0}
 }
 func (m *GetFeedMappingRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetFeedMappingRequest.Unmarshal(m, b)
@@ -67,7 +68,8 @@ func (m *GetFeedMappingRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [FeedMappingService.MutateFeedMappings][google.ads.googleads.v0.services.FeedMappingService.MutateFeedMappings].
+// Request message for
+// [FeedMappingService.MutateFeedMappings][google.ads.googleads.v0.services.FeedMappingService.MutateFeedMappings].
 type MutateFeedMappingsRequest struct {
 	// The ID of the customer whose feed mappings are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -90,7 +92,7 @@ func (m *MutateFeedMappingsRequest) Reset()         { *m = MutateFeedMappingsReq
 func (m *MutateFeedMappingsRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedMappingsRequest) ProtoMessage()    {}
 func (*MutateFeedMappingsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_mapping_service_0f3de8fce9e30788, []int{1}
+	return fileDescriptor_feed_mapping_service_be319f3aef939115, []int{1}
 }
 func (m *MutateFeedMappingsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedMappingsRequest.Unmarshal(m, b)
@@ -155,7 +157,7 @@ func (m *FeedMappingOperation) Reset()         { *m = FeedMappingOperation{} }
 func (m *FeedMappingOperation) String() string { return proto.CompactTextString(m) }
 func (*FeedMappingOperation) ProtoMessage()    {}
 func (*FeedMappingOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_mapping_service_0f3de8fce9e30788, []int{2}
+	return fileDescriptor_feed_mapping_service_be319f3aef939115, []int{2}
 }
 func (m *FeedMappingOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedMappingOperation.Unmarshal(m, b)
@@ -300,7 +302,7 @@ func (m *MutateFeedMappingsResponse) Reset()         { *m = MutateFeedMappingsRe
 func (m *MutateFeedMappingsResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedMappingsResponse) ProtoMessage()    {}
 func (*MutateFeedMappingsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_mapping_service_0f3de8fce9e30788, []int{3}
+	return fileDescriptor_feed_mapping_service_be319f3aef939115, []int{3}
 }
 func (m *MutateFeedMappingsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedMappingsResponse.Unmarshal(m, b)
@@ -347,7 +349,7 @@ func (m *MutateFeedMappingResult) Reset()         { *m = MutateFeedMappingResult
 func (m *MutateFeedMappingResult) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedMappingResult) ProtoMessage()    {}
 func (*MutateFeedMappingResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_mapping_service_0f3de8fce9e30788, []int{4}
+	return fileDescriptor_feed_mapping_service_be319f3aef939115, []int{4}
 }
 func (m *MutateFeedMappingResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedMappingResult.Unmarshal(m, b)
@@ -494,10 +496,10 @@ var _FeedMappingService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/feed_mapping_service.proto", fileDescriptor_feed_mapping_service_0f3de8fce9e30788)
+	proto.RegisterFile("google/ads/googleads/v0/services/feed_mapping_service.proto", fileDescriptor_feed_mapping_service_be319f3aef939115)
 }
 
-var fileDescriptor_feed_mapping_service_0f3de8fce9e30788 = []byte{
+var fileDescriptor_feed_mapping_service_be319f3aef939115 = []byte{
 	// 663 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x4f, 0x6b, 0x13, 0x4f,
 	0x18, 0xfe, 0x6d, 0xf2, 0xa3, 0xda, 0x49, 0xad, 0x30, 0x5a, 0x1a, 0x83, 0x68, 0x58, 0x0b, 0x96,

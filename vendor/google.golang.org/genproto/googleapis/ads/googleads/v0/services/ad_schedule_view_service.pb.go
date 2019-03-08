@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [AdScheduleViewService.GetAdScheduleView][google.ads.googleads.v0.services.AdScheduleViewService.GetAdScheduleView].
+// Request message for
+// [AdScheduleViewService.GetAdScheduleView][google.ads.googleads.v0.services.AdScheduleViewService.GetAdScheduleView].
 type GetAdScheduleViewRequest struct {
 	// The resource name of the ad schedule view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetAdScheduleViewRequest) Reset()         { *m = GetAdScheduleViewReque
 func (m *GetAdScheduleViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetAdScheduleViewRequest) ProtoMessage()    {}
 func (*GetAdScheduleViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_schedule_view_service_bbe6ad12eafe8152, []int{0}
+	return fileDescriptor_ad_schedule_view_service_d080b6815f203272, []int{0}
 }
 func (m *GetAdScheduleViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetAdScheduleViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _AdScheduleViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/ad_schedule_view_service.proto", fileDescriptor_ad_schedule_view_service_bbe6ad12eafe8152)
+	proto.RegisterFile("google/ads/googleads/v0/services/ad_schedule_view_service.proto", fileDescriptor_ad_schedule_view_service_d080b6815f203272)
 }
 
-var fileDescriptor_ad_schedule_view_service_bbe6ad12eafe8152 = []byte{
+var fileDescriptor_ad_schedule_view_service_d080b6815f203272 = []byte{
 	// 370 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xcf, 0x4a, 0xeb, 0x40,
 	0x14, 0xc6, 0x49, 0x2e, 0x5c, 0xb8, 0xe1, 0xba, 0x30, 0x20, 0x94, 0xe0, 0xa2, 0xd4, 0x2e, 0xa4,

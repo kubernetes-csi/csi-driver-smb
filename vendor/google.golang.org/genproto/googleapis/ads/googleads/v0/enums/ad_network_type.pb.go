@@ -65,7 +65,7 @@ func (x AdNetworkTypeEnum_AdNetworkType) String() string {
 	return proto.EnumName(AdNetworkTypeEnum_AdNetworkType_name, int32(x))
 }
 func (AdNetworkTypeEnum_AdNetworkType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_ad_network_type_4963ee02d7690a17, []int{0, 0}
+	return fileDescriptor_ad_network_type_ce35ad4d9bd89125, []int{0, 0}
 }
 
 // Container for enumeration of Google Ads network types.
@@ -79,7 +79,7 @@ func (m *AdNetworkTypeEnum) Reset()         { *m = AdNetworkTypeEnum{} }
 func (m *AdNetworkTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*AdNetworkTypeEnum) ProtoMessage()    {}
 func (*AdNetworkTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_network_type_4963ee02d7690a17, []int{0}
+	return fileDescriptor_ad_network_type_ce35ad4d9bd89125, []int{0}
 }
 func (m *AdNetworkTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdNetworkTypeEnum.Unmarshal(m, b)
@@ -105,10 +105,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/ad_network_type.proto", fileDescriptor_ad_network_type_4963ee02d7690a17)
+	proto.RegisterFile("google/ads/googleads/v0/enums/ad_network_type.proto", fileDescriptor_ad_network_type_ce35ad4d9bd89125)
 }
 
-var fileDescriptor_ad_network_type_4963ee02d7690a17 = []byte{
+var fileDescriptor_ad_network_type_ce35ad4d9bd89125 = []byte{
 	// 339 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x6e, 0xe2, 0x30,
 	0x18, 0x85, 0x27, 0x61, 0x00, 0x8d, 0x11, 0x83, 0xf1, 0xac, 0x59, 0xc0, 0x01, 0x9c, 0x48, 0xec,

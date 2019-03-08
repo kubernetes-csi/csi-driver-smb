@@ -62,7 +62,7 @@ func (x PolicyApprovalStatusEnum_PolicyApprovalStatus) String() string {
 	return proto.EnumName(PolicyApprovalStatusEnum_PolicyApprovalStatus_name, int32(x))
 }
 func (PolicyApprovalStatusEnum_PolicyApprovalStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_policy_approval_status_db42bf868cffebad, []int{0, 0}
+	return fileDescriptor_policy_approval_status_45853cd948082e5a, []int{0, 0}
 }
 
 // Container for enum describing possible policy approval statuses.
@@ -76,7 +76,7 @@ func (m *PolicyApprovalStatusEnum) Reset()         { *m = PolicyApprovalStatusEn
 func (m *PolicyApprovalStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*PolicyApprovalStatusEnum) ProtoMessage()    {}
 func (*PolicyApprovalStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_approval_status_db42bf868cffebad, []int{0}
+	return fileDescriptor_policy_approval_status_45853cd948082e5a, []int{0}
 }
 func (m *PolicyApprovalStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyApprovalStatusEnum.Unmarshal(m, b)
@@ -102,10 +102,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/policy_approval_status.proto", fileDescriptor_policy_approval_status_db42bf868cffebad)
+	proto.RegisterFile("google/ads/googleads/v0/enums/policy_approval_status.proto", fileDescriptor_policy_approval_status_45853cd948082e5a)
 }
 
-var fileDescriptor_policy_approval_status_db42bf868cffebad = []byte{
+var fileDescriptor_policy_approval_status_45853cd948082e5a = []byte{
 	// 332 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x4f, 0x4b, 0xc3, 0x30,
 	0x18, 0xc6, 0x6d, 0xe7, 0x3f, 0x32, 0xc1, 0x52, 0x26, 0xb8, 0xc3, 0x0e, 0xdb, 0x07, 0x48, 0x0b,

@@ -61,7 +61,7 @@ func (x DateRangeErrorEnum_DateRangeError) String() string {
 	return proto.EnumName(DateRangeErrorEnum_DateRangeError_name, int32(x))
 }
 func (DateRangeErrorEnum_DateRangeError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_date_range_error_a0f1cb49b9a072e0, []int{0, 0}
+	return fileDescriptor_date_range_error_2f1d4e77adba627e, []int{0, 0}
 }
 
 // Container for enum describing possible date range errors.
@@ -75,7 +75,7 @@ func (m *DateRangeErrorEnum) Reset()         { *m = DateRangeErrorEnum{} }
 func (m *DateRangeErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*DateRangeErrorEnum) ProtoMessage()    {}
 func (*DateRangeErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_date_range_error_a0f1cb49b9a072e0, []int{0}
+	return fileDescriptor_date_range_error_2f1d4e77adba627e, []int{0}
 }
 func (m *DateRangeErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DateRangeErrorEnum.Unmarshal(m, b)
@@ -101,10 +101,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/date_range_error.proto", fileDescriptor_date_range_error_a0f1cb49b9a072e0)
+	proto.RegisterFile("google/ads/googleads/v0/errors/date_range_error.proto", fileDescriptor_date_range_error_2f1d4e77adba627e)
 }
 
-var fileDescriptor_date_range_error_a0f1cb49b9a072e0 = []byte{
+var fileDescriptor_date_range_error_2f1d4e77adba627e = []byte{
 	// 373 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xc1, 0xaa, 0xd4, 0x30,
 	0x14, 0x86, 0x6d, 0xaf, 0x5e, 0x21, 0x57, 0xb4, 0xc4, 0x85, 0x88, 0x7a, 0x91, 0x6e, 0x85, 0xb4,

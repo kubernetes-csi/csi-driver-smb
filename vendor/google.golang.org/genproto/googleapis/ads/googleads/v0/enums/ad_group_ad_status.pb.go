@@ -55,7 +55,7 @@ func (x AdGroupAdStatusEnum_AdGroupAdStatus) String() string {
 	return proto.EnumName(AdGroupAdStatusEnum_AdGroupAdStatus_name, int32(x))
 }
 func (AdGroupAdStatusEnum_AdGroupAdStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_ad_status_4feffdb5c0bf196c, []int{0, 0}
+	return fileDescriptor_ad_group_ad_status_fbf89f0998cbf64e, []int{0, 0}
 }
 
 // Container for enum describing possible statuses of an AdGroupAd.
@@ -69,7 +69,7 @@ func (m *AdGroupAdStatusEnum) Reset()         { *m = AdGroupAdStatusEnum{} }
 func (m *AdGroupAdStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*AdGroupAdStatusEnum) ProtoMessage()    {}
 func (*AdGroupAdStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_ad_status_4feffdb5c0bf196c, []int{0}
+	return fileDescriptor_ad_group_ad_status_fbf89f0998cbf64e, []int{0}
 }
 func (m *AdGroupAdStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdGroupAdStatusEnum.Unmarshal(m, b)
@@ -95,10 +95,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/ad_group_ad_status.proto", fileDescriptor_ad_group_ad_status_4feffdb5c0bf196c)
+	proto.RegisterFile("google/ads/googleads/v0/enums/ad_group_ad_status.proto", fileDescriptor_ad_group_ad_status_fbf89f0998cbf64e)
 }
 
-var fileDescriptor_ad_group_ad_status_4feffdb5c0bf196c = []byte{
+var fileDescriptor_ad_group_ad_status_fbf89f0998cbf64e = []byte{
 	// 295 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x4a, 0xc4, 0x30,
 	0x14, 0x86, 0x6d, 0x47, 0x46, 0xc8, 0x2c, 0xa6, 0x54, 0xb7, 0xb3, 0x98, 0x39, 0x40, 0x5a, 0x10,

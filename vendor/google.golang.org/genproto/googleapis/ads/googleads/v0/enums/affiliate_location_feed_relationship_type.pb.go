@@ -45,7 +45,7 @@ func (x AffiliateLocationFeedRelationshipTypeEnum_AffiliateLocationFeedRelations
 	return proto.EnumName(AffiliateLocationFeedRelationshipTypeEnum_AffiliateLocationFeedRelationshipType_name, int32(x))
 }
 func (AffiliateLocationFeedRelationshipTypeEnum_AffiliateLocationFeedRelationshipType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_affiliate_location_feed_relationship_type_114735136ffb6223, []int{0, 0}
+	return fileDescriptor_affiliate_location_feed_relationship_type_ef5633e0fb9d7d56, []int{0, 0}
 }
 
 // Container for enum describing possible values for a relationship type for
@@ -62,7 +62,7 @@ func (m *AffiliateLocationFeedRelationshipTypeEnum) Reset() {
 func (m *AffiliateLocationFeedRelationshipTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*AffiliateLocationFeedRelationshipTypeEnum) ProtoMessage()    {}
 func (*AffiliateLocationFeedRelationshipTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_affiliate_location_feed_relationship_type_114735136ffb6223, []int{0}
+	return fileDescriptor_affiliate_location_feed_relationship_type_ef5633e0fb9d7d56, []int{0}
 }
 func (m *AffiliateLocationFeedRelationshipTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AffiliateLocationFeedRelationshipTypeEnum.Unmarshal(m, b)
@@ -88,10 +88,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/affiliate_location_feed_relationship_type.proto", fileDescriptor_affiliate_location_feed_relationship_type_114735136ffb6223)
+	proto.RegisterFile("google/ads/googleads/v0/enums/affiliate_location_feed_relationship_type.proto", fileDescriptor_affiliate_location_feed_relationship_type_ef5633e0fb9d7d56)
 }
 
-var fileDescriptor_affiliate_location_feed_relationship_type_114735136ffb6223 = []byte{
+var fileDescriptor_affiliate_location_feed_relationship_type_ef5633e0fb9d7d56 = []byte{
 	// 314 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x90, 0xc1, 0x4a, 0xc3, 0x30,
 	0x00, 0x86, 0x6d, 0x05, 0x85, 0xec, 0x60, 0x29, 0x5e, 0x77, 0xd8, 0xc0, 0x83, 0x1e, 0xd2, 0x82,

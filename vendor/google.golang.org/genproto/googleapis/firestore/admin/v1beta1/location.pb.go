@@ -20,7 +20,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// The metadata message for [google.cloud.location.Location.metadata][google.cloud.location.Location.metadata].
+// The metadata message for
+// [google.cloud.location.Location.metadata][google.cloud.location.Location.metadata].
 type LocationMetadata struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -31,7 +32,7 @@ func (m *LocationMetadata) Reset()         { *m = LocationMetadata{} }
 func (m *LocationMetadata) String() string { return proto.CompactTextString(m) }
 func (*LocationMetadata) ProtoMessage()    {}
 func (*LocationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_location_f1b8c59cf03288d9, []int{0}
+	return fileDescriptor_location_99cc4a33a380e207, []int{0}
 }
 func (m *LocationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LocationMetadata.Unmarshal(m, b)
@@ -56,10 +57,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/firestore/admin/v1beta1/location.proto", fileDescriptor_location_f1b8c59cf03288d9)
+	proto.RegisterFile("google/firestore/admin/v1beta1/location.proto", fileDescriptor_location_99cc4a33a380e207)
 }
 
-var fileDescriptor_location_f1b8c59cf03288d9 = []byte{
+var fileDescriptor_location_99cc4a33a380e207 = []byte{
 	// 217 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x8f, 0x31, 0x4b, 0xc0, 0x30,
 	0x10, 0x85, 0x69, 0x11, 0x87, 0x82, 0x20, 0x9d, 0xa4, 0x88, 0x43, 0x71, 0x35, 0x47, 0x71, 0x74,

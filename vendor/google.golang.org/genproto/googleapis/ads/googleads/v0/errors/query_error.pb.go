@@ -255,7 +255,7 @@ func (x QueryErrorEnum_QueryError) String() string {
 	return proto.EnumName(QueryErrorEnum_QueryError_name, int32(x))
 }
 func (QueryErrorEnum_QueryError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_query_error_435ab5df2f507e98, []int{0, 0}
+	return fileDescriptor_query_error_3ace7ea6d1564412, []int{0, 0}
 }
 
 // Container for enum describing possible query errors.
@@ -269,7 +269,7 @@ func (m *QueryErrorEnum) Reset()         { *m = QueryErrorEnum{} }
 func (m *QueryErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*QueryErrorEnum) ProtoMessage()    {}
 func (*QueryErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_query_error_435ab5df2f507e98, []int{0}
+	return fileDescriptor_query_error_3ace7ea6d1564412, []int{0}
 }
 func (m *QueryErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_QueryErrorEnum.Unmarshal(m, b)
@@ -295,10 +295,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/query_error.proto", fileDescriptor_query_error_435ab5df2f507e98)
+	proto.RegisterFile("google/ads/googleads/v0/errors/query_error.proto", fileDescriptor_query_error_3ace7ea6d1564412)
 }
 
-var fileDescriptor_query_error_435ab5df2f507e98 = []byte{
+var fileDescriptor_query_error_3ace7ea6d1564412 = []byte{
 	// 930 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x55, 0xef, 0x72, 0xd3, 0x46,
 	0x10, 0x6f, 0x42, 0x0b, 0x65, 0xf3, 0xef, 0x38, 0xc8, 0x1f, 0x68, 0x48, 0x83, 0x09, 0x10, 0x48,

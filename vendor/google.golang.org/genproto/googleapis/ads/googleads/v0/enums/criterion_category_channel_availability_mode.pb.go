@@ -55,7 +55,7 @@ func (x CriterionCategoryChannelAvailabilityModeEnum_CriterionCategoryChannelAva
 	return proto.EnumName(CriterionCategoryChannelAvailabilityModeEnum_CriterionCategoryChannelAvailabilityMode_name, int32(x))
 }
 func (CriterionCategoryChannelAvailabilityModeEnum_CriterionCategoryChannelAvailabilityMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_criterion_category_channel_availability_mode_fad8862472424463, []int{0, 0}
+	return fileDescriptor_criterion_category_channel_availability_mode_fa60aba1511b3de1, []int{0, 0}
 }
 
 // Describes channel availability mode for a criterion availability - whether
@@ -76,7 +76,7 @@ func (m *CriterionCategoryChannelAvailabilityModeEnum) String() string {
 }
 func (*CriterionCategoryChannelAvailabilityModeEnum) ProtoMessage() {}
 func (*CriterionCategoryChannelAvailabilityModeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_criterion_category_channel_availability_mode_fad8862472424463, []int{0}
+	return fileDescriptor_criterion_category_channel_availability_mode_fa60aba1511b3de1, []int{0}
 }
 func (m *CriterionCategoryChannelAvailabilityModeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CriterionCategoryChannelAvailabilityModeEnum.Unmarshal(m, b)
@@ -102,10 +102,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/criterion_category_channel_availability_mode.proto", fileDescriptor_criterion_category_channel_availability_mode_fad8862472424463)
+	proto.RegisterFile("google/ads/googleads/v0/enums/criterion_category_channel_availability_mode.proto", fileDescriptor_criterion_category_channel_availability_mode_fa60aba1511b3de1)
 }
 
-var fileDescriptor_criterion_category_channel_availability_mode_fad8862472424463 = []byte{
+var fileDescriptor_criterion_category_channel_availability_mode_fa60aba1511b3de1 = []byte{
 	// 356 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0xc1, 0x4a, 0xeb, 0x40,
 	0x14, 0x86, 0x6f, 0xd2, 0xcb, 0xbd, 0x30, 0xbd, 0x70, 0x43, 0xf6, 0x05, 0x5b, 0x5c, 0xb8, 0xd0,

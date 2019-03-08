@@ -50,7 +50,7 @@ func (x FeedItemQualityApprovalStatusEnum_FeedItemQualityApprovalStatus) String(
 	return proto.EnumName(FeedItemQualityApprovalStatusEnum_FeedItemQualityApprovalStatus_name, int32(x))
 }
 func (FeedItemQualityApprovalStatusEnum_FeedItemQualityApprovalStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_quality_approval_status_2597c88c5006c419, []int{0, 0}
+	return fileDescriptor_feed_item_quality_approval_status_6ed9af1832badd62, []int{0, 0}
 }
 
 // Container for enum describing possible quality evaluation approval statuses
@@ -65,7 +65,7 @@ func (m *FeedItemQualityApprovalStatusEnum) Reset()         { *m = FeedItemQuali
 func (m *FeedItemQualityApprovalStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*FeedItemQualityApprovalStatusEnum) ProtoMessage()    {}
 func (*FeedItemQualityApprovalStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_quality_approval_status_2597c88c5006c419, []int{0}
+	return fileDescriptor_feed_item_quality_approval_status_6ed9af1832badd62, []int{0}
 }
 func (m *FeedItemQualityApprovalStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedItemQualityApprovalStatusEnum.Unmarshal(m, b)
@@ -91,10 +91,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/feed_item_quality_approval_status.proto", fileDescriptor_feed_item_quality_approval_status_2597c88c5006c419)
+	proto.RegisterFile("google/ads/googleads/v0/enums/feed_item_quality_approval_status.proto", fileDescriptor_feed_item_quality_approval_status_6ed9af1832badd62)
 }
 
-var fileDescriptor_feed_item_quality_approval_status_2597c88c5006c419 = []byte{
+var fileDescriptor_feed_item_quality_approval_status_6ed9af1832badd62 = []byte{
 	// 307 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x6a, 0xb4, 0x30,
 	0x1c, 0xc5, 0x3f, 0x1d, 0xf8, 0x5a, 0x32, 0x85, 0x0e, 0xee, 0x67, 0x31, 0x73, 0x80, 0x28, 0x74,

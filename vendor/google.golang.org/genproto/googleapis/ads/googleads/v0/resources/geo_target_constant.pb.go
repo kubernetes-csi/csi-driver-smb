@@ -49,7 +49,7 @@ func (m *GeoTargetConstant) Reset()         { *m = GeoTargetConstant{} }
 func (m *GeoTargetConstant) String() string { return proto.CompactTextString(m) }
 func (*GeoTargetConstant) ProtoMessage()    {}
 func (*GeoTargetConstant) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_87e0d0e3a6e60035, []int{0}
+	return fileDescriptor_geo_target_constant_7cb5572383d64c07, []int{0}
 }
 func (m *GeoTargetConstant) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GeoTargetConstant.Unmarshal(m, b)
@@ -123,10 +123,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/geo_target_constant.proto", fileDescriptor_geo_target_constant_87e0d0e3a6e60035)
+	proto.RegisterFile("google/ads/googleads/v0/resources/geo_target_constant.proto", fileDescriptor_geo_target_constant_7cb5572383d64c07)
 }
 
-var fileDescriptor_geo_target_constant_87e0d0e3a6e60035 = []byte{
+var fileDescriptor_geo_target_constant_7cb5572383d64c07 = []byte{
 	// 441 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x41, 0x8b, 0xd3, 0x40,
 	0x14, 0xc7, 0x49, 0xba, 0x56, 0x9d, 0xee, 0x2e, 0x98, 0x83, 0x84, 0x55, 0xa4, 0xab, 0x2c, 0x14,

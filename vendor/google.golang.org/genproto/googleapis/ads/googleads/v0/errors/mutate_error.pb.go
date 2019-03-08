@@ -62,7 +62,7 @@ func (x MutateErrorEnum_MutateError) String() string {
 	return proto.EnumName(MutateErrorEnum_MutateError_name, int32(x))
 }
 func (MutateErrorEnum_MutateError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_mutate_error_31526db39b898add, []int{0, 0}
+	return fileDescriptor_mutate_error_91b1822685171f8a, []int{0, 0}
 }
 
 // Container for enum describing possible mutate errors.
@@ -76,7 +76,7 @@ func (m *MutateErrorEnum) Reset()         { *m = MutateErrorEnum{} }
 func (m *MutateErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*MutateErrorEnum) ProtoMessage()    {}
 func (*MutateErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_mutate_error_31526db39b898add, []int{0}
+	return fileDescriptor_mutate_error_91b1822685171f8a, []int{0}
 }
 func (m *MutateErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateErrorEnum.Unmarshal(m, b)
@@ -102,10 +102,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/mutate_error.proto", fileDescriptor_mutate_error_31526db39b898add)
+	proto.RegisterFile("google/ads/googleads/v0/errors/mutate_error.proto", fileDescriptor_mutate_error_91b1822685171f8a)
 }
 
-var fileDescriptor_mutate_error_31526db39b898add = []byte{
+var fileDescriptor_mutate_error_91b1822685171f8a = []byte{
 	// 366 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xd1, 0xea, 0xd3, 0x30,
 	0x14, 0xc6, 0xed, 0xfe, 0xe0, 0x34, 0xbb, 0x58, 0xc8, 0x85, 0xa0, 0xb0, 0x81, 0x7d, 0x80, 0xb4,

@@ -22,7 +22,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// The view specifies a subset of [Task][google.cloud.tasks.v2beta3.Task] data.
+// The view specifies a subset of [Task][google.cloud.tasks.v2beta3.Task]
+// data.
 //
 // When a task is returned in a response, not all
 // information is retrieved by default because some data, such as
@@ -38,16 +39,18 @@ const (
 	// sensitive data.
 	//
 	// This view does not include the
-	// [body in AppEngineHttpRequest][google.cloud.tasks.v2beta3.AppEngineHttpRequest.body].
+	// [body in
+	// AppEngineHttpRequest][google.cloud.tasks.v2beta3.AppEngineHttpRequest.body].
 	// Bodies are desirable to return only when needed, because they
 	// can be large and because of the sensitivity of the data that you
 	// choose to store in it.
 	Task_BASIC Task_View = 1
 	// All information is returned.
 	//
-	// Authorization for [FULL][google.cloud.tasks.v2beta3.Task.View.FULL] requires
-	// `cloudtasks.tasks.fullView` [Google IAM](https://cloud.google.com/iam/)
-	// permission on the [Queue][google.cloud.tasks.v2beta3.Queue] resource.
+	// Authorization for [FULL][google.cloud.tasks.v2beta3.Task.View.FULL]
+	// requires `cloudtasks.tasks.fullView` [Google
+	// IAM](https://cloud.google.com/iam/) permission on the
+	// [Queue][google.cloud.tasks.v2beta3.Queue] resource.
 	Task_FULL Task_View = 2
 )
 
@@ -66,12 +69,13 @@ func (x Task_View) String() string {
 	return proto.EnumName(Task_View_name, int32(x))
 }
 func (Task_View) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_task_e4ac2456a2f2128b, []int{0, 0}
+	return fileDescriptor_task_8e3ed7751dedad39, []int{0, 0}
 }
 
 // A unit of scheduled work.
 type Task struct {
-	// Optionally caller-specified in [CreateTask][google.cloud.tasks.v2beta3.CloudTasks.CreateTask].
+	// Optionally caller-specified in
+	// [CreateTask][google.cloud.tasks.v2beta3.CloudTasks.CreateTask].
 	//
 	// The task name.
 	//
@@ -111,7 +115,8 @@ type Task struct {
 	// The deadline for requests sent to the worker. If the worker does not
 	// respond by this deadline then the request is cancelled and the attempt
 	// is marked as a `DEADLINE_EXCEEDED` failure. Cloud Tasks will retry the
-	// task according to the [RetryConfig][google.cloud.tasks.v2beta3.RetryConfig].
+	// task according to the
+	// [RetryConfig][google.cloud.tasks.v2beta3.RetryConfig].
 	//
 	// Note that when the request is cancelled, Cloud Tasks will stop listing for
 	// the response, but whether the worker stops processing depends on the
@@ -124,9 +129,11 @@ type Task struct {
 	//   10 minutes.
 	//   The deadline must be in the interval [15 seconds, 30 minutes].
 	//
-	// * For [App Engine tasks][google.cloud.tasks.v2beta3.AppEngineHttpRequest], 0 indicates that the
+	// * For [App Engine tasks][google.cloud.tasks.v2beta3.AppEngineHttpRequest],
+	// 0 indicates that the
 	//   request has the default deadline. The default deadline depends on the
-	//   [scaling type](https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#instance_scaling)
+	//   [scaling
+	//   type](https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#instance_scaling)
 	//   of the service: 10 minutes for standard apps with automatic scaling, 24
 	//   hours for standard apps with manual and basic scaling, and 60 minutes for
 	//   flex apps. If the request deadline is set, it must be in the interval [15
@@ -149,13 +156,14 @@ type Task struct {
 	ResponseCount int32 `protobuf:"varint,7,opt,name=response_count,json=responseCount,proto3" json:"response_count,omitempty"`
 	// Output only. The status of the task's first attempt.
 	//
-	// Only [dispatch_time][google.cloud.tasks.v2beta3.Attempt.dispatch_time] will be set.
-	// The other [Attempt][google.cloud.tasks.v2beta3.Attempt] information is not retained by Cloud Tasks.
+	// Only [dispatch_time][google.cloud.tasks.v2beta3.Attempt.dispatch_time] will
+	// be set. The other [Attempt][google.cloud.tasks.v2beta3.Attempt] information
+	// is not retained by Cloud Tasks.
 	FirstAttempt *Attempt `protobuf:"bytes,8,opt,name=first_attempt,json=firstAttempt,proto3" json:"first_attempt,omitempty"`
 	// Output only. The status of the task's last attempt.
 	LastAttempt *Attempt `protobuf:"bytes,9,opt,name=last_attempt,json=lastAttempt,proto3" json:"last_attempt,omitempty"`
-	// Output only. The view specifies which subset of the [Task][google.cloud.tasks.v2beta3.Task] has
-	// been returned.
+	// Output only. The view specifies which subset of the
+	// [Task][google.cloud.tasks.v2beta3.Task] has been returned.
 	View                 Task_View `protobuf:"varint,10,opt,name=view,proto3,enum=google.cloud.tasks.v2beta3.Task_View" json:"view,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
 	XXX_unrecognized     []byte    `json:"-"`
@@ -166,7 +174,7 @@ func (m *Task) Reset()         { *m = Task{} }
 func (m *Task) String() string { return proto.CompactTextString(m) }
 func (*Task) ProtoMessage()    {}
 func (*Task) Descriptor() ([]byte, []int) {
-	return fileDescriptor_task_e4ac2456a2f2128b, []int{0}
+	return fileDescriptor_task_8e3ed7751dedad39, []int{0}
 }
 func (m *Task) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Task.Unmarshal(m, b)
@@ -388,7 +396,7 @@ func (m *Attempt) Reset()         { *m = Attempt{} }
 func (m *Attempt) String() string { return proto.CompactTextString(m) }
 func (*Attempt) ProtoMessage()    {}
 func (*Attempt) Descriptor() ([]byte, []int) {
-	return fileDescriptor_task_e4ac2456a2f2128b, []int{1}
+	return fileDescriptor_task_8e3ed7751dedad39, []int{1}
 }
 func (m *Attempt) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Attempt.Unmarshal(m, b)
@@ -443,10 +451,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/tasks/v2beta3/task.proto", fileDescriptor_task_e4ac2456a2f2128b)
+	proto.RegisterFile("google/cloud/tasks/v2beta3/task.proto", fileDescriptor_task_8e3ed7751dedad39)
 }
 
-var fileDescriptor_task_e4ac2456a2f2128b = []byte{
+var fileDescriptor_task_8e3ed7751dedad39 = []byte{
 	// 589 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0xdf, 0x4f, 0xdb, 0x30,
 	0x10, 0xc7, 0x09, 0xa4, 0x40, 0xdd, 0xd0, 0x75, 0x16, 0x12, 0x59, 0x35, 0xb1, 0xaa, 0x53, 0x45,

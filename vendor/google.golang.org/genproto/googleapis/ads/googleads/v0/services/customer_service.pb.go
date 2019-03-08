@@ -27,7 +27,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [CustomerService.GetCustomer][google.ads.googleads.v0.services.CustomerService.GetCustomer].
+// Request message for
+// [CustomerService.GetCustomer][google.ads.googleads.v0.services.CustomerService.GetCustomer].
 type GetCustomerRequest struct {
 	// The resource name of the customer to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -40,7 +41,7 @@ func (m *GetCustomerRequest) Reset()         { *m = GetCustomerRequest{} }
 func (m *GetCustomerRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCustomerRequest) ProtoMessage()    {}
 func (*GetCustomerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{0}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{0}
 }
 func (m *GetCustomerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetCustomerRequest.Unmarshal(m, b)
@@ -67,7 +68,8 @@ func (m *GetCustomerRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [CustomerService.MutateCustomer][google.ads.googleads.v0.services.CustomerService.MutateCustomer].
+// Request message for
+// [CustomerService.MutateCustomer][google.ads.googleads.v0.services.CustomerService.MutateCustomer].
 type MutateCustomerRequest struct {
 	// The ID of the customer being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -85,7 +87,7 @@ func (m *MutateCustomerRequest) Reset()         { *m = MutateCustomerRequest{} }
 func (m *MutateCustomerRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateCustomerRequest) ProtoMessage()    {}
 func (*MutateCustomerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{1}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{1}
 }
 func (m *MutateCustomerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCustomerRequest.Unmarshal(m, b)
@@ -126,7 +128,8 @@ func (m *MutateCustomerRequest) GetValidateOnly() bool {
 	return false
 }
 
-// Request message for [CustomerService.CreateCustomerClient][google.ads.googleads.v0.services.CustomerService.CreateCustomerClient].
+// Request message for
+// [CustomerService.CreateCustomerClient][google.ads.googleads.v0.services.CustomerService.CreateCustomerClient].
 type CreateCustomerClientRequest struct {
 	// The ID of the Manager under whom client customer is being created.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -142,7 +145,7 @@ func (m *CreateCustomerClientRequest) Reset()         { *m = CreateCustomerClien
 func (m *CreateCustomerClientRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateCustomerClientRequest) ProtoMessage()    {}
 func (*CreateCustomerClientRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{2}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{2}
 }
 func (m *CreateCustomerClientRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateCustomerClientRequest.Unmarshal(m, b)
@@ -191,7 +194,7 @@ func (m *CustomerOperation) Reset()         { *m = CustomerOperation{} }
 func (m *CustomerOperation) String() string { return proto.CompactTextString(m) }
 func (*CustomerOperation) ProtoMessage()    {}
 func (*CustomerOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{3}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{3}
 }
 func (m *CustomerOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomerOperation.Unmarshal(m, b)
@@ -238,7 +241,7 @@ func (m *CreateCustomerClientResponse) Reset()         { *m = CreateCustomerClie
 func (m *CreateCustomerClientResponse) String() string { return proto.CompactTextString(m) }
 func (*CreateCustomerClientResponse) ProtoMessage()    {}
 func (*CreateCustomerClientResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{4}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{4}
 }
 func (m *CreateCustomerClientResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateCustomerClientResponse.Unmarshal(m, b)
@@ -278,7 +281,7 @@ func (m *MutateCustomerResponse) Reset()         { *m = MutateCustomerResponse{}
 func (m *MutateCustomerResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateCustomerResponse) ProtoMessage()    {}
 func (*MutateCustomerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{5}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{5}
 }
 func (m *MutateCustomerResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCustomerResponse.Unmarshal(m, b)
@@ -318,7 +321,7 @@ func (m *MutateCustomerResult) Reset()         { *m = MutateCustomerResult{} }
 func (m *MutateCustomerResult) String() string { return proto.CompactTextString(m) }
 func (*MutateCustomerResult) ProtoMessage()    {}
 func (*MutateCustomerResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{6}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{6}
 }
 func (m *MutateCustomerResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCustomerResult.Unmarshal(m, b)
@@ -345,7 +348,8 @@ func (m *MutateCustomerResult) GetResourceName() string {
 	return ""
 }
 
-// Request message for [CustomerService.ListAccessibleCustomers][google.ads.googleads.v0.services.CustomerService.ListAccessibleCustomers].
+// Request message for
+// [CustomerService.ListAccessibleCustomers][google.ads.googleads.v0.services.CustomerService.ListAccessibleCustomers].
 type ListAccessibleCustomersRequest struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -356,7 +360,7 @@ func (m *ListAccessibleCustomersRequest) Reset()         { *m = ListAccessibleCu
 func (m *ListAccessibleCustomersRequest) String() string { return proto.CompactTextString(m) }
 func (*ListAccessibleCustomersRequest) ProtoMessage()    {}
 func (*ListAccessibleCustomersRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{7}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{7}
 }
 func (m *ListAccessibleCustomersRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListAccessibleCustomersRequest.Unmarshal(m, b)
@@ -376,7 +380,8 @@ func (m *ListAccessibleCustomersRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ListAccessibleCustomersRequest proto.InternalMessageInfo
 
-// Response message for [CustomerService.ListAccessibleCustomers][google.ads.googleads.v0.services.CustomerService.ListAccessibleCustomers].
+// Response message for
+// [CustomerService.ListAccessibleCustomers][google.ads.googleads.v0.services.CustomerService.ListAccessibleCustomers].
 type ListAccessibleCustomersResponse struct {
 	// Resource name of customers directly accessible by the
 	// user authenticating the call.
@@ -390,7 +395,7 @@ func (m *ListAccessibleCustomersResponse) Reset()         { *m = ListAccessibleC
 func (m *ListAccessibleCustomersResponse) String() string { return proto.CompactTextString(m) }
 func (*ListAccessibleCustomersResponse) ProtoMessage()    {}
 func (*ListAccessibleCustomersResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_service_e5ecf1f9c55d2b05, []int{8}
+	return fileDescriptor_customer_service_e2c9b50dc5d976a3, []int{8}
 }
 func (m *ListAccessibleCustomersResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListAccessibleCustomersResponse.Unmarshal(m, b)
@@ -611,10 +616,10 @@ var _CustomerService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/customer_service.proto", fileDescriptor_customer_service_e5ecf1f9c55d2b05)
+	proto.RegisterFile("google/ads/googleads/v0/services/customer_service.proto", fileDescriptor_customer_service_e2c9b50dc5d976a3)
 }
 
-var fileDescriptor_customer_service_e5ecf1f9c55d2b05 = []byte{
+var fileDescriptor_customer_service_e2c9b50dc5d976a3 = []byte{
 	// 744 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x55, 0x4d, 0x6f, 0xd3, 0x40,
 	0x10, 0xd5, 0xa6, 0x10, 0xd1, 0x4d, 0x3f, 0xc4, 0xaa, 0x40, 0x14, 0xaa, 0x36, 0x98, 0x56, 0x0d,

@@ -37,7 +37,7 @@ func (m *FrequencyCapEntry) Reset()         { *m = FrequencyCapEntry{} }
 func (m *FrequencyCapEntry) String() string { return proto.CompactTextString(m) }
 func (*FrequencyCapEntry) ProtoMessage()    {}
 func (*FrequencyCapEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_frequency_cap_9bbb940e531af356, []int{0}
+	return fileDescriptor_frequency_cap_48b76bf03b3cadb7, []int{0}
 }
 func (m *FrequencyCapEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FrequencyCapEntry.Unmarshal(m, b)
@@ -92,7 +92,7 @@ func (m *FrequencyCapKey) Reset()         { *m = FrequencyCapKey{} }
 func (m *FrequencyCapKey) String() string { return proto.CompactTextString(m) }
 func (*FrequencyCapKey) ProtoMessage()    {}
 func (*FrequencyCapKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_frequency_cap_9bbb940e531af356, []int{1}
+	return fileDescriptor_frequency_cap_48b76bf03b3cadb7, []int{1}
 }
 func (m *FrequencyCapKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FrequencyCapKey.Unmarshal(m, b)
@@ -146,10 +146,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/common/frequency_cap.proto", fileDescriptor_frequency_cap_9bbb940e531af356)
+	proto.RegisterFile("google/ads/googleads/v0/common/frequency_cap.proto", fileDescriptor_frequency_cap_48b76bf03b3cadb7)
 }
 
-var fileDescriptor_frequency_cap_9bbb940e531af356 = []byte{
+var fileDescriptor_frequency_cap_48b76bf03b3cadb7 = []byte{
 	// 453 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x53, 0xdd, 0x6a, 0xd4, 0x40,
 	0x14, 0x26, 0x1b, 0x15, 0x3b, 0x85, 0x8a, 0xb9, 0x5a, 0x2a, 0x14, 0xd9, 0x2b, 0x6f, 0x9c, 0x84,

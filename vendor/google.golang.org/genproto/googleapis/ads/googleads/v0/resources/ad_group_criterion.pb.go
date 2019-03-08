@@ -114,7 +114,7 @@ func (m *AdGroupCriterion) Reset()         { *m = AdGroupCriterion{} }
 func (m *AdGroupCriterion) String() string { return proto.CompactTextString(m) }
 func (*AdGroupCriterion) ProtoMessage()    {}
 func (*AdGroupCriterion) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_criterion_99039488992dce9f, []int{0}
+	return fileDescriptor_ad_group_criterion_c91904ece975ad88, []int{0}
 }
 func (m *AdGroupCriterion) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdGroupCriterion.Unmarshal(m, b)
@@ -851,7 +851,7 @@ func (m *AdGroupCriterion_QualityInfo) Reset()         { *m = AdGroupCriterion_Q
 func (m *AdGroupCriterion_QualityInfo) String() string { return proto.CompactTextString(m) }
 func (*AdGroupCriterion_QualityInfo) ProtoMessage()    {}
 func (*AdGroupCriterion_QualityInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_criterion_99039488992dce9f, []int{0, 0}
+	return fileDescriptor_ad_group_criterion_c91904ece975ad88, []int{0, 0}
 }
 func (m *AdGroupCriterion_QualityInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdGroupCriterion_QualityInfo.Unmarshal(m, b)
@@ -925,7 +925,7 @@ func (m *AdGroupCriterion_PositionEstimates) Reset()         { *m = AdGroupCrite
 func (m *AdGroupCriterion_PositionEstimates) String() string { return proto.CompactTextString(m) }
 func (*AdGroupCriterion_PositionEstimates) ProtoMessage()    {}
 func (*AdGroupCriterion_PositionEstimates) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_criterion_99039488992dce9f, []int{0, 1}
+	return fileDescriptor_ad_group_criterion_c91904ece975ad88, []int{0, 1}
 }
 func (m *AdGroupCriterion_PositionEstimates) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdGroupCriterion_PositionEstimates.Unmarshal(m, b)
@@ -987,10 +987,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/ad_group_criterion.proto", fileDescriptor_ad_group_criterion_99039488992dce9f)
+	proto.RegisterFile("google/ads/googleads/v0/resources/ad_group_criterion.proto", fileDescriptor_ad_group_criterion_c91904ece975ad88)
 }
 
-var fileDescriptor_ad_group_criterion_99039488992dce9f = []byte{
+var fileDescriptor_ad_group_criterion_c91904ece975ad88 = []byte{
 	// 1495 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x98, 0xcb, 0x73, 0xdc, 0x34,
 	0x1c, 0xc7, 0xd9, 0xa4, 0xaf, 0x28, 0x8f, 0x36, 0x4a, 0x13, 0xd4, 0xb4, 0x40, 0xd2, 0x07, 0xa4,

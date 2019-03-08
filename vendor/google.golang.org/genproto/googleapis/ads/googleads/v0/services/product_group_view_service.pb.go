@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [ProductGroupViewService.GetProductGroupView][google.ads.googleads.v0.services.ProductGroupViewService.GetProductGroupView].
+// Request message for
+// [ProductGroupViewService.GetProductGroupView][google.ads.googleads.v0.services.ProductGroupViewService.GetProductGroupView].
 type GetProductGroupViewRequest struct {
 	// The resource name of the product group view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetProductGroupViewRequest) Reset()         { *m = GetProductGroupViewR
 func (m *GetProductGroupViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetProductGroupViewRequest) ProtoMessage()    {}
 func (*GetProductGroupViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_product_group_view_service_19cda65f48cf0bf1, []int{0}
+	return fileDescriptor_product_group_view_service_f9f07d10ed441325, []int{0}
 }
 func (m *GetProductGroupViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetProductGroupViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _ProductGroupViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/product_group_view_service.proto", fileDescriptor_product_group_view_service_19cda65f48cf0bf1)
+	proto.RegisterFile("google/ads/googleads/v0/services/product_group_view_service.proto", fileDescriptor_product_group_view_service_f9f07d10ed441325)
 }
 
-var fileDescriptor_product_group_view_service_19cda65f48cf0bf1 = []byte{
+var fileDescriptor_product_group_view_service_f9f07d10ed441325 = []byte{
 	// 369 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0x31, 0x4b, 0xfb, 0x40,
 	0x1c, 0x25, 0xf9, 0xc3, 0x1f, 0x0c, 0xba, 0xc4, 0x41, 0x09, 0x1d, 0x4a, 0xed, 0x20, 0x1d, 0xee,

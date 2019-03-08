@@ -46,7 +46,7 @@ func (x SpendingLimitTypeEnum_SpendingLimitType) String() string {
 	return proto.EnumName(SpendingLimitTypeEnum_SpendingLimitType_name, int32(x))
 }
 func (SpendingLimitTypeEnum_SpendingLimitType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_spending_limit_type_62608a37ce3dea80, []int{0, 0}
+	return fileDescriptor_spending_limit_type_0a93832e8e47678c, []int{0, 0}
 }
 
 // Message describing spending limit types.
@@ -60,7 +60,7 @@ func (m *SpendingLimitTypeEnum) Reset()         { *m = SpendingLimitTypeEnum{} }
 func (m *SpendingLimitTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*SpendingLimitTypeEnum) ProtoMessage()    {}
 func (*SpendingLimitTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_spending_limit_type_62608a37ce3dea80, []int{0}
+	return fileDescriptor_spending_limit_type_0a93832e8e47678c, []int{0}
 }
 func (m *SpendingLimitTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SpendingLimitTypeEnum.Unmarshal(m, b)
@@ -86,10 +86,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/spending_limit_type.proto", fileDescriptor_spending_limit_type_62608a37ce3dea80)
+	proto.RegisterFile("google/ads/googleads/v0/enums/spending_limit_type.proto", fileDescriptor_spending_limit_type_0a93832e8e47678c)
 }
 
-var fileDescriptor_spending_limit_type_62608a37ce3dea80 = []byte{
+var fileDescriptor_spending_limit_type_0a93832e8e47678c = []byte{
 	// 281 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x4f, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

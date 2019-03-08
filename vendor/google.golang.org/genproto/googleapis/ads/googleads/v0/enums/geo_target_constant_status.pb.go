@@ -51,7 +51,7 @@ func (x GeoTargetConstantStatusEnum_GeoTargetConstantStatus) String() string {
 	return proto.EnumName(GeoTargetConstantStatusEnum_GeoTargetConstantStatus_name, int32(x))
 }
 func (GeoTargetConstantStatusEnum_GeoTargetConstantStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_status_610eb5bb0ff353bb, []int{0, 0}
+	return fileDescriptor_geo_target_constant_status_e804ef8a5209ea8b, []int{0, 0}
 }
 
 // Container for describing the status of a geo target constant.
@@ -65,7 +65,7 @@ func (m *GeoTargetConstantStatusEnum) Reset()         { *m = GeoTargetConstantSt
 func (m *GeoTargetConstantStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*GeoTargetConstantStatusEnum) ProtoMessage()    {}
 func (*GeoTargetConstantStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_status_610eb5bb0ff353bb, []int{0}
+	return fileDescriptor_geo_target_constant_status_e804ef8a5209ea8b, []int{0}
 }
 func (m *GeoTargetConstantStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GeoTargetConstantStatusEnum.Unmarshal(m, b)
@@ -91,10 +91,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/geo_target_constant_status.proto", fileDescriptor_geo_target_constant_status_610eb5bb0ff353bb)
+	proto.RegisterFile("google/ads/googleads/v0/enums/geo_target_constant_status.proto", fileDescriptor_geo_target_constant_status_e804ef8a5209ea8b)
 }
 
-var fileDescriptor_geo_target_constant_status_610eb5bb0ff353bb = []byte{
+var fileDescriptor_geo_target_constant_status_e804ef8a5209ea8b = []byte{
 	// 306 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xc1, 0x4a, 0xc3, 0x30,
 	0x18, 0xc7, 0x5d, 0x07, 0x0a, 0xd9, 0x61, 0xa5, 0x1e, 0x3c, 0xe8, 0x0e, 0xdb, 0x03, 0xa4, 0x05,

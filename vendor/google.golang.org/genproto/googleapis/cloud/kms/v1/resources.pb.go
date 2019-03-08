@@ -21,7 +21,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// [ProtectionLevel][google.cloud.kms.v1.ProtectionLevel] specifies how cryptographic operations are performed.
+// [ProtectionLevel][google.cloud.kms.v1.ProtectionLevel] specifies how
+// cryptographic operations are performed.
 type ProtectionLevel int32
 
 const (
@@ -48,27 +49,32 @@ func (x ProtectionLevel) String() string {
 	return proto.EnumName(ProtectionLevel_name, int32(x))
 }
 func (ProtectionLevel) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{0}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{0}
 }
 
-// [CryptoKeyPurpose][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose] describes the cryptographic capabilities of a
-// [CryptoKey][google.cloud.kms.v1.CryptoKey]. A given key can only be used for the operations allowed by
-// its purpose.
+// [CryptoKeyPurpose][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose]
+// describes the cryptographic capabilities of a
+// [CryptoKey][google.cloud.kms.v1.CryptoKey]. A given key can only be used
+// for the operations allowed by its purpose.
 type CryptoKey_CryptoKeyPurpose int32
 
 const (
 	// Not specified.
 	CryptoKey_CRYPTO_KEY_PURPOSE_UNSPECIFIED CryptoKey_CryptoKeyPurpose = 0
-	// [CryptoKeys][google.cloud.kms.v1.CryptoKey] with this purpose may be used with
-	// [Encrypt][google.cloud.kms.v1.KeyManagementService.Encrypt] and
+	// [CryptoKeys][google.cloud.kms.v1.CryptoKey] with this purpose may be used
+	// with [Encrypt][google.cloud.kms.v1.KeyManagementService.Encrypt] and
 	// [Decrypt][google.cloud.kms.v1.KeyManagementService.Decrypt].
 	CryptoKey_ENCRYPT_DECRYPT CryptoKey_CryptoKeyPurpose = 1
-	// [CryptoKeys][google.cloud.kms.v1.CryptoKey] with this purpose may be used with
-	// [AsymmetricSign][google.cloud.kms.v1.KeyManagementService.AsymmetricSign] and
+	// [CryptoKeys][google.cloud.kms.v1.CryptoKey] with this purpose may be used
+	// with
+	// [AsymmetricSign][google.cloud.kms.v1.KeyManagementService.AsymmetricSign]
+	// and
 	// [GetPublicKey][google.cloud.kms.v1.KeyManagementService.GetPublicKey].
 	CryptoKey_ASYMMETRIC_SIGN CryptoKey_CryptoKeyPurpose = 5
-	// [CryptoKeys][google.cloud.kms.v1.CryptoKey] with this purpose may be used with
-	// [AsymmetricDecrypt][google.cloud.kms.v1.KeyManagementService.AsymmetricDecrypt] and
+	// [CryptoKeys][google.cloud.kms.v1.CryptoKey] with this purpose may be used
+	// with
+	// [AsymmetricDecrypt][google.cloud.kms.v1.KeyManagementService.AsymmetricDecrypt]
+	// and
 	// [GetPublicKey][google.cloud.kms.v1.KeyManagementService.GetPublicKey].
 	CryptoKey_ASYMMETRIC_DECRYPT CryptoKey_CryptoKeyPurpose = 6
 )
@@ -90,7 +96,7 @@ func (x CryptoKey_CryptoKeyPurpose) String() string {
 	return proto.EnumName(CryptoKey_CryptoKeyPurpose_name, int32(x))
 }
 func (CryptoKey_CryptoKeyPurpose) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{1, 0}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{1, 0}
 }
 
 // Attestion formats provided by the HSM.
@@ -121,18 +127,21 @@ func (x KeyOperationAttestation_AttestationFormat) String() string {
 	return proto.EnumName(KeyOperationAttestation_AttestationFormat_name, int32(x))
 }
 func (KeyOperationAttestation_AttestationFormat) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{3, 0}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{3, 0}
 }
 
-// The algorithm of the [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion], indicating what
+// The algorithm of the
+// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion], indicating what
 // parameters must be used for each cryptographic operation.
 //
 // The
 // [GOOGLE_SYMMETRIC_ENCRYPTION][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION]
-// algorithm is usable with [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose]
+// algorithm is usable with
+// [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose]
 // [ENCRYPT_DECRYPT][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT].
 //
-// Algorithms beginning with "RSA_SIGN_" are usable with [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose]
+// Algorithms beginning with "RSA_SIGN_" are usable with
+// [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose]
 // [ASYMMETRIC_SIGN][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ASYMMETRIC_SIGN].
 //
 // The fields in the name after "RSA_SIGN_" correspond to the following
@@ -150,7 +159,8 @@ func (KeyOperationAttestation_AttestationFormat) EnumDescriptor() ([]byte, []int
 // The fields in the name after "RSA_DECRYPT_" correspond to the following
 // parameters: padding algorithm, modulus bit length, and digest algorithm.
 //
-// Algorithms beginning with "EC_SIGN_" are usable with [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose]
+// Algorithms beginning with "EC_SIGN_" are usable with
+// [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose]
 // [ASYMMETRIC_SIGN][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ASYMMETRIC_SIGN].
 //
 // The fields in the name after "EC_SIGN_" correspond to the following
@@ -221,10 +231,11 @@ func (x CryptoKeyVersion_CryptoKeyVersionAlgorithm) String() string {
 	return proto.EnumName(CryptoKeyVersion_CryptoKeyVersionAlgorithm_name, int32(x))
 }
 func (CryptoKeyVersion_CryptoKeyVersionAlgorithm) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{4, 0}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{4, 0}
 }
 
-// The state of a [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion], indicating if it can be used.
+// The state of a [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion],
+// indicating if it can be used.
 type CryptoKeyVersion_CryptoKeyVersionState int32
 
 const (
@@ -232,12 +243,16 @@ const (
 	CryptoKeyVersion_CRYPTO_KEY_VERSION_STATE_UNSPECIFIED CryptoKeyVersion_CryptoKeyVersionState = 0
 	// This version is still being generated. It may not be used, enabled,
 	// disabled, or destroyed yet. Cloud KMS will automatically mark this
-	// version [ENABLED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.ENABLED] as soon as the version is ready.
+	// version
+	// [ENABLED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.ENABLED]
+	// as soon as the version is ready.
 	CryptoKeyVersion_PENDING_GENERATION CryptoKeyVersion_CryptoKeyVersionState = 5
 	// This version may be used for cryptographic operations.
 	CryptoKeyVersion_ENABLED CryptoKeyVersion_CryptoKeyVersionState = 1
 	// This version may not be used, but the key material is still available,
-	// and the version can be placed back into the [ENABLED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.ENABLED] state.
+	// and the version can be placed back into the
+	// [ENABLED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.ENABLED]
+	// state.
 	CryptoKeyVersion_DISABLED CryptoKeyVersion_CryptoKeyVersionState = 2
 	// This version is destroyed, and the key material is no longer stored.
 	// A version may not leave this state once entered.
@@ -245,7 +260,9 @@ const (
 	// This version is scheduled for destruction, and will be destroyed soon.
 	// Call
 	// [RestoreCryptoKeyVersion][google.cloud.kms.v1.KeyManagementService.RestoreCryptoKeyVersion]
-	// to put it back into the [DISABLED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.DISABLED] state.
+	// to put it back into the
+	// [DISABLED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.DISABLED]
+	// state.
 	CryptoKeyVersion_DESTROY_SCHEDULED CryptoKeyVersion_CryptoKeyVersionState = 4
 )
 
@@ -270,20 +287,25 @@ func (x CryptoKeyVersion_CryptoKeyVersionState) String() string {
 	return proto.EnumName(CryptoKeyVersion_CryptoKeyVersionState_name, int32(x))
 }
 func (CryptoKeyVersion_CryptoKeyVersionState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{4, 1}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{4, 1}
 }
 
-// A view for [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]s. Controls the level of detail returned
-// for [CryptoKeyVersions][google.cloud.kms.v1.CryptoKeyVersion] in
-// [KeyManagementService.ListCryptoKeyVersions][google.cloud.kms.v1.KeyManagementService.ListCryptoKeyVersions] and
+// A view for [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]s.
+// Controls the level of detail returned for
+// [CryptoKeyVersions][google.cloud.kms.v1.CryptoKeyVersion] in
+// [KeyManagementService.ListCryptoKeyVersions][google.cloud.kms.v1.KeyManagementService.ListCryptoKeyVersions]
+// and
 // [KeyManagementService.ListCryptoKeys][google.cloud.kms.v1.KeyManagementService.ListCryptoKeys].
 type CryptoKeyVersion_CryptoKeyVersionView int32
 
 const (
-	// Default view for each [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]. Does not include
-	// the [attestation][google.cloud.kms.v1.CryptoKeyVersion.attestation] field.
+	// Default view for each
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]. Does not
+	// include the
+	// [attestation][google.cloud.kms.v1.CryptoKeyVersion.attestation] field.
 	CryptoKeyVersion_CRYPTO_KEY_VERSION_VIEW_UNSPECIFIED CryptoKeyVersion_CryptoKeyVersionView = 0
-	// Provides all fields in each [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion], including the
+	// Provides all fields in each
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion], including the
 	// [attestation][google.cloud.kms.v1.CryptoKeyVersion.attestation].
 	CryptoKeyVersion_FULL CryptoKeyVersion_CryptoKeyVersionView = 1
 )
@@ -301,15 +323,18 @@ func (x CryptoKeyVersion_CryptoKeyVersionView) String() string {
 	return proto.EnumName(CryptoKeyVersion_CryptoKeyVersionView_name, int32(x))
 }
 func (CryptoKeyVersion_CryptoKeyVersionView) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{4, 2}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{4, 2}
 }
 
-// A [KeyRing][google.cloud.kms.v1.KeyRing] is a toplevel logical grouping of [CryptoKeys][google.cloud.kms.v1.CryptoKey].
+// A [KeyRing][google.cloud.kms.v1.KeyRing] is a toplevel logical grouping of
+// [CryptoKeys][google.cloud.kms.v1.CryptoKey].
 type KeyRing struct {
-	// Output only. The resource name for the [KeyRing][google.cloud.kms.v1.KeyRing] in the format
+	// Output only. The resource name for the
+	// [KeyRing][google.cloud.kms.v1.KeyRing] in the format
 	// `projects/*/locations/*/keyRings/*`.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Output only. The time at which this [KeyRing][google.cloud.kms.v1.KeyRing] was created.
+	// Output only. The time at which this [KeyRing][google.cloud.kms.v1.KeyRing]
+	// was created.
 	CreateTime           *timestamp.Timestamp `protobuf:"bytes,2,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
@@ -320,7 +345,7 @@ func (m *KeyRing) Reset()         { *m = KeyRing{} }
 func (m *KeyRing) String() string { return proto.CompactTextString(m) }
 func (*KeyRing) ProtoMessage()    {}
 func (*KeyRing) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{0}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{0}
 }
 func (m *KeyRing) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeyRing.Unmarshal(m, b)
@@ -354,53 +379,64 @@ func (m *KeyRing) GetCreateTime() *timestamp.Timestamp {
 	return nil
 }
 
-// A [CryptoKey][google.cloud.kms.v1.CryptoKey] represents a logical key that can be used for cryptographic
-// operations.
+// A [CryptoKey][google.cloud.kms.v1.CryptoKey] represents a logical key that
+// can be used for cryptographic operations.
 //
-// A [CryptoKey][google.cloud.kms.v1.CryptoKey] is made up of one or more [versions][google.cloud.kms.v1.CryptoKeyVersion], which
-// represent the actual key material used in cryptographic operations.
+// A [CryptoKey][google.cloud.kms.v1.CryptoKey] is made up of one or more
+// [versions][google.cloud.kms.v1.CryptoKeyVersion], which represent the actual
+// key material used in cryptographic operations.
 type CryptoKey struct {
-	// Output only. The resource name for this [CryptoKey][google.cloud.kms.v1.CryptoKey] in the format
+	// Output only. The resource name for this
+	// [CryptoKey][google.cloud.kms.v1.CryptoKey] in the format
 	// `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Output only. A copy of the "primary" [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] that will be used
-	// by [Encrypt][google.cloud.kms.v1.KeyManagementService.Encrypt] when this [CryptoKey][google.cloud.kms.v1.CryptoKey] is given
-	// in [EncryptRequest.name][google.cloud.kms.v1.EncryptRequest.name].
+	// Output only. A copy of the "primary"
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] that will be used
+	// by [Encrypt][google.cloud.kms.v1.KeyManagementService.Encrypt] when this
+	// [CryptoKey][google.cloud.kms.v1.CryptoKey] is given in
+	// [EncryptRequest.name][google.cloud.kms.v1.EncryptRequest.name].
 	//
-	// The [CryptoKey][google.cloud.kms.v1.CryptoKey]'s primary version can be updated via
+	// The [CryptoKey][google.cloud.kms.v1.CryptoKey]'s primary version can be
+	// updated via
 	// [UpdateCryptoKeyPrimaryVersion][google.cloud.kms.v1.KeyManagementService.UpdateCryptoKeyPrimaryVersion].
 	//
 	// All keys with [purpose][google.cloud.kms.v1.CryptoKey.purpose]
-	// [ENCRYPT_DECRYPT][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT] have a
-	// primary. For other keys, this field will be omitted.
+	// [ENCRYPT_DECRYPT][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT]
+	// have a primary. For other keys, this field will be omitted.
 	Primary *CryptoKeyVersion `protobuf:"bytes,2,opt,name=primary,proto3" json:"primary,omitempty"`
 	// The immutable purpose of this [CryptoKey][google.cloud.kms.v1.CryptoKey].
 	Purpose CryptoKey_CryptoKeyPurpose `protobuf:"varint,3,opt,name=purpose,proto3,enum=google.cloud.kms.v1.CryptoKey_CryptoKeyPurpose" json:"purpose,omitempty"`
-	// Output only. The time at which this [CryptoKey][google.cloud.kms.v1.CryptoKey] was created.
+	// Output only. The time at which this
+	// [CryptoKey][google.cloud.kms.v1.CryptoKey] was created.
 	CreateTime *timestamp.Timestamp `protobuf:"bytes,5,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
-	// At [next_rotation_time][google.cloud.kms.v1.CryptoKey.next_rotation_time], the Key Management Service will automatically:
+	// At [next_rotation_time][google.cloud.kms.v1.CryptoKey.next_rotation_time],
+	// the Key Management Service will automatically:
 	//
 	// 1. Create a new version of this [CryptoKey][google.cloud.kms.v1.CryptoKey].
 	// 2. Mark the new version as primary.
 	//
 	// Key rotations performed manually via
-	// [CreateCryptoKeyVersion][google.cloud.kms.v1.KeyManagementService.CreateCryptoKeyVersion] and
+	// [CreateCryptoKeyVersion][google.cloud.kms.v1.KeyManagementService.CreateCryptoKeyVersion]
+	// and
 	// [UpdateCryptoKeyPrimaryVersion][google.cloud.kms.v1.KeyManagementService.UpdateCryptoKeyPrimaryVersion]
-	// do not affect [next_rotation_time][google.cloud.kms.v1.CryptoKey.next_rotation_time].
+	// do not affect
+	// [next_rotation_time][google.cloud.kms.v1.CryptoKey.next_rotation_time].
 	//
 	// Keys with [purpose][google.cloud.kms.v1.CryptoKey.purpose]
-	// [ENCRYPT_DECRYPT][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT] support
-	// automatic rotation. For other keys, this field must be omitted.
+	// [ENCRYPT_DECRYPT][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT]
+	// support automatic rotation. For other keys, this field must be omitted.
 	NextRotationTime *timestamp.Timestamp `protobuf:"bytes,7,opt,name=next_rotation_time,json=nextRotationTime,proto3" json:"next_rotation_time,omitempty"`
 	// Controls the rate of automatic rotation.
 	//
 	// Types that are valid to be assigned to RotationSchedule:
 	//	*CryptoKey_RotationPeriod
 	RotationSchedule isCryptoKey_RotationSchedule `protobuf_oneof:"rotation_schedule"`
-	// A template describing settings for new [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] instances.
-	// The properties of new [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] instances created by either
-	// [CreateCryptoKeyVersion][google.cloud.kms.v1.KeyManagementService.CreateCryptoKeyVersion] or
-	// auto-rotation are controlled by this template.
+	// A template describing settings for new
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] instances. The
+	// properties of new [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]
+	// instances created by either
+	// [CreateCryptoKeyVersion][google.cloud.kms.v1.KeyManagementService.CreateCryptoKeyVersion]
+	// or auto-rotation are controlled by this template.
 	VersionTemplate *CryptoKeyVersionTemplate `protobuf:"bytes,11,opt,name=version_template,json=versionTemplate,proto3" json:"version_template,omitempty"`
 	// Labels with user-defined metadata. For more information, see
 	// [Labeling Keys](/kms/docs/labeling-keys).
@@ -414,7 +450,7 @@ func (m *CryptoKey) Reset()         { *m = CryptoKey{} }
 func (m *CryptoKey) String() string { return proto.CompactTextString(m) }
 func (*CryptoKey) ProtoMessage()    {}
 func (*CryptoKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{1}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{1}
 }
 func (m *CryptoKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CryptoKey.Unmarshal(m, b)
@@ -562,19 +598,27 @@ func _CryptoKey_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// A [CryptoKeyVersionTemplate][google.cloud.kms.v1.CryptoKeyVersionTemplate] specifies the properties to use when creating
-// a new [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion], either manually with
-// [CreateCryptoKeyVersion][google.cloud.kms.v1.KeyManagementService.CreateCryptoKeyVersion] or
-// automatically as a result of auto-rotation.
+// A [CryptoKeyVersionTemplate][google.cloud.kms.v1.CryptoKeyVersionTemplate]
+// specifies the properties to use when creating a new
+// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion], either manually
+// with
+// [CreateCryptoKeyVersion][google.cloud.kms.v1.KeyManagementService.CreateCryptoKeyVersion]
+// or automatically as a result of auto-rotation.
 type CryptoKeyVersionTemplate struct {
-	// [ProtectionLevel][google.cloud.kms.v1.ProtectionLevel] to use when creating a [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] based on
-	// this template. Immutable. Defaults to [SOFTWARE][google.cloud.kms.v1.ProtectionLevel.SOFTWARE].
+	// [ProtectionLevel][google.cloud.kms.v1.ProtectionLevel] to use when creating
+	// a [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] based on this
+	// template. Immutable. Defaults to
+	// [SOFTWARE][google.cloud.kms.v1.ProtectionLevel.SOFTWARE].
 	ProtectionLevel ProtectionLevel `protobuf:"varint,1,opt,name=protection_level,json=protectionLevel,proto3,enum=google.cloud.kms.v1.ProtectionLevel" json:"protection_level,omitempty"`
-	// Required. [Algorithm][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm] to use
-	// when creating a [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] based on this template.
+	// Required.
+	// [Algorithm][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm]
+	// to use when creating a
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] based on this
+	// template.
 	//
 	// For backwards compatibility, GOOGLE_SYMMETRIC_ENCRYPTION is implied if both
-	// this field is omitted and [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose] is
+	// this field is omitted and
+	// [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose] is
 	// [ENCRYPT_DECRYPT][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT].
 	Algorithm            CryptoKeyVersion_CryptoKeyVersionAlgorithm `protobuf:"varint,3,opt,name=algorithm,proto3,enum=google.cloud.kms.v1.CryptoKeyVersion_CryptoKeyVersionAlgorithm" json:"algorithm,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                                   `json:"-"`
@@ -586,7 +630,7 @@ func (m *CryptoKeyVersionTemplate) Reset()         { *m = CryptoKeyVersionTempla
 func (m *CryptoKeyVersionTemplate) String() string { return proto.CompactTextString(m) }
 func (*CryptoKeyVersionTemplate) ProtoMessage()    {}
 func (*CryptoKeyVersionTemplate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{2}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{2}
 }
 func (m *CryptoKeyVersionTemplate) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CryptoKeyVersionTemplate.Unmarshal(m, b)
@@ -636,7 +680,7 @@ func (m *KeyOperationAttestation) Reset()         { *m = KeyOperationAttestation
 func (m *KeyOperationAttestation) String() string { return proto.CompactTextString(m) }
 func (*KeyOperationAttestation) ProtoMessage()    {}
 func (*KeyOperationAttestation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{3}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{3}
 }
 func (m *KeyOperationAttestation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeyOperationAttestation.Unmarshal(m, b)
@@ -670,44 +714,56 @@ func (m *KeyOperationAttestation) GetContent() []byte {
 	return nil
 }
 
-// A [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] represents an individual cryptographic key, and the
-// associated key material.
+// A [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] represents an
+// individual cryptographic key, and the associated key material.
 //
-// An [ENABLED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.ENABLED] version can be
-// used for cryptographic operations.
+// An
+// [ENABLED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.ENABLED]
+// version can be used for cryptographic operations.
 //
 // For security reasons, the raw cryptographic key material represented by a
-// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] can never be viewed or exported. It can only be used to
-// encrypt, decrypt, or sign data when an authorized user or application invokes
-// Cloud KMS.
+// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] can never be viewed
+// or exported. It can only be used to encrypt, decrypt, or sign data when an
+// authorized user or application invokes Cloud KMS.
 type CryptoKeyVersion struct {
-	// Output only. The resource name for this [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] in the format
+	// Output only. The resource name for this
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] in the format
 	// `projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*`.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// The current state of the [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion].
+	// The current state of the
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion].
 	State CryptoKeyVersion_CryptoKeyVersionState `protobuf:"varint,3,opt,name=state,proto3,enum=google.cloud.kms.v1.CryptoKeyVersion_CryptoKeyVersionState" json:"state,omitempty"`
-	// Output only. The [ProtectionLevel][google.cloud.kms.v1.ProtectionLevel] describing how crypto operations are
-	// performed with this [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion].
+	// Output only. The [ProtectionLevel][google.cloud.kms.v1.ProtectionLevel]
+	// describing how crypto operations are performed with this
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion].
 	ProtectionLevel ProtectionLevel `protobuf:"varint,7,opt,name=protection_level,json=protectionLevel,proto3,enum=google.cloud.kms.v1.ProtectionLevel" json:"protection_level,omitempty"`
-	// Output only. The [CryptoKeyVersionAlgorithm][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm] that this
-	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] supports.
+	// Output only. The
+	// [CryptoKeyVersionAlgorithm][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm]
+	// that this [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]
+	// supports.
 	Algorithm CryptoKeyVersion_CryptoKeyVersionAlgorithm `protobuf:"varint,10,opt,name=algorithm,proto3,enum=google.cloud.kms.v1.CryptoKeyVersion_CryptoKeyVersionAlgorithm" json:"algorithm,omitempty"`
 	// Output only. Statement that was generated and signed by the HSM at key
 	// creation time. Use this statement to verify attributes of the key as stored
 	// on the HSM, independently of Google. Only provided for key versions with
-	// [protection_level][google.cloud.kms.v1.CryptoKeyVersion.protection_level] [HSM][google.cloud.kms.v1.ProtectionLevel.HSM].
+	// [protection_level][google.cloud.kms.v1.CryptoKeyVersion.protection_level]
+	// [HSM][google.cloud.kms.v1.ProtectionLevel.HSM].
 	Attestation *KeyOperationAttestation `protobuf:"bytes,8,opt,name=attestation,proto3" json:"attestation,omitempty"`
-	// Output only. The time at which this [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] was created.
+	// Output only. The time at which this
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] was created.
 	CreateTime *timestamp.Timestamp `protobuf:"bytes,4,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
-	// Output only. The time this [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]'s key material was
+	// Output only. The time this
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]'s key material was
 	// generated.
 	GenerateTime *timestamp.Timestamp `protobuf:"bytes,11,opt,name=generate_time,json=generateTime,proto3" json:"generate_time,omitempty"`
-	// Output only. The time this [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]'s key material is scheduled
-	// for destruction. Only present if [state][google.cloud.kms.v1.CryptoKeyVersion.state] is
+	// Output only. The time this
+	// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]'s key material is
+	// scheduled for destruction. Only present if
+	// [state][google.cloud.kms.v1.CryptoKeyVersion.state] is
 	// [DESTROY_SCHEDULED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED].
 	DestroyTime *timestamp.Timestamp `protobuf:"bytes,5,opt,name=destroy_time,json=destroyTime,proto3" json:"destroy_time,omitempty"`
 	// Output only. The time this CryptoKeyVersion's key material was
-	// destroyed. Only present if [state][google.cloud.kms.v1.CryptoKeyVersion.state] is
+	// destroyed. Only present if
+	// [state][google.cloud.kms.v1.CryptoKeyVersion.state] is
 	// [DESTROYED][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState.DESTROYED].
 	DestroyEventTime     *timestamp.Timestamp `protobuf:"bytes,6,opt,name=destroy_event_time,json=destroyEventTime,proto3" json:"destroy_event_time,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
@@ -719,7 +775,7 @@ func (m *CryptoKeyVersion) Reset()         { *m = CryptoKeyVersion{} }
 func (m *CryptoKeyVersion) String() string { return proto.CompactTextString(m) }
 func (*CryptoKeyVersion) ProtoMessage()    {}
 func (*CryptoKeyVersion) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{4}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{4}
 }
 func (m *CryptoKeyVersion) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CryptoKeyVersion.Unmarshal(m, b)
@@ -802,7 +858,8 @@ func (m *CryptoKeyVersion) GetDestroyEventTime() *timestamp.Timestamp {
 	return nil
 }
 
-// The public key for a given [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]. Obtained via
+// The public key for a given
+// [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion]. Obtained via
 // [GetPublicKey][google.cloud.kms.v1.KeyManagementService.GetPublicKey].
 type PublicKey struct {
 	// The public key, encoded in PEM format. For more information, see the
@@ -811,8 +868,9 @@ type PublicKey struct {
 	// [Textual Encoding of Subject Public Key Info]
 	// (https://tools.ietf.org/html/rfc7468#section-13).
 	Pem string `protobuf:"bytes,1,opt,name=pem,proto3" json:"pem,omitempty"`
-	// The [Algorithm][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm] associated
-	// with this key.
+	// The
+	// [Algorithm][google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm]
+	// associated with this key.
 	Algorithm            CryptoKeyVersion_CryptoKeyVersionAlgorithm `protobuf:"varint,2,opt,name=algorithm,proto3,enum=google.cloud.kms.v1.CryptoKeyVersion_CryptoKeyVersionAlgorithm" json:"algorithm,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                                   `json:"-"`
 	XXX_unrecognized     []byte                                     `json:"-"`
@@ -823,7 +881,7 @@ func (m *PublicKey) Reset()         { *m = PublicKey{} }
 func (m *PublicKey) String() string { return proto.CompactTextString(m) }
 func (*PublicKey) ProtoMessage()    {}
 func (*PublicKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resources_a0091137790c0733, []int{5}
+	return fileDescriptor_resources_812ab0e7462a1529, []int{5}
 }
 func (m *PublicKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PublicKey.Unmarshal(m, b)
@@ -874,10 +932,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/kms/v1/resources.proto", fileDescriptor_resources_a0091137790c0733)
+	proto.RegisterFile("google/cloud/kms/v1/resources.proto", fileDescriptor_resources_812ab0e7462a1529)
 }
 
-var fileDescriptor_resources_a0091137790c0733 = []byte{
+var fileDescriptor_resources_812ab0e7462a1529 = []byte{
 	// 1203 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x5d, 0x6e, 0xdb, 0x46,
 	0x17, 0x0d, 0x25, 0xcb, 0xb2, 0xae, 0x9c, 0x98, 0x1e, 0xe7, 0x47, 0xf1, 0x17, 0x24, 0x86, 0x92,

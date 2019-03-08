@@ -48,7 +48,7 @@ func (m *KeywordPlan) Reset()         { *m = KeywordPlan{} }
 func (m *KeywordPlan) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlan) ProtoMessage()    {}
 func (*KeywordPlan) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_7de062c53f27ff25, []int{0}
+	return fileDescriptor_keyword_plan_0987a890c66a71a2, []int{0}
 }
 func (m *KeywordPlan) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlan.Unmarshal(m, b)
@@ -113,7 +113,7 @@ func (m *KeywordPlanForecastPeriod) Reset()         { *m = KeywordPlanForecastPe
 func (m *KeywordPlanForecastPeriod) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanForecastPeriod) ProtoMessage()    {}
 func (*KeywordPlanForecastPeriod) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_7de062c53f27ff25, []int{1}
+	return fileDescriptor_keyword_plan_0987a890c66a71a2, []int{1}
 }
 func (m *KeywordPlanForecastPeriod) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanForecastPeriod.Unmarshal(m, b)
@@ -245,10 +245,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/keyword_plan.proto", fileDescriptor_keyword_plan_7de062c53f27ff25)
+	proto.RegisterFile("google/ads/googleads/v0/resources/keyword_plan.proto", fileDescriptor_keyword_plan_0987a890c66a71a2)
 }
 
-var fileDescriptor_keyword_plan_7de062c53f27ff25 = []byte{
+var fileDescriptor_keyword_plan_0987a890c66a71a2 = []byte{
 	// 473 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x93, 0xdd, 0x6a, 0xd4, 0x40,
 	0x14, 0xc7, 0x9b, 0xb4, 0x88, 0x9d, 0x7e, 0x28, 0xb9, 0x5a, 0xab, 0x48, 0x5b, 0x29, 0x54, 0x85,

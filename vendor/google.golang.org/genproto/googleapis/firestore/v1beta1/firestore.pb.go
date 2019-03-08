@@ -73,10 +73,11 @@ func (x TargetChange_TargetChangeType) String() string {
 	return proto.EnumName(TargetChange_TargetChangeType_name, int32(x))
 }
 func (TargetChange_TargetChangeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{20, 0}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{20, 0}
 }
 
-// The request for [Firestore.GetDocument][google.firestore.v1beta1.Firestore.GetDocument].
+// The request for
+// [Firestore.GetDocument][google.firestore.v1beta1.Firestore.GetDocument].
 type GetDocumentRequest struct {
 	// The resource name of the Document to get. In the format:
 	// `projects/{project_id}/databases/{database_id}/documents/{document_path}`.
@@ -102,7 +103,7 @@ func (m *GetDocumentRequest) Reset()         { *m = GetDocumentRequest{} }
 func (m *GetDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*GetDocumentRequest) ProtoMessage()    {}
 func (*GetDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{0}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{0}
 }
 func (m *GetDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetDocumentRequest.Unmarshal(m, b)
@@ -243,7 +244,8 @@ func _GetDocumentRequest_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// The request for [Firestore.ListDocuments][google.firestore.v1beta1.Firestore.ListDocuments].
+// The request for
+// [Firestore.ListDocuments][google.firestore.v1beta1.Firestore.ListDocuments].
 type ListDocumentsRequest struct {
 	// The parent resource name. In the format:
 	// `projects/{project_id}/databases/{database_id}/documents` or
@@ -275,8 +277,9 @@ type ListDocumentsRequest struct {
 	ConsistencySelector isListDocumentsRequest_ConsistencySelector `protobuf_oneof:"consistency_selector"`
 	// If the list should show missing documents. A missing document is a
 	// document that does not exist but has sub-documents. These documents will
-	// be returned with a key but will not have fields, [Document.create_time][google.firestore.v1beta1.Document.create_time],
-	// or [Document.update_time][google.firestore.v1beta1.Document.update_time] set.
+	// be returned with a key but will not have fields,
+	// [Document.create_time][google.firestore.v1beta1.Document.create_time], or
+	// [Document.update_time][google.firestore.v1beta1.Document.update_time] set.
 	//
 	// Requests with `show_missing` may not specify `where` or
 	// `order_by`.
@@ -290,7 +293,7 @@ func (m *ListDocumentsRequest) Reset()         { *m = ListDocumentsRequest{} }
 func (m *ListDocumentsRequest) String() string { return proto.CompactTextString(m) }
 func (*ListDocumentsRequest) ProtoMessage()    {}
 func (*ListDocumentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{1}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{1}
 }
 func (m *ListDocumentsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListDocumentsRequest.Unmarshal(m, b)
@@ -466,7 +469,8 @@ func _ListDocumentsRequest_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// The response for [Firestore.ListDocuments][google.firestore.v1beta1.Firestore.ListDocuments].
+// The response for
+// [Firestore.ListDocuments][google.firestore.v1beta1.Firestore.ListDocuments].
 type ListDocumentsResponse struct {
 	// The Documents found.
 	Documents []*Document `protobuf:"bytes,1,rep,name=documents,proto3" json:"documents,omitempty"`
@@ -481,7 +485,7 @@ func (m *ListDocumentsResponse) Reset()         { *m = ListDocumentsResponse{} }
 func (m *ListDocumentsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListDocumentsResponse) ProtoMessage()    {}
 func (*ListDocumentsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{2}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{2}
 }
 func (m *ListDocumentsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListDocumentsResponse.Unmarshal(m, b)
@@ -515,7 +519,8 @@ func (m *ListDocumentsResponse) GetNextPageToken() string {
 	return ""
 }
 
-// The request for [Firestore.CreateDocument][google.firestore.v1beta1.Firestore.CreateDocument].
+// The request for
+// [Firestore.CreateDocument][google.firestore.v1beta1.Firestore.CreateDocument].
 type CreateDocumentRequest struct {
 	// The parent resource. For example:
 	// `projects/{project_id}/databases/{database_id}/documents` or
@@ -543,7 +548,7 @@ func (m *CreateDocumentRequest) Reset()         { *m = CreateDocumentRequest{} }
 func (m *CreateDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateDocumentRequest) ProtoMessage()    {}
 func (*CreateDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{3}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{3}
 }
 func (m *CreateDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateDocumentRequest.Unmarshal(m, b)
@@ -598,7 +603,8 @@ func (m *CreateDocumentRequest) GetMask() *DocumentMask {
 	return nil
 }
 
-// The request for [Firestore.UpdateDocument][google.firestore.v1beta1.Firestore.UpdateDocument].
+// The request for
+// [Firestore.UpdateDocument][google.firestore.v1beta1.Firestore.UpdateDocument].
 type UpdateDocumentRequest struct {
 	// The updated document.
 	// Creates the document if it does not already exist.
@@ -628,7 +634,7 @@ func (m *UpdateDocumentRequest) Reset()         { *m = UpdateDocumentRequest{} }
 func (m *UpdateDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateDocumentRequest) ProtoMessage()    {}
 func (*UpdateDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{4}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{4}
 }
 func (m *UpdateDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateDocumentRequest.Unmarshal(m, b)
@@ -676,7 +682,8 @@ func (m *UpdateDocumentRequest) GetCurrentDocument() *Precondition {
 	return nil
 }
 
-// The request for [Firestore.DeleteDocument][google.firestore.v1beta1.Firestore.DeleteDocument].
+// The request for
+// [Firestore.DeleteDocument][google.firestore.v1beta1.Firestore.DeleteDocument].
 type DeleteDocumentRequest struct {
 	// The resource name of the Document to delete. In the format:
 	// `projects/{project_id}/databases/{database_id}/documents/{document_path}`.
@@ -693,7 +700,7 @@ func (m *DeleteDocumentRequest) Reset()         { *m = DeleteDocumentRequest{} }
 func (m *DeleteDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteDocumentRequest) ProtoMessage()    {}
 func (*DeleteDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{5}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{5}
 }
 func (m *DeleteDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteDocumentRequest.Unmarshal(m, b)
@@ -727,7 +734,8 @@ func (m *DeleteDocumentRequest) GetCurrentDocument() *Precondition {
 	return nil
 }
 
-// The request for [Firestore.BatchGetDocuments][google.firestore.v1beta1.Firestore.BatchGetDocuments].
+// The request for
+// [Firestore.BatchGetDocuments][google.firestore.v1beta1.Firestore.BatchGetDocuments].
 type BatchGetDocumentsRequest struct {
 	// The database name. In the format:
 	// `projects/{project_id}/databases/{database_id}`.
@@ -759,7 +767,7 @@ func (m *BatchGetDocumentsRequest) Reset()         { *m = BatchGetDocumentsReque
 func (m *BatchGetDocumentsRequest) String() string { return proto.CompactTextString(m) }
 func (*BatchGetDocumentsRequest) ProtoMessage()    {}
 func (*BatchGetDocumentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{6}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{6}
 }
 func (m *BatchGetDocumentsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BatchGetDocumentsRequest.Unmarshal(m, b)
@@ -939,7 +947,8 @@ func _BatchGetDocumentsRequest_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// The streamed response for [Firestore.BatchGetDocuments][google.firestore.v1beta1.Firestore.BatchGetDocuments].
+// The streamed response for
+// [Firestore.BatchGetDocuments][google.firestore.v1beta1.Firestore.BatchGetDocuments].
 type BatchGetDocumentsResponse struct {
 	// A single result.
 	// This can be empty if the server is just returning a transaction.
@@ -950,7 +959,8 @@ type BatchGetDocumentsResponse struct {
 	Result isBatchGetDocumentsResponse_Result `protobuf_oneof:"result"`
 	// The transaction that was started as part of this request.
 	// Will only be set in the first response, and only if
-	// [BatchGetDocumentsRequest.new_transaction][google.firestore.v1beta1.BatchGetDocumentsRequest.new_transaction] was set in the request.
+	// [BatchGetDocumentsRequest.new_transaction][google.firestore.v1beta1.BatchGetDocumentsRequest.new_transaction]
+	// was set in the request.
 	Transaction []byte `protobuf:"bytes,3,opt,name=transaction,proto3" json:"transaction,omitempty"`
 	// The time at which the document was read.
 	// This may be monotically increasing, in this case the previous documents in
@@ -966,7 +976,7 @@ func (m *BatchGetDocumentsResponse) Reset()         { *m = BatchGetDocumentsResp
 func (m *BatchGetDocumentsResponse) String() string { return proto.CompactTextString(m) }
 func (*BatchGetDocumentsResponse) ProtoMessage()    {}
 func (*BatchGetDocumentsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{7}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{7}
 }
 func (m *BatchGetDocumentsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BatchGetDocumentsResponse.Unmarshal(m, b)
@@ -1107,7 +1117,8 @@ func _BatchGetDocumentsResponse_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// The request for [Firestore.BeginTransaction][google.firestore.v1beta1.Firestore.BeginTransaction].
+// The request for
+// [Firestore.BeginTransaction][google.firestore.v1beta1.Firestore.BeginTransaction].
 type BeginTransactionRequest struct {
 	// The database name. In the format:
 	// `projects/{project_id}/databases/{database_id}`.
@@ -1124,7 +1135,7 @@ func (m *BeginTransactionRequest) Reset()         { *m = BeginTransactionRequest
 func (m *BeginTransactionRequest) String() string { return proto.CompactTextString(m) }
 func (*BeginTransactionRequest) ProtoMessage()    {}
 func (*BeginTransactionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{8}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{8}
 }
 func (m *BeginTransactionRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BeginTransactionRequest.Unmarshal(m, b)
@@ -1158,7 +1169,8 @@ func (m *BeginTransactionRequest) GetOptions() *TransactionOptions {
 	return nil
 }
 
-// The response for [Firestore.BeginTransaction][google.firestore.v1beta1.Firestore.BeginTransaction].
+// The response for
+// [Firestore.BeginTransaction][google.firestore.v1beta1.Firestore.BeginTransaction].
 type BeginTransactionResponse struct {
 	// The transaction that was started.
 	Transaction          []byte   `protobuf:"bytes,1,opt,name=transaction,proto3" json:"transaction,omitempty"`
@@ -1171,7 +1183,7 @@ func (m *BeginTransactionResponse) Reset()         { *m = BeginTransactionRespon
 func (m *BeginTransactionResponse) String() string { return proto.CompactTextString(m) }
 func (*BeginTransactionResponse) ProtoMessage()    {}
 func (*BeginTransactionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{9}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{9}
 }
 func (m *BeginTransactionResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BeginTransactionResponse.Unmarshal(m, b)
@@ -1198,7 +1210,8 @@ func (m *BeginTransactionResponse) GetTransaction() []byte {
 	return nil
 }
 
-// The request for [Firestore.Commit][google.firestore.v1beta1.Firestore.Commit].
+// The request for
+// [Firestore.Commit][google.firestore.v1beta1.Firestore.Commit].
 type CommitRequest struct {
 	// The database name. In the format:
 	// `projects/{project_id}/databases/{database_id}`.
@@ -1218,7 +1231,7 @@ func (m *CommitRequest) Reset()         { *m = CommitRequest{} }
 func (m *CommitRequest) String() string { return proto.CompactTextString(m) }
 func (*CommitRequest) ProtoMessage()    {}
 func (*CommitRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{10}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{10}
 }
 func (m *CommitRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CommitRequest.Unmarshal(m, b)
@@ -1259,7 +1272,8 @@ func (m *CommitRequest) GetTransaction() []byte {
 	return nil
 }
 
-// The response for [Firestore.Commit][google.firestore.v1beta1.Firestore.Commit].
+// The response for
+// [Firestore.Commit][google.firestore.v1beta1.Firestore.Commit].
 type CommitResponse struct {
 	// The result of applying the writes.
 	//
@@ -1277,7 +1291,7 @@ func (m *CommitResponse) Reset()         { *m = CommitResponse{} }
 func (m *CommitResponse) String() string { return proto.CompactTextString(m) }
 func (*CommitResponse) ProtoMessage()    {}
 func (*CommitResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{11}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{11}
 }
 func (m *CommitResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CommitResponse.Unmarshal(m, b)
@@ -1311,7 +1325,8 @@ func (m *CommitResponse) GetCommitTime() *timestamp.Timestamp {
 	return nil
 }
 
-// The request for [Firestore.Rollback][google.firestore.v1beta1.Firestore.Rollback].
+// The request for
+// [Firestore.Rollback][google.firestore.v1beta1.Firestore.Rollback].
 type RollbackRequest struct {
 	// The database name. In the format:
 	// `projects/{project_id}/databases/{database_id}`.
@@ -1327,7 +1342,7 @@ func (m *RollbackRequest) Reset()         { *m = RollbackRequest{} }
 func (m *RollbackRequest) String() string { return proto.CompactTextString(m) }
 func (*RollbackRequest) ProtoMessage()    {}
 func (*RollbackRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{12}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{12}
 }
 func (m *RollbackRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RollbackRequest.Unmarshal(m, b)
@@ -1361,7 +1376,8 @@ func (m *RollbackRequest) GetTransaction() []byte {
 	return nil
 }
 
-// The request for [Firestore.RunQuery][google.firestore.v1beta1.Firestore.RunQuery].
+// The request for
+// [Firestore.RunQuery][google.firestore.v1beta1.Firestore.RunQuery].
 type RunQueryRequest struct {
 	// The parent resource name. In the format:
 	// `projects/{project_id}/databases/{database_id}/documents` or
@@ -1392,7 +1408,7 @@ func (m *RunQueryRequest) Reset()         { *m = RunQueryRequest{} }
 func (m *RunQueryRequest) String() string { return proto.CompactTextString(m) }
 func (*RunQueryRequest) ProtoMessage()    {}
 func (*RunQueryRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{13}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{13}
 }
 func (m *RunQueryRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RunQueryRequest.Unmarshal(m, b)
@@ -1613,12 +1629,14 @@ func _RunQueryRequest_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// The response for [Firestore.RunQuery][google.firestore.v1beta1.Firestore.RunQuery].
+// The response for
+// [Firestore.RunQuery][google.firestore.v1beta1.Firestore.RunQuery].
 type RunQueryResponse struct {
 	// The transaction that was started as part of this request.
 	// Can only be set in the first response, and only if
-	// [RunQueryRequest.new_transaction][google.firestore.v1beta1.RunQueryRequest.new_transaction] was set in the request.
-	// If set, no other fields will be set in this response.
+	// [RunQueryRequest.new_transaction][google.firestore.v1beta1.RunQueryRequest.new_transaction]
+	// was set in the request. If set, no other fields will be set in this
+	// response.
 	Transaction []byte `protobuf:"bytes,2,opt,name=transaction,proto3" json:"transaction,omitempty"`
 	// A query result.
 	// Not set when reporting partial progress.
@@ -1643,7 +1661,7 @@ func (m *RunQueryResponse) Reset()         { *m = RunQueryResponse{} }
 func (m *RunQueryResponse) String() string { return proto.CompactTextString(m) }
 func (*RunQueryResponse) ProtoMessage()    {}
 func (*RunQueryResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{14}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{14}
 }
 func (m *RunQueryResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RunQueryResponse.Unmarshal(m, b)
@@ -1720,9 +1738,9 @@ type WriteRequest struct {
 	// A stream token that was previously sent by the server.
 	//
 	// The client should set this field to the token from the most recent
-	// [WriteResponse][google.firestore.v1beta1.WriteResponse] it has received. This acknowledges that the client has
-	// received responses up to this token. After sending this token, earlier
-	// tokens may not be used anymore.
+	// [WriteResponse][google.firestore.v1beta1.WriteResponse] it has received.
+	// This acknowledges that the client has received responses up to this token.
+	// After sending this token, earlier tokens may not be used anymore.
 	//
 	// The server may close the stream if there are too many unacknowledged
 	// responses.
@@ -1743,7 +1761,7 @@ func (m *WriteRequest) Reset()         { *m = WriteRequest{} }
 func (m *WriteRequest) String() string { return proto.CompactTextString(m) }
 func (*WriteRequest) ProtoMessage()    {}
 func (*WriteRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{15}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{15}
 }
 func (m *WriteRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_WriteRequest.Unmarshal(m, b)
@@ -1824,7 +1842,7 @@ func (m *WriteResponse) Reset()         { *m = WriteResponse{} }
 func (m *WriteResponse) String() string { return proto.CompactTextString(m) }
 func (*WriteResponse) ProtoMessage()    {}
 func (*WriteResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{16}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{16}
 }
 func (m *WriteResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_WriteResponse.Unmarshal(m, b)
@@ -1894,7 +1912,7 @@ func (m *ListenRequest) Reset()         { *m = ListenRequest{} }
 func (m *ListenRequest) String() string { return proto.CompactTextString(m) }
 func (*ListenRequest) ProtoMessage()    {}
 func (*ListenRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{17}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{17}
 }
 func (m *ListenRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListenRequest.Unmarshal(m, b)
@@ -2034,7 +2052,8 @@ func _ListenRequest_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// The response for [Firestore.Listen][google.firestore.v1beta1.Firestore.Listen].
+// The response for
+// [Firestore.Listen][google.firestore.v1beta1.Firestore.Listen].
 type ListenResponse struct {
 	// The supported responses.
 	//
@@ -2054,7 +2073,7 @@ func (m *ListenResponse) Reset()         { *m = ListenResponse{} }
 func (m *ListenResponse) String() string { return proto.CompactTextString(m) }
 func (*ListenResponse) ProtoMessage()    {}
 func (*ListenResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{18}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{18}
 }
 func (m *ListenResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListenResponse.Unmarshal(m, b)
@@ -2318,7 +2337,7 @@ func (m *Target) Reset()         { *m = Target{} }
 func (m *Target) String() string { return proto.CompactTextString(m) }
 func (*Target) ProtoMessage()    {}
 func (*Target) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{19}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{19}
 }
 func (m *Target) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Target.Unmarshal(m, b)
@@ -2562,7 +2581,7 @@ func (m *Target_DocumentsTarget) Reset()         { *m = Target_DocumentsTarget{}
 func (m *Target_DocumentsTarget) String() string { return proto.CompactTextString(m) }
 func (*Target_DocumentsTarget) ProtoMessage()    {}
 func (*Target_DocumentsTarget) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{19, 0}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{19, 0}
 }
 func (m *Target_DocumentsTarget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Target_DocumentsTarget.Unmarshal(m, b)
@@ -2612,7 +2631,7 @@ func (m *Target_QueryTarget) Reset()         { *m = Target_QueryTarget{} }
 func (m *Target_QueryTarget) String() string { return proto.CompactTextString(m) }
 func (*Target_QueryTarget) ProtoMessage()    {}
 func (*Target_QueryTarget) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{19, 1}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{19, 1}
 }
 func (m *Target_QueryTarget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Target_QueryTarget.Unmarshal(m, b)
@@ -2759,7 +2778,7 @@ func (m *TargetChange) Reset()         { *m = TargetChange{} }
 func (m *TargetChange) String() string { return proto.CompactTextString(m) }
 func (*TargetChange) ProtoMessage()    {}
 func (*TargetChange) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{20}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{20}
 }
 func (m *TargetChange) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TargetChange.Unmarshal(m, b)
@@ -2814,7 +2833,8 @@ func (m *TargetChange) GetReadTime() *timestamp.Timestamp {
 	return nil
 }
 
-// The request for [Firestore.ListCollectionIds][google.firestore.v1beta1.Firestore.ListCollectionIds].
+// The request for
+// [Firestore.ListCollectionIds][google.firestore.v1beta1.Firestore.ListCollectionIds].
 type ListCollectionIdsRequest struct {
 	// The parent document. In the format:
 	// `projects/{project_id}/databases/{database_id}/documents/{document_path}`.
@@ -2835,7 +2855,7 @@ func (m *ListCollectionIdsRequest) Reset()         { *m = ListCollectionIdsReque
 func (m *ListCollectionIdsRequest) String() string { return proto.CompactTextString(m) }
 func (*ListCollectionIdsRequest) ProtoMessage()    {}
 func (*ListCollectionIdsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{21}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{21}
 }
 func (m *ListCollectionIdsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListCollectionIdsRequest.Unmarshal(m, b)
@@ -2876,7 +2896,8 @@ func (m *ListCollectionIdsRequest) GetPageToken() string {
 	return ""
 }
 
-// The response from [Firestore.ListCollectionIds][google.firestore.v1beta1.Firestore.ListCollectionIds].
+// The response from
+// [Firestore.ListCollectionIds][google.firestore.v1beta1.Firestore.ListCollectionIds].
 type ListCollectionIdsResponse struct {
 	// The collection ids.
 	CollectionIds []string `protobuf:"bytes,1,rep,name=collection_ids,json=collectionIds,proto3" json:"collection_ids,omitempty"`
@@ -2891,7 +2912,7 @@ func (m *ListCollectionIdsResponse) Reset()         { *m = ListCollectionIdsResp
 func (m *ListCollectionIdsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListCollectionIdsResponse) ProtoMessage()    {}
 func (*ListCollectionIdsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_firestore_0cb2a504439d3030, []int{22}
+	return fileDescriptor_firestore_4d274d4ffc7f75e9, []int{22}
 }
 func (m *ListCollectionIdsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListCollectionIdsResponse.Unmarshal(m, b)
@@ -3576,10 +3597,10 @@ var _Firestore_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/firestore/v1beta1/firestore.proto", fileDescriptor_firestore_0cb2a504439d3030)
+	proto.RegisterFile("google/firestore/v1beta1/firestore.proto", fileDescriptor_firestore_4d274d4ffc7f75e9)
 }
 
-var fileDescriptor_firestore_0cb2a504439d3030 = []byte{
+var fileDescriptor_firestore_4d274d4ffc7f75e9 = []byte{
 	// 2214 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x5a, 0xcd, 0x8f, 0x1b, 0x49,
 	0x15, 0x77, 0xb5, 0x3f, 0xc6, 0x7e, 0xfe, 0x18, 0x6f, 0x91, 0x64, 0x1d, 0x27, 0x4b, 0x86, 0x5e,

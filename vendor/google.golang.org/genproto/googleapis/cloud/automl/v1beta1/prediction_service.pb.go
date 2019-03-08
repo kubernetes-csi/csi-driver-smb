@@ -24,7 +24,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [PredictionService.Predict][google.cloud.automl.v1beta1.PredictionService.Predict].
+// Request message for
+// [PredictionService.Predict][google.cloud.automl.v1beta1.PredictionService.Predict].
 type PredictRequest struct {
 	// Name of the model requested to serve the prediction.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -51,7 +52,7 @@ func (m *PredictRequest) Reset()         { *m = PredictRequest{} }
 func (m *PredictRequest) String() string { return proto.CompactTextString(m) }
 func (*PredictRequest) ProtoMessage()    {}
 func (*PredictRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_prediction_service_21460c7fedea4ded, []int{0}
+	return fileDescriptor_prediction_service_cf0f5f7b6ce9d851, []int{0}
 }
 func (m *PredictRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PredictRequest.Unmarshal(m, b)
@@ -92,7 +93,8 @@ func (m *PredictRequest) GetParams() map[string]string {
 	return nil
 }
 
-// Response message for [PredictionService.Predict][google.cloud.automl.v1beta1.PredictionService.Predict].
+// Response message for
+// [PredictionService.Predict][google.cloud.automl.v1beta1.PredictionService.Predict].
 //
 // Currently, this is only
 // used to return an image recognition prediction result. More prediction
@@ -111,7 +113,7 @@ func (m *PredictResponse) Reset()         { *m = PredictResponse{} }
 func (m *PredictResponse) String() string { return proto.CompactTextString(m) }
 func (*PredictResponse) ProtoMessage()    {}
 func (*PredictResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_prediction_service_21460c7fedea4ded, []int{1}
+	return fileDescriptor_prediction_service_cf0f5f7b6ce9d851, []int{1}
 }
 func (m *PredictResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PredictResponse.Unmarshal(m, b)
@@ -227,10 +229,10 @@ var _PredictionService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/automl/v1beta1/prediction_service.proto", fileDescriptor_prediction_service_21460c7fedea4ded)
+	proto.RegisterFile("google/cloud/automl/v1beta1/prediction_service.proto", fileDescriptor_prediction_service_cf0f5f7b6ce9d851)
 }
 
-var fileDescriptor_prediction_service_21460c7fedea4ded = []byte{
+var fileDescriptor_prediction_service_cf0f5f7b6ce9d851 = []byte{
 	// 486 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0xdf, 0x8a, 0xd3, 0x40,
 	0x14, 0xc6, 0x99, 0x54, 0x77, 0xdd, 0x29, 0xfe, 0x1b, 0x44, 0x4a, 0x56, 0xb0, 0xf4, 0xaa, 0x74,

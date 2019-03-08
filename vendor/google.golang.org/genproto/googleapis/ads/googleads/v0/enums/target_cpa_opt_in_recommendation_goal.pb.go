@@ -58,7 +58,7 @@ func (x TargetCpaOptInRecommendationGoalEnum_TargetCpaOptInRecommendationGoal) S
 	return proto.EnumName(TargetCpaOptInRecommendationGoalEnum_TargetCpaOptInRecommendationGoal_name, int32(x))
 }
 func (TargetCpaOptInRecommendationGoalEnum_TargetCpaOptInRecommendationGoal) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_target_cpa_opt_in_recommendation_goal_b386ca5aa1fc742d, []int{0, 0}
+	return fileDescriptor_target_cpa_opt_in_recommendation_goal_e7256527cb64c6cc, []int{0, 0}
 }
 
 // Container for enum describing goals for TargetCpaOptIn recommendation.
@@ -72,7 +72,7 @@ func (m *TargetCpaOptInRecommendationGoalEnum) Reset()         { *m = TargetCpaO
 func (m *TargetCpaOptInRecommendationGoalEnum) String() string { return proto.CompactTextString(m) }
 func (*TargetCpaOptInRecommendationGoalEnum) ProtoMessage()    {}
 func (*TargetCpaOptInRecommendationGoalEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_target_cpa_opt_in_recommendation_goal_b386ca5aa1fc742d, []int{0}
+	return fileDescriptor_target_cpa_opt_in_recommendation_goal_e7256527cb64c6cc, []int{0}
 }
 func (m *TargetCpaOptInRecommendationGoalEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TargetCpaOptInRecommendationGoalEnum.Unmarshal(m, b)
@@ -98,10 +98,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/target_cpa_opt_in_recommendation_goal.proto", fileDescriptor_target_cpa_opt_in_recommendation_goal_b386ca5aa1fc742d)
+	proto.RegisterFile("google/ads/googleads/v0/enums/target_cpa_opt_in_recommendation_goal.proto", fileDescriptor_target_cpa_opt_in_recommendation_goal_e7256527cb64c6cc)
 }
 
-var fileDescriptor_target_cpa_opt_in_recommendation_goal_b386ca5aa1fc742d = []byte{
+var fileDescriptor_target_cpa_opt_in_recommendation_goal_e7256527cb64c6cc = []byte{
 	// 343 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0xdf, 0x4a, 0xfb, 0x30,
 	0x1c, 0xc5, 0x7f, 0xed, 0x7e, 0xfe, 0xcb, 0x14, 0x4b, 0xf1, 0x76, 0xe0, 0x86, 0xde, 0xa6, 0x05,

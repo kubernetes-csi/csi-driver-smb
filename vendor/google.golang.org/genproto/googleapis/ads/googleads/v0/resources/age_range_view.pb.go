@@ -34,7 +34,7 @@ func (m *AgeRangeView) Reset()         { *m = AgeRangeView{} }
 func (m *AgeRangeView) String() string { return proto.CompactTextString(m) }
 func (*AgeRangeView) ProtoMessage()    {}
 func (*AgeRangeView) Descriptor() ([]byte, []int) {
-	return fileDescriptor_age_range_view_a356f90e478c3812, []int{0}
+	return fileDescriptor_age_range_view_5b05708d3a6908a4, []int{0}
 }
 func (m *AgeRangeView) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AgeRangeView.Unmarshal(m, b)
@@ -66,10 +66,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/age_range_view.proto", fileDescriptor_age_range_view_a356f90e478c3812)
+	proto.RegisterFile("google/ads/googleads/v0/resources/age_range_view.proto", fileDescriptor_age_range_view_5b05708d3a6908a4)
 }
 
-var fileDescriptor_age_range_view_a356f90e478c3812 = []byte{
+var fileDescriptor_age_range_view_5b05708d3a6908a4 = []byte{
 	// 250 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x4b, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xa2, 0xd4,

@@ -49,7 +49,7 @@ func (x AdParameterErrorEnum_AdParameterError) String() string {
 	return proto.EnumName(AdParameterErrorEnum_AdParameterError_name, int32(x))
 }
 func (AdParameterErrorEnum_AdParameterError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_ad_parameter_error_ab5f8ee9efdba60c, []int{0, 0}
+	return fileDescriptor_ad_parameter_error_473153ff59da08a8, []int{0, 0}
 }
 
 // Container for enum describing possible ad parameter errors.
@@ -63,7 +63,7 @@ func (m *AdParameterErrorEnum) Reset()         { *m = AdParameterErrorEnum{} }
 func (m *AdParameterErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*AdParameterErrorEnum) ProtoMessage()    {}
 func (*AdParameterErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_parameter_error_ab5f8ee9efdba60c, []int{0}
+	return fileDescriptor_ad_parameter_error_473153ff59da08a8, []int{0}
 }
 func (m *AdParameterErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdParameterErrorEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/ad_parameter_error.proto", fileDescriptor_ad_parameter_error_ab5f8ee9efdba60c)
+	proto.RegisterFile("google/ads/googleads/v0/errors/ad_parameter_error.proto", fileDescriptor_ad_parameter_error_473153ff59da08a8)
 }
 
-var fileDescriptor_ad_parameter_error_ab5f8ee9efdba60c = []byte{
+var fileDescriptor_ad_parameter_error_473153ff59da08a8 = []byte{
 	// 329 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xc1, 0x4a, 0xfb, 0x30,
 	0x00, 0xc6, 0xff, 0xed, 0xe0, 0x2f, 0x64, 0x07, 0x4b, 0xd1, 0xa3, 0x03, 0x7b, 0xf0, 0x98, 0x16,

@@ -70,7 +70,7 @@ func (x CustomerFeedErrorEnum_CustomerFeedError) String() string {
 	return proto.EnumName(CustomerFeedErrorEnum_CustomerFeedError_name, int32(x))
 }
 func (CustomerFeedErrorEnum_CustomerFeedError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_customer_feed_error_7c655ec838c7ee5d, []int{0, 0}
+	return fileDescriptor_customer_feed_error_6abe6fa01292e2de, []int{0, 0}
 }
 
 // Container for enum describing possible customer feed errors.
@@ -84,7 +84,7 @@ func (m *CustomerFeedErrorEnum) Reset()         { *m = CustomerFeedErrorEnum{} }
 func (m *CustomerFeedErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*CustomerFeedErrorEnum) ProtoMessage()    {}
 func (*CustomerFeedErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_feed_error_7c655ec838c7ee5d, []int{0}
+	return fileDescriptor_customer_feed_error_6abe6fa01292e2de, []int{0}
 }
 func (m *CustomerFeedErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CustomerFeedErrorEnum.Unmarshal(m, b)
@@ -110,10 +110,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/customer_feed_error.proto", fileDescriptor_customer_feed_error_7c655ec838c7ee5d)
+	proto.RegisterFile("google/ads/googleads/v0/errors/customer_feed_error.proto", fileDescriptor_customer_feed_error_6abe6fa01292e2de)
 }
 
-var fileDescriptor_customer_feed_error_7c655ec838c7ee5d = []byte{
+var fileDescriptor_customer_feed_error_6abe6fa01292e2de = []byte{
 	// 425 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xc1, 0x6e, 0xd3, 0x40,
 	0x10, 0x86, 0x89, 0x0b, 0x2d, 0xda, 0x1e, 0x08, 0x2b, 0x81, 0x38, 0xa0, 0x1c, 0xcc, 0x01, 0x0e,

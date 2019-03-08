@@ -35,7 +35,7 @@ func (m *AdScheduleView) Reset()         { *m = AdScheduleView{} }
 func (m *AdScheduleView) String() string { return proto.CompactTextString(m) }
 func (*AdScheduleView) ProtoMessage()    {}
 func (*AdScheduleView) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_schedule_view_4605c4ad10395f1c, []int{0}
+	return fileDescriptor_ad_schedule_view_dc1d16472b2a8f34, []int{0}
 }
 func (m *AdScheduleView) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdScheduleView.Unmarshal(m, b)
@@ -67,10 +67,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/ad_schedule_view.proto", fileDescriptor_ad_schedule_view_4605c4ad10395f1c)
+	proto.RegisterFile("google/ads/googleads/v0/resources/ad_schedule_view.proto", fileDescriptor_ad_schedule_view_dc1d16472b2a8f34)
 }
 
-var fileDescriptor_ad_schedule_view_4605c4ad10395f1c = []byte{
+var fileDescriptor_ad_schedule_view_dc1d16472b2a8f34 = []byte{
 	// 251 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x48, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xa2, 0xd4,

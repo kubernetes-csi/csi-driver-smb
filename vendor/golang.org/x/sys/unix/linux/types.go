@@ -48,6 +48,7 @@ package unix
 #include <sys/utsname.h>
 #include <sys/wait.h>
 #include <linux/errqueue.h>
+#include <linux/fanotify.h>
 #include <linux/filter.h>
 #include <linux/icmpv6.h>
 #include <linux/if_pppox.h>
@@ -1114,6 +1115,9 @@ const (
 	SizeofTpacketHdr  = C.sizeof_struct_tpacket_hdr
 	SizeofTpacket2Hdr = C.sizeof_struct_tpacket2_hdr
 	SizeofTpacket3Hdr = C.sizeof_struct_tpacket3_hdr
+
+	SizeofTpacketStats   = C.sizeof_struct_tpacket_stats
+	SizeofTpacketStatsV3 = C.sizeof_struct_tpacket_stats_v3
 )
 
 // netfilter
@@ -1680,3 +1684,9 @@ const (
 // Socket error queue
 
 type SockExtendedErr C.struct_sock_extended_err
+
+// Fanotify
+
+type FanotifyEventMetadata C.struct_fanotify_event_metadata
+
+type FanotifyResponse C.struct_fanotify_response

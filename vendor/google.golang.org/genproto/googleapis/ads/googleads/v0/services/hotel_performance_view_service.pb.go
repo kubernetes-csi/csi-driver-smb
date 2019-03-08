@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [HotelPerformanceViewService.GetHotelPerformanceView][google.ads.googleads.v0.services.HotelPerformanceViewService.GetHotelPerformanceView].
+// Request message for
+// [HotelPerformanceViewService.GetHotelPerformanceView][google.ads.googleads.v0.services.HotelPerformanceViewService.GetHotelPerformanceView].
 type GetHotelPerformanceViewRequest struct {
 	// Resource name of the Hotel Performance View to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetHotelPerformanceViewRequest) Reset()         { *m = GetHotelPerforma
 func (m *GetHotelPerformanceViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetHotelPerformanceViewRequest) ProtoMessage()    {}
 func (*GetHotelPerformanceViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_hotel_performance_view_service_995ea5eb77256565, []int{0}
+	return fileDescriptor_hotel_performance_view_service_e288f76fe9987a5f, []int{0}
 }
 func (m *GetHotelPerformanceViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetHotelPerformanceViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _HotelPerformanceViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/hotel_performance_view_service.proto", fileDescriptor_hotel_performance_view_service_995ea5eb77256565)
+	proto.RegisterFile("google/ads/googleads/v0/services/hotel_performance_view_service.proto", fileDescriptor_hotel_performance_view_service_e288f76fe9987a5f)
 }
 
-var fileDescriptor_hotel_performance_view_service_995ea5eb77256565 = []byte{
+var fileDescriptor_hotel_performance_view_service_e288f76fe9987a5f = []byte{
 	// 374 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0xcd, 0x4a, 0xf3, 0x40,
 	0x14, 0x25, 0xf9, 0xe0, 0x03, 0x83, 0x6e, 0xb2, 0x51, 0xaa, 0x48, 0xa8, 0x5d, 0x88, 0x8b, 0x49,

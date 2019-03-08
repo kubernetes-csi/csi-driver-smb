@@ -63,7 +63,7 @@ func (m *KeywordPlanCampaign) Reset()         { *m = KeywordPlanCampaign{} }
 func (m *KeywordPlanCampaign) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanCampaign) ProtoMessage()    {}
 func (*KeywordPlanCampaign) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_campaign_9602f1e334f7ae10, []int{0}
+	return fileDescriptor_keyword_plan_campaign_601a4f8c7129cc37, []int{0}
 }
 func (m *KeywordPlanCampaign) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanCampaign.Unmarshal(m, b)
@@ -153,7 +153,7 @@ func (m *KeywordPlanGeoTarget) Reset()         { *m = KeywordPlanGeoTarget{} }
 func (m *KeywordPlanGeoTarget) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanGeoTarget) ProtoMessage()    {}
 func (*KeywordPlanGeoTarget) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_campaign_9602f1e334f7ae10, []int{1}
+	return fileDescriptor_keyword_plan_campaign_601a4f8c7129cc37, []int{1}
 }
 func (m *KeywordPlanGeoTarget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanGeoTarget.Unmarshal(m, b)
@@ -186,10 +186,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/keyword_plan_campaign.proto", fileDescriptor_keyword_plan_campaign_9602f1e334f7ae10)
+	proto.RegisterFile("google/ads/googleads/v0/resources/keyword_plan_campaign.proto", fileDescriptor_keyword_plan_campaign_601a4f8c7129cc37)
 }
 
-var fileDescriptor_keyword_plan_campaign_9602f1e334f7ae10 = []byte{
+var fileDescriptor_keyword_plan_campaign_601a4f8c7129cc37 = []byte{
 	// 508 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x61, 0x6b, 0xd4, 0x30,
 	0x18, 0xc7, 0x69, 0x77, 0x4e, 0xcd, 0x9d, 0x03, 0xb3, 0xbd, 0x28, 0x53, 0xe4, 0x36, 0x19, 0x1c,

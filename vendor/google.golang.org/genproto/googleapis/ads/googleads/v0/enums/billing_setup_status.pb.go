@@ -59,7 +59,7 @@ func (x BillingSetupStatusEnum_BillingSetupStatus) String() string {
 	return proto.EnumName(BillingSetupStatusEnum_BillingSetupStatus_name, int32(x))
 }
 func (BillingSetupStatusEnum_BillingSetupStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_status_7727f48d32f7ecfb, []int{0, 0}
+	return fileDescriptor_billing_setup_status_6bcf06ba71189bb2, []int{0, 0}
 }
 
 // Message describing BillingSetup statuses.
@@ -73,7 +73,7 @@ func (m *BillingSetupStatusEnum) Reset()         { *m = BillingSetupStatusEnum{}
 func (m *BillingSetupStatusEnum) String() string { return proto.CompactTextString(m) }
 func (*BillingSetupStatusEnum) ProtoMessage()    {}
 func (*BillingSetupStatusEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_billing_setup_status_7727f48d32f7ecfb, []int{0}
+	return fileDescriptor_billing_setup_status_6bcf06ba71189bb2, []int{0}
 }
 func (m *BillingSetupStatusEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BillingSetupStatusEnum.Unmarshal(m, b)
@@ -99,10 +99,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/billing_setup_status.proto", fileDescriptor_billing_setup_status_7727f48d32f7ecfb)
+	proto.RegisterFile("google/ads/googleads/v0/enums/billing_setup_status.proto", fileDescriptor_billing_setup_status_6bcf06ba71189bb2)
 }
 
-var fileDescriptor_billing_setup_status_7727f48d32f7ecfb = []byte{
+var fileDescriptor_billing_setup_status_6bcf06ba71189bb2 = []byte{
 	// 317 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xdf, 0x4a, 0xc3, 0x30,
 	0x18, 0xc5, 0x6d, 0xe7, 0xdf, 0xcc, 0x61, 0xcd, 0x85, 0x5e, 0xed, 0x62, 0x7b, 0x80, 0xb4, 0xe0,

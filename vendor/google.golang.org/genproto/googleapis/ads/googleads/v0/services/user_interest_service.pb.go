@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [UserInterestService.GetUserInterest][google.ads.googleads.v0.services.UserInterestService.GetUserInterest].
+// Request message for
+// [UserInterestService.GetUserInterest][google.ads.googleads.v0.services.UserInterestService.GetUserInterest].
 type GetUserInterestRequest struct {
 	// Resource name of the UserInterest to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetUserInterestRequest) Reset()         { *m = GetUserInterestRequest{}
 func (m *GetUserInterestRequest) String() string { return proto.CompactTextString(m) }
 func (*GetUserInterestRequest) ProtoMessage()    {}
 func (*GetUserInterestRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_interest_service_6cabe0fee9151747, []int{0}
+	return fileDescriptor_user_interest_service_20b0ebc1438c7b79, []int{0}
 }
 func (m *GetUserInterestRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetUserInterestRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _UserInterestService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/user_interest_service.proto", fileDescriptor_user_interest_service_6cabe0fee9151747)
+	proto.RegisterFile("google/ads/googleads/v0/services/user_interest_service.proto", fileDescriptor_user_interest_service_20b0ebc1438c7b79)
 }
 
-var fileDescriptor_user_interest_service_6cabe0fee9151747 = []byte{
+var fileDescriptor_user_interest_service_20b0ebc1438c7b79 = []byte{
 	// 362 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x3f, 0x4b, 0xc3, 0x40,
 	0x18, 0xc6, 0x49, 0x04, 0xc1, 0xa0, 0x08, 0x11, 0xa4, 0x14, 0x87, 0x52, 0x3b, 0x48, 0x87, 0xbb,

@@ -63,7 +63,7 @@ func (x PolicyTopicEvidenceDestinationMismatchUrlTypeEnum_PolicyTopicEvidenceDes
 	return proto.EnumName(PolicyTopicEvidenceDestinationMismatchUrlTypeEnum_PolicyTopicEvidenceDestinationMismatchUrlType_name, int32(x))
 }
 func (PolicyTopicEvidenceDestinationMismatchUrlTypeEnum_PolicyTopicEvidenceDestinationMismatchUrlType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_policy_topic_evidence_destination_mismatch_url_type_52b9e33436afc7eb, []int{0, 0}
+	return fileDescriptor_policy_topic_evidence_destination_mismatch_url_type_d37726fc3d8bc5df, []int{0, 0}
 }
 
 // Container for enum describing possible policy topic evidence destination
@@ -82,7 +82,7 @@ func (m *PolicyTopicEvidenceDestinationMismatchUrlTypeEnum) String() string {
 }
 func (*PolicyTopicEvidenceDestinationMismatchUrlTypeEnum) ProtoMessage() {}
 func (*PolicyTopicEvidenceDestinationMismatchUrlTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_topic_evidence_destination_mismatch_url_type_52b9e33436afc7eb, []int{0}
+	return fileDescriptor_policy_topic_evidence_destination_mismatch_url_type_d37726fc3d8bc5df, []int{0}
 }
 func (m *PolicyTopicEvidenceDestinationMismatchUrlTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicEvidenceDestinationMismatchUrlTypeEnum.Unmarshal(m, b)
@@ -108,10 +108,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/policy_topic_evidence_destination_mismatch_url_type.proto", fileDescriptor_policy_topic_evidence_destination_mismatch_url_type_52b9e33436afc7eb)
+	proto.RegisterFile("google/ads/googleads/v0/enums/policy_topic_evidence_destination_mismatch_url_type.proto", fileDescriptor_policy_topic_evidence_destination_mismatch_url_type_d37726fc3d8bc5df)
 }
 
-var fileDescriptor_policy_topic_evidence_destination_mismatch_url_type_52b9e33436afc7eb = []byte{
+var fileDescriptor_policy_topic_evidence_destination_mismatch_url_type_d37726fc3d8bc5df = []byte{
 	// 376 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x91, 0xc1, 0x6a, 0xa3, 0x40,
 	0x18, 0xc7, 0x57, 0xb3, 0x9b, 0x65, 0x27, 0xbb, 0xac, 0xd8, 0x42, 0x4f, 0x39, 0x24, 0xf7, 0x8e,

@@ -78,7 +78,7 @@ func (m *ConversionAction) Reset()         { *m = ConversionAction{} }
 func (m *ConversionAction) String() string { return proto.CompactTextString(m) }
 func (*ConversionAction) ProtoMessage()    {}
 func (*ConversionAction) Descriptor() ([]byte, []int) {
-	return fileDescriptor_conversion_action_84c1356f86b03971, []int{0}
+	return fileDescriptor_conversion_action_43651a776b3d7ff3, []int{0}
 }
 func (m *ConversionAction) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversionAction.Unmarshal(m, b)
@@ -228,7 +228,7 @@ func (m *ConversionAction_AttributionModelSettings) Reset() {
 func (m *ConversionAction_AttributionModelSettings) String() string { return proto.CompactTextString(m) }
 func (*ConversionAction_AttributionModelSettings) ProtoMessage()    {}
 func (*ConversionAction_AttributionModelSettings) Descriptor() ([]byte, []int) {
-	return fileDescriptor_conversion_action_84c1356f86b03971, []int{0, 0}
+	return fileDescriptor_conversion_action_43651a776b3d7ff3, []int{0, 0}
 }
 func (m *ConversionAction_AttributionModelSettings) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversionAction_AttributionModelSettings.Unmarshal(m, b)
@@ -286,7 +286,7 @@ func (m *ConversionAction_ValueSettings) Reset()         { *m = ConversionAction
 func (m *ConversionAction_ValueSettings) String() string { return proto.CompactTextString(m) }
 func (*ConversionAction_ValueSettings) ProtoMessage()    {}
 func (*ConversionAction_ValueSettings) Descriptor() ([]byte, []int) {
-	return fileDescriptor_conversion_action_84c1356f86b03971, []int{0, 1}
+	return fileDescriptor_conversion_action_43651a776b3d7ff3, []int{0, 1}
 }
 func (m *ConversionAction_ValueSettings) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversionAction_ValueSettings.Unmarshal(m, b)
@@ -334,10 +334,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/conversion_action.proto", fileDescriptor_conversion_action_84c1356f86b03971)
+	proto.RegisterFile("google/ads/googleads/v0/resources/conversion_action.proto", fileDescriptor_conversion_action_43651a776b3d7ff3)
 }
 
-var fileDescriptor_conversion_action_84c1356f86b03971 = []byte{
+var fileDescriptor_conversion_action_43651a776b3d7ff3 = []byte{
 	// 955 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0xcf, 0x6e, 0x23, 0x35,
 	0x18, 0x57, 0xd2, 0xdd, 0xb2, 0xeb, 0x26, 0xd9, 0x62, 0x54, 0x69, 0x94, 0x65, 0x57, 0xed, 0xa2,

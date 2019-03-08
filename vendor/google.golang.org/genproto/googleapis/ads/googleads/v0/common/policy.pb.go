@@ -40,7 +40,7 @@ func (m *PolicyViolationKey) Reset()         { *m = PolicyViolationKey{} }
 func (m *PolicyViolationKey) String() string { return proto.CompactTextString(m) }
 func (*PolicyViolationKey) ProtoMessage()    {}
 func (*PolicyViolationKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{0}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{0}
 }
 func (m *PolicyViolationKey) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyViolationKey.Unmarshal(m, b)
@@ -94,7 +94,7 @@ func (m *PolicyValidationParameter) Reset()         { *m = PolicyValidationParam
 func (m *PolicyValidationParameter) String() string { return proto.CompactTextString(m) }
 func (*PolicyValidationParameter) ProtoMessage()    {}
 func (*PolicyValidationParameter) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{1}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{1}
 }
 func (m *PolicyValidationParameter) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyValidationParameter.Unmarshal(m, b)
@@ -154,7 +154,7 @@ func (m *PolicyTopicEntry) Reset()         { *m = PolicyTopicEntry{} }
 func (m *PolicyTopicEntry) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicEntry) ProtoMessage()    {}
 func (*PolicyTopicEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{2}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{2}
 }
 func (m *PolicyTopicEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicEntry.Unmarshal(m, b)
@@ -225,7 +225,7 @@ func (m *PolicyTopicEvidence) Reset()         { *m = PolicyTopicEvidence{} }
 func (m *PolicyTopicEvidence) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicEvidence) ProtoMessage()    {}
 func (*PolicyTopicEvidence) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{3}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{3}
 }
 func (m *PolicyTopicEvidence) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicEvidence.Unmarshal(m, b)
@@ -499,7 +499,7 @@ func (m *PolicyTopicEvidence_TextList) Reset()         { *m = PolicyTopicEvidenc
 func (m *PolicyTopicEvidence_TextList) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicEvidence_TextList) ProtoMessage()    {}
 func (*PolicyTopicEvidence_TextList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{3, 0}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{3, 0}
 }
 func (m *PolicyTopicEvidence_TextList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicEvidence_TextList.Unmarshal(m, b)
@@ -544,7 +544,7 @@ func (m *PolicyTopicEvidence_WebsiteList) Reset()         { *m = PolicyTopicEvid
 func (m *PolicyTopicEvidence_WebsiteList) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicEvidence_WebsiteList) ProtoMessage()    {}
 func (*PolicyTopicEvidence_WebsiteList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{3, 1}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{3, 1}
 }
 func (m *PolicyTopicEvidence_WebsiteList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicEvidence_WebsiteList.Unmarshal(m, b)
@@ -589,7 +589,7 @@ func (m *PolicyTopicEvidence_DestinationTextList) Reset() {
 func (m *PolicyTopicEvidence_DestinationTextList) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicEvidence_DestinationTextList) ProtoMessage()    {}
 func (*PolicyTopicEvidence_DestinationTextList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{3, 2}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{3, 2}
 }
 func (m *PolicyTopicEvidence_DestinationTextList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicEvidence_DestinationTextList.Unmarshal(m, b)
@@ -633,7 +633,7 @@ func (m *PolicyTopicEvidence_DestinationMismatch) Reset() {
 func (m *PolicyTopicEvidence_DestinationMismatch) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicEvidence_DestinationMismatch) ProtoMessage()    {}
 func (*PolicyTopicEvidence_DestinationMismatch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{3, 3}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{3, 3}
 }
 func (m *PolicyTopicEvidence_DestinationMismatch) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicEvidence_DestinationMismatch.Unmarshal(m, b)
@@ -681,7 +681,7 @@ func (m *PolicyTopicConstraint) Reset()         { *m = PolicyTopicConstraint{} }
 func (m *PolicyTopicConstraint) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicConstraint) ProtoMessage()    {}
 func (*PolicyTopicConstraint) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{4}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{4}
 }
 func (m *PolicyTopicConstraint) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicConstraint.Unmarshal(m, b)
@@ -897,7 +897,7 @@ func (m *PolicyTopicConstraint_CountryConstraintList) String() string {
 }
 func (*PolicyTopicConstraint_CountryConstraintList) ProtoMessage() {}
 func (*PolicyTopicConstraint_CountryConstraintList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{4, 0}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{4, 0}
 }
 func (m *PolicyTopicConstraint_CountryConstraintList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicConstraint_CountryConstraintList.Unmarshal(m, b)
@@ -947,7 +947,7 @@ func (m *PolicyTopicConstraint_ResellerConstraint) Reset() {
 func (m *PolicyTopicConstraint_ResellerConstraint) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicConstraint_ResellerConstraint) ProtoMessage()    {}
 func (*PolicyTopicConstraint_ResellerConstraint) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{4, 1}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{4, 1}
 }
 func (m *PolicyTopicConstraint_ResellerConstraint) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicConstraint_ResellerConstraint.Unmarshal(m, b)
@@ -986,7 +986,7 @@ func (m *PolicyTopicConstraint_CountryConstraint) Reset() {
 func (m *PolicyTopicConstraint_CountryConstraint) String() string { return proto.CompactTextString(m) }
 func (*PolicyTopicConstraint_CountryConstraint) ProtoMessage()    {}
 func (*PolicyTopicConstraint_CountryConstraint) Descriptor() ([]byte, []int) {
-	return fileDescriptor_policy_5856dd6188baa721, []int{4, 2}
+	return fileDescriptor_policy_74e29921f4fc9bc3, []int{4, 2}
 }
 func (m *PolicyTopicConstraint_CountryConstraint) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyTopicConstraint_CountryConstraint.Unmarshal(m, b)
@@ -1029,10 +1029,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/common/policy.proto", fileDescriptor_policy_5856dd6188baa721)
+	proto.RegisterFile("google/ads/googleads/v0/common/policy.proto", fileDescriptor_policy_74e29921f4fc9bc3)
 }
 
-var fileDescriptor_policy_5856dd6188baa721 = []byte{
+var fileDescriptor_policy_74e29921f4fc9bc3 = []byte{
 	// 987 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x96, 0xdd, 0x6e, 0x1b, 0x45,
 	0x14, 0xc7, 0xb3, 0x4e, 0xd2, 0xd8, 0xe3, 0x36, 0x4a, 0x27, 0x35, 0x35, 0x06, 0x95, 0xca, 0x48,

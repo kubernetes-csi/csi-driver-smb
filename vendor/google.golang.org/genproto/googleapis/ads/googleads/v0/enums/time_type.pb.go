@@ -50,7 +50,7 @@ func (x TimeTypeEnum_TimeType) String() string {
 	return proto.EnumName(TimeTypeEnum_TimeType_name, int32(x))
 }
 func (TimeTypeEnum_TimeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_time_type_e041d2d0b9e59b34, []int{0, 0}
+	return fileDescriptor_time_type_4019044a86ac0043, []int{0, 0}
 }
 
 // Message describing time types.
@@ -64,7 +64,7 @@ func (m *TimeTypeEnum) Reset()         { *m = TimeTypeEnum{} }
 func (m *TimeTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*TimeTypeEnum) ProtoMessage()    {}
 func (*TimeTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_time_type_e041d2d0b9e59b34, []int{0}
+	return fileDescriptor_time_type_4019044a86ac0043, []int{0}
 }
 func (m *TimeTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TimeTypeEnum.Unmarshal(m, b)
@@ -90,10 +90,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/time_type.proto", fileDescriptor_time_type_e041d2d0b9e59b34)
+	proto.RegisterFile("google/ads/googleads/v0/enums/time_type.proto", fileDescriptor_time_type_4019044a86ac0043)
 }
 
-var fileDescriptor_time_type_e041d2d0b9e59b34 = []byte{
+var fileDescriptor_time_type_4019044a86ac0043 = []byte{
 	// 274 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xd2, 0x4d, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

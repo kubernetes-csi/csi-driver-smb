@@ -51,7 +51,7 @@ func (x BudgetDeliveryMethodEnum_BudgetDeliveryMethod) String() string {
 	return proto.EnumName(BudgetDeliveryMethodEnum_BudgetDeliveryMethod_name, int32(x))
 }
 func (BudgetDeliveryMethodEnum_BudgetDeliveryMethod) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_budget_delivery_method_38236238fb0b37bb, []int{0, 0}
+	return fileDescriptor_budget_delivery_method_6c418482766d5979, []int{0, 0}
 }
 
 // Message describing Budget delivery methods. A delivery method determines the
@@ -66,7 +66,7 @@ func (m *BudgetDeliveryMethodEnum) Reset()         { *m = BudgetDeliveryMethodEn
 func (m *BudgetDeliveryMethodEnum) String() string { return proto.CompactTextString(m) }
 func (*BudgetDeliveryMethodEnum) ProtoMessage()    {}
 func (*BudgetDeliveryMethodEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_budget_delivery_method_38236238fb0b37bb, []int{0}
+	return fileDescriptor_budget_delivery_method_6c418482766d5979, []int{0}
 }
 func (m *BudgetDeliveryMethodEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BudgetDeliveryMethodEnum.Unmarshal(m, b)
@@ -92,10 +92,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/budget_delivery_method.proto", fileDescriptor_budget_delivery_method_38236238fb0b37bb)
+	proto.RegisterFile("google/ads/googleads/v0/enums/budget_delivery_method.proto", fileDescriptor_budget_delivery_method_6c418482766d5979)
 }
 
-var fileDescriptor_budget_delivery_method_38236238fb0b37bb = []byte{
+var fileDescriptor_budget_delivery_method_6c418482766d5979 = []byte{
 	// 298 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xc1, 0x4a, 0xc3, 0x30,
 	0x1c, 0xc6, 0x6d, 0x07, 0x2a, 0x99, 0x60, 0x29, 0x1e, 0xf4, 0xb0, 0xc3, 0xf6, 0x00, 0x69, 0xc1,

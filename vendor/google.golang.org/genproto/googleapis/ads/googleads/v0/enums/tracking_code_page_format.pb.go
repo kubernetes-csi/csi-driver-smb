@@ -50,7 +50,7 @@ func (x TrackingCodePageFormatEnum_TrackingCodePageFormat) String() string {
 	return proto.EnumName(TrackingCodePageFormatEnum_TrackingCodePageFormat_name, int32(x))
 }
 func (TrackingCodePageFormatEnum_TrackingCodePageFormat) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_tracking_code_page_format_377c48618cc29617, []int{0, 0}
+	return fileDescriptor_tracking_code_page_format_4f9d9a14e57e4356, []int{0, 0}
 }
 
 // Container for enum describing the format of the web page where the tracking
@@ -65,7 +65,7 @@ func (m *TrackingCodePageFormatEnum) Reset()         { *m = TrackingCodePageForm
 func (m *TrackingCodePageFormatEnum) String() string { return proto.CompactTextString(m) }
 func (*TrackingCodePageFormatEnum) ProtoMessage()    {}
 func (*TrackingCodePageFormatEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_tracking_code_page_format_377c48618cc29617, []int{0}
+	return fileDescriptor_tracking_code_page_format_4f9d9a14e57e4356, []int{0}
 }
 func (m *TrackingCodePageFormatEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TrackingCodePageFormatEnum.Unmarshal(m, b)
@@ -91,10 +91,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/tracking_code_page_format.proto", fileDescriptor_tracking_code_page_format_377c48618cc29617)
+	proto.RegisterFile("google/ads/googleads/v0/enums/tracking_code_page_format.proto", fileDescriptor_tracking_code_page_format_4f9d9a14e57e4356)
 }
 
-var fileDescriptor_tracking_code_page_format_377c48618cc29617 = []byte{
+var fileDescriptor_tracking_code_page_format_4f9d9a14e57e4356 = []byte{
 	// 296 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x4d, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

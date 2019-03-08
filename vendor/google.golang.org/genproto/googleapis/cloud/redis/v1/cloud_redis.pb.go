@@ -80,7 +80,7 @@ func (x Instance_State) String() string {
 	return proto.EnumName(Instance_State_name, int32(x))
 }
 func (Instance_State) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{0, 0}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{0, 0}
 }
 
 // Available service tiers to choose from
@@ -110,7 +110,7 @@ func (x Instance_Tier) String() string {
 	return proto.EnumName(Instance_Tier_name, int32(x))
 }
 func (Instance_Tier) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{0, 1}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{0, 1}
 }
 
 type FailoverInstanceRequest_DataProtectionMode int32
@@ -141,7 +141,7 @@ func (x FailoverInstanceRequest_DataProtectionMode) String() string {
 	return proto.EnumName(FailoverInstanceRequest_DataProtectionMode_name, int32(x))
 }
 func (FailoverInstanceRequest_DataProtectionMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{13, 0}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{13, 0}
 }
 
 // A Google Cloud Redis instance.
@@ -237,7 +237,7 @@ func (m *Instance) Reset()         { *m = Instance{} }
 func (m *Instance) String() string { return proto.CompactTextString(m) }
 func (*Instance) ProtoMessage()    {}
 func (*Instance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{0}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{0}
 }
 func (m *Instance) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Instance.Unmarshal(m, b)
@@ -409,7 +409,7 @@ func (m *ListInstancesRequest) Reset()         { *m = ListInstancesRequest{} }
 func (m *ListInstancesRequest) String() string { return proto.CompactTextString(m) }
 func (*ListInstancesRequest) ProtoMessage()    {}
 func (*ListInstancesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{1}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{1}
 }
 func (m *ListInstancesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListInstancesRequest.Unmarshal(m, b)
@@ -477,7 +477,7 @@ func (m *ListInstancesResponse) Reset()         { *m = ListInstancesResponse{} }
 func (m *ListInstancesResponse) String() string { return proto.CompactTextString(m) }
 func (*ListInstancesResponse) ProtoMessage()    {}
 func (*ListInstancesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{2}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{2}
 }
 func (m *ListInstancesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListInstancesResponse.Unmarshal(m, b)
@@ -533,7 +533,7 @@ func (m *GetInstanceRequest) Reset()         { *m = GetInstanceRequest{} }
 func (m *GetInstanceRequest) String() string { return proto.CompactTextString(m) }
 func (*GetInstanceRequest) ProtoMessage()    {}
 func (*GetInstanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{3}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{3}
 }
 func (m *GetInstanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetInstanceRequest.Unmarshal(m, b)
@@ -560,7 +560,8 @@ func (m *GetInstanceRequest) GetName() string {
 	return ""
 }
 
-// Request for [CreateInstance][google.cloud.redis.v1.CloudRedis.CreateInstance].
+// Request for
+// [CreateInstance][google.cloud.redis.v1.CloudRedis.CreateInstance].
 type CreateInstanceRequest struct {
 	// Required. The resource name of the instance location using the form:
 	//     `projects/{project_id}/locations/{location_id}`
@@ -586,7 +587,7 @@ func (m *CreateInstanceRequest) Reset()         { *m = CreateInstanceRequest{} }
 func (m *CreateInstanceRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateInstanceRequest) ProtoMessage()    {}
 func (*CreateInstanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{4}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{4}
 }
 func (m *CreateInstanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateInstanceRequest.Unmarshal(m, b)
@@ -627,7 +628,8 @@ func (m *CreateInstanceRequest) GetInstance() *Instance {
 	return nil
 }
 
-// Request for [UpdateInstance][google.cloud.redis.v1.CloudRedis.UpdateInstance].
+// Request for
+// [UpdateInstance][google.cloud.redis.v1.CloudRedis.UpdateInstance].
 type UpdateInstanceRequest struct {
 	// Required. Mask of fields to update. At least one path must be supplied in
 	// this field. The elements of the repeated paths field may only include these
@@ -650,7 +652,7 @@ func (m *UpdateInstanceRequest) Reset()         { *m = UpdateInstanceRequest{} }
 func (m *UpdateInstanceRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateInstanceRequest) ProtoMessage()    {}
 func (*UpdateInstanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{5}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{5}
 }
 func (m *UpdateInstanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateInstanceRequest.Unmarshal(m, b)
@@ -684,7 +686,8 @@ func (m *UpdateInstanceRequest) GetInstance() *Instance {
 	return nil
 }
 
-// Request for [DeleteInstance][google.cloud.redis.v1.CloudRedis.DeleteInstance].
+// Request for
+// [DeleteInstance][google.cloud.redis.v1.CloudRedis.DeleteInstance].
 type DeleteInstanceRequest struct {
 	// Required. Redis instance resource name using the form:
 	//     `projects/{project_id}/locations/{location_id}/instances/{instance_id}`
@@ -699,7 +702,7 @@ func (m *DeleteInstanceRequest) Reset()         { *m = DeleteInstanceRequest{} }
 func (m *DeleteInstanceRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteInstanceRequest) ProtoMessage()    {}
 func (*DeleteInstanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{6}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{6}
 }
 func (m *DeleteInstanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteInstanceRequest.Unmarshal(m, b)
@@ -739,7 +742,7 @@ func (m *GcsSource) Reset()         { *m = GcsSource{} }
 func (m *GcsSource) String() string { return proto.CompactTextString(m) }
 func (*GcsSource) ProtoMessage()    {}
 func (*GcsSource) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{7}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{7}
 }
 func (m *GcsSource) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GcsSource.Unmarshal(m, b)
@@ -782,7 +785,7 @@ func (m *InputConfig) Reset()         { *m = InputConfig{} }
 func (m *InputConfig) String() string { return proto.CompactTextString(m) }
 func (*InputConfig) ProtoMessage()    {}
 func (*InputConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{8}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{8}
 }
 func (m *InputConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InputConfig.Unmarshal(m, b)
@@ -898,7 +901,7 @@ func (m *ImportInstanceRequest) Reset()         { *m = ImportInstanceRequest{} }
 func (m *ImportInstanceRequest) String() string { return proto.CompactTextString(m) }
 func (*ImportInstanceRequest) ProtoMessage()    {}
 func (*ImportInstanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{9}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{9}
 }
 func (m *ImportInstanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportInstanceRequest.Unmarshal(m, b)
@@ -946,7 +949,7 @@ func (m *GcsDestination) Reset()         { *m = GcsDestination{} }
 func (m *GcsDestination) String() string { return proto.CompactTextString(m) }
 func (*GcsDestination) ProtoMessage()    {}
 func (*GcsDestination) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{10}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{10}
 }
 func (m *GcsDestination) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GcsDestination.Unmarshal(m, b)
@@ -989,7 +992,7 @@ func (m *OutputConfig) Reset()         { *m = OutputConfig{} }
 func (m *OutputConfig) String() string { return proto.CompactTextString(m) }
 func (*OutputConfig) ProtoMessage()    {}
 func (*OutputConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{11}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{11}
 }
 func (m *OutputConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OutputConfig.Unmarshal(m, b)
@@ -1105,7 +1108,7 @@ func (m *ExportInstanceRequest) Reset()         { *m = ExportInstanceRequest{} }
 func (m *ExportInstanceRequest) String() string { return proto.CompactTextString(m) }
 func (*ExportInstanceRequest) ProtoMessage()    {}
 func (*ExportInstanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{12}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{12}
 }
 func (m *ExportInstanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportInstanceRequest.Unmarshal(m, b)
@@ -1157,7 +1160,7 @@ func (m *FailoverInstanceRequest) Reset()         { *m = FailoverInstanceRequest
 func (m *FailoverInstanceRequest) String() string { return proto.CompactTextString(m) }
 func (*FailoverInstanceRequest) ProtoMessage()    {}
 func (*FailoverInstanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{13}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{13}
 }
 func (m *FailoverInstanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FailoverInstanceRequest.Unmarshal(m, b)
@@ -1216,7 +1219,7 @@ func (m *OperationMetadata) Reset()         { *m = OperationMetadata{} }
 func (m *OperationMetadata) String() string { return proto.CompactTextString(m) }
 func (*OperationMetadata) ProtoMessage()    {}
 func (*OperationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{14}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{14}
 }
 func (m *OperationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OperationMetadata.Unmarshal(m, b)
@@ -1304,7 +1307,7 @@ func (m *LocationMetadata) Reset()         { *m = LocationMetadata{} }
 func (m *LocationMetadata) String() string { return proto.CompactTextString(m) }
 func (*LocationMetadata) ProtoMessage()    {}
 func (*LocationMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{15}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{15}
 }
 func (m *LocationMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LocationMetadata.Unmarshal(m, b)
@@ -1343,7 +1346,7 @@ func (m *ZoneMetadata) Reset()         { *m = ZoneMetadata{} }
 func (m *ZoneMetadata) String() string { return proto.CompactTextString(m) }
 func (*ZoneMetadata) ProtoMessage()    {}
 func (*ZoneMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cloud_redis_e8f5ef07f34e66a1, []int{16}
+	return fileDescriptor_cloud_redis_5a47d8b10cb9ffbe, []int{16}
 }
 func (m *ZoneMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ZoneMetadata.Unmarshal(m, b)
@@ -1781,10 +1784,10 @@ var _CloudRedis_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/redis/v1/cloud_redis.proto", fileDescriptor_cloud_redis_e8f5ef07f34e66a1)
+	proto.RegisterFile("google/cloud/redis/v1/cloud_redis.proto", fileDescriptor_cloud_redis_5a47d8b10cb9ffbe)
 }
 
-var fileDescriptor_cloud_redis_e8f5ef07f34e66a1 = []byte{
+var fileDescriptor_cloud_redis_5a47d8b10cb9ffbe = []byte{
 	// 1726 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x58, 0x41, 0x6f, 0xdb, 0xc8,
 	0x15, 0x0e, 0x65, 0xcb, 0x6b, 0x3d, 0xc9, 0xb2, 0x3c, 0xb1, 0xb2, 0xac, 0xda, 0x20, 0x2a, 0x93,

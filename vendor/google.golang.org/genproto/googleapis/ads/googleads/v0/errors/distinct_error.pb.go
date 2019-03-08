@@ -49,7 +49,7 @@ func (x DistinctErrorEnum_DistinctError) String() string {
 	return proto.EnumName(DistinctErrorEnum_DistinctError_name, int32(x))
 }
 func (DistinctErrorEnum_DistinctError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_distinct_error_a875b032c2dbb2d7, []int{0, 0}
+	return fileDescriptor_distinct_error_7e2e19779b4ca9f4, []int{0, 0}
 }
 
 // Container for enum describing possible distinct errors.
@@ -63,7 +63,7 @@ func (m *DistinctErrorEnum) Reset()         { *m = DistinctErrorEnum{} }
 func (m *DistinctErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*DistinctErrorEnum) ProtoMessage()    {}
 func (*DistinctErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_distinct_error_a875b032c2dbb2d7, []int{0}
+	return fileDescriptor_distinct_error_7e2e19779b4ca9f4, []int{0}
 }
 func (m *DistinctErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DistinctErrorEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/distinct_error.proto", fileDescriptor_distinct_error_a875b032c2dbb2d7)
+	proto.RegisterFile("google/ads/googleads/v0/errors/distinct_error.proto", fileDescriptor_distinct_error_7e2e19779b4ca9f4)
 }
 
-var fileDescriptor_distinct_error_a875b032c2dbb2d7 = []byte{
+var fileDescriptor_distinct_error_7e2e19779b4ca9f4 = []byte{
 	// 288 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xdd, 0x4a, 0xc3, 0x30,
 	0x1c, 0xc5, 0x5d, 0x07, 0x0a, 0x19, 0x6a, 0x17, 0xf0, 0x76, 0x17, 0x7d, 0x80, 0xb4, 0xb0, 0xbb,

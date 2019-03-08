@@ -29,7 +29,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [KeywordPlanService.GetKeywordPlan][google.ads.googleads.v0.services.KeywordPlanService.GetKeywordPlan].
+// Request message for
+// [KeywordPlanService.GetKeywordPlan][google.ads.googleads.v0.services.KeywordPlanService.GetKeywordPlan].
 type GetKeywordPlanRequest struct {
 	// The resource name of the plan to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -42,7 +43,7 @@ func (m *GetKeywordPlanRequest) Reset()         { *m = GetKeywordPlanRequest{} }
 func (m *GetKeywordPlanRequest) String() string { return proto.CompactTextString(m) }
 func (*GetKeywordPlanRequest) ProtoMessage()    {}
 func (*GetKeywordPlanRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{0}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{0}
 }
 func (m *GetKeywordPlanRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetKeywordPlanRequest.Unmarshal(m, b)
@@ -69,7 +70,8 @@ func (m *GetKeywordPlanRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [KeywordPlanService.MutateKeywordPlans][google.ads.googleads.v0.services.KeywordPlanService.MutateKeywordPlans].
+// Request message for
+// [KeywordPlanService.MutateKeywordPlans][google.ads.googleads.v0.services.KeywordPlanService.MutateKeywordPlans].
 type MutateKeywordPlansRequest struct {
 	// The ID of the customer whose keyword plans are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -92,7 +94,7 @@ func (m *MutateKeywordPlansRequest) Reset()         { *m = MutateKeywordPlansReq
 func (m *MutateKeywordPlansRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateKeywordPlansRequest) ProtoMessage()    {}
 func (*MutateKeywordPlansRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{1}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{1}
 }
 func (m *MutateKeywordPlansRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateKeywordPlansRequest.Unmarshal(m, b)
@@ -161,7 +163,7 @@ func (m *KeywordPlanOperation) Reset()         { *m = KeywordPlanOperation{} }
 func (m *KeywordPlanOperation) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanOperation) ProtoMessage()    {}
 func (*KeywordPlanOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{2}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{2}
 }
 func (m *KeywordPlanOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanOperation.Unmarshal(m, b)
@@ -345,7 +347,7 @@ func (m *MutateKeywordPlansResponse) Reset()         { *m = MutateKeywordPlansRe
 func (m *MutateKeywordPlansResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateKeywordPlansResponse) ProtoMessage()    {}
 func (*MutateKeywordPlansResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{3}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{3}
 }
 func (m *MutateKeywordPlansResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateKeywordPlansResponse.Unmarshal(m, b)
@@ -392,7 +394,7 @@ func (m *MutateKeywordPlansResult) Reset()         { *m = MutateKeywordPlansResu
 func (m *MutateKeywordPlansResult) String() string { return proto.CompactTextString(m) }
 func (*MutateKeywordPlansResult) ProtoMessage()    {}
 func (*MutateKeywordPlansResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{4}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{4}
 }
 func (m *MutateKeywordPlansResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateKeywordPlansResult.Unmarshal(m, b)
@@ -419,7 +421,8 @@ func (m *MutateKeywordPlansResult) GetResourceName() string {
 	return ""
 }
 
-// Request message for [KeywordPlanService.GenerateForecastMetrics][google.ads.googleads.v0.services.KeywordPlanService.GenerateForecastMetrics].
+// Request message for
+// [KeywordPlanService.GenerateForecastMetrics][google.ads.googleads.v0.services.KeywordPlanService.GenerateForecastMetrics].
 type GenerateForecastMetricsRequest struct {
 	// The resource name of the keyword plan to be forecasted.
 	KeywordPlan          string   `protobuf:"bytes,1,opt,name=keyword_plan,json=keywordPlan,proto3" json:"keyword_plan,omitempty"`
@@ -432,7 +435,7 @@ func (m *GenerateForecastMetricsRequest) Reset()         { *m = GenerateForecast
 func (m *GenerateForecastMetricsRequest) String() string { return proto.CompactTextString(m) }
 func (*GenerateForecastMetricsRequest) ProtoMessage()    {}
 func (*GenerateForecastMetricsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{5}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{5}
 }
 func (m *GenerateForecastMetricsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GenerateForecastMetricsRequest.Unmarshal(m, b)
@@ -459,7 +462,8 @@ func (m *GenerateForecastMetricsRequest) GetKeywordPlan() string {
 	return ""
 }
 
-// Response message for [KeywordPlanService.GenerateForecastMetrics][google.ads.googleads.v0.services.KeywordPlanService.GenerateForecastMetrics].
+// Response message for
+// [KeywordPlanService.GenerateForecastMetrics][google.ads.googleads.v0.services.KeywordPlanService.GenerateForecastMetrics].
 type GenerateForecastMetricsResponse struct {
 	// List of campaign forecasts.
 	// One maximum.
@@ -477,7 +481,7 @@ func (m *GenerateForecastMetricsResponse) Reset()         { *m = GenerateForecas
 func (m *GenerateForecastMetricsResponse) String() string { return proto.CompactTextString(m) }
 func (*GenerateForecastMetricsResponse) ProtoMessage()    {}
 func (*GenerateForecastMetricsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{6}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{6}
 }
 func (m *GenerateForecastMetricsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GenerateForecastMetricsResponse.Unmarshal(m, b)
@@ -535,7 +539,7 @@ func (m *KeywordPlanCampaignForecast) Reset()         { *m = KeywordPlanCampaign
 func (m *KeywordPlanCampaignForecast) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanCampaignForecast) ProtoMessage()    {}
 func (*KeywordPlanCampaignForecast) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{7}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{7}
 }
 func (m *KeywordPlanCampaignForecast) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanCampaignForecast.Unmarshal(m, b)
@@ -586,7 +590,7 @@ func (m *KeywordPlanAdGroupForecast) Reset()         { *m = KeywordPlanAdGroupFo
 func (m *KeywordPlanAdGroupForecast) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanAdGroupForecast) ProtoMessage()    {}
 func (*KeywordPlanAdGroupForecast) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{8}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{8}
 }
 func (m *KeywordPlanAdGroupForecast) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanAdGroupForecast.Unmarshal(m, b)
@@ -638,7 +642,7 @@ func (m *KeywordPlanKeywordForecast) Reset()         { *m = KeywordPlanKeywordFo
 func (m *KeywordPlanKeywordForecast) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanKeywordForecast) ProtoMessage()    {}
 func (*KeywordPlanKeywordForecast) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{9}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{9}
 }
 func (m *KeywordPlanKeywordForecast) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanKeywordForecast.Unmarshal(m, b)
@@ -693,7 +697,7 @@ func (m *ForecastMetrics) Reset()         { *m = ForecastMetrics{} }
 func (m *ForecastMetrics) String() string { return proto.CompactTextString(m) }
 func (*ForecastMetrics) ProtoMessage()    {}
 func (*ForecastMetrics) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{10}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{10}
 }
 func (m *ForecastMetrics) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ForecastMetrics.Unmarshal(m, b)
@@ -748,7 +752,8 @@ func (m *ForecastMetrics) GetCostMicros() *wrappers.Int64Value {
 	return nil
 }
 
-// Request message for [KeywordPlanService.GenerateHistoricalMetrics][google.ads.googleads.v0.services.KeywordPlanService.GenerateHistoricalMetrics].
+// Request message for
+// [KeywordPlanService.GenerateHistoricalMetrics][google.ads.googleads.v0.services.KeywordPlanService.GenerateHistoricalMetrics].
 type GenerateHistoricalMetricsRequest struct {
 	// The resource name of the keyword plan of which historical metrics are
 	// requested.
@@ -762,7 +767,7 @@ func (m *GenerateHistoricalMetricsRequest) Reset()         { *m = GenerateHistor
 func (m *GenerateHistoricalMetricsRequest) String() string { return proto.CompactTextString(m) }
 func (*GenerateHistoricalMetricsRequest) ProtoMessage()    {}
 func (*GenerateHistoricalMetricsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{11}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{11}
 }
 func (m *GenerateHistoricalMetricsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GenerateHistoricalMetricsRequest.Unmarshal(m, b)
@@ -789,7 +794,8 @@ func (m *GenerateHistoricalMetricsRequest) GetKeywordPlan() string {
 	return ""
 }
 
-// Response message for [KeywordPlanService.GenerateHistoricalMetrics][google.ads.googleads.v0.services.KeywordPlanService.GenerateHistoricalMetrics].
+// Response message for
+// [KeywordPlanService.GenerateHistoricalMetrics][google.ads.googleads.v0.services.KeywordPlanService.GenerateHistoricalMetrics].
 type GenerateHistoricalMetricsResponse struct {
 	// List of keyword historical metrics.
 	Metrics              []*KeywordPlanKeywordHistoricalMetrics `protobuf:"bytes,1,rep,name=metrics,proto3" json:"metrics,omitempty"`
@@ -802,7 +808,7 @@ func (m *GenerateHistoricalMetricsResponse) Reset()         { *m = GenerateHisto
 func (m *GenerateHistoricalMetricsResponse) String() string { return proto.CompactTextString(m) }
 func (*GenerateHistoricalMetricsResponse) ProtoMessage()    {}
 func (*GenerateHistoricalMetricsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{12}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{12}
 }
 func (m *GenerateHistoricalMetricsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GenerateHistoricalMetricsResponse.Unmarshal(m, b)
@@ -851,7 +857,7 @@ func (m *KeywordPlanKeywordHistoricalMetrics) Reset()         { *m = KeywordPlan
 func (m *KeywordPlanKeywordHistoricalMetrics) String() string { return proto.CompactTextString(m) }
 func (*KeywordPlanKeywordHistoricalMetrics) ProtoMessage()    {}
 func (*KeywordPlanKeywordHistoricalMetrics) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keyword_plan_service_b6afcae09f5c0029, []int{13}
+	return fileDescriptor_keyword_plan_service_2e21527bcdebeb7e, []int{13}
 }
 func (m *KeywordPlanKeywordHistoricalMetrics) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KeywordPlanKeywordHistoricalMetrics.Unmarshal(m, b)
@@ -1084,10 +1090,10 @@ var _KeywordPlanService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/keyword_plan_service.proto", fileDescriptor_keyword_plan_service_b6afcae09f5c0029)
+	proto.RegisterFile("google/ads/googleads/v0/services/keyword_plan_service.proto", fileDescriptor_keyword_plan_service_2e21527bcdebeb7e)
 }
 
-var fileDescriptor_keyword_plan_service_b6afcae09f5c0029 = []byte{
+var fileDescriptor_keyword_plan_service_2e21527bcdebeb7e = []byte{
 	// 1236 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x57, 0x41, 0x6f, 0xdc, 0xc4,
 	0x17, 0xff, 0x7b, 0xf3, 0x27, 0xa5, 0x6f, 0x43, 0xdb, 0x4c, 0xa9, 0xba, 0xdd, 0x96, 0x36, 0x75,

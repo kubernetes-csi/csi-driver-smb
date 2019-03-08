@@ -28,7 +28,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [RecommendationService.GetRecommendation][google.ads.googleads.v0.services.RecommendationService.GetRecommendation].
+// Request message for
+// [RecommendationService.GetRecommendation][google.ads.googleads.v0.services.RecommendationService.GetRecommendation].
 type GetRecommendationRequest struct {
 	// The resource name of the recommendation to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -41,7 +42,7 @@ func (m *GetRecommendationRequest) Reset()         { *m = GetRecommendationReque
 func (m *GetRecommendationRequest) String() string { return proto.CompactTextString(m) }
 func (*GetRecommendationRequest) ProtoMessage()    {}
 func (*GetRecommendationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{0}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{0}
 }
 func (m *GetRecommendationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetRecommendationRequest.Unmarshal(m, b)
@@ -68,7 +69,8 @@ func (m *GetRecommendationRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [RecommendationService.ApplyRecommendation][google.ads.googleads.v0.services.RecommendationService.ApplyRecommendation].
+// Request message for
+// [RecommendationService.ApplyRecommendation][google.ads.googleads.v0.services.RecommendationService.ApplyRecommendation].
 type ApplyRecommendationRequest struct {
 	// The ID of the customer with the recommendation.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -90,7 +92,7 @@ func (m *ApplyRecommendationRequest) Reset()         { *m = ApplyRecommendationR
 func (m *ApplyRecommendationRequest) String() string { return proto.CompactTextString(m) }
 func (*ApplyRecommendationRequest) ProtoMessage()    {}
 func (*ApplyRecommendationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{1}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{1}
 }
 func (m *ApplyRecommendationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ApplyRecommendationRequest.Unmarshal(m, b)
@@ -154,7 +156,7 @@ func (m *ApplyRecommendationOperation) Reset()         { *m = ApplyRecommendatio
 func (m *ApplyRecommendationOperation) String() string { return proto.CompactTextString(m) }
 func (*ApplyRecommendationOperation) ProtoMessage()    {}
 func (*ApplyRecommendationOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{2}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{2}
 }
 func (m *ApplyRecommendationOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ApplyRecommendationOperation.Unmarshal(m, b)
@@ -374,7 +376,7 @@ func (m *ApplyRecommendationOperation_CampaignBudgetParameters) String() string 
 }
 func (*ApplyRecommendationOperation_CampaignBudgetParameters) ProtoMessage() {}
 func (*ApplyRecommendationOperation_CampaignBudgetParameters) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{2, 0}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{2, 0}
 }
 func (m *ApplyRecommendationOperation_CampaignBudgetParameters) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ApplyRecommendationOperation_CampaignBudgetParameters.Unmarshal(m, b)
@@ -419,7 +421,7 @@ func (m *ApplyRecommendationOperation_TextAdParameters) String() string {
 }
 func (*ApplyRecommendationOperation_TextAdParameters) ProtoMessage() {}
 func (*ApplyRecommendationOperation_TextAdParameters) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{2, 1}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{2, 1}
 }
 func (m *ApplyRecommendationOperation_TextAdParameters) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ApplyRecommendationOperation_TextAdParameters.Unmarshal(m, b)
@@ -468,7 +470,7 @@ func (m *ApplyRecommendationOperation_KeywordParameters) String() string {
 }
 func (*ApplyRecommendationOperation_KeywordParameters) ProtoMessage() {}
 func (*ApplyRecommendationOperation_KeywordParameters) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{2, 2}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{2, 2}
 }
 func (m *ApplyRecommendationOperation_KeywordParameters) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ApplyRecommendationOperation_KeywordParameters.Unmarshal(m, b)
@@ -529,7 +531,7 @@ func (m *ApplyRecommendationOperation_TargetCpaOptInParameters) String() string 
 }
 func (*ApplyRecommendationOperation_TargetCpaOptInParameters) ProtoMessage() {}
 func (*ApplyRecommendationOperation_TargetCpaOptInParameters) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{2, 3}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{2, 3}
 }
 func (m *ApplyRecommendationOperation_TargetCpaOptInParameters) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ApplyRecommendationOperation_TargetCpaOptInParameters.Unmarshal(m, b)
@@ -563,7 +565,8 @@ func (m *ApplyRecommendationOperation_TargetCpaOptInParameters) GetNewCampaignBu
 	return nil
 }
 
-// Response message for [RecommendationService.ApplyRecommendation][google.ads.googleads.v0.services.RecommendationService.ApplyRecommendation].
+// Response message for
+// [RecommendationService.ApplyRecommendation][google.ads.googleads.v0.services.RecommendationService.ApplyRecommendation].
 type ApplyRecommendationResponse struct {
 	// Results of operations to apply recommendations.
 	Results []*ApplyRecommendationResult `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
@@ -581,7 +584,7 @@ func (m *ApplyRecommendationResponse) Reset()         { *m = ApplyRecommendation
 func (m *ApplyRecommendationResponse) String() string { return proto.CompactTextString(m) }
 func (*ApplyRecommendationResponse) ProtoMessage()    {}
 func (*ApplyRecommendationResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{3}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{3}
 }
 func (m *ApplyRecommendationResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ApplyRecommendationResponse.Unmarshal(m, b)
@@ -628,7 +631,7 @@ func (m *ApplyRecommendationResult) Reset()         { *m = ApplyRecommendationRe
 func (m *ApplyRecommendationResult) String() string { return proto.CompactTextString(m) }
 func (*ApplyRecommendationResult) ProtoMessage()    {}
 func (*ApplyRecommendationResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{4}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{4}
 }
 func (m *ApplyRecommendationResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ApplyRecommendationResult.Unmarshal(m, b)
@@ -655,7 +658,8 @@ func (m *ApplyRecommendationResult) GetResourceName() string {
 	return ""
 }
 
-// Request message for [RecommendationService.DismissRecommendation][google.ads.googleads.v0.services.RecommendationService.DismissRecommendation].
+// Request message for
+// [RecommendationService.DismissRecommendation][google.ads.googleads.v0.services.RecommendationService.DismissRecommendation].
 type DismissRecommendationRequest struct {
 	// The ID of the customer with the recommendation.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -677,7 +681,7 @@ func (m *DismissRecommendationRequest) Reset()         { *m = DismissRecommendat
 func (m *DismissRecommendationRequest) String() string { return proto.CompactTextString(m) }
 func (*DismissRecommendationRequest) ProtoMessage()    {}
 func (*DismissRecommendationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{5}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{5}
 }
 func (m *DismissRecommendationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DismissRecommendationRequest.Unmarshal(m, b)
@@ -735,7 +739,7 @@ func (m *DismissRecommendationRequest_DismissRecommendationOperation) String() s
 }
 func (*DismissRecommendationRequest_DismissRecommendationOperation) ProtoMessage() {}
 func (*DismissRecommendationRequest_DismissRecommendationOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{5, 0}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{5, 0}
 }
 func (m *DismissRecommendationRequest_DismissRecommendationOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DismissRecommendationRequest_DismissRecommendationOperation.Unmarshal(m, b)
@@ -762,7 +766,8 @@ func (m *DismissRecommendationRequest_DismissRecommendationOperation) GetResourc
 	return ""
 }
 
-// Response message for [RecommendationService.DismissRecommendation][google.ads.googleads.v0.services.RecommendationService.DismissRecommendation].
+// Response message for
+// [RecommendationService.DismissRecommendation][google.ads.googleads.v0.services.RecommendationService.DismissRecommendation].
 type DismissRecommendationResponse struct {
 	// Results of operations to dismiss recommendations.
 	Results []*DismissRecommendationResponse_DismissRecommendationResult `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
@@ -780,7 +785,7 @@ func (m *DismissRecommendationResponse) Reset()         { *m = DismissRecommenda
 func (m *DismissRecommendationResponse) String() string { return proto.CompactTextString(m) }
 func (*DismissRecommendationResponse) ProtoMessage()    {}
 func (*DismissRecommendationResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{6}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{6}
 }
 func (m *DismissRecommendationResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DismissRecommendationResponse.Unmarshal(m, b)
@@ -831,7 +836,7 @@ func (m *DismissRecommendationResponse_DismissRecommendationResult) String() str
 }
 func (*DismissRecommendationResponse_DismissRecommendationResult) ProtoMessage() {}
 func (*DismissRecommendationResponse_DismissRecommendationResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_service_6d5455a10a27c4cd, []int{6, 0}
+	return fileDescriptor_recommendation_service_49514a7817ff77b2, []int{6, 0}
 }
 func (m *DismissRecommendationResponse_DismissRecommendationResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DismissRecommendationResponse_DismissRecommendationResult.Unmarshal(m, b)
@@ -1019,10 +1024,10 @@ var _RecommendationService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/recommendation_service.proto", fileDescriptor_recommendation_service_6d5455a10a27c4cd)
+	proto.RegisterFile("google/ads/googleads/v0/services/recommendation_service.proto", fileDescriptor_recommendation_service_49514a7817ff77b2)
 }
 
-var fileDescriptor_recommendation_service_6d5455a10a27c4cd = []byte{
+var fileDescriptor_recommendation_service_49514a7817ff77b2 = []byte{
 	// 1088 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0xc1, 0x72, 0xdc, 0x44,
 	0x10, 0x45, 0x32, 0x89, 0xe3, 0x71, 0xb0, 0xe3, 0x49, 0xb9, 0x58, 0x64, 0x27, 0x2c, 0x4b, 0x28,

@@ -46,7 +46,7 @@ func (x DatabaseErrorEnum_DatabaseError) String() string {
 	return proto.EnumName(DatabaseErrorEnum_DatabaseError_name, int32(x))
 }
 func (DatabaseErrorEnum_DatabaseError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_database_error_3f1fd7c684c32f74, []int{0, 0}
+	return fileDescriptor_database_error_5ee1f2b1a72c664f, []int{0, 0}
 }
 
 // Container for enum describing possible database errors.
@@ -60,7 +60,7 @@ func (m *DatabaseErrorEnum) Reset()         { *m = DatabaseErrorEnum{} }
 func (m *DatabaseErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*DatabaseErrorEnum) ProtoMessage()    {}
 func (*DatabaseErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_database_error_3f1fd7c684c32f74, []int{0}
+	return fileDescriptor_database_error_5ee1f2b1a72c664f, []int{0}
 }
 func (m *DatabaseErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DatabaseErrorEnum.Unmarshal(m, b)
@@ -86,10 +86,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/database_error.proto", fileDescriptor_database_error_3f1fd7c684c32f74)
+	proto.RegisterFile("google/ads/googleads/v0/errors/database_error.proto", fileDescriptor_database_error_5ee1f2b1a72c664f)
 }
 
-var fileDescriptor_database_error_3f1fd7c684c32f74 = []byte{
+var fileDescriptor_database_error_5ee1f2b1a72c664f = []byte{
 	// 285 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x4e, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xa2,

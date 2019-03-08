@@ -53,7 +53,7 @@ func (m *Source) Reset()         { *m = Source{} }
 func (m *Source) String() string { return proto.CompactTextString(m) }
 func (*Source) ProtoMessage()    {}
 func (*Source) Descriptor() ([]byte, []int) {
-	return fileDescriptor_source_d3cbd8d8cc91b8db, []int{0}
+	return fileDescriptor_source_efe0eb426938e11e, []int{0}
 }
 func (m *Source) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Source.Unmarshal(m, b)
@@ -99,10 +99,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/securitycenter/v1/source.proto", fileDescriptor_source_d3cbd8d8cc91b8db)
+	proto.RegisterFile("google/cloud/securitycenter/v1/source.proto", fileDescriptor_source_efe0eb426938e11e)
 }
 
-var fileDescriptor_source_d3cbd8d8cc91b8db = []byte{
+var fileDescriptor_source_efe0eb426938e11e = []byte{
 	// 218 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xb1, 0x4b, 0xc6, 0x30,
 	0x14, 0xc4, 0xa9, 0xd6, 0xa2, 0xa9, 0x83, 0x64, 0x2a, 0x22, 0x52, 0x3b, 0x09, 0x42, 0x42, 0x71,

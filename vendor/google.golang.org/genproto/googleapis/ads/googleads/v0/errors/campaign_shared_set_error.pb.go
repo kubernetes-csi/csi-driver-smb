@@ -45,7 +45,7 @@ func (x CampaignSharedSetErrorEnum_CampaignSharedSetError) String() string {
 	return proto.EnumName(CampaignSharedSetErrorEnum_CampaignSharedSetError_name, int32(x))
 }
 func (CampaignSharedSetErrorEnum_CampaignSharedSetError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_shared_set_error_1e4e3aad996e3e00, []int{0, 0}
+	return fileDescriptor_campaign_shared_set_error_d5ce303fef6a302d, []int{0, 0}
 }
 
 // Container for enum describing possible campaign shared set errors.
@@ -59,7 +59,7 @@ func (m *CampaignSharedSetErrorEnum) Reset()         { *m = CampaignSharedSetErr
 func (m *CampaignSharedSetErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*CampaignSharedSetErrorEnum) ProtoMessage()    {}
 func (*CampaignSharedSetErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_shared_set_error_1e4e3aad996e3e00, []int{0}
+	return fileDescriptor_campaign_shared_set_error_d5ce303fef6a302d, []int{0}
 }
 func (m *CampaignSharedSetErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CampaignSharedSetErrorEnum.Unmarshal(m, b)
@@ -85,10 +85,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/campaign_shared_set_error.proto", fileDescriptor_campaign_shared_set_error_1e4e3aad996e3e00)
+	proto.RegisterFile("google/ads/googleads/v0/errors/campaign_shared_set_error.proto", fileDescriptor_campaign_shared_set_error_d5ce303fef6a302d)
 }
 
-var fileDescriptor_campaign_shared_set_error_1e4e3aad996e3e00 = []byte{
+var fileDescriptor_campaign_shared_set_error_d5ce303fef6a302d = []byte{
 	// 299 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xdf, 0x4a, 0xf3, 0x30,
 	0x18, 0xc6, 0xbf, 0xf6, 0x03, 0x85, 0xec, 0xc0, 0xd1, 0x03, 0x11, 0x95, 0x1d, 0xf4, 0x02, 0xd2,

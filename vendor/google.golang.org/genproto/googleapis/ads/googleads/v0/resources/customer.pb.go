@@ -63,7 +63,7 @@ func (m *Customer) Reset()         { *m = Customer{} }
 func (m *Customer) String() string { return proto.CompactTextString(m) }
 func (*Customer) ProtoMessage()    {}
 func (*Customer) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_b25d50b0ae349448, []int{0}
+	return fileDescriptor_customer_0ab473c999471a98, []int{0}
 }
 func (m *Customer) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Customer.Unmarshal(m, b)
@@ -194,7 +194,7 @@ func (m *CallReportingSetting) Reset()         { *m = CallReportingSetting{} }
 func (m *CallReportingSetting) String() string { return proto.CompactTextString(m) }
 func (*CallReportingSetting) ProtoMessage()    {}
 func (*CallReportingSetting) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_b25d50b0ae349448, []int{1}
+	return fileDescriptor_customer_0ab473c999471a98, []int{1}
 }
 func (m *CallReportingSetting) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CallReportingSetting.Unmarshal(m, b)
@@ -256,7 +256,7 @@ func (m *ConversionTrackingSetting) Reset()         { *m = ConversionTrackingSet
 func (m *ConversionTrackingSetting) String() string { return proto.CompactTextString(m) }
 func (*ConversionTrackingSetting) ProtoMessage()    {}
 func (*ConversionTrackingSetting) Descriptor() ([]byte, []int) {
-	return fileDescriptor_customer_b25d50b0ae349448, []int{2}
+	return fileDescriptor_customer_0ab473c999471a98, []int{2}
 }
 func (m *ConversionTrackingSetting) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversionTrackingSetting.Unmarshal(m, b)
@@ -297,10 +297,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/customer.proto", fileDescriptor_customer_b25d50b0ae349448)
+	proto.RegisterFile("google/ads/googleads/v0/resources/customer.proto", fileDescriptor_customer_0ab473c999471a98)
 }
 
-var fileDescriptor_customer_b25d50b0ae349448 = []byte{
+var fileDescriptor_customer_0ab473c999471a98 = []byte{
 	// 710 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x95, 0xdd, 0x6e, 0xd3, 0x3c,
 	0x18, 0xc7, 0x95, 0xec, 0x7d, 0xf7, 0xe1, 0xb5, 0x63, 0x32, 0x65, 0xca, 0x36, 0x34, 0x6d, 0x83,

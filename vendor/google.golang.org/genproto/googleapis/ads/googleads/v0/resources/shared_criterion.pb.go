@@ -56,7 +56,7 @@ func (m *SharedCriterion) Reset()         { *m = SharedCriterion{} }
 func (m *SharedCriterion) String() string { return proto.CompactTextString(m) }
 func (*SharedCriterion) ProtoMessage()    {}
 func (*SharedCriterion) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_criterion_d8ff40aeb495542f, []int{0}
+	return fileDescriptor_shared_criterion_607e03433279a6ca, []int{0}
 }
 func (m *SharedCriterion) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SharedCriterion.Unmarshal(m, b)
@@ -316,10 +316,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/shared_criterion.proto", fileDescriptor_shared_criterion_d8ff40aeb495542f)
+	proto.RegisterFile("google/ads/googleads/v0/resources/shared_criterion.proto", fileDescriptor_shared_criterion_607e03433279a6ca)
 }
 
-var fileDescriptor_shared_criterion_d8ff40aeb495542f = []byte{
+var fileDescriptor_shared_criterion_607e03433279a6ca = []byte{
 	// 559 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x94, 0xdf, 0x8a, 0xd3, 0x4e,
 	0x14, 0xc7, 0x7f, 0xed, 0xfe, 0xfb, 0x75, 0xda, 0xdd, 0xc5, 0xe8, 0x45, 0xa8, 0x22, 0x5d, 0x65,

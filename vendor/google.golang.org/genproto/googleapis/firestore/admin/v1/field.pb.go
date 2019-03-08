@@ -65,7 +65,7 @@ func (m *Field) Reset()         { *m = Field{} }
 func (m *Field) String() string { return proto.CompactTextString(m) }
 func (*Field) ProtoMessage()    {}
 func (*Field) Descriptor() ([]byte, []int) {
-	return fileDescriptor_field_2daa7c7b7ea5f26c, []int{0}
+	return fileDescriptor_field_f7da73c50a4c7310, []int{0}
 }
 func (m *Field) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Field.Unmarshal(m, b)
@@ -129,7 +129,7 @@ func (m *Field_IndexConfig) Reset()         { *m = Field_IndexConfig{} }
 func (m *Field_IndexConfig) String() string { return proto.CompactTextString(m) }
 func (*Field_IndexConfig) ProtoMessage()    {}
 func (*Field_IndexConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_field_2daa7c7b7ea5f26c, []int{0, 0}
+	return fileDescriptor_field_f7da73c50a4c7310, []int{0, 0}
 }
 func (m *Field_IndexConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Field_IndexConfig.Unmarshal(m, b)
@@ -183,10 +183,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/firestore/admin/v1/field.proto", fileDescriptor_field_2daa7c7b7ea5f26c)
+	proto.RegisterFile("google/firestore/admin/v1/field.proto", fileDescriptor_field_f7da73c50a4c7310)
 }
 
-var fileDescriptor_field_2daa7c7b7ea5f26c = []byte{
+var fileDescriptor_field_f7da73c50a4c7310 = []byte{
 	// 352 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0x4f, 0x4b, 0xc3, 0x30,
 	0x18, 0xc6, 0x49, 0x37, 0xff, 0x2c, 0x55, 0x0f, 0xc1, 0x43, 0x1d, 0x13, 0x8b, 0x30, 0xd8, 0x41,

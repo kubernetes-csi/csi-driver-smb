@@ -129,7 +129,7 @@ func (x MediaBundleErrorEnum_MediaBundleError) String() string {
 	return proto.EnumName(MediaBundleErrorEnum_MediaBundleError_name, int32(x))
 }
 func (MediaBundleErrorEnum_MediaBundleError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_media_bundle_error_e0d514b8059177b7, []int{0, 0}
+	return fileDescriptor_media_bundle_error_1ce8f9bf0aa8af7c, []int{0, 0}
 }
 
 // Container for enum describing possible media bundle errors.
@@ -143,7 +143,7 @@ func (m *MediaBundleErrorEnum) Reset()         { *m = MediaBundleErrorEnum{} }
 func (m *MediaBundleErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*MediaBundleErrorEnum) ProtoMessage()    {}
 func (*MediaBundleErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_media_bundle_error_e0d514b8059177b7, []int{0}
+	return fileDescriptor_media_bundle_error_1ce8f9bf0aa8af7c, []int{0}
 }
 func (m *MediaBundleErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MediaBundleErrorEnum.Unmarshal(m, b)
@@ -169,10 +169,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/media_bundle_error.proto", fileDescriptor_media_bundle_error_e0d514b8059177b7)
+	proto.RegisterFile("google/ads/googleads/v0/errors/media_bundle_error.proto", fileDescriptor_media_bundle_error_1ce8f9bf0aa8af7c)
 }
 
-var fileDescriptor_media_bundle_error_e0d514b8059177b7 = []byte{
+var fileDescriptor_media_bundle_error_1ce8f9bf0aa8af7c = []byte{
 	// 625 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0xdd, 0x6a, 0x1b, 0x39,
 	0x14, 0xde, 0x24, 0x9b, 0x64, 0x57, 0xf9, 0x53, 0x94, 0x78, 0x93, 0x6c, 0x5b, 0x5f, 0x18, 0x5a,

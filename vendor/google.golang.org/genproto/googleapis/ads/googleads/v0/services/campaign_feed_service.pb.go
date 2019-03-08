@@ -28,7 +28,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [CampaignFeedService.GetCampaignFeed][google.ads.googleads.v0.services.CampaignFeedService.GetCampaignFeed].
+// Request message for
+// [CampaignFeedService.GetCampaignFeed][google.ads.googleads.v0.services.CampaignFeedService.GetCampaignFeed].
 type GetCampaignFeedRequest struct {
 	// The resource name of the campaign feed to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -41,7 +42,7 @@ func (m *GetCampaignFeedRequest) Reset()         { *m = GetCampaignFeedRequest{}
 func (m *GetCampaignFeedRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCampaignFeedRequest) ProtoMessage()    {}
 func (*GetCampaignFeedRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_feed_service_ab3512bb4abff178, []int{0}
+	return fileDescriptor_campaign_feed_service_a5d2ffb834d3ed7c, []int{0}
 }
 func (m *GetCampaignFeedRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetCampaignFeedRequest.Unmarshal(m, b)
@@ -68,7 +69,8 @@ func (m *GetCampaignFeedRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [CampaignFeedService.MutateCampaignFeeds][google.ads.googleads.v0.services.CampaignFeedService.MutateCampaignFeeds].
+// Request message for
+// [CampaignFeedService.MutateCampaignFeeds][google.ads.googleads.v0.services.CampaignFeedService.MutateCampaignFeeds].
 type MutateCampaignFeedsRequest struct {
 	// The ID of the customer whose campaign feeds are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -91,7 +93,7 @@ func (m *MutateCampaignFeedsRequest) Reset()         { *m = MutateCampaignFeedsR
 func (m *MutateCampaignFeedsRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateCampaignFeedsRequest) ProtoMessage()    {}
 func (*MutateCampaignFeedsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_feed_service_ab3512bb4abff178, []int{1}
+	return fileDescriptor_campaign_feed_service_a5d2ffb834d3ed7c, []int{1}
 }
 func (m *MutateCampaignFeedsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCampaignFeedsRequest.Unmarshal(m, b)
@@ -159,7 +161,7 @@ func (m *CampaignFeedOperation) Reset()         { *m = CampaignFeedOperation{} }
 func (m *CampaignFeedOperation) String() string { return proto.CompactTextString(m) }
 func (*CampaignFeedOperation) ProtoMessage()    {}
 func (*CampaignFeedOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_feed_service_ab3512bb4abff178, []int{2}
+	return fileDescriptor_campaign_feed_service_a5d2ffb834d3ed7c, []int{2}
 }
 func (m *CampaignFeedOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CampaignFeedOperation.Unmarshal(m, b)
@@ -343,7 +345,7 @@ func (m *MutateCampaignFeedsResponse) Reset()         { *m = MutateCampaignFeeds
 func (m *MutateCampaignFeedsResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateCampaignFeedsResponse) ProtoMessage()    {}
 func (*MutateCampaignFeedsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_feed_service_ab3512bb4abff178, []int{3}
+	return fileDescriptor_campaign_feed_service_a5d2ffb834d3ed7c, []int{3}
 }
 func (m *MutateCampaignFeedsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCampaignFeedsResponse.Unmarshal(m, b)
@@ -390,7 +392,7 @@ func (m *MutateCampaignFeedResult) Reset()         { *m = MutateCampaignFeedResu
 func (m *MutateCampaignFeedResult) String() string { return proto.CompactTextString(m) }
 func (*MutateCampaignFeedResult) ProtoMessage()    {}
 func (*MutateCampaignFeedResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_campaign_feed_service_ab3512bb4abff178, []int{4}
+	return fileDescriptor_campaign_feed_service_a5d2ffb834d3ed7c, []int{4}
 }
 func (m *MutateCampaignFeedResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateCampaignFeedResult.Unmarshal(m, b)
@@ -537,10 +539,10 @@ var _CampaignFeedService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/campaign_feed_service.proto", fileDescriptor_campaign_feed_service_ab3512bb4abff178)
+	proto.RegisterFile("google/ads/googleads/v0/services/campaign_feed_service.proto", fileDescriptor_campaign_feed_service_a5d2ffb834d3ed7c)
 }
 
-var fileDescriptor_campaign_feed_service_ab3512bb4abff178 = []byte{
+var fileDescriptor_campaign_feed_service_a5d2ffb834d3ed7c = []byte{
 	// 713 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xc1, 0x6e, 0xd3, 0x40,
 	0x10, 0xc5, 0x0e, 0x2a, 0x74, 0x5d, 0xa8, 0xb4, 0x55, 0xc1, 0x0a, 0x08, 0x22, 0x53, 0x89, 0x2a,

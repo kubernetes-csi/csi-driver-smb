@@ -37,9 +37,11 @@ const (
 	// The job is disabled by the system due to error. The user
 	// cannot directly set a job to be disabled.
 	Job_DISABLED Job_State = 3
-	// The job state resulting from a failed [CloudScheduler.UpdateJob][google.cloud.scheduler.v1beta1.CloudScheduler.UpdateJob]
+	// The job state resulting from a failed
+	// [CloudScheduler.UpdateJob][google.cloud.scheduler.v1beta1.CloudScheduler.UpdateJob]
 	// operation. To recover a job from this state, retry
-	// [CloudScheduler.UpdateJob][google.cloud.scheduler.v1beta1.CloudScheduler.UpdateJob] until a successful response is received.
+	// [CloudScheduler.UpdateJob][google.cloud.scheduler.v1beta1.CloudScheduler.UpdateJob]
+	// until a successful response is received.
 	Job_UPDATE_FAILED Job_State = 4
 )
 
@@ -62,7 +64,7 @@ func (x Job_State) String() string {
 	return proto.EnumName(Job_State_name, int32(x))
 }
 func (Job_State) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_job_aea64c5484868a77, []int{0, 0}
+	return fileDescriptor_job_70b76b668893c9b9, []int{0, 0}
 }
 
 // Configuration for a job.
@@ -74,7 +76,8 @@ type Job struct {
 	// * `PROJECT_ID` can contain letters ([A-Za-z]), numbers ([0-9]),
 	//    hyphens (-), colons (:), or periods (.).
 	//    For more information, see
-	//    [Identifying projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)
+	//    [Identifying
+	//    projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)
 	// * `LOCATION_ID` is the canonical ID for the job's location.
 	//    The list of available locations can be obtained by calling
 	//    [ListLocations][google.cloud.location.Locations.ListLocations].
@@ -107,19 +110,22 @@ type Job struct {
 	// A scheduled start time will be delayed if the previous
 	// execution has not ended when its scheduled time occurs.
 	//
-	// If [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count] > 0 and a job attempt fails,
-	// the job will be tried a total of [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count]
+	// If [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count] >
+	// 0 and a job attempt fails, the job will be tried a total of
+	// [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count]
 	// times, with exponential backoff, until the next scheduled start
 	// time.
 	//
 	// The schedule can be either of the following types:
 	//
 	// * [Crontab](http://en.wikipedia.org/wiki/Cron#Overview)
-	// * English-like [schedule](https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules)
+	// * English-like
+	// [schedule](https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules)
 	Schedule string `protobuf:"bytes,20,opt,name=schedule,proto3" json:"schedule,omitempty"`
 	// Specifies the time zone to be used in interpreting
-	// [schedule][google.cloud.scheduler.v1beta1.Job.schedule]. The value of this field must be a time
-	// zone name from the [tz database](http://en.wikipedia.org/wiki/Tz_database).
+	// [schedule][google.cloud.scheduler.v1beta1.Job.schedule]. The value of this
+	// field must be a time zone name from the [tz
+	// database](http://en.wikipedia.org/wiki/Tz_database).
 	//
 	// Note that some time zones include a provision for
 	// daylight savings time. The rules for daylight saving time are
@@ -150,7 +156,7 @@ func (m *Job) Reset()         { *m = Job{} }
 func (m *Job) String() string { return proto.CompactTextString(m) }
 func (*Job) ProtoMessage()    {}
 func (*Job) Descriptor() ([]byte, []int) {
-	return fileDescriptor_job_aea64c5484868a77, []int{0}
+	return fileDescriptor_job_70b76b668893c9b9, []int{0}
 }
 func (m *Job) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Job.Unmarshal(m, b)
@@ -387,7 +393,8 @@ func _Job_OneofSizer(msg proto.Message) (n int) {
 //
 // By default, if a job does not complete successfully (meaning that
 // an acknowledgement is not received from the handler, then it will be retried
-// with exponential backoff according to the settings in [RetryConfig][google.cloud.scheduler.v1beta1.RetryConfig].
+// with exponential backoff according to the settings in
+// [RetryConfig][google.cloud.scheduler.v1beta1.RetryConfig].
 type RetryConfig struct {
 	// The number of attempts that the system will make to run a job using the
 	// exponential backoff procedure described by
@@ -408,8 +415,8 @@ type RetryConfig struct {
 	RetryCount int32 `protobuf:"varint,1,opt,name=retry_count,json=retryCount,proto3" json:"retry_count,omitempty"`
 	// The time limit for retrying a failed job, measured from time when an
 	// execution was first attempted. If specified with
-	// [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count], the job will be retried until both limits are
-	// reached.
+	// [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count], the
+	// job will be retried until both limits are reached.
 	//
 	// The default value for max_retry_duration is zero, which means retry
 	// duration is unlimited.
@@ -427,20 +434,25 @@ type RetryConfig struct {
 	// The time between retries will double `max_doublings` times.
 	//
 	// A job's retry interval starts at
-	// [min_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.min_backoff_duration], then doubles
-	// `max_doublings` times, then increases linearly, and finally
+	// [min_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.min_backoff_duration],
+	// then doubles `max_doublings` times, then increases linearly, and finally
 	// retries retries at intervals of
-	// [max_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.max_backoff_duration] up to
-	// [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count] times.
+	// [max_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.max_backoff_duration]
+	// up to [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count]
+	// times.
 	//
-	// For example, if [min_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.min_backoff_duration] is
-	// 10s, [max_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.max_backoff_duration] is 300s, and
-	// `max_doublings` is 3, then the a job will first be retried in 10s. The
-	// retry interval will double three times, and then increase linearly by
-	// 2^3 * 10s.  Finally, the job will retry at intervals of
-	// [max_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.max_backoff_duration] until the job has
-	// been attempted [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count] times. Thus, the
-	// requests will retry at 10s, 20s, 40s, 80s, 160s, 240s, 300s, 300s, ....
+	// For example, if
+	// [min_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.min_backoff_duration]
+	// is 10s,
+	// [max_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.max_backoff_duration]
+	// is 300s, and `max_doublings` is 3, then the a job will first be retried in
+	// 10s. The retry interval will double three times, and then increase linearly
+	// by 2^3 * 10s.  Finally, the job will retry at intervals of
+	// [max_backoff_duration][google.cloud.scheduler.v1beta1.RetryConfig.max_backoff_duration]
+	// until the job has been attempted
+	// [retry_count][google.cloud.scheduler.v1beta1.RetryConfig.retry_count]
+	// times. Thus, the requests will retry at 10s, 20s, 40s, 80s, 160s, 240s,
+	// 300s, 300s, ....
 	//
 	// The default value of this field is 5.
 	MaxDoublings         int32    `protobuf:"varint,5,opt,name=max_doublings,json=maxDoublings,proto3" json:"max_doublings,omitempty"`
@@ -453,7 +465,7 @@ func (m *RetryConfig) Reset()         { *m = RetryConfig{} }
 func (m *RetryConfig) String() string { return proto.CompactTextString(m) }
 func (*RetryConfig) ProtoMessage()    {}
 func (*RetryConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_job_aea64c5484868a77, []int{1}
+	return fileDescriptor_job_70b76b668893c9b9, []int{1}
 }
 func (m *RetryConfig) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RetryConfig.Unmarshal(m, b)
@@ -515,10 +527,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/scheduler/v1beta1/job.proto", fileDescriptor_job_aea64c5484868a77)
+	proto.RegisterFile("google/cloud/scheduler/v1beta1/job.proto", fileDescriptor_job_70b76b668893c9b9)
 }
 
-var fileDescriptor_job_aea64c5484868a77 = []byte{
+var fileDescriptor_job_70b76b668893c9b9 = []byte{
 	// 696 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x94, 0x51, 0x53, 0xda, 0x4a,
 	0x14, 0xc7, 0x45, 0x81, 0x8b, 0x27, 0xe0, 0x85, 0x55, 0xef, 0x4d, 0x69, 0xa7, 0x32, 0xf4, 0x85,

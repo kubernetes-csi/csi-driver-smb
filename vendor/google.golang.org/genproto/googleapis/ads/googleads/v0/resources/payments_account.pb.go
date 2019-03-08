@@ -49,7 +49,7 @@ func (m *PaymentsAccount) Reset()         { *m = PaymentsAccount{} }
 func (m *PaymentsAccount) String() string { return proto.CompactTextString(m) }
 func (*PaymentsAccount) ProtoMessage()    {}
 func (*PaymentsAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_payments_account_71570353aaca4773, []int{0}
+	return fileDescriptor_payments_account_5eec033e0d66de16, []int{0}
 }
 func (m *PaymentsAccount) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PaymentsAccount.Unmarshal(m, b)
@@ -116,10 +116,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/resources/payments_account.proto", fileDescriptor_payments_account_71570353aaca4773)
+	proto.RegisterFile("google/ads/googleads/v0/resources/payments_account.proto", fileDescriptor_payments_account_5eec033e0d66de16)
 }
 
-var fileDescriptor_payments_account_71570353aaca4773 = []byte{
+var fileDescriptor_payments_account_5eec033e0d66de16 = []byte{
 	// 387 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0xc1, 0x6a, 0xdb, 0x30,
 	0x1c, 0xc6, 0xb1, 0x93, 0x05, 0xa6, 0x25, 0x8c, 0x79, 0x3b, 0x84, 0xb0, 0x8d, 0x64, 0x23, 0x90,

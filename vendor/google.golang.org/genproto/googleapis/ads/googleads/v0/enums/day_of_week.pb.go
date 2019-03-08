@@ -69,7 +69,7 @@ func (x DayOfWeekEnum_DayOfWeek) String() string {
 	return proto.EnumName(DayOfWeekEnum_DayOfWeek_name, int32(x))
 }
 func (DayOfWeekEnum_DayOfWeek) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_day_of_week_5687a8a458c10e80, []int{0, 0}
+	return fileDescriptor_day_of_week_cb72cf2b11a19e7e, []int{0, 0}
 }
 
 // Container for enumeration of days of the week, e.g., "Monday".
@@ -83,7 +83,7 @@ func (m *DayOfWeekEnum) Reset()         { *m = DayOfWeekEnum{} }
 func (m *DayOfWeekEnum) String() string { return proto.CompactTextString(m) }
 func (*DayOfWeekEnum) ProtoMessage()    {}
 func (*DayOfWeekEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_day_of_week_5687a8a458c10e80, []int{0}
+	return fileDescriptor_day_of_week_cb72cf2b11a19e7e, []int{0}
 }
 func (m *DayOfWeekEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DayOfWeekEnum.Unmarshal(m, b)
@@ -109,10 +109,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/day_of_week.proto", fileDescriptor_day_of_week_5687a8a458c10e80)
+	proto.RegisterFile("google/ads/googleads/v0/enums/day_of_week.proto", fileDescriptor_day_of_week_cb72cf2b11a19e7e)
 }
 
-var fileDescriptor_day_of_week_5687a8a458c10e80 = []byte{
+var fileDescriptor_day_of_week_cb72cf2b11a19e7e = []byte{
 	// 324 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x50, 0x4f, 0x4e, 0x3a, 0x31,
 	0x18, 0xfd, 0xcd, 0xf0, 0x93, 0x3f, 0x45, 0x94, 0x74, 0xcf, 0x02, 0x0e, 0xd0, 0x99, 0xc4, 0x5d,

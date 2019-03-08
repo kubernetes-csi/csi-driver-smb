@@ -55,7 +55,7 @@ func (x InternalErrorEnum_InternalError) String() string {
 	return proto.EnumName(InternalErrorEnum_InternalError_name, int32(x))
 }
 func (InternalErrorEnum_InternalError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_internal_error_c26870d04c2a1048, []int{0, 0}
+	return fileDescriptor_internal_error_973997f4b95955bf, []int{0, 0}
 }
 
 // Container for enum describing possible internal errors.
@@ -69,7 +69,7 @@ func (m *InternalErrorEnum) Reset()         { *m = InternalErrorEnum{} }
 func (m *InternalErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*InternalErrorEnum) ProtoMessage()    {}
 func (*InternalErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_internal_error_c26870d04c2a1048, []int{0}
+	return fileDescriptor_internal_error_973997f4b95955bf, []int{0}
 }
 func (m *InternalErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InternalErrorEnum.Unmarshal(m, b)
@@ -95,10 +95,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/internal_error.proto", fileDescriptor_internal_error_c26870d04c2a1048)
+	proto.RegisterFile("google/ads/googleads/v0/errors/internal_error.proto", fileDescriptor_internal_error_973997f4b95955bf)
 }
 
-var fileDescriptor_internal_error_c26870d04c2a1048 = []byte{
+var fileDescriptor_internal_error_973997f4b95955bf = []byte{
 	// 314 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xc1, 0x4a, 0xc3, 0x30,
 	0x00, 0x86, 0x6d, 0x27, 0x0a, 0x19, 0xba, 0x1a, 0x2f, 0x1e, 0x64, 0x87, 0x3e, 0x40, 0x5a, 0xd8,

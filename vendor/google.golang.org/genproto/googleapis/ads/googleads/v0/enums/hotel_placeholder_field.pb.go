@@ -139,7 +139,7 @@ func (x HotelPlaceholderFieldEnum_HotelPlaceholderField) String() string {
 	return proto.EnumName(HotelPlaceholderFieldEnum_HotelPlaceholderField_name, int32(x))
 }
 func (HotelPlaceholderFieldEnum_HotelPlaceholderField) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_hotel_placeholder_field_106cb88d43694243, []int{0, 0}
+	return fileDescriptor_hotel_placeholder_field_15aba0b561d9fb8c, []int{0, 0}
 }
 
 // Values for Hotel placeholder fields.
@@ -155,7 +155,7 @@ func (m *HotelPlaceholderFieldEnum) Reset()         { *m = HotelPlaceholderField
 func (m *HotelPlaceholderFieldEnum) String() string { return proto.CompactTextString(m) }
 func (*HotelPlaceholderFieldEnum) ProtoMessage()    {}
 func (*HotelPlaceholderFieldEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_hotel_placeholder_field_106cb88d43694243, []int{0}
+	return fileDescriptor_hotel_placeholder_field_15aba0b561d9fb8c, []int{0}
 }
 func (m *HotelPlaceholderFieldEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HotelPlaceholderFieldEnum.Unmarshal(m, b)
@@ -181,10 +181,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/hotel_placeholder_field.proto", fileDescriptor_hotel_placeholder_field_106cb88d43694243)
+	proto.RegisterFile("google/ads/googleads/v0/enums/hotel_placeholder_field.proto", fileDescriptor_hotel_placeholder_field_15aba0b561d9fb8c)
 }
 
-var fileDescriptor_hotel_placeholder_field_106cb88d43694243 = []byte{
+var fileDescriptor_hotel_placeholder_field_15aba0b561d9fb8c = []byte{
 	// 514 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0xdd, 0x6e, 0xda, 0x30,
 	0x18, 0x1d, 0xb0, 0xfe, 0x60, 0xa0, 0x18, 0x03, 0xda, 0xa6, 0xa9, 0x17, 0xed, 0x03, 0x04, 0xa4,

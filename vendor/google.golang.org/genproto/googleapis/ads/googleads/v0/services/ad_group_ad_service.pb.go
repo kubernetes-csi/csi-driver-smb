@@ -29,7 +29,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [AdGroupAdService.GetAdGroupAd][google.ads.googleads.v0.services.AdGroupAdService.GetAdGroupAd].
+// Request message for
+// [AdGroupAdService.GetAdGroupAd][google.ads.googleads.v0.services.AdGroupAdService.GetAdGroupAd].
 type GetAdGroupAdRequest struct {
 	// The resource name of the ad to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -42,7 +43,7 @@ func (m *GetAdGroupAdRequest) Reset()         { *m = GetAdGroupAdRequest{} }
 func (m *GetAdGroupAdRequest) String() string { return proto.CompactTextString(m) }
 func (*GetAdGroupAdRequest) ProtoMessage()    {}
 func (*GetAdGroupAdRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_ad_service_61deec0bae9cbde4, []int{0}
+	return fileDescriptor_ad_group_ad_service_06b03a3e5817667d, []int{0}
 }
 func (m *GetAdGroupAdRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetAdGroupAdRequest.Unmarshal(m, b)
@@ -69,7 +70,8 @@ func (m *GetAdGroupAdRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [AdGroupAdService.MutateAdGroupAds][google.ads.googleads.v0.services.AdGroupAdService.MutateAdGroupAds].
+// Request message for
+// [AdGroupAdService.MutateAdGroupAds][google.ads.googleads.v0.services.AdGroupAdService.MutateAdGroupAds].
 type MutateAdGroupAdsRequest struct {
 	// The ID of the customer whose ads are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -92,7 +94,7 @@ func (m *MutateAdGroupAdsRequest) Reset()         { *m = MutateAdGroupAdsRequest
 func (m *MutateAdGroupAdsRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateAdGroupAdsRequest) ProtoMessage()    {}
 func (*MutateAdGroupAdsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_ad_service_61deec0bae9cbde4, []int{1}
+	return fileDescriptor_ad_group_ad_service_06b03a3e5817667d, []int{1}
 }
 func (m *MutateAdGroupAdsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateAdGroupAdsRequest.Unmarshal(m, b)
@@ -162,7 +164,7 @@ func (m *AdGroupAdOperation) Reset()         { *m = AdGroupAdOperation{} }
 func (m *AdGroupAdOperation) String() string { return proto.CompactTextString(m) }
 func (*AdGroupAdOperation) ProtoMessage()    {}
 func (*AdGroupAdOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_ad_service_61deec0bae9cbde4, []int{2}
+	return fileDescriptor_ad_group_ad_service_06b03a3e5817667d, []int{2}
 }
 func (m *AdGroupAdOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AdGroupAdOperation.Unmarshal(m, b)
@@ -353,7 +355,7 @@ func (m *MutateAdGroupAdsResponse) Reset()         { *m = MutateAdGroupAdsRespon
 func (m *MutateAdGroupAdsResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateAdGroupAdsResponse) ProtoMessage()    {}
 func (*MutateAdGroupAdsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_ad_service_61deec0bae9cbde4, []int{3}
+	return fileDescriptor_ad_group_ad_service_06b03a3e5817667d, []int{3}
 }
 func (m *MutateAdGroupAdsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateAdGroupAdsResponse.Unmarshal(m, b)
@@ -400,7 +402,7 @@ func (m *MutateAdGroupAdResult) Reset()         { *m = MutateAdGroupAdResult{} }
 func (m *MutateAdGroupAdResult) String() string { return proto.CompactTextString(m) }
 func (*MutateAdGroupAdResult) ProtoMessage()    {}
 func (*MutateAdGroupAdResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ad_group_ad_service_61deec0bae9cbde4, []int{4}
+	return fileDescriptor_ad_group_ad_service_06b03a3e5817667d, []int{4}
 }
 func (m *MutateAdGroupAdResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateAdGroupAdResult.Unmarshal(m, b)
@@ -545,10 +547,10 @@ var _AdGroupAdService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/ad_group_ad_service.proto", fileDescriptor_ad_group_ad_service_61deec0bae9cbde4)
+	proto.RegisterFile("google/ads/googleads/v0/services/ad_group_ad_service.proto", fileDescriptor_ad_group_ad_service_06b03a3e5817667d)
 }
 
-var fileDescriptor_ad_group_ad_service_61deec0bae9cbde4 = []byte{
+var fileDescriptor_ad_group_ad_service_06b03a3e5817667d = []byte{
 	// 766 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xc1, 0x6e, 0xd3, 0x4a,
 	0x14, 0x7d, 0x4e, 0xde, 0xeb, 0x7b, 0x9d, 0xf4, 0x41, 0x35, 0x55, 0x55, 0x13, 0x10, 0x44, 0xa6,

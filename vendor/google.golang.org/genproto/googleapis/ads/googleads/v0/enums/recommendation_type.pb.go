@@ -81,7 +81,7 @@ func (x RecommendationTypeEnum_RecommendationType) String() string {
 	return proto.EnumName(RecommendationTypeEnum_RecommendationType_name, int32(x))
 }
 func (RecommendationTypeEnum_RecommendationType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_type_4620d219848d6c22, []int{0, 0}
+	return fileDescriptor_recommendation_type_50aabeede6d50928, []int{0, 0}
 }
 
 // Container for enum describing types of recommendations.
@@ -95,7 +95,7 @@ func (m *RecommendationTypeEnum) Reset()         { *m = RecommendationTypeEnum{}
 func (m *RecommendationTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*RecommendationTypeEnum) ProtoMessage()    {}
 func (*RecommendationTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_recommendation_type_4620d219848d6c22, []int{0}
+	return fileDescriptor_recommendation_type_50aabeede6d50928, []int{0}
 }
 func (m *RecommendationTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RecommendationTypeEnum.Unmarshal(m, b)
@@ -121,10 +121,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/recommendation_type.proto", fileDescriptor_recommendation_type_4620d219848d6c22)
+	proto.RegisterFile("google/ads/googleads/v0/enums/recommendation_type.proto", fileDescriptor_recommendation_type_50aabeede6d50928)
 }
 
-var fileDescriptor_recommendation_type_4620d219848d6c22 = []byte{
+var fileDescriptor_recommendation_type_50aabeede6d50928 = []byte{
 	// 414 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xd1, 0x6a, 0x14, 0x31,
 	0x18, 0x85, 0xdd, 0xa9, 0xb6, 0x9a, 0x5e, 0x74, 0x4c, 0xb5, 0x15, 0xa5, 0x48, 0xfb, 0x00, 0x99,

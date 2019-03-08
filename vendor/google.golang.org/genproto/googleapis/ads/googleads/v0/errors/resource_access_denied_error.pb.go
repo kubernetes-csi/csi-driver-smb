@@ -45,7 +45,7 @@ func (x ResourceAccessDeniedErrorEnum_ResourceAccessDeniedError) String() string
 	return proto.EnumName(ResourceAccessDeniedErrorEnum_ResourceAccessDeniedError_name, int32(x))
 }
 func (ResourceAccessDeniedErrorEnum_ResourceAccessDeniedError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_resource_access_denied_error_7ec8d6c2b40945ba, []int{0, 0}
+	return fileDescriptor_resource_access_denied_error_6ed1e2aa195d3047, []int{0, 0}
 }
 
 // Container for enum describing possible resource access denied errors.
@@ -59,7 +59,7 @@ func (m *ResourceAccessDeniedErrorEnum) Reset()         { *m = ResourceAccessDen
 func (m *ResourceAccessDeniedErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*ResourceAccessDeniedErrorEnum) ProtoMessage()    {}
 func (*ResourceAccessDeniedErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_resource_access_denied_error_7ec8d6c2b40945ba, []int{0}
+	return fileDescriptor_resource_access_denied_error_6ed1e2aa195d3047, []int{0}
 }
 func (m *ResourceAccessDeniedErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResourceAccessDeniedErrorEnum.Unmarshal(m, b)
@@ -85,10 +85,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/resource_access_denied_error.proto", fileDescriptor_resource_access_denied_error_7ec8d6c2b40945ba)
+	proto.RegisterFile("google/ads/googleads/v0/errors/resource_access_denied_error.proto", fileDescriptor_resource_access_denied_error_6ed1e2aa195d3047)
 }
 
-var fileDescriptor_resource_access_denied_error_7ec8d6c2b40945ba = []byte{
+var fileDescriptor_resource_access_denied_error_6ed1e2aa195d3047 = []byte{
 	// 294 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xcf, 0x4a, 0xc3, 0x30,
 	0x1c, 0xc7, 0x5d, 0x07, 0x0a, 0xd9, 0xc1, 0x51, 0x0f, 0xe2, 0xc1, 0x1e, 0xfa, 0x00, 0x69, 0xc1,

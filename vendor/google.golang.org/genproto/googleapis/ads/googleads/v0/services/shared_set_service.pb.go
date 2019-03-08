@@ -28,7 +28,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [SharedSetService.GetSharedSet][google.ads.googleads.v0.services.SharedSetService.GetSharedSet].
+// Request message for
+// [SharedSetService.GetSharedSet][google.ads.googleads.v0.services.SharedSetService.GetSharedSet].
 type GetSharedSetRequest struct {
 	// The resource name of the shared set to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -41,7 +42,7 @@ func (m *GetSharedSetRequest) Reset()         { *m = GetSharedSetRequest{} }
 func (m *GetSharedSetRequest) String() string { return proto.CompactTextString(m) }
 func (*GetSharedSetRequest) ProtoMessage()    {}
 func (*GetSharedSetRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_set_service_ad91cf8a77b54946, []int{0}
+	return fileDescriptor_shared_set_service_8c173976275bc5fe, []int{0}
 }
 func (m *GetSharedSetRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetSharedSetRequest.Unmarshal(m, b)
@@ -68,7 +69,8 @@ func (m *GetSharedSetRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [SharedSetService.MutateSharedSets][google.ads.googleads.v0.services.SharedSetService.MutateSharedSets].
+// Request message for
+// [SharedSetService.MutateSharedSets][google.ads.googleads.v0.services.SharedSetService.MutateSharedSets].
 type MutateSharedSetsRequest struct {
 	// The ID of the customer whose shared sets are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -91,7 +93,7 @@ func (m *MutateSharedSetsRequest) Reset()         { *m = MutateSharedSetsRequest
 func (m *MutateSharedSetsRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateSharedSetsRequest) ProtoMessage()    {}
 func (*MutateSharedSetsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_set_service_ad91cf8a77b54946, []int{1}
+	return fileDescriptor_shared_set_service_8c173976275bc5fe, []int{1}
 }
 func (m *MutateSharedSetsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateSharedSetsRequest.Unmarshal(m, b)
@@ -159,7 +161,7 @@ func (m *SharedSetOperation) Reset()         { *m = SharedSetOperation{} }
 func (m *SharedSetOperation) String() string { return proto.CompactTextString(m) }
 func (*SharedSetOperation) ProtoMessage()    {}
 func (*SharedSetOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_set_service_ad91cf8a77b54946, []int{2}
+	return fileDescriptor_shared_set_service_8c173976275bc5fe, []int{2}
 }
 func (m *SharedSetOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SharedSetOperation.Unmarshal(m, b)
@@ -343,7 +345,7 @@ func (m *MutateSharedSetsResponse) Reset()         { *m = MutateSharedSetsRespon
 func (m *MutateSharedSetsResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateSharedSetsResponse) ProtoMessage()    {}
 func (*MutateSharedSetsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_set_service_ad91cf8a77b54946, []int{3}
+	return fileDescriptor_shared_set_service_8c173976275bc5fe, []int{3}
 }
 func (m *MutateSharedSetsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateSharedSetsResponse.Unmarshal(m, b)
@@ -390,7 +392,7 @@ func (m *MutateSharedSetResult) Reset()         { *m = MutateSharedSetResult{} }
 func (m *MutateSharedSetResult) String() string { return proto.CompactTextString(m) }
 func (*MutateSharedSetResult) ProtoMessage()    {}
 func (*MutateSharedSetResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_shared_set_service_ad91cf8a77b54946, []int{4}
+	return fileDescriptor_shared_set_service_8c173976275bc5fe, []int{4}
 }
 func (m *MutateSharedSetResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateSharedSetResult.Unmarshal(m, b)
@@ -535,10 +537,10 @@ var _SharedSetService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/shared_set_service.proto", fileDescriptor_shared_set_service_ad91cf8a77b54946)
+	proto.RegisterFile("google/ads/googleads/v0/services/shared_set_service.proto", fileDescriptor_shared_set_service_8c173976275bc5fe)
 }
 
-var fileDescriptor_shared_set_service_ad91cf8a77b54946 = []byte{
+var fileDescriptor_shared_set_service_8c173976275bc5fe = []byte{
 	// 705 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xcf, 0x4e, 0xd4, 0x40,
 	0x1c, 0xb6, 0xbb, 0x06, 0x65, 0x8a, 0x4a, 0x86, 0x10, 0x9a, 0x8d, 0xd1, 0x4d, 0x25, 0x91, 0x6c,

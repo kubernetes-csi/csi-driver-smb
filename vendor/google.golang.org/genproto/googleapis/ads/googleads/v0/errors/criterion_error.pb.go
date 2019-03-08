@@ -451,7 +451,7 @@ func (x CriterionErrorEnum_CriterionError) String() string {
 	return proto.EnumName(CriterionErrorEnum_CriterionError_name, int32(x))
 }
 func (CriterionErrorEnum_CriterionError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_criterion_error_0e10aab531921ef5, []int{0, 0}
+	return fileDescriptor_criterion_error_9148531622bafec0, []int{0, 0}
 }
 
 // Container for enum describing possible criterion errors.
@@ -465,7 +465,7 @@ func (m *CriterionErrorEnum) Reset()         { *m = CriterionErrorEnum{} }
 func (m *CriterionErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*CriterionErrorEnum) ProtoMessage()    {}
 func (*CriterionErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_criterion_error_0e10aab531921ef5, []int{0}
+	return fileDescriptor_criterion_error_9148531622bafec0, []int{0}
 }
 func (m *CriterionErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CriterionErrorEnum.Unmarshal(m, b)
@@ -491,10 +491,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/criterion_error.proto", fileDescriptor_criterion_error_0e10aab531921ef5)
+	proto.RegisterFile("google/ads/googleads/v0/errors/criterion_error.proto", fileDescriptor_criterion_error_9148531622bafec0)
 }
 
-var fileDescriptor_criterion_error_0e10aab531921ef5 = []byte{
+var fileDescriptor_criterion_error_9148531622bafec0 = []byte{
 	// 1640 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x57, 0xef, 0x92, 0x1c, 0xb5,
 	0x11, 0x8f, 0x4d, 0x02, 0x89, 0x9c, 0x80, 0x90, 0xff, 0xdb, 0xe7, 0xc3, 0x3e, 0x6c, 0x63, 0x8c,

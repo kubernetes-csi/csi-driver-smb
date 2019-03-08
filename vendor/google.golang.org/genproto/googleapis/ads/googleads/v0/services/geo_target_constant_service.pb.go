@@ -26,7 +26,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [GeoTargetConstantService.GetGeoTargetConstant][google.ads.googleads.v0.services.GeoTargetConstantService.GetGeoTargetConstant].
+// Request message for
+// [GeoTargetConstantService.GetGeoTargetConstant][google.ads.googleads.v0.services.GeoTargetConstantService.GetGeoTargetConstant].
 type GetGeoTargetConstantRequest struct {
 	// The resource name of the geo target constant to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -39,7 +40,7 @@ func (m *GetGeoTargetConstantRequest) Reset()         { *m = GetGeoTargetConstan
 func (m *GetGeoTargetConstantRequest) String() string { return proto.CompactTextString(m) }
 func (*GetGeoTargetConstantRequest) ProtoMessage()    {}
 func (*GetGeoTargetConstantRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_service_63ddb34e2c830c5c, []int{0}
+	return fileDescriptor_geo_target_constant_service_92a604f8c20fd743, []int{0}
 }
 func (m *GetGeoTargetConstantRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetGeoTargetConstantRequest.Unmarshal(m, b)
@@ -90,7 +91,7 @@ func (m *SuggestGeoTargetConstantsRequest) Reset()         { *m = SuggestGeoTarg
 func (m *SuggestGeoTargetConstantsRequest) String() string { return proto.CompactTextString(m) }
 func (*SuggestGeoTargetConstantsRequest) ProtoMessage()    {}
 func (*SuggestGeoTargetConstantsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_service_63ddb34e2c830c5c, []int{1}
+	return fileDescriptor_geo_target_constant_service_92a604f8c20fd743, []int{1}
 }
 func (m *SuggestGeoTargetConstantsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SuggestGeoTargetConstantsRequest.Unmarshal(m, b)
@@ -252,7 +253,7 @@ func (m *SuggestGeoTargetConstantsRequest_LocationNames) String() string {
 }
 func (*SuggestGeoTargetConstantsRequest_LocationNames) ProtoMessage() {}
 func (*SuggestGeoTargetConstantsRequest_LocationNames) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_service_63ddb34e2c830c5c, []int{1, 0}
+	return fileDescriptor_geo_target_constant_service_92a604f8c20fd743, []int{1, 0}
 }
 func (m *SuggestGeoTargetConstantsRequest_LocationNames) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SuggestGeoTargetConstantsRequest_LocationNames.Unmarshal(m, b)
@@ -296,7 +297,7 @@ func (m *SuggestGeoTargetConstantsRequest_GeoTargets) String() string {
 }
 func (*SuggestGeoTargetConstantsRequest_GeoTargets) ProtoMessage() {}
 func (*SuggestGeoTargetConstantsRequest_GeoTargets) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_service_63ddb34e2c830c5c, []int{1, 1}
+	return fileDescriptor_geo_target_constant_service_92a604f8c20fd743, []int{1, 1}
 }
 func (m *SuggestGeoTargetConstantsRequest_GeoTargets) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SuggestGeoTargetConstantsRequest_GeoTargets.Unmarshal(m, b)
@@ -323,7 +324,8 @@ func (m *SuggestGeoTargetConstantsRequest_GeoTargets) GetGeoTargetConstants() []
 	return nil
 }
 
-// Response message for [GeoTargetConstantService.SuggestGeoTargetConstants][google.ads.googleads.v0.services.GeoTargetConstantService.SuggestGeoTargetConstants]
+// Response message for
+// [GeoTargetConstantService.SuggestGeoTargetConstants][google.ads.googleads.v0.services.GeoTargetConstantService.SuggestGeoTargetConstants]
 type SuggestGeoTargetConstantsResponse struct {
 	// Geo target constant suggestions.
 	GeoTargetConstantSuggestions []*GeoTargetConstantSuggestion `protobuf:"bytes,1,rep,name=geo_target_constant_suggestions,json=geoTargetConstantSuggestions,proto3" json:"geo_target_constant_suggestions,omitempty"`
@@ -336,7 +338,7 @@ func (m *SuggestGeoTargetConstantsResponse) Reset()         { *m = SuggestGeoTar
 func (m *SuggestGeoTargetConstantsResponse) String() string { return proto.CompactTextString(m) }
 func (*SuggestGeoTargetConstantsResponse) ProtoMessage()    {}
 func (*SuggestGeoTargetConstantsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_service_63ddb34e2c830c5c, []int{2}
+	return fileDescriptor_geo_target_constant_service_92a604f8c20fd743, []int{2}
 }
 func (m *SuggestGeoTargetConstantsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SuggestGeoTargetConstantsResponse.Unmarshal(m, b)
@@ -389,7 +391,7 @@ func (m *GeoTargetConstantSuggestion) Reset()         { *m = GeoTargetConstantSu
 func (m *GeoTargetConstantSuggestion) String() string { return proto.CompactTextString(m) }
 func (*GeoTargetConstantSuggestion) ProtoMessage()    {}
 func (*GeoTargetConstantSuggestion) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_service_63ddb34e2c830c5c, []int{3}
+	return fileDescriptor_geo_target_constant_service_92a604f8c20fd743, []int{3}
 }
 func (m *GeoTargetConstantSuggestion) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GeoTargetConstantSuggestion.Unmarshal(m, b)
@@ -563,10 +565,10 @@ var _GeoTargetConstantService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/geo_target_constant_service.proto", fileDescriptor_geo_target_constant_service_63ddb34e2c830c5c)
+	proto.RegisterFile("google/ads/googleads/v0/services/geo_target_constant_service.proto", fileDescriptor_geo_target_constant_service_92a604f8c20fd743)
 }
 
-var fileDescriptor_geo_target_constant_service_63ddb34e2c830c5c = []byte{
+var fileDescriptor_geo_target_constant_service_92a604f8c20fd743 = []byte{
 	// 714 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xcd, 0x6e, 0xd3, 0x4c,
 	0x14, 0xfd, 0x9c, 0x34, 0xfd, 0xc4, 0xa4, 0x45, 0x62, 0xe8, 0xc2, 0xa4, 0xa5, 0x04, 0xb7, 0x8b,

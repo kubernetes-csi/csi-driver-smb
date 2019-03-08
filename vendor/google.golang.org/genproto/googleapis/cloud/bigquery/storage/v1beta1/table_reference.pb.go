@@ -36,7 +36,7 @@ func (m *TableReference) Reset()         { *m = TableReference{} }
 func (m *TableReference) String() string { return proto.CompactTextString(m) }
 func (*TableReference) ProtoMessage()    {}
 func (*TableReference) Descriptor() ([]byte, []int) {
-	return fileDescriptor_table_reference_2b434750fb554136, []int{0}
+	return fileDescriptor_table_reference_b1b948abe2dd75a4, []int{0}
 }
 func (m *TableReference) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TableReference.Unmarshal(m, b)
@@ -90,7 +90,7 @@ func (m *TableModifiers) Reset()         { *m = TableModifiers{} }
 func (m *TableModifiers) String() string { return proto.CompactTextString(m) }
 func (*TableModifiers) ProtoMessage()    {}
 func (*TableModifiers) Descriptor() ([]byte, []int) {
-	return fileDescriptor_table_reference_2b434750fb554136, []int{1}
+	return fileDescriptor_table_reference_b1b948abe2dd75a4, []int{1}
 }
 func (m *TableModifiers) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TableModifiers.Unmarshal(m, b)
@@ -123,10 +123,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/bigquery/storage/v1beta1/table_reference.proto", fileDescriptor_table_reference_2b434750fb554136)
+	proto.RegisterFile("google/cloud/bigquery/storage/v1beta1/table_reference.proto", fileDescriptor_table_reference_b1b948abe2dd75a4)
 }
 
-var fileDescriptor_table_reference_2b434750fb554136 = []byte{
+var fileDescriptor_table_reference_b1b948abe2dd75a4 = []byte{
 	// 281 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0x4f, 0x4b, 0xc4, 0x30,
 	0x10, 0xc5, 0xa9, 0x82, 0xba, 0xf1, 0xcf, 0xa1, 0x5e, 0xd6, 0x05, 0x51, 0x16, 0x04, 0xbd, 0x24,

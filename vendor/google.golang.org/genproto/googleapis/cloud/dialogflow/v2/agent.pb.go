@@ -57,7 +57,7 @@ func (x Agent_MatchMode) String() string {
 	return proto.EnumName(Agent_MatchMode_name, int32(x))
 }
 func (Agent_MatchMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{0, 0}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{0, 0}
 }
 
 // Represents a conversational agent.
@@ -107,7 +107,7 @@ func (m *Agent) Reset()         { *m = Agent{} }
 func (m *Agent) String() string { return proto.CompactTextString(m) }
 func (*Agent) ProtoMessage()    {}
 func (*Agent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{0}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{0}
 }
 func (m *Agent) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Agent.Unmarshal(m, b)
@@ -197,7 +197,8 @@ func (m *Agent) GetClassificationThreshold() float32 {
 	return 0
 }
 
-// The request message for [Agents.GetAgent][google.cloud.dialogflow.v2.Agents.GetAgent].
+// The request message for
+// [Agents.GetAgent][google.cloud.dialogflow.v2.Agents.GetAgent].
 type GetAgentRequest struct {
 	// Required. The project that the agent to fetch is associated with.
 	// Format: `projects/<Project ID>`.
@@ -211,7 +212,7 @@ func (m *GetAgentRequest) Reset()         { *m = GetAgentRequest{} }
 func (m *GetAgentRequest) String() string { return proto.CompactTextString(m) }
 func (*GetAgentRequest) ProtoMessage()    {}
 func (*GetAgentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{1}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{1}
 }
 func (m *GetAgentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetAgentRequest.Unmarshal(m, b)
@@ -238,7 +239,8 @@ func (m *GetAgentRequest) GetParent() string {
 	return ""
 }
 
-// The request message for [Agents.SearchAgents][google.cloud.dialogflow.v2.Agents.SearchAgents].
+// The request message for
+// [Agents.SearchAgents][google.cloud.dialogflow.v2.Agents.SearchAgents].
 type SearchAgentsRequest struct {
 	// Required. The project to list agents from.
 	// Format: `projects/<Project ID or '-'>`.
@@ -257,7 +259,7 @@ func (m *SearchAgentsRequest) Reset()         { *m = SearchAgentsRequest{} }
 func (m *SearchAgentsRequest) String() string { return proto.CompactTextString(m) }
 func (*SearchAgentsRequest) ProtoMessage()    {}
 func (*SearchAgentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{2}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{2}
 }
 func (m *SearchAgentsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SearchAgentsRequest.Unmarshal(m, b)
@@ -298,7 +300,8 @@ func (m *SearchAgentsRequest) GetPageToken() string {
 	return ""
 }
 
-// The response message for [Agents.SearchAgents][google.cloud.dialogflow.v2.Agents.SearchAgents].
+// The response message for
+// [Agents.SearchAgents][google.cloud.dialogflow.v2.Agents.SearchAgents].
 type SearchAgentsResponse struct {
 	// The list of agents. There will be a maximum number of items returned based
 	// on the page_size field in the request.
@@ -315,7 +318,7 @@ func (m *SearchAgentsResponse) Reset()         { *m = SearchAgentsResponse{} }
 func (m *SearchAgentsResponse) String() string { return proto.CompactTextString(m) }
 func (*SearchAgentsResponse) ProtoMessage()    {}
 func (*SearchAgentsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{3}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{3}
 }
 func (m *SearchAgentsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SearchAgentsResponse.Unmarshal(m, b)
@@ -349,7 +352,8 @@ func (m *SearchAgentsResponse) GetNextPageToken() string {
 	return ""
 }
 
-// The request message for [Agents.TrainAgent][google.cloud.dialogflow.v2.Agents.TrainAgent].
+// The request message for
+// [Agents.TrainAgent][google.cloud.dialogflow.v2.Agents.TrainAgent].
 type TrainAgentRequest struct {
 	// Required. The project that the agent to train is associated with.
 	// Format: `projects/<Project ID>`.
@@ -363,7 +367,7 @@ func (m *TrainAgentRequest) Reset()         { *m = TrainAgentRequest{} }
 func (m *TrainAgentRequest) String() string { return proto.CompactTextString(m) }
 func (*TrainAgentRequest) ProtoMessage()    {}
 func (*TrainAgentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{4}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{4}
 }
 func (m *TrainAgentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TrainAgentRequest.Unmarshal(m, b)
@@ -390,7 +394,8 @@ func (m *TrainAgentRequest) GetParent() string {
 	return ""
 }
 
-// The request message for [Agents.ExportAgent][google.cloud.dialogflow.v2.Agents.ExportAgent].
+// The request message for
+// [Agents.ExportAgent][google.cloud.dialogflow.v2.Agents.ExportAgent].
 type ExportAgentRequest struct {
 	// Required. The project that the agent to export is associated with.
 	// Format: `projects/<Project ID>`.
@@ -408,7 +413,7 @@ func (m *ExportAgentRequest) Reset()         { *m = ExportAgentRequest{} }
 func (m *ExportAgentRequest) String() string { return proto.CompactTextString(m) }
 func (*ExportAgentRequest) ProtoMessage()    {}
 func (*ExportAgentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{5}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{5}
 }
 func (m *ExportAgentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportAgentRequest.Unmarshal(m, b)
@@ -442,7 +447,8 @@ func (m *ExportAgentRequest) GetAgentUri() string {
 	return ""
 }
 
-// The response message for [Agents.ExportAgent][google.cloud.dialogflow.v2.Agents.ExportAgent].
+// The response message for
+// [Agents.ExportAgent][google.cloud.dialogflow.v2.Agents.ExportAgent].
 type ExportAgentResponse struct {
 	// Required. The exported agent.
 	//
@@ -459,7 +465,7 @@ func (m *ExportAgentResponse) Reset()         { *m = ExportAgentResponse{} }
 func (m *ExportAgentResponse) String() string { return proto.CompactTextString(m) }
 func (*ExportAgentResponse) ProtoMessage()    {}
 func (*ExportAgentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{6}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{6}
 }
 func (m *ExportAgentResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExportAgentResponse.Unmarshal(m, b)
@@ -582,7 +588,8 @@ func _ExportAgentResponse_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// The request message for [Agents.ImportAgent][google.cloud.dialogflow.v2.Agents.ImportAgent].
+// The request message for
+// [Agents.ImportAgent][google.cloud.dialogflow.v2.Agents.ImportAgent].
 type ImportAgentRequest struct {
 	// Required. The project that the agent to import is associated with.
 	// Format: `projects/<Project ID>`.
@@ -602,7 +609,7 @@ func (m *ImportAgentRequest) Reset()         { *m = ImportAgentRequest{} }
 func (m *ImportAgentRequest) String() string { return proto.CompactTextString(m) }
 func (*ImportAgentRequest) ProtoMessage()    {}
 func (*ImportAgentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{7}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{7}
 }
 func (m *ImportAgentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportAgentRequest.Unmarshal(m, b)
@@ -732,7 +739,8 @@ func _ImportAgentRequest_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// The request message for [Agents.RestoreAgent][google.cloud.dialogflow.v2.Agents.RestoreAgent].
+// The request message for
+// [Agents.RestoreAgent][google.cloud.dialogflow.v2.Agents.RestoreAgent].
 type RestoreAgentRequest struct {
 	// Required. The project that the agent to restore is associated with.
 	// Format: `projects/<Project ID>`.
@@ -752,7 +760,7 @@ func (m *RestoreAgentRequest) Reset()         { *m = RestoreAgentRequest{} }
 func (m *RestoreAgentRequest) String() string { return proto.CompactTextString(m) }
 func (*RestoreAgentRequest) ProtoMessage()    {}
 func (*RestoreAgentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_agent_6cbd45e0738ac4ce, []int{8}
+	return fileDescriptor_agent_b37bcb085950ef88, []int{8}
 }
 func (m *RestoreAgentRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RestoreAgentRequest.Unmarshal(m, b)
@@ -924,7 +932,8 @@ type AgentsClient interface {
 	TrainAgent(ctx context.Context, in *TrainAgentRequest, opts ...grpc.CallOption) (*longrunning.Operation, error)
 	// Exports the specified agent to a ZIP file.
 	//
-	// Operation <response: [ExportAgentResponse][google.cloud.dialogflow.v2.ExportAgentResponse],
+	// Operation <response:
+	// [ExportAgentResponse][google.cloud.dialogflow.v2.ExportAgentResponse],
 	//            metadata: [google.protobuf.Struct][google.protobuf.Struct]>
 	ExportAgent(ctx context.Context, in *ExportAgentRequest, opts ...grpc.CallOption) (*longrunning.Operation, error)
 	// Imports the specified agent from a ZIP file.
@@ -1027,7 +1036,8 @@ type AgentsServer interface {
 	TrainAgent(context.Context, *TrainAgentRequest) (*longrunning.Operation, error)
 	// Exports the specified agent to a ZIP file.
 	//
-	// Operation <response: [ExportAgentResponse][google.cloud.dialogflow.v2.ExportAgentResponse],
+	// Operation <response:
+	// [ExportAgentResponse][google.cloud.dialogflow.v2.ExportAgentResponse],
 	//            metadata: [google.protobuf.Struct][google.protobuf.Struct]>
 	ExportAgent(context.Context, *ExportAgentRequest) (*longrunning.Operation, error)
 	// Imports the specified agent from a ZIP file.
@@ -1195,10 +1205,10 @@ var _Agents_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/dialogflow/v2/agent.proto", fileDescriptor_agent_6cbd45e0738ac4ce)
+	proto.RegisterFile("google/cloud/dialogflow/v2/agent.proto", fileDescriptor_agent_b37bcb085950ef88)
 }
 
-var fileDescriptor_agent_6cbd45e0738ac4ce = []byte{
+var fileDescriptor_agent_b37bcb085950ef88 = []byte{
 	// 965 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0x41, 0x6f, 0xdc, 0x44,
 	0x14, 0xae, 0x37, 0xcd, 0x76, 0xf7, 0x25, 0x69, 0xd3, 0x09, 0x0d, 0xd6, 0xb6, 0x81, 0xad, 0x4b,

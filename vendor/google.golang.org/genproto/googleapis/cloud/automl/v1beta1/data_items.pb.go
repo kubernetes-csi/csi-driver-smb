@@ -41,7 +41,7 @@ func (m *Image) Reset()         { *m = Image{} }
 func (m *Image) String() string { return proto.CompactTextString(m) }
 func (*Image) ProtoMessage()    {}
 func (*Image) Descriptor() ([]byte, []int) {
-	return fileDescriptor_data_items_d29551999e582ae1, []int{0}
+	return fileDescriptor_data_items_16254e250b81d9d6, []int{0}
 }
 func (m *Image) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Image.Unmarshal(m, b)
@@ -196,7 +196,7 @@ func (m *TextSnippet) Reset()         { *m = TextSnippet{} }
 func (m *TextSnippet) String() string { return proto.CompactTextString(m) }
 func (*TextSnippet) ProtoMessage()    {}
 func (*TextSnippet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_data_items_d29551999e582ae1, []int{1}
+	return fileDescriptor_data_items_16254e250b81d9d6, []int{1}
 }
 func (m *TextSnippet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TextSnippet.Unmarshal(m, b)
@@ -254,7 +254,7 @@ func (m *ExamplePayload) Reset()         { *m = ExamplePayload{} }
 func (m *ExamplePayload) String() string { return proto.CompactTextString(m) }
 func (*ExamplePayload) ProtoMessage()    {}
 func (*ExamplePayload) Descriptor() ([]byte, []int) {
-	return fileDescriptor_data_items_d29551999e582ae1, []int{2}
+	return fileDescriptor_data_items_16254e250b81d9d6, []int{2}
 }
 func (m *ExamplePayload) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExamplePayload.Unmarshal(m, b)
@@ -392,10 +392,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/automl/v1beta1/data_items.proto", fileDescriptor_data_items_d29551999e582ae1)
+	proto.RegisterFile("google/cloud/automl/v1beta1/data_items.proto", fileDescriptor_data_items_16254e250b81d9d6)
 }
 
-var fileDescriptor_data_items_d29551999e582ae1 = []byte{
+var fileDescriptor_data_items_16254e250b81d9d6 = []byte{
 	// 407 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x41, 0x6f, 0xd3, 0x30,
 	0x14, 0xc7, 0x9b, 0x69, 0xeb, 0xa8, 0x53, 0x38, 0xf8, 0x14, 0xad, 0x48, 0x2b, 0x85, 0x43, 0x0f,

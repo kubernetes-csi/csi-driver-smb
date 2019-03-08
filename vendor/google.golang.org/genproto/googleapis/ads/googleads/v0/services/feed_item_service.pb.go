@@ -28,7 +28,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [FeedItemService.GetFeedItem][google.ads.googleads.v0.services.FeedItemService.GetFeedItem].
+// Request message for
+// [FeedItemService.GetFeedItem][google.ads.googleads.v0.services.FeedItemService.GetFeedItem].
 type GetFeedItemRequest struct {
 	// The resource name of the feed item to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -41,7 +42,7 @@ func (m *GetFeedItemRequest) Reset()         { *m = GetFeedItemRequest{} }
 func (m *GetFeedItemRequest) String() string { return proto.CompactTextString(m) }
 func (*GetFeedItemRequest) ProtoMessage()    {}
 func (*GetFeedItemRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_service_7bec36fb6c09b79c, []int{0}
+	return fileDescriptor_feed_item_service_4454f9ecd8af0362, []int{0}
 }
 func (m *GetFeedItemRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetFeedItemRequest.Unmarshal(m, b)
@@ -68,7 +69,8 @@ func (m *GetFeedItemRequest) GetResourceName() string {
 	return ""
 }
 
-// Request message for [FeedItemService.MutateFeedItems][google.ads.googleads.v0.services.FeedItemService.MutateFeedItems].
+// Request message for
+// [FeedItemService.MutateFeedItems][google.ads.googleads.v0.services.FeedItemService.MutateFeedItems].
 type MutateFeedItemsRequest struct {
 	// The ID of the customer whose feed items are being modified.
 	CustomerId string `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -91,7 +93,7 @@ func (m *MutateFeedItemsRequest) Reset()         { *m = MutateFeedItemsRequest{}
 func (m *MutateFeedItemsRequest) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedItemsRequest) ProtoMessage()    {}
 func (*MutateFeedItemsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_service_7bec36fb6c09b79c, []int{1}
+	return fileDescriptor_feed_item_service_4454f9ecd8af0362, []int{1}
 }
 func (m *MutateFeedItemsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedItemsRequest.Unmarshal(m, b)
@@ -159,7 +161,7 @@ func (m *FeedItemOperation) Reset()         { *m = FeedItemOperation{} }
 func (m *FeedItemOperation) String() string { return proto.CompactTextString(m) }
 func (*FeedItemOperation) ProtoMessage()    {}
 func (*FeedItemOperation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_service_7bec36fb6c09b79c, []int{2}
+	return fileDescriptor_feed_item_service_4454f9ecd8af0362, []int{2}
 }
 func (m *FeedItemOperation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FeedItemOperation.Unmarshal(m, b)
@@ -343,7 +345,7 @@ func (m *MutateFeedItemsResponse) Reset()         { *m = MutateFeedItemsResponse
 func (m *MutateFeedItemsResponse) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedItemsResponse) ProtoMessage()    {}
 func (*MutateFeedItemsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_service_7bec36fb6c09b79c, []int{3}
+	return fileDescriptor_feed_item_service_4454f9ecd8af0362, []int{3}
 }
 func (m *MutateFeedItemsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedItemsResponse.Unmarshal(m, b)
@@ -390,7 +392,7 @@ func (m *MutateFeedItemResult) Reset()         { *m = MutateFeedItemResult{} }
 func (m *MutateFeedItemResult) String() string { return proto.CompactTextString(m) }
 func (*MutateFeedItemResult) ProtoMessage()    {}
 func (*MutateFeedItemResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_feed_item_service_7bec36fb6c09b79c, []int{4}
+	return fileDescriptor_feed_item_service_4454f9ecd8af0362, []int{4}
 }
 func (m *MutateFeedItemResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MutateFeedItemResult.Unmarshal(m, b)
@@ -537,10 +539,10 @@ var _FeedItemService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/feed_item_service.proto", fileDescriptor_feed_item_service_7bec36fb6c09b79c)
+	proto.RegisterFile("google/ads/googleads/v0/services/feed_item_service.proto", fileDescriptor_feed_item_service_4454f9ecd8af0362)
 }
 
-var fileDescriptor_feed_item_service_7bec36fb6c09b79c = []byte{
+var fileDescriptor_feed_item_service_4454f9ecd8af0362 = []byte{
 	// 710 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x4f, 0x6b, 0x13, 0x4f,
 	0x18, 0xfe, 0xed, 0xf6, 0x47, 0xb5, 0xb3, 0xd5, 0xe2, 0x58, 0x6d, 0x08, 0xa2, 0x61, 0x2d, 0x58,

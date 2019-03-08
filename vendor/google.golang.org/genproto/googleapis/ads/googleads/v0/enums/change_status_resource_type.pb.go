@@ -70,7 +70,7 @@ func (x ChangeStatusResourceTypeEnum_ChangeStatusResourceType) String() string {
 	return proto.EnumName(ChangeStatusResourceTypeEnum_ChangeStatusResourceType_name, int32(x))
 }
 func (ChangeStatusResourceTypeEnum_ChangeStatusResourceType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_change_status_resource_type_06eaf7bae9bbb0c1, []int{0, 0}
+	return fileDescriptor_change_status_resource_type_b24c7a466a3225d8, []int{0, 0}
 }
 
 // Container for enum describing supported resource types for the ChangeStatus
@@ -85,7 +85,7 @@ func (m *ChangeStatusResourceTypeEnum) Reset()         { *m = ChangeStatusResour
 func (m *ChangeStatusResourceTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*ChangeStatusResourceTypeEnum) ProtoMessage()    {}
 func (*ChangeStatusResourceTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_change_status_resource_type_06eaf7bae9bbb0c1, []int{0}
+	return fileDescriptor_change_status_resource_type_b24c7a466a3225d8, []int{0}
 }
 func (m *ChangeStatusResourceTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ChangeStatusResourceTypeEnum.Unmarshal(m, b)
@@ -111,10 +111,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/change_status_resource_type.proto", fileDescriptor_change_status_resource_type_06eaf7bae9bbb0c1)
+	proto.RegisterFile("google/ads/googleads/v0/enums/change_status_resource_type.proto", fileDescriptor_change_status_resource_type_b24c7a466a3225d8)
 }
 
-var fileDescriptor_change_status_resource_type_06eaf7bae9bbb0c1 = []byte{
+var fileDescriptor_change_status_resource_type_b24c7a466a3225d8 = []byte{
 	// 361 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xcd, 0x6a, 0xdb, 0x40,
 	0x10, 0xc7, 0x2b, 0xdb, 0xf5, 0xc7, 0xba, 0xa5, 0xcb, 0x1e, 0x4a, 0x0f, 0xf5, 0xc1, 0x7e, 0x80,

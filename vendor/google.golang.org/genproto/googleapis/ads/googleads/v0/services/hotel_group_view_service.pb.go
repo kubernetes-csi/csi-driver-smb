@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [HotelGroupViewService.GetHotelGroupView][google.ads.googleads.v0.services.HotelGroupViewService.GetHotelGroupView].
+// Request message for
+// [HotelGroupViewService.GetHotelGroupView][google.ads.googleads.v0.services.HotelGroupViewService.GetHotelGroupView].
 type GetHotelGroupViewRequest struct {
 	// Resource name of the Hotel Group View to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetHotelGroupViewRequest) Reset()         { *m = GetHotelGroupViewReque
 func (m *GetHotelGroupViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetHotelGroupViewRequest) ProtoMessage()    {}
 func (*GetHotelGroupViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_hotel_group_view_service_6bab7aee78f83556, []int{0}
+	return fileDescriptor_hotel_group_view_service_e2fc7e3c919ad1a4, []int{0}
 }
 func (m *GetHotelGroupViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetHotelGroupViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _HotelGroupViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/hotel_group_view_service.proto", fileDescriptor_hotel_group_view_service_6bab7aee78f83556)
+	proto.RegisterFile("google/ads/googleads/v0/services/hotel_group_view_service.proto", fileDescriptor_hotel_group_view_service_e2fc7e3c919ad1a4)
 }
 
-var fileDescriptor_hotel_group_view_service_6bab7aee78f83556 = []byte{
+var fileDescriptor_hotel_group_view_service_e2fc7e3c919ad1a4 = []byte{
 	// 369 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xb1, 0x4a, 0xc3, 0x40,
 	0x18, 0xc7, 0x49, 0x04, 0xc1, 0xa0, 0x83, 0x01, 0xa1, 0x04, 0x87, 0x52, 0x3b, 0x48, 0x87, 0xbb,

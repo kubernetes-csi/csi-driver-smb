@@ -49,7 +49,7 @@ func (x StringFormatErrorEnum_StringFormatError) String() string {
 	return proto.EnumName(StringFormatErrorEnum_StringFormatError_name, int32(x))
 }
 func (StringFormatErrorEnum_StringFormatError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_string_format_error_32c26bb1f0c52d04, []int{0, 0}
+	return fileDescriptor_string_format_error_33a1378c4984fed1, []int{0, 0}
 }
 
 // Container for enum describing possible string format errors.
@@ -63,7 +63,7 @@ func (m *StringFormatErrorEnum) Reset()         { *m = StringFormatErrorEnum{} }
 func (m *StringFormatErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*StringFormatErrorEnum) ProtoMessage()    {}
 func (*StringFormatErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_string_format_error_32c26bb1f0c52d04, []int{0}
+	return fileDescriptor_string_format_error_33a1378c4984fed1, []int{0}
 }
 func (m *StringFormatErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StringFormatErrorEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/string_format_error.proto", fileDescriptor_string_format_error_32c26bb1f0c52d04)
+	proto.RegisterFile("google/ads/googleads/v0/errors/string_format_error.proto", fileDescriptor_string_format_error_33a1378c4984fed1)
 }
 
-var fileDescriptor_string_format_error_32c26bb1f0c52d04 = []byte{
+var fileDescriptor_string_format_error_33a1378c4984fed1 = []byte{
 	// 300 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xcf, 0x4a, 0xc3, 0x30,
 	0x1c, 0xc7, 0x5d, 0x07, 0x0a, 0x19, 0x6a, 0x17, 0xd0, 0xe3, 0x0e, 0x7d, 0x80, 0xb4, 0xe0, 0x45,

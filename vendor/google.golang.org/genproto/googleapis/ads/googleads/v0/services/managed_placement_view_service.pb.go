@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [ManagedPlacementViewService.GetManagedPlacementView][google.ads.googleads.v0.services.ManagedPlacementViewService.GetManagedPlacementView].
+// Request message for
+// [ManagedPlacementViewService.GetManagedPlacementView][google.ads.googleads.v0.services.ManagedPlacementViewService.GetManagedPlacementView].
 type GetManagedPlacementViewRequest struct {
 	// The resource name of the Managed Placement View to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetManagedPlacementViewRequest) Reset()         { *m = GetManagedPlacem
 func (m *GetManagedPlacementViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetManagedPlacementViewRequest) ProtoMessage()    {}
 func (*GetManagedPlacementViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_managed_placement_view_service_70c3403743ab30a6, []int{0}
+	return fileDescriptor_managed_placement_view_service_2de3611a77d06c09, []int{0}
 }
 func (m *GetManagedPlacementViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetManagedPlacementViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _ManagedPlacementViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/managed_placement_view_service.proto", fileDescriptor_managed_placement_view_service_70c3403743ab30a6)
+	proto.RegisterFile("google/ads/googleads/v0/services/managed_placement_view_service.proto", fileDescriptor_managed_placement_view_service_2de3611a77d06c09)
 }
 
-var fileDescriptor_managed_placement_view_service_70c3403743ab30a6 = []byte{
+var fileDescriptor_managed_placement_view_service_2de3611a77d06c09 = []byte{
 	// 378 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0x3d, 0x6b, 0xdb, 0x40,
 	0x18, 0x46, 0x2a, 0x14, 0x2a, 0xda, 0x45, 0x4b, 0x8b, 0x5b, 0x8a, 0x70, 0x3d, 0x14, 0x0f, 0x77,

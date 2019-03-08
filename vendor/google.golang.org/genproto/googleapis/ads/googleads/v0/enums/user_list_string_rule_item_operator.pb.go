@@ -73,7 +73,7 @@ func (x UserListStringRuleItemOperatorEnum_UserListStringRuleItemOperator) Strin
 	return proto.EnumName(UserListStringRuleItemOperatorEnum_UserListStringRuleItemOperator_name, int32(x))
 }
 func (UserListStringRuleItemOperatorEnum_UserListStringRuleItemOperator) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_string_rule_item_operator_f82df46fb57a84fd, []int{0, 0}
+	return fileDescriptor_user_list_string_rule_item_operator_ae6aa7b38965c45b, []int{0, 0}
 }
 
 // Supported rule operator for string type.
@@ -87,7 +87,7 @@ func (m *UserListStringRuleItemOperatorEnum) Reset()         { *m = UserListStri
 func (m *UserListStringRuleItemOperatorEnum) String() string { return proto.CompactTextString(m) }
 func (*UserListStringRuleItemOperatorEnum) ProtoMessage()    {}
 func (*UserListStringRuleItemOperatorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_user_list_string_rule_item_operator_f82df46fb57a84fd, []int{0}
+	return fileDescriptor_user_list_string_rule_item_operator_ae6aa7b38965c45b, []int{0}
 }
 func (m *UserListStringRuleItemOperatorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserListStringRuleItemOperatorEnum.Unmarshal(m, b)
@@ -113,10 +113,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_string_rule_item_operator.proto", fileDescriptor_user_list_string_rule_item_operator_f82df46fb57a84fd)
+	proto.RegisterFile("google/ads/googleads/v0/enums/user_list_string_rule_item_operator.proto", fileDescriptor_user_list_string_rule_item_operator_ae6aa7b38965c45b)
 }
 
-var fileDescriptor_user_list_string_rule_item_operator_f82df46fb57a84fd = []byte{
+var fileDescriptor_user_list_string_rule_item_operator_ae6aa7b38965c45b = []byte{
 	// 371 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xcd, 0xee, 0x93, 0x40,
 	0x14, 0xc5, 0x85, 0x6a, 0x3f, 0xa6, 0xad, 0xc5, 0x71, 0x5d, 0x93, 0xd6, 0xfd, 0x40, 0xe2, 0x6e,

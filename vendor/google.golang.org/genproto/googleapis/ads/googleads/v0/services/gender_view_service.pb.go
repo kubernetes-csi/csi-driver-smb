@@ -25,7 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Request message for [GenderViewService.GetGenderView][google.ads.googleads.v0.services.GenderViewService.GetGenderView].
+// Request message for
+// [GenderViewService.GetGenderView][google.ads.googleads.v0.services.GenderViewService.GetGenderView].
 type GetGenderViewRequest struct {
 	// The resource name of the gender view to fetch.
 	ResourceName         string   `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
@@ -38,7 +39,7 @@ func (m *GetGenderViewRequest) Reset()         { *m = GetGenderViewRequest{} }
 func (m *GetGenderViewRequest) String() string { return proto.CompactTextString(m) }
 func (*GetGenderViewRequest) ProtoMessage()    {}
 func (*GetGenderViewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_gender_view_service_241b7351bc3002bd, []int{0}
+	return fileDescriptor_gender_view_service_d807a804f7f3c73c, []int{0}
 }
 func (m *GetGenderViewRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetGenderViewRequest.Unmarshal(m, b)
@@ -144,10 +145,10 @@ var _GenderViewService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/services/gender_view_service.proto", fileDescriptor_gender_view_service_241b7351bc3002bd)
+	proto.RegisterFile("google/ads/googleads/v0/services/gender_view_service.proto", fileDescriptor_gender_view_service_d807a804f7f3c73c)
 }
 
-var fileDescriptor_gender_view_service_241b7351bc3002bd = []byte{
+var fileDescriptor_gender_view_service_d807a804f7f3c73c = []byte{
 	// 361 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xb1, 0x4a, 0xc3, 0x50,
 	0x14, 0x86, 0x49, 0x04, 0xc1, 0x60, 0x07, 0x83, 0x88, 0x14, 0x87, 0x52, 0x3b, 0x48, 0xa1, 0xf7,

@@ -59,7 +59,7 @@ func (x GeoTargetConstantSuggestionErrorEnum_GeoTargetConstantSuggestionError) S
 	return proto.EnumName(GeoTargetConstantSuggestionErrorEnum_GeoTargetConstantSuggestionError_name, int32(x))
 }
 func (GeoTargetConstantSuggestionErrorEnum_GeoTargetConstantSuggestionError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_suggestion_error_8eb80a1a16268b77, []int{0, 0}
+	return fileDescriptor_geo_target_constant_suggestion_error_068fcd10e8d99680, []int{0, 0}
 }
 
 // Container for enum describing possible geo target constant suggestion errors.
@@ -73,7 +73,7 @@ func (m *GeoTargetConstantSuggestionErrorEnum) Reset()         { *m = GeoTargetC
 func (m *GeoTargetConstantSuggestionErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*GeoTargetConstantSuggestionErrorEnum) ProtoMessage()    {}
 func (*GeoTargetConstantSuggestionErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_geo_target_constant_suggestion_error_8eb80a1a16268b77, []int{0}
+	return fileDescriptor_geo_target_constant_suggestion_error_068fcd10e8d99680, []int{0}
 }
 func (m *GeoTargetConstantSuggestionErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GeoTargetConstantSuggestionErrorEnum.Unmarshal(m, b)
@@ -99,10 +99,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/geo_target_constant_suggestion_error.proto", fileDescriptor_geo_target_constant_suggestion_error_8eb80a1a16268b77)
+	proto.RegisterFile("google/ads/googleads/v0/errors/geo_target_constant_suggestion_error.proto", fileDescriptor_geo_target_constant_suggestion_error_068fcd10e8d99680)
 }
 
-var fileDescriptor_geo_target_constant_suggestion_error_8eb80a1a16268b77 = []byte{
+var fileDescriptor_geo_target_constant_suggestion_error_068fcd10e8d99680 = []byte{
 	// 370 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0xbd, 0xaa, 0xdb, 0x30,
 	0x14, 0xc7, 0x6b, 0xa7, 0x1f, 0xa0, 0x0c, 0x35, 0x6e, 0xa1, 0x19, 0x4a, 0x28, 0xa6, 0x5d, 0x65,

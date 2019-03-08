@@ -49,7 +49,7 @@ func (x CollectionSizeErrorEnum_CollectionSizeError) String() string {
 	return proto.EnumName(CollectionSizeErrorEnum_CollectionSizeError_name, int32(x))
 }
 func (CollectionSizeErrorEnum_CollectionSizeError) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_collection_size_error_77e4d928e244d6ca, []int{0, 0}
+	return fileDescriptor_collection_size_error_a0255c8372679d7f, []int{0, 0}
 }
 
 // Container for enum describing possible collection size errors.
@@ -63,7 +63,7 @@ func (m *CollectionSizeErrorEnum) Reset()         { *m = CollectionSizeErrorEnum
 func (m *CollectionSizeErrorEnum) String() string { return proto.CompactTextString(m) }
 func (*CollectionSizeErrorEnum) ProtoMessage()    {}
 func (*CollectionSizeErrorEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_collection_size_error_77e4d928e244d6ca, []int{0}
+	return fileDescriptor_collection_size_error_a0255c8372679d7f, []int{0}
 }
 func (m *CollectionSizeErrorEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CollectionSizeErrorEnum.Unmarshal(m, b)
@@ -89,10 +89,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/errors/collection_size_error.proto", fileDescriptor_collection_size_error_77e4d928e244d6ca)
+	proto.RegisterFile("google/ads/googleads/v0/errors/collection_size_error.proto", fileDescriptor_collection_size_error_a0255c8372679d7f)
 }
 
-var fileDescriptor_collection_size_error_77e4d928e244d6ca = []byte{
+var fileDescriptor_collection_size_error_a0255c8372679d7f = []byte{
 	// 289 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xb2, 0x4a, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xa2,

@@ -69,7 +69,7 @@ func (x AgeRangeTypeEnum_AgeRangeType) String() string {
 	return proto.EnumName(AgeRangeTypeEnum_AgeRangeType_name, int32(x))
 }
 func (AgeRangeTypeEnum_AgeRangeType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_age_range_type_0b6f7364b2ead6ee, []int{0, 0}
+	return fileDescriptor_age_range_type_7915a3cb575152cd, []int{0, 0}
 }
 
 // Container for enum describing the type of demographic age ranges.
@@ -83,7 +83,7 @@ func (m *AgeRangeTypeEnum) Reset()         { *m = AgeRangeTypeEnum{} }
 func (m *AgeRangeTypeEnum) String() string { return proto.CompactTextString(m) }
 func (*AgeRangeTypeEnum) ProtoMessage()    {}
 func (*AgeRangeTypeEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_age_range_type_0b6f7364b2ead6ee, []int{0}
+	return fileDescriptor_age_range_type_7915a3cb575152cd, []int{0}
 }
 func (m *AgeRangeTypeEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AgeRangeTypeEnum.Unmarshal(m, b)
@@ -109,10 +109,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/ads/googleads/v0/enums/age_range_type.proto", fileDescriptor_age_range_type_0b6f7364b2ead6ee)
+	proto.RegisterFile("google/ads/googleads/v0/enums/age_range_type.proto", fileDescriptor_age_range_type_7915a3cb575152cd)
 }
 
-var fileDescriptor_age_range_type_0b6f7364b2ead6ee = []byte{
+var fileDescriptor_age_range_type_7915a3cb575152cd = []byte{
 	// 358 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x4a, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x4f, 0x4c, 0x29, 0xd6, 0x87, 0x30, 0x41, 0xac, 0x32, 0x03, 0xfd, 0xd4, 0xbc,

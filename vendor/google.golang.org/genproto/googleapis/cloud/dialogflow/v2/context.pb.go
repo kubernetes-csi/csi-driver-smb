@@ -50,7 +50,7 @@ func (m *Context) Reset()         { *m = Context{} }
 func (m *Context) String() string { return proto.CompactTextString(m) }
 func (*Context) ProtoMessage()    {}
 func (*Context) Descriptor() ([]byte, []int) {
-	return fileDescriptor_context_81c56ca1e96cd61f, []int{0}
+	return fileDescriptor_context_ec983148ff22c385, []int{0}
 }
 func (m *Context) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Context.Unmarshal(m, b)
@@ -91,7 +91,8 @@ func (m *Context) GetParameters() *_struct.Struct {
 	return nil
 }
 
-// The request message for [Contexts.ListContexts][google.cloud.dialogflow.v2.Contexts.ListContexts].
+// The request message for
+// [Contexts.ListContexts][google.cloud.dialogflow.v2.Contexts.ListContexts].
 type ListContextsRequest struct {
 	// Required. The session to list all contexts from.
 	// Format: `projects/<Project ID>/agent/sessions/<Session ID>`.
@@ -110,7 +111,7 @@ func (m *ListContextsRequest) Reset()         { *m = ListContextsRequest{} }
 func (m *ListContextsRequest) String() string { return proto.CompactTextString(m) }
 func (*ListContextsRequest) ProtoMessage()    {}
 func (*ListContextsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_context_81c56ca1e96cd61f, []int{1}
+	return fileDescriptor_context_ec983148ff22c385, []int{1}
 }
 func (m *ListContextsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListContextsRequest.Unmarshal(m, b)
@@ -151,7 +152,8 @@ func (m *ListContextsRequest) GetPageToken() string {
 	return ""
 }
 
-// The response message for [Contexts.ListContexts][google.cloud.dialogflow.v2.Contexts.ListContexts].
+// The response message for
+// [Contexts.ListContexts][google.cloud.dialogflow.v2.Contexts.ListContexts].
 type ListContextsResponse struct {
 	// The list of contexts. There will be a maximum number of items
 	// returned based on the page_size field in the request.
@@ -168,7 +170,7 @@ func (m *ListContextsResponse) Reset()         { *m = ListContextsResponse{} }
 func (m *ListContextsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListContextsResponse) ProtoMessage()    {}
 func (*ListContextsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_context_81c56ca1e96cd61f, []int{2}
+	return fileDescriptor_context_ec983148ff22c385, []int{2}
 }
 func (m *ListContextsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListContextsResponse.Unmarshal(m, b)
@@ -202,7 +204,8 @@ func (m *ListContextsResponse) GetNextPageToken() string {
 	return ""
 }
 
-// The request message for [Contexts.GetContext][google.cloud.dialogflow.v2.Contexts.GetContext].
+// The request message for
+// [Contexts.GetContext][google.cloud.dialogflow.v2.Contexts.GetContext].
 type GetContextRequest struct {
 	// Required. The name of the context. Format:
 	// `projects/<Project ID>/agent/sessions/<Session ID>/contexts/<Context ID>`.
@@ -216,7 +219,7 @@ func (m *GetContextRequest) Reset()         { *m = GetContextRequest{} }
 func (m *GetContextRequest) String() string { return proto.CompactTextString(m) }
 func (*GetContextRequest) ProtoMessage()    {}
 func (*GetContextRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_context_81c56ca1e96cd61f, []int{3}
+	return fileDescriptor_context_ec983148ff22c385, []int{3}
 }
 func (m *GetContextRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetContextRequest.Unmarshal(m, b)
@@ -243,7 +246,8 @@ func (m *GetContextRequest) GetName() string {
 	return ""
 }
 
-// The request message for [Contexts.CreateContext][google.cloud.dialogflow.v2.Contexts.CreateContext].
+// The request message for
+// [Contexts.CreateContext][google.cloud.dialogflow.v2.Contexts.CreateContext].
 type CreateContextRequest struct {
 	// Required. The session to create a context for.
 	// Format: `projects/<Project ID>/agent/sessions/<Session ID>`.
@@ -259,7 +263,7 @@ func (m *CreateContextRequest) Reset()         { *m = CreateContextRequest{} }
 func (m *CreateContextRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateContextRequest) ProtoMessage()    {}
 func (*CreateContextRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_context_81c56ca1e96cd61f, []int{4}
+	return fileDescriptor_context_ec983148ff22c385, []int{4}
 }
 func (m *CreateContextRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateContextRequest.Unmarshal(m, b)
@@ -293,7 +297,8 @@ func (m *CreateContextRequest) GetContext() *Context {
 	return nil
 }
 
-// The request message for [Contexts.UpdateContext][google.cloud.dialogflow.v2.Contexts.UpdateContext].
+// The request message for
+// [Contexts.UpdateContext][google.cloud.dialogflow.v2.Contexts.UpdateContext].
 type UpdateContextRequest struct {
 	// Required. The context to update.
 	Context *Context `protobuf:"bytes,1,opt,name=context,proto3" json:"context,omitempty"`
@@ -308,7 +313,7 @@ func (m *UpdateContextRequest) Reset()         { *m = UpdateContextRequest{} }
 func (m *UpdateContextRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateContextRequest) ProtoMessage()    {}
 func (*UpdateContextRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_context_81c56ca1e96cd61f, []int{5}
+	return fileDescriptor_context_ec983148ff22c385, []int{5}
 }
 func (m *UpdateContextRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateContextRequest.Unmarshal(m, b)
@@ -342,7 +347,8 @@ func (m *UpdateContextRequest) GetUpdateMask() *field_mask.FieldMask {
 	return nil
 }
 
-// The request message for [Contexts.DeleteContext][google.cloud.dialogflow.v2.Contexts.DeleteContext].
+// The request message for
+// [Contexts.DeleteContext][google.cloud.dialogflow.v2.Contexts.DeleteContext].
 type DeleteContextRequest struct {
 	// Required. The name of the context to delete. Format:
 	// `projects/<Project ID>/agent/sessions/<Session ID>/contexts/<Context ID>`.
@@ -356,7 +362,7 @@ func (m *DeleteContextRequest) Reset()         { *m = DeleteContextRequest{} }
 func (m *DeleteContextRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteContextRequest) ProtoMessage()    {}
 func (*DeleteContextRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_context_81c56ca1e96cd61f, []int{6}
+	return fileDescriptor_context_ec983148ff22c385, []int{6}
 }
 func (m *DeleteContextRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteContextRequest.Unmarshal(m, b)
@@ -383,7 +389,8 @@ func (m *DeleteContextRequest) GetName() string {
 	return ""
 }
 
-// The request message for [Contexts.DeleteAllContexts][google.cloud.dialogflow.v2.Contexts.DeleteAllContexts].
+// The request message for
+// [Contexts.DeleteAllContexts][google.cloud.dialogflow.v2.Contexts.DeleteAllContexts].
 type DeleteAllContextsRequest struct {
 	// Required. The name of the session to delete all contexts from. Format:
 	// `projects/<Project ID>/agent/sessions/<Session ID>`.
@@ -397,7 +404,7 @@ func (m *DeleteAllContextsRequest) Reset()         { *m = DeleteAllContextsReque
 func (m *DeleteAllContextsRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteAllContextsRequest) ProtoMessage()    {}
 func (*DeleteAllContextsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_context_81c56ca1e96cd61f, []int{7}
+	return fileDescriptor_context_ec983148ff22c385, []int{7}
 }
 func (m *DeleteAllContextsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteAllContextsRequest.Unmarshal(m, b)
@@ -685,10 +692,10 @@ var _Contexts_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/cloud/dialogflow/v2/context.proto", fileDescriptor_context_81c56ca1e96cd61f)
+	proto.RegisterFile("google/cloud/dialogflow/v2/context.proto", fileDescriptor_context_ec983148ff22c385)
 }
 
-var fileDescriptor_context_81c56ca1e96cd61f = []byte{
+var fileDescriptor_context_ec983148ff22c385 = []byte{
 	// 715 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x95, 0x4f, 0x6f, 0xd3, 0x30,
 	0x18, 0xc6, 0xe5, 0x0e, 0xf6, 0xe7, 0xdd, 0x0a, 0x9a, 0xa9, 0x46, 0x95, 0x0d, 0x54, 0x05, 0x01,
