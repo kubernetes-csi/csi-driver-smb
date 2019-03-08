@@ -24,7 +24,7 @@ import (
 	"k8s.io/kubernetes/pkg/util/mount"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	csicommon "github.com/csi-driver/azurefile-csi-driver/pkg/csi-common"
+	csicommon "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/csi-common"
 	"k8s.io/klog"
 )
 

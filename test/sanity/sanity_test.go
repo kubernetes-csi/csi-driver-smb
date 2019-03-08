@@ -21,7 +21,7 @@ import (
 
 	sanity "github.com/kubernetes-csi/csi-test/pkg/sanity"
 
-	azurefile "github.com/csi-driver/azurefile-csi-driver/pkg/azurefile"
+	azurefile "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
 )
 
 const (
