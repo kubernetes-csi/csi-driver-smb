@@ -11,6 +11,7 @@ go:
 before_install:
   - go get github.com/mattn/goveralls
   - go get github.com/rexray/gocsi/csc
+  - go get github.com/golang/dep/cmd/dep
   - sudo apt update && sudo apt install cifs-utils procps -y
 
 script:
