@@ -19,11 +19,13 @@ package azurefile
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"k8s.io/kubernetes/pkg/volume/util"
 
 	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
+	check "github.com/Azure/azure-sdk-for-go/storage"
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/pborman/uuid"
 	"k8s.io/klog"
@@ -112,7 +114,8 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 
 // DeleteVolume delete an azure file
 func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest) (*csi.DeleteVolumeResponse, error) {
-	if len(req.GetVolumeId()) == 0 {
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
 
@@ -120,10 +123,12 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 		return nil, fmt.Errorf("invalid delete volume req: %v", req)
 	}
 
-	volumeID := req.VolumeId
 	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
 	if err != nil {
-		return nil, err
+		// This operation MUST be idempotent. If a volume corresponding to the specified volume_id does not
+		// exist or the artifacts associated with the volume do not exist anymore, the Plugin MUST reply 0 OK.
+		// reference: https://github.com/container-storage-interface/spec/blob/master/spec.md#deletevolume
+		return &csi.DeleteVolumeResponse{}, nil
 	}
 
 	if resourceGroupName == "" {
@@ -132,11 +137,20 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 
 	accountKey, err := GetStorageAccesskey(d.cloud, accountName, resourceGroupName)
 	if err != nil {
-		return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
+		// Same case as above
+		// reference: https://github.com/container-storage-interface/spec/blob/master/spec.md#deletevolume
+		return &csi.DeleteVolumeResponse{}, nil
 	}
 
 	klog.V(2).Infof("deleting azure file(%s) rg(%s) account(%s) volumeID(%s)", fileShareName, resourceGroupName, accountName, volumeID)
 	if err := d.cloud.DeleteFileShare(accountName, accountKey, fileShareName); err != nil {
+		if e, ok := err.(check.AzureStorageServiceError); ok && e.StatusCode == http.StatusNotFound {
+			// Same case as above
+			// reference: https://github.com/container-storage-interface/spec/blob/master/spec.md#deletevolume
+			return &csi.DeleteVolumeResponse{}, nil
+		}
+		// TODO: add ShareHasSnapshots check
+		// reference: https://github.com/container-storage-interface/spec/blob/master/spec.md#deletevolume
 		return nil, err
 	}
 	klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volumeID(%s) is deleted successfully", fileShareName, resourceGroupName, accountName, volumeID)
