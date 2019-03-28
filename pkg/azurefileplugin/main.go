@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
@@ -31,12 +32,20 @@ func init() {
 var (
 	endpoint = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
 	nodeID   = flag.String("nodeid", "", "node id")
+	version  = flag.Bool("version", false, "Print the version and exit.")
 )
 
 func main() {
 	klog.InitFlags(nil)
 	flag.Parse()
-
+	if *version {
+		info, err := azurefile.GetVersionYAML()
+		if err != nil {
+			klog.Fatalln(err)
+		}
+		fmt.Println(info)
+		os.Exit(0)
+	}
 	if *nodeID == "" {
 		klog.Error("--nodeid is a required parameter")
 		os.Exit(1)
