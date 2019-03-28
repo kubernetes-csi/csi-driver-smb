@@ -26,7 +26,7 @@ import (
 )
 
 func init() {
-	_ = flag.Set("logtostderr", "true")
+	klog.InitFlags(nil)
 }
 
 var (
@@ -36,7 +36,6 @@ var (
 )
 
 func main() {
-	klog.InitFlags(nil)
 	flag.Parse()
 	if *version {
 		info, err := azurefile.GetVersionYAML()
@@ -50,7 +49,6 @@ func main() {
 		klog.Error("--nodeid is a required parameter")
 		os.Exit(1)
 	}
-
 	handle()
 	os.Exit(0)
 }
