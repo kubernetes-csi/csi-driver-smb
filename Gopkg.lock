@@ -987,6 +987,7 @@
     "k8s.io/kubernetes/pkg/cloudprovider/providers/azure",
     "k8s.io/kubernetes/pkg/util/mount",
     "k8s.io/kubernetes/pkg/volume/util",
+    "sigs.k8s.io/yaml",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
