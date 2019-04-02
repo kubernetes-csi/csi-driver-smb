@@ -29,6 +29,7 @@ import (
 )
 
 const (
+	DriverName       = "file.csi.azure.com"
 	seperator        = "#"
 	volumeIDTemplate = "%s#%s#%s"
 	fileMode         = "file_mode"
@@ -50,7 +51,7 @@ type Driver struct {
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
 func NewDriver(nodeID string) *Driver {
 	driver := Driver{}
-	driver.Name = driverName
+	driver.Name = DriverName
 	driver.Version = driverVersion
 	driver.NodeID = nodeID
 	return &driver
