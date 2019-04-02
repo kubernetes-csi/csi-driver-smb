@@ -29,7 +29,6 @@ var (
 	driverVersion = "N/A"
 	gitCommit     = "N/A"
 	buildDate     = "N/A"
-	driverName    = "N/A"
 )
 
 // VersionInfo holds the version information of the driver
@@ -46,7 +45,7 @@ type VersionInfo struct {
 // GetVersion returns the version information of the driver
 func GetVersion() VersionInfo {
 	return VersionInfo{
-		DriverName:    driverName,
+		DriverName:    DriverName,
 		DriverVersion: driverVersion,
 		GitCommit:     gitCommit,
 		BuildDate:     buildDate,

@@ -14,7 +14,6 @@
 
 PKG=github.com/kubernetes-sigs/azurefile-csi-driver
 REGISTRY_NAME=andyzhangx
-DRIVER_NAME=file.csi.azure.com
 IMAGE_NAME=azurefile-csi
 IMAGE_VERSION=v0.3.0
 IMAGE_TAG=$(REGISTRY_NAME)/$(IMAGE_NAME):$(IMAGE_VERSION)
@@ -22,7 +21,7 @@ IMAGE_TAG_LATEST=$(REGISTRY_NAME)/$(IMAGE_NAME):latest
 REV=$(shell git describe --long --tags --dirty)
 GIT_COMMIT?=$(shell git rev-parse HEAD)
 BUILD_DATE?=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-LDFLAGS?="-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -X ${PKG}/pkg/azurefile.driverName=${DRIVER_NAME} -extldflags '-static'"
+LDFLAGS?="-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -extldflags '-static'"
 
 .PHONY: all azurefile azurefile-container clean
 
