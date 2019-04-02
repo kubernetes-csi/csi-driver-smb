@@ -50,23 +50,39 @@
 
 [[constraint]]
   name = "k8s.io/kubernetes"
-  version = "v1.13.0"
+  version = "v1.14.0"
 
 [[override]]
   name = "gopkg.in/fsnotify.v1"
   source = "https://github.com/fsnotify/fsnotify.git"
 
 [[override]]
-  version = "kubernetes-1.13.0"
+  version = "kubernetes-1.14.0"
   name = "k8s.io/api"
 
 [[override]]
-  version = "kubernetes-1.13.0"
+  version = "kubernetes-1.14.0"
   name = "k8s.io/apiserver"
 
 [[override]]
-  version = "kubernetes-1.13.0"
+  version = "kubernetes-1.14.0"
   name = "k8s.io/apiextensions-apiserver"
+
+[[override]]
+  version = "kubernetes-1.14.0"
+  name = "k8s.io/client-go"
+
+[[override]]
+  version = "kubernetes-1.14.0"
+  name = "k8s.io/apimachinery"
+
+[[override]]
+  version = "kubernetes-1.14.0"
+  name = "k8s.io/cli-runtime"
+
+[[override]]
+  version = "v0.2.0"
+  name = "k8s.io/klog"
 
 [[override]]
   name = "github.com/golang/protobuf"

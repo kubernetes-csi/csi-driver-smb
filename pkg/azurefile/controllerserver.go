@@ -21,12 +21,13 @@ import (
 	"fmt"
 	"strings"
 
-	"k8s.io/kubernetes/pkg/volume/util"
+	volumehelper "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/util"
 
 	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/pborman/uuid"
 	"k8s.io/klog"
+	"k8s.io/kubernetes/pkg/volume/util"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -49,7 +50,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	volSizeBytes := int64(req.GetCapacityRange().GetRequiredBytes())
-	requestGiB := int(util.RoundUpSize(volSizeBytes, 1024*1024*1024))
+	requestGiB := int(volumehelper.RoundUpBytes(volSizeBytes))
 
 	parameters := req.GetParameters()
 	var sku, resourceGroup, location, account string
