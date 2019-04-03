@@ -118,13 +118,14 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	}
 
 	if err := d.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME); err != nil {
-		return nil, fmt.Errorf("invalid delete volume req: %v", req)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid delete volume request: %v", req)
 	}
 
 	volumeID := req.VolumeId
 	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
 	if err != nil {
-		return nil, err
+		klog.Errorf("getFileShareInfo(%s) in DeleteVolume failed with error: %v", volumeID, err)
+		return &csi.DeleteVolumeResponse{}, nil
 	}
 
 	if resourceGroupName == "" {
@@ -138,7 +139,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 
 	klog.V(2).Infof("deleting azure file(%s) rg(%s) account(%s) volumeID(%s)", fileShareName, resourceGroupName, accountName, volumeID)
 	if err := d.cloud.DeleteFileShare(accountName, accountKey, fileShareName); err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "DeleteFileShare %s under %s failed with error: %v", fileShareName, accountName, err)
 	}
 	klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volumeID(%s) is deleted successfully", fileShareName, resourceGroupName, accountName, volumeID)
 
