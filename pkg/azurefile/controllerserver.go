@@ -123,7 +123,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	volumeID := req.VolumeId
 	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
 	if err != nil {
-		klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volumeID(%s) is invalid, returning with success: %v", fileShareName, resourceGroupName, accountName, volumeID, err)
+		klog.Errorf("getFileShareInfo(%s) in DeleteVolume failed with error: %v", volumeID, err)
 		return &csi.DeleteVolumeResponse{}, nil
 	}
 
@@ -133,12 +133,12 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 
 	accountKey, err := GetStorageAccesskey(d.cloud, accountName, resourceGroupName)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "could not get the storage access key: %v", err)
+		return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
 	}
 
 	klog.V(2).Infof("deleting azure file(%s) rg(%s) account(%s) volumeID(%s)", fileShareName, resourceGroupName, accountName, volumeID)
 	if err := d.cloud.DeleteFileShare(accountName, accountKey, fileShareName); err != nil {
-		return nil, status.Errorf(codes.Internal, "could not delete the volume: %v", err)
+		return nil, status.Errorf(codes.Internal, "DeleteFileShare %s under %s failed with error: %v", fileShareName, accountName, err)
 	}
 	klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volumeID(%s) is deleted successfully", fileShareName, resourceGroupName, accountName, volumeID)
 
