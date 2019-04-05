@@ -50,7 +50,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	volSizeBytes := int64(req.GetCapacityRange().GetRequiredBytes())
-	requestGiB := int(volumehelper.RoundUpBytes(volSizeBytes))
+	requestGiB := int(volumehelper.RoundUpGiB(volSizeBytes))
 
 	parameters := req.GetParameters()
 	var sku, resourceGroup, location, account string
