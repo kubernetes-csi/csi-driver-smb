@@ -3,20 +3,19 @@ go_import_path: github.com/kubernetes-sigs/azurefile-csi-driver
 
 env:
   global:
-    - GO111MODULE=off
+    - GO111MODULE=on
 
 go:
   - "1.11.4"
 
 before_install:
-  - go get github.com/mattn/goveralls
-  - go get github.com/rexray/gocsi/csc
-  - go get github.com/golang/dep/cmd/dep
+  - GO111MODULE=off go get github.com/mattn/goveralls
+  - GO111MODULE=off go get github.com/rexray/gocsi/csc
   - sudo apt update && sudo apt install cifs-utils procps -y
 
 script:
   - hack/verify-all.sh
   - go test -covermode=count -coverprofile=profile.cov ./pkg/...
   - make azurefile
-  - make integration-test
   - make azurefile-windows
+  - make integration-test

@@ -18,27 +18,26 @@ IMAGE_NAME=azurefile-csi
 IMAGE_VERSION=v0.3.0
 IMAGE_TAG=$(REGISTRY_NAME)/$(IMAGE_NAME):$(IMAGE_VERSION)
 IMAGE_TAG_LATEST=$(REGISTRY_NAME)/$(IMAGE_NAME):latest
-REV=$(shell git describe --long --tags --dirty)
 GIT_COMMIT?=$(shell git rev-parse HEAD)
 BUILD_DATE?=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-LDFLAGS?="-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -extldflags '-static'"
+LDFLAGS?="-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
+GO111MODULE=on
+
+.EXPORT_ALL_VARIABLES:
 
 .PHONY: all azurefile azurefile-container clean
-
 all: azurefile
 
+.PHONY: test
 test:
-	go test -covermode=count -coverprofile=profile.cov ./pkg/...
-	$GOPATH/bin/goveralls -coverprofile=profile.cov -service=travis-ci
+	go test -v -race ./pkg/...
 integration-test:
 	sudo test/integration/run-tests-all-clouds.sh
 test-sanity:
 	go test -v ./test/sanity/...
 azurefile:
-	if [ ! -d ./vendor ]; then dep ensure -vendor-only; fi
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags ${LDFLAGS} -o _output/azurefileplugin ./pkg/azurefileplugin
 azurefile-windows:
-	if [ ! -d ./vendor ]; then dep ensure -vendor-only; fi
 	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -o _output/azurefileplugin.exe ./pkg/azurefileplugin
 azurefile-container: azurefile
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
