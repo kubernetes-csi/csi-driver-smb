@@ -90,7 +90,7 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 			resourceGroupName = d.cloud.ResourceGroup
 		}
 
-		accountKey, err = GetStorageAccesskey(d.cloud, accountName, resourceGroupName)
+		accountKey, err = d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
 		if err != nil {
 			return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
 		}
