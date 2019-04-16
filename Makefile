@@ -50,3 +50,7 @@ push-latest: azurefile-container
 clean:
 	go clean -r -x
 	-rm -rf _output
+update:
+	hack/update-dependencies.sh
+test-update: update
+	hack/verify-update.sh

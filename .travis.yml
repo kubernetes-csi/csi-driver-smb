@@ -14,6 +14,7 @@ before_install:
   - sudo apt update && sudo apt install cifs-utils procps -y
 
 script:
+  - make test-update
   - hack/verify-all.sh
   - go test -covermode=count -coverprofile=profile.cov ./pkg/...
   - make azurefile
