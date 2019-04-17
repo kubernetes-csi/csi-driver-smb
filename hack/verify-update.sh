@@ -16,9 +16,6 @@
 
 set -euo pipefail
 
-PKG_ROOT=$(git rev-parse --show-toplevel)
-
-${PKG_ROOT}/hack/verify-gofmt.sh
-${PKG_ROOT}/hack/verify-govet.sh
-${PKG_ROOT}/hack/verify-golint.sh
-${PKG_ROOT}/hack/verify-boilerplate.sh
+echo "Verifying dependency update"
+if [ `git diff --shortstat | wc -l` != 0 ]; then echo "Some files got changed after dependencies update";git diff --stat; exit 1;fi;
+echo "Done"
