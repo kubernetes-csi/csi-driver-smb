@@ -7,13 +7,13 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
+  persistentVolumeReclaimPolicy: Retain #If set as "Delete" file share would be removed after pvc deletion
   csi:
     driver: file.csi.azure.com
     readOnly: false
     volumeHandle: arbitrary-volumeid
     volumeAttributes:
-      sharename: k8stest
+      shareName: EXISTING_FILE_SHARE_NAME
     nodePublishSecretRef:
       name: azure-secret
       namespace: default

@@ -54,7 +54,7 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-cs
 kubectl create secret generic azure-secret --from-literal accountname=NAME --from-literal accountkey="KEY" --type=Opaque
 ```
 
- - Create an azurefile CSI PV, download `pv-azurefile-csi.yaml` file and edit `sharename` in `volumeAttributes`
+ - Create an azurefile CSI PV, download `pv-azurefile-csi.yaml` file and edit `shareName` in `volumeAttributes`
 ```
 wget https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/pv-azurefile-csi.yaml
 vi pv-azurefile-csi.yaml
