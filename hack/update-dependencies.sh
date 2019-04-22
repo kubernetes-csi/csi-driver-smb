@@ -104,5 +104,5 @@ go mod tidy
 ensure_require_replace_directives_for_all_dependencies
 group_replace_directives
 go mod vendor
-prune-vendor
+#prune-vendor
 echo SUCCESS
