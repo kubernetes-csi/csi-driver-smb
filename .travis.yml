@@ -14,9 +14,9 @@ before_install:
   - sudo apt update && sudo apt install cifs-utils procps -y
 
 script:
-  - make test-update
+  - make verify-modules
   - hack/verify-all.sh
   - go test -covermode=count -coverprofile=profile.cov ./pkg/...
   - make azurefile
   - make azurefile-windows
-  - make integration-test
+  - make test-integration
