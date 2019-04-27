@@ -31,11 +31,11 @@ all: azurefile
 .PHONY: test
 test:
 	go test -v -race ./pkg/...
-integration-test:
+test-integration:
 	sudo test/integration/run-tests-all-clouds.sh
 test-sanity:
 	go test -v ./test/sanity/...
-e2e-test:
+test-e2e:
 	hack/run-e2e-test.sh
 azurefile:
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags ${LDFLAGS} -o _output/azurefileplugin ./pkg/azurefileplugin
@@ -54,5 +54,5 @@ clean:
 	-rm -rf _output
 update:
 	hack/update-dependencies.sh
-test-update: update
+verify-modules: update
 	hack/verify-update.sh
