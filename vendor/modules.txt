@@ -26,7 +26,7 @@ github.com/census-instrumentation/opencensus-proto/gen-go/agent/common/v1
 github.com/census-instrumentation/opencensus-proto/gen-go/agent/trace/v1
 github.com/census-instrumentation/opencensus-proto/gen-go/trace/v1
 github.com/census-instrumentation/opencensus-proto/gen-go/resource/v1
-# github.com/container-storage-interface/spec v1.0.0 => github.com/container-storage-interface/spec v1.0.0
+# github.com/container-storage-interface/spec v1.1.0 => github.com/container-storage-interface/spec v1.1.0
 github.com/container-storage-interface/spec/lib/go/csi
 # github.com/davecgh/go-spew v1.1.1 => github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
