@@ -8,7 +8,7 @@ require (
 	github.com/Azure/go-autorest v11.5.1+incompatible // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.1.0 // indirect
-	github.com/container-storage-interface/spec v1.0.0
+	github.com/container-storage-interface/spec v1.1.0
 	github.com/coreos/bbolt v1.3.2 // indirect
 	github.com/coreos/etcd v3.3.12+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
@@ -117,7 +117,7 @@ replace (
 	github.com/beorn7/perks => github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973
 	github.com/census-instrumentation/opencensus-proto => github.com/census-instrumentation/opencensus-proto v0.1.0
 	github.com/client9/misspell => github.com/client9/misspell v0.3.4
-	github.com/container-storage-interface/spec => github.com/container-storage-interface/spec v1.0.0
+	github.com/container-storage-interface/spec => github.com/container-storage-interface/spec v1.1.0
 	github.com/coreos/bbolt => github.com/coreos/bbolt v1.3.2
 	github.com/coreos/etcd => github.com/coreos/etcd v3.3.12+incompatible
 	github.com/coreos/go-semver => github.com/coreos/go-semver v0.3.0
