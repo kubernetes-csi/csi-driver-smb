@@ -20,12 +20,12 @@ import (
 	"fmt"
 	"strings"
 
-	"k8s.io/kubernetes/pkg/cloudprovider/providers/azure"
 	"k8s.io/kubernetes/pkg/util/mount"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	csicommon "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/csi-common"
 	"k8s.io/klog"
+	"k8s.io/legacy-cloud-providers/azure"
 )
 
 const (
