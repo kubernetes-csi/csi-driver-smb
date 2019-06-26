@@ -11,7 +11,7 @@ Testing the Azure File CSI driver using the [`sanity`](https://github.com/kubern
 export set AZURE_CREDENTIAL_FILE=
 ```
 
-### Run integration tests
+### Run sanity tests
 ```
 make test-sanity
 ```
