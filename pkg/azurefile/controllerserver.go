@@ -53,7 +53,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	requestGiB := int(volumehelper.RoundUpGiB(volSizeBytes))
 
 	parameters := req.GetParameters()
-	var sku, resourceGroup, location, account string
+	var sku, resourceGroup, location, account, fileShareName string
 
 	// Apply ProvisionerParameters (case-insensitive). We leave validation of
 	// the values to the cloud provider.
@@ -69,6 +69,8 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 			account = v
 		case "resourcegroup":
 			resourceGroup = v
+		case "sharename":
+			fileShareName = v
 		default:
 			return nil, fmt.Errorf("invalid option %q", k)
 		}
@@ -80,11 +82,11 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		accountKind = string(storage.FileStorage)
 	}
 
-	// dynamic provisioning since storage account is not provided by secrets
-	// File share name has a length limit of 63, and it cannot contain two consecutive '-'s.
-	// todo: get cluster name
-	fileShareName := util.GenerateVolumeName("pvc-file", uuid.NewUUID().String(), 63)
-	fileShareName = strings.Replace(fileShareName, "--", "-", -1)
+	if fileShareName == "" {
+		// File share name has a length limit of 63, and it cannot contain two consecutive '-'s.
+		fileShareName = util.GenerateVolumeName("pvc-file", uuid.NewUUID().String(), 63)
+		fileShareName = strings.Replace(fileShareName, "--", "-", -1)
+	}
 
 	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
 	retAccount, _, err := d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
