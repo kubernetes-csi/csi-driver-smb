@@ -1,19 +1,20 @@
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: csi-azurefile
+  name: csi-azurefile-node
   namespace: kube-system
 spec:
   selector:
     matchLabels:
-      app: csi-azurefile
+      app: csi-azurefile-node
   template:
     metadata:
       labels:
-        app: csi-azurefile
+        app: csi-azurefile-node
     spec:
-      serviceAccountName: csi-driver-registrar
       hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
       containers:
         - name: liveness-probe
           imagePullPolicy: Always
@@ -25,35 +26,28 @@ spec:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
             - --health-port=9702
-        - name: driver-registrar
-          image: quay.io/k8scsi/csi-node-driver-registrar:v1.0.2
+        - name: node-driver-registrar
+          image: quay.io/k8scsi/csi-node-driver-registrar:v1.1.0
           args:
+            - --csi-address=$(ADDRESS)
+            - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
             - --v=5
-            - --csi-address=/csi/csi.sock
-            - --kubelet-registration-path=/var/lib/kubelet/plugins/file.csi.azure.com/csi.sock
           lifecycle:
             preStop:
               exec:
-                command:
-                  [
-                    "/bin/sh",
-                    "-c",
-                    "rm -rf /registration/disk.csi.azure.com /registration/disk.csi.azure.com-reg.sock",
-                  ]
+                command: ["/bin/sh", "-c", "rm -rf /registration/file.csi.azure.com-reg.sock /csi/csi.sock"]
           env:
-            - name: KUBE_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: spec.nodeName
-          imagePullPolicy: Always
+            - name: ADDRESS
+              value: /csi/csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: /var/lib/kubelet/plugins/file.csi.azure.com/csi.sock
           volumeMounts:
-            - mountPath: /csi
-              name: socket-dir
-            - mountPath: /registration
-              name: registration-dir
+            - name: socket-dir
+              mountPath: /csi
+            - name: registration-dir
+              mountPath: /registration
         - name: azurefile
-          image: mcr.microsoft.com/k8s/csi/azurefile-csi:v0.2.0-alpha
+          image: mcr.microsoft.com/k8s/csi/azurefile-csi:v0.3.0
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -86,7 +80,7 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-            - mountPath: /var/lib/kubelet/pods
+            - mountPath: /var/lib/kubelet/
               mountPropagation: Bidirectional
               name: mountpoint-dir
             - mountPath: /etc/kubernetes/
@@ -100,7 +94,7 @@ spec:
             type: DirectoryOrCreate
           name: socket-dir
         - hostPath:
-            path: /var/lib/kubelet/pods
+            path: /var/lib/kubelet/
             type: DirectoryOrCreate
           name: mountpoint-dir
         - hostPath:
