@@ -7,13 +7,8 @@ If you have already installed Helm, you can also use it to install azurefile CSI
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/rbac-csi-attacher.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/rbac-csi-driver-registrar.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/rbac-csi-provisioner.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/rbac-csi-snapshotter.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-provisioner.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-attacher.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/azurefile-csi-driver.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-node.yaml
 ```
 
 - check pods status:
@@ -25,17 +20,17 @@ watch kubectl get po -o wide -n kube-system | grep csi-azurefile
 example output:
 
 ```
-NAME                          READY   STATUS    RESTARTS   AGE   IP            NODE
-csi-azurefile-attacher-0      1/1     Running   0          22h   10.240.0.61   k8s-agentpool-17181929-1
-csi-azurefile-g2ksx           2/2     Running   0          21h   10.240.0.4    k8s-agentpool-17181929-0
-csi-azurefile-nqxn9           2/2     Running   0          21h   10.240.0.35   k8s-agentpool-17181929-1
-csi-azurefile-provisioner-0   1/1     Running   0          22h   10.240.0.39   k8s-agentpool-17181929-1
+NAME                                            READY   STATUS    RESTARTS   AGE     IP             NODE
+csi-azurefile-controller-56bfddd689-dh5tk       6/6     Running   0          35s     10.240.0.19    k8s-agentpool-22533604-0
+csi-azurefile-node-cvgbs                        3/3     Running   0          7m4s    10.240.0.35    k8s-agentpool-22533604-1
+csi-azurefile-node-dr4s4                        3/3     Running   0          7m4s    10.240.0.4     k8s-agentpool-22533604-0
 ```
 
 - clean up azure file CSI driver
 
 ```
-kubectl delete ds csi-azurefile -n kube-system
-kubectl delete sts csi-azurefile-provisioner -n kube-system
-kubectl delete sts csi-azurefile-attacher -n kube-system
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-controller.yaml
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-node.yaml
 ```
