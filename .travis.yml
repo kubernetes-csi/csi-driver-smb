@@ -1,6 +1,6 @@
 language: go
 go_import_path: github.com/kubernetes-sigs/azurefile-csi-driver
-dist: xenial
+dist: bionic
 
 env:
   global:
