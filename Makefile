@@ -34,7 +34,7 @@ test:
 test-integration:
 	sudo test/integration/run-tests-all-clouds.sh
 test-sanity:
-	go test -v ./test/sanity/...
+	test/sanity/run-tests-all-clouds.sh
 test-e2e:
 	hack/run-e2e-test.sh
 azurefile:
