@@ -10,6 +10,7 @@ skuName | azure file storage account type (alias: `storageAccountType`) | `Stand
 storageAccount | specify the storage account name in which azure file share will be created | STORAGE_ACCOUNT_NAME | No | if empty, driver will find a suitable storage account that matches `skuName` in the same resource group; if a storage account name is provided, it means that storage account must exist otherwise there would be error
 location | specify the location in which azure file share will be created | `eastus`, `westus`, etc. | No | if empty, driver will use the same location name as current k8s cluster
 resourceGroup | specify the resource group in which azure file share will be created | existing resource group name | No | if empty, driver will use the same resource group name as current k8s cluster
+shareName | specify the azure file share name | existing azure file name | No | if empty, driver will generate an azure file share name
 
  - Static Provisioning(use existing azure file)
   > get a quick example [here](../deploy/example/pv-azurefile-csi.yaml)
