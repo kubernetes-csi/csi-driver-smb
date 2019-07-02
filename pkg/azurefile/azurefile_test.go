@@ -214,3 +214,77 @@ func TestGetStorageAccount(t *testing.T) {
 		}
 	}
 }
+
+func TestGetValidFileShareName(t *testing.T) {
+	tests := []struct {
+		volumeName string
+		expected   string
+	}{
+		{
+			volumeName: "aqz",
+			expected:   "aqz",
+		},
+		{
+			volumeName: "029",
+			expected:   "029",
+		},
+		{
+			volumeName: "a--z",
+			expected:   "a-z",
+		},
+		{
+			volumeName: "A2Z",
+			expected:   "a2z",
+		},
+		{
+			volumeName: "1234567891234567891234567891234567891234567891234567891234567891",
+			expected:   "123456789123456789123456789123456789123456789123456789123456789",
+		},
+	}
+
+	for _, test := range tests {
+		result := getValidFileShareName(test.volumeName)
+		if !reflect.DeepEqual(result, test.expected) {
+			t.Errorf("input: %q, getValidFileShareName result: %q, expected: %q", test.volumeName, result, test.expected)
+		}
+	}
+}
+
+func TestCheckShareNameBeginAndEnd(t *testing.T) {
+	tests := []struct {
+		fileShareName string
+		expected      bool
+	}{
+		{
+			fileShareName: "aqz",
+			expected:      true,
+		},
+		{
+			fileShareName: "029",
+			expected:      true,
+		},
+		{
+			fileShareName: "a-9",
+			expected:      true,
+		},
+		{
+			fileShareName: "0-z",
+			expected:      true,
+		},
+		{
+			fileShareName: "-1-",
+			expected:      false,
+		},
+		{
+			fileShareName: ":1p",
+			expected:      false,
+		},
+	}
+
+	for _, test := range tests {
+		result := checkShareNameBeginAndEnd(test.fileShareName)
+		if !reflect.DeepEqual(result, test.expected) {
+			t.Errorf("input: %q, checkShareNameBeginAndEnd result: %v, expected: %v", test.fileShareName, result, test.expected)
+		}
+	}
+}
