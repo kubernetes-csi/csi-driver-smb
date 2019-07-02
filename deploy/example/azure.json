@@ -19,7 +19,7 @@
     "cloudProviderBackoffExponent": 1.5,
     "cloudProviderBackoffDuration": 5,
     "cloudProviderBackoffJitter": 1,
-    "cloudProviderRatelimit": true,
+    "cloudProviderRatelimit": false,
     "cloudProviderRateLimitQPS": 3,
     "cloudProviderRateLimitBucket": 10,
     "useManagedIdentityExtension": false,
