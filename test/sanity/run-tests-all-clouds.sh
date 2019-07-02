@@ -27,9 +27,9 @@ if [ -v aadClientSecret ]; then
 	sed -i "s#aadClientSecret-input#$aadClientSecret#g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
+	
+	go test -v ./test/sanity/...
 fi
-
-go test -v ./test/sanity/...
 
 # run test on AzureChinaCloud
 if [ -v aadClientSecret_china ]; then
