@@ -36,20 +36,5 @@ if [ -v aadClientSecret ]; then
 	sudo ${GO_BIN_PATH} test -v ./test/sanity/...
 fi
 
-# run test on AzureChinaCloud
-if [ -v aadClientSecret_china ]; then
-	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
-
-	sed -i "s/AzurePublicCloud/AzureChinaCloud/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/tenantId-input/${tenantId_china}/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/subscriptionId-input/${subscriptionId_china}/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/aadClientId-input/${aadClientId_china}/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s#aadClientSecret-input#${aadClientSecret_china}#g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/resourceGroup-input/${resourceGroup_china}/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/location-input/${location_china}/g" $AZURE_CREDENTIAL_FILE
-
-	sudo ${GO_BIN_PATH} test -v ./test/sanity/...
-fi
-
 # make it always succeed for now
 exit 0
