@@ -22,5 +22,5 @@ export set location=
 
 ### Run integration tests
 ```
-make test-integration
+make integration-test
 ```

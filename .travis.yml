@@ -20,5 +20,5 @@ script:
   - go test -covermode=count -coverprofile=profile.cov ./pkg/...
   - make azurefile
   - make azurefile-windows
-  - make test-sanity
-  - make test-integration
+  - make sanity-test
+  - make integration-test
