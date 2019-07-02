@@ -31,9 +31,9 @@ all: azurefile
 .PHONY: test
 test:
 	go test -v -race ./pkg/...
-test-integration:
+integration-test:
 	sudo test/integration/run-tests-all-clouds.sh
-test-sanity:
+sanity-test:
 	test/sanity/run-tests-all-clouds.sh
 test-e2e:
 	hack/run-e2e-test.sh
