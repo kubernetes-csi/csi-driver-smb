@@ -16,11 +16,16 @@
 
 # set -euo pipefail
 
-export set AZURE_CREDENTIAL_FILE=/tmp/azure.json
+if [ -z ${AZURE_CREDENTIAL_FILE} ]; then
+	export set AZURE_CREDENTIAL_FILE=/tmp/azure.json
+fi
+
+GO_BIN_PATH=`which go`
 
 # run test on AzurePublicCloud
-cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
 if [ -v aadClientSecret ]; then
+	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
+
 	sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
@@ -28,7 +33,7 @@ if [ -v aadClientSecret ]; then
 	sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
 	
-	go test -v ./test/sanity/...
+	sudo ${GO_BIN_PATH} test -v ./test/sanity/...
 fi
 
 # run test on AzureChinaCloud
@@ -43,7 +48,7 @@ if [ -v aadClientSecret_china ]; then
 	sed -i "s/resourceGroup-input/${resourceGroup_china}/g" $AZURE_CREDENTIAL_FILE
 	sed -i "s/location-input/${location_china}/g" $AZURE_CREDENTIAL_FILE
 
-	go test -v ./test/sanity/...
+	sudo ${GO_BIN_PATH} test -v ./test/sanity/...
 fi
 
 # make it always succeed for now
