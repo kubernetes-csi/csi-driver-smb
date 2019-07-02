@@ -21,9 +21,12 @@ import (
 	"strings"
 
 	"k8s.io/kubernetes/pkg/util/mount"
+	"k8s.io/kubernetes/pkg/volume/util"
 
+	azs "github.com/Azure/azure-sdk-for-go/storage"
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	csicommon "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/csi-common"
+	"github.com/pborman/uuid"
 	"k8s.io/klog"
 	"k8s.io/legacy-cloud-providers/azure"
 )
@@ -38,6 +41,10 @@ const (
 	defaultFileMode  = "0777"
 	defaultDirMode   = "0777"
 	defaultVers      = "3.0"
+
+	// See https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-shares--directories--files--and-metadata#share-names
+	fileShareNameMinLength = 3
+	fileShareNameMaxLength = 63
 )
 
 // Driver implements all interfaces of CSI drivers
@@ -99,6 +106,33 @@ func (d *Driver) Run(endpoint string) {
 	// Driver d act as IdentityServer, ControllerServer and NodeServer
 	s.Start(endpoint, d, d, d)
 	s.Wait()
+}
+
+func (d *Driver) checkFileShareExists(accountName, resourceGroup, name string) (bool, error) {
+	// find the access key with this account
+	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroup)
+	if err != nil {
+		// Because the account does not exist in the resource group, the file share could not exist.
+		// In the next step, we will create a temp account to create file share.
+		// So here we return nil, and warn the user.
+		klog.Warningf("could not get storage key for storage account %s: %v", accountName, err)
+		return false, nil
+	}
+
+	fileClient, err := d.getFileSvcClient(accountName, accountKey)
+	if err != nil {
+		return false, fmt.Errorf("error creating azure client: %v", err)
+	}
+	return fileClient.GetShareReference(name).Exists()
+}
+
+func (d *Driver) getFileSvcClient(accountName, accountKey string) (*azs.FileServiceClient, error) {
+	fileClient, err := azs.NewClient(accountName, accountKey, d.cloud.Environment.StorageEndpointSuffix, azs.DefaultAPIVersion, true)
+	if err != nil {
+		return nil, err
+	}
+	fc := fileClient.GetFileService()
+	return &fc, nil
 }
 
 // get file share info according to volume id, e.g.
@@ -179,4 +213,36 @@ func getStorageAccount(secrets map[string]string) (string, string, error) {
 	}
 
 	return accountName, accountKey, nil
+}
+
+// File share names can contain only lowercase letters, numbers, and hyphens,
+// and must begin and end with a letter or a number,
+// and must be from 3 through 63 characters long.
+// The name cannot contain two consecutive hyphens.
+//
+// See https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-shares--directories--files--and-metadata#share-names
+func getValidFileShareName(volumeName string) string {
+	fileShareName := strings.ToLower(volumeName)
+	if len(fileShareName) > fileShareNameMaxLength {
+		fileShareName = fileShareName[0:fileShareNameMaxLength]
+	}
+	if !checkShareNameBeginAndEnd(fileShareName) || len(fileShareName) < fileShareNameMinLength {
+		fileShareName = util.GenerateVolumeName("pvc-file", uuid.NewUUID().String(), fileShareNameMaxLength)
+		klog.Warningf("the requested volume name (%q) is invalid, so it is regenerated as (%q)", volumeName, fileShareName)
+	}
+	fileShareName = strings.Replace(fileShareName, "--", "-", -1)
+
+	return fileShareName
+}
+
+func checkShareNameBeginAndEnd(fileShareName string) bool {
+	length := len(fileShareName)
+	if (('a' <= fileShareName[0] && fileShareName[0] <= 'z') ||
+		('0' <= fileShareName[0] && fileShareName[0] <= '9')) &&
+		(('a' <= fileShareName[length-1] && fileShareName[length-1] <= 'z') ||
+			('0' <= fileShareName[length-1] && fileShareName[length-1] <= '9')) {
+		return true
+	}
+
+	return false
 }

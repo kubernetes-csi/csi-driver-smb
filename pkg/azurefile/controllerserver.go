@@ -24,10 +24,10 @@ import (
 	volumehelper "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/util"
 
 	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
+
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/pborman/uuid"
+
 	"k8s.io/klog"
-	"k8s.io/kubernetes/pkg/volume/util"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -52,8 +52,10 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	volSizeBytes := int64(req.GetCapacityRange().GetRequiredBytes())
 	requestGiB := int(volumehelper.RoundUpGiB(volSizeBytes))
 
+	capacityBytes := req.GetCapacityRange().GetRequiredBytes()
+
 	parameters := req.GetParameters()
-	var sku, resourceGroup, location, account, fileShareName string
+	var sku, resourceGroup, location, account, fileShareName, volumeID string
 
 	// Apply ProvisionerParameters (case-insensitive). We leave validation of
 	// the values to the cloud provider.
@@ -83,31 +85,35 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	if fileShareName == "" {
-		// File share name has a length limit of 63, and it cannot contain two consecutive '-'s.
-		fileShareName = util.GenerateVolumeName("pvc-file", uuid.NewUUID().String(), 63)
-		fileShareName = strings.Replace(fileShareName, "--", "-", -1)
+		fileShareName = getValidFileShareName(name)
 	}
 
-	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
-	retAccount, _, err := d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, requestGiB, err)
-	}
-	volumeID := fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName)
-
-	/* todo: snapshot support
-	if req.GetVolumeContentSource() != nil {
-		contentSource := req.GetVolumeContentSource()
-		if contentSource.GetSnapshot() != nil {
+	if exists, err := d.checkFileShareExists(account, resourceGroup, fileShareName); err != nil {
+		return nil, err
+	} else if exists {
+		volumeID = fmt.Sprintf(volumeIDTemplate, resourceGroup, account, fileShareName)
+	} else {
+		klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
+		retAccount, _, err := d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, requestGiB, err)
 		}
+		volumeID = fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName)
+
+		/* todo: snapshot support
+		if req.GetVolumeContentSource() != nil {
+			contentSource := req.GetVolumeContentSource()
+			if contentSource.GetSnapshot() != nil {
+			}
+		}
+		*/
+		klog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
 	}
-	*/
-	klog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
 
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
 			VolumeId:      volumeID,
-			CapacityBytes: req.GetCapacityRange().GetRequiredBytes(),
+			CapacityBytes: capacityBytes,
 			VolumeContext: parameters,
 		},
 	}, nil
