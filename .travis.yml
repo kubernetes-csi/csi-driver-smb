@@ -14,11 +14,23 @@ before_install:
   - GO111MODULE=off go get github.com/rexray/gocsi/csc
   - sudo apt update && sudo apt install cifs-utils procps -y
 
-script:
-  - make verify-modules
-  - hack/verify-all.sh
-  - go test -covermode=count -coverprofile=profile.cov ./pkg/...
-  - make azurefile
-  - make azurefile-windows
-  - make sanity-test
-  - make integration-test
+jobs:
+  include:
+    - stage: test
+      name: "BVT Tests"
+      script:
+        - make verify-modules
+        - hack/verify-all.sh
+        - go test -covermode=count -coverprofile=profile.cov ./pkg/...
+        - make azurefile
+        - make azurefile-windows
+    - stage: test
+      name: "Sanity Test"
+      script: make sanity-test
+      # after_failure: TRAVIS_TEST_RESULT=0
+    - stage: test
+      name: "Integration Test"
+      script:
+        - make azurefile
+        - make integration-test
+      
