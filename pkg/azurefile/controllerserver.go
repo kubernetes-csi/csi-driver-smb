@@ -163,7 +163,19 @@ func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.Valida
 		return nil, status.Error(codes.InvalidArgument, "Volume capabilities missing in request")
 	}
 
-	// todo: we may check file share existence here
+	volumeID := req.VolumeId
+	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "error getting volume(%s) info: %v", volumeID, err)
+	}
+	if resourceGroupName == "" {
+		resourceGroupName = d.cloud.ResourceGroup
+	}
+	if exists, err := d.checkFileShareExists(accountName, resourceGroupName, fileShareName); err != nil {
+		return nil, status.Errorf(codes.NotFound, "error checking if volume(%s) exists: %v", volumeID, err)
+	} else if !exists {
+		return nil, status.Errorf(codes.NotFound, "the requested volume(%s) does not exist.", volumeID)
+	}
 
 	// azure file supports all AccessModes, no need to check capabilities here
 	return &csi.ValidateVolumeCapabilitiesResponse{Message: ""}, nil
