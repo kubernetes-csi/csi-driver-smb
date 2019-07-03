@@ -49,10 +49,13 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		return nil, status.Error(codes.InvalidArgument, "CreateVolume Volume capabilities must be provided")
 	}
 
-	volSizeBytes := int64(req.GetCapacityRange().GetRequiredBytes())
-	requestGiB := int(volumehelper.RoundUpGiB(volSizeBytes))
-
 	capacityBytes := req.GetCapacityRange().GetRequiredBytes()
+	volSizeBytes := int64(capacityBytes)
+	requestGiB := int(volumehelper.RoundUpGiB(volSizeBytes))
+	if requestGiB == 0 {
+		requestGiB = defaultAzureFileQuota
+		klog.Warningf("the quota must be required, but it is zero now, so we set it to default value(%d GiB)", defaultAzureFileQuota)
+	}
 
 	parameters := req.GetParameters()
 	var sku, resourceGroup, location, account, fileShareName, volumeID string
@@ -88,26 +91,23 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		fileShareName = getValidFileShareName(name)
 	}
 
-	if exists, err := d.checkFileShareExists(account, resourceGroup, fileShareName); err != nil {
-		return nil, err
-	} else if exists {
-		volumeID = fmt.Sprintf(volumeIDTemplate, resourceGroup, account, fileShareName)
-	} else {
-		klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
-		retAccount, _, err := d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
-		if err != nil {
-			return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, requestGiB, err)
+	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
+	retAccount, retAccountKey, err := d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, requestGiB, err)
+	}
+	volumeID = fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName)
+	/* todo: snapshot support
+	if req.GetVolumeContentSource() != nil {
+		contentSource := req.GetVolumeContentSource()
+		if contentSource.GetSnapshot() != nil {
 		}
-		volumeID = fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName)
+	}
+	*/
+	klog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
 
-		/* todo: snapshot support
-		if req.GetVolumeContentSource() != nil {
-			contentSource := req.GetVolumeContentSource()
-			if contentSource.GetSnapshot() != nil {
-			}
-		}
-		*/
-		klog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
+	if err := d.checkFileShareCapacity(retAccount, retAccountKey, fileShareName, requestGiB); err != nil {
+		return nil, err
 	}
 
 	return &csi.CreateVolumeResponse{
