@@ -29,6 +29,9 @@ import (
 	"github.com/pborman/uuid"
 	"k8s.io/klog"
 	"k8s.io/legacy-cloud-providers/azure"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -45,6 +48,10 @@ const (
 	// See https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-shares--directories--files--and-metadata#share-names
 	fileShareNameMinLength = 3
 	fileShareNameMaxLength = 63
+
+	// Minimum size of Azure Premium Files is 100GiB
+	// See https://docs.microsoft.com/en-us/azure/storage/files/storage-files-planning#provisioned-shares
+	defaultAzureFileQuota = 100
 )
 
 // Driver implements all interfaces of CSI drivers
@@ -108,28 +115,28 @@ func (d *Driver) Run(endpoint string) {
 	s.Wait()
 }
 
-func (d *Driver) checkFileShareExists(accountName, resourceGroup, name string) (bool, error) {
-	// find the access key with this account
-	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroup)
-	if err != nil {
-		// Because the account does not exist in the resource group, the file share could not exist.
-		// In the next step, we will create a temp account to create file share.
-		// So here we return nil, and warn the user.
-		klog.Warningf("could not get storage key for storage account %s: %v", accountName, err)
-		return false, nil
-	}
-
+func (d *Driver) checkFileShareCapacity(accountName, accountKey, fileShareName string, requestGiB int) error {
 	fileClient, err := d.getFileSvcClient(accountName, accountKey)
 	if err != nil {
-		return false, fmt.Errorf("error creating azure client: %v", err)
+		return err
 	}
-	return fileClient.GetShareReference(name).Exists()
+	resp, err := fileClient.ListShares(azs.ListSharesParameters{Prefix: fileShareName})
+	if err != nil {
+		return fmt.Errorf("error listing file shares: %v", err)
+	}
+	for _, share := range resp.Shares {
+		if share.Name == fileShareName && share.Properties.Quota != requestGiB {
+			return status.Errorf(codes.AlreadyExists, "the request volume already exists, but its capacity(%v) is different from (%v)", share.Properties.Quota, requestGiB)
+		}
+	}
+
+	return nil
 }
 
 func (d *Driver) getFileSvcClient(accountName, accountKey string) (*azs.FileServiceClient, error) {
 	fileClient, err := azs.NewClient(accountName, accountKey, d.cloud.Environment.StorageEndpointSuffix, azs.DefaultAPIVersion, true)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error creating azure client: %v", err)
 	}
 	fc := fileClient.GetFileService()
 	return &fc, nil
