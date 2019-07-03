@@ -133,6 +133,20 @@ func (d *Driver) checkFileShareCapacity(accountName, accountKey, fileShareName s
 	return nil
 }
 
+func (d *Driver) checkFileShareExists(accountName, resourceGroup, name string) (bool, error) {
+	// find the access key with this account
+	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroup)
+	if err != nil {
+		return false, fmt.Errorf("error getting storage key for storage account %s: %v", accountName, err)
+	}
+
+	fileClient, err := d.getFileSvcClient(accountName, accountKey)
+	if err != nil {
+		return false, err
+	}
+	return fileClient.GetShareReference(name).Exists()
+}
+
 func (d *Driver) getFileSvcClient(accountName, accountKey string) (*azs.FileServiceClient, error) {
 	fileClient, err := azs.NewClient(accountName, accountKey, d.cloud.Environment.StorageEndpointSuffix, azs.DefaultAPIVersion, true)
 	if err != nil {
