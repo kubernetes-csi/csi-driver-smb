@@ -21,11 +21,9 @@ import (
 	"fmt"
 	"strings"
 
-	volumehelper "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/util"
-
 	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
-
 	"github.com/container-storage-interface/spec/lib/go/csi"
+	volumehelper "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/util"
 
 	"k8s.io/klog"
 
@@ -54,7 +52,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	requestGiB := int(volumehelper.RoundUpGiB(volSizeBytes))
 	if requestGiB == 0 {
 		requestGiB = defaultAzureFileQuota
-		klog.Warningf("the quota must be required, but it is zero now, so we set it to default value(%d GiB)", defaultAzureFileQuota)
+		klog.Warningf("no quota specified, set as default value(%d GiB)", defaultAzureFileQuota)
 	}
 
 	parameters := req.GetParameters()
