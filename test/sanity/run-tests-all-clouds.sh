@@ -24,6 +24,7 @@ GO_BIN_PATH=`which go`
 
 # run test on AzurePublicCloud
 if [ -v aadClientSecret ]; then
+	# run test in CI env
 	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
 
 	sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
@@ -34,7 +35,13 @@ if [ -v aadClientSecret ]; then
 	sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
 	
 	sudo ${GO_BIN_PATH} test -v ./test/sanity/...
+	# make it always succeed for now until enabled sanity test on CI
+	exit 0
+else
+	if [ -v subscriptionId ]; then
+		echo "skip sanity test in CI env"
+	else
+		# run test in user mode
+		${GO_BIN_PATH} test -v ./test/sanity/...
+	fi
 fi
-
-# make it always succeed for now
-exit 0
