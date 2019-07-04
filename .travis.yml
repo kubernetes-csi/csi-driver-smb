@@ -9,15 +9,12 @@ env:
 go:
   - "1.12.1"
 
-before_install:
-  - GO111MODULE=off go get github.com/mattn/goveralls
-  - GO111MODULE=off go get github.com/rexray/gocsi/csc
-  - sudo apt update && sudo apt install cifs-utils procps -y
-
 jobs:
   include:
     - stage: test
       name: "build test"
+      install:
+        - GO111MODULE=off go get github.com/mattn/goveralls
       script:
         - make azurefile
         - make azurefile-windows
@@ -29,10 +26,15 @@ jobs:
         - hack/verify-all.sh
     - stage: test
       name: "Sanity Test"
+      install:
+        - sudo apt update && sudo apt install cifs-utils procps -y
       script: make sanity-test
       # after_failure: TRAVIS_TEST_RESULT=0
     - stage: test
       name: "Integration Test"
+      install:
+        - GO111MODULE=off go get github.com/rexray/gocsi/csc
+        - sudo apt update && sudo apt install cifs-utils procps -y
       script:
         - make azurefile
         - make integration-test
