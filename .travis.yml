@@ -25,8 +25,8 @@ jobs:
     - stage: test
       name: "code verification test"
       script:
-        - hack/verify-all.sh   
-        - make verify-modules        
+        - make verify-modules      
+        - hack/verify-all.sh
     - stage: test
       name: "Sanity Test"
       script: make sanity-test
