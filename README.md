@@ -82,18 +82,17 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-cs
 $ watch kubectl describe po nginx-azurefile
 $ kubectl exec -it nginx-azurefile -- bash
 root@nginx-azurefile:/# df -h
-Filesystem                                                                                             Size  Used Avail Use% Mounted on
-overlay                                                                                                 30G   19G   11G  65% /
-tmpfs                                                                                                  3.5G     0  3.5G   0% /dev
+Filesystem                                                                Size  Used Avail Use% Mounted on
+overlay                                                                   30G   19G  11G   65%  /
+tmpfs                                                                     3.5G  0    3.5G  0%   /dev
 ...
-//f571xxx.file.core.windows.net/pvc-file-dynamic-e2ade9f3-f88b-11e8-8429-000d3a03e7d7  1.0G   64K  1.0G   1% /mnt/azurefile
+//f571xxx.file.core.windows.net/pvc-54caa11f-9e27-11e9-ba7b-0601775d3b69  1.0G  64K  1.0G  1%   /mnt/azurefile
 ...
 ```
-In the above example, there is a `/mnt/azurefile` directory mounted as dysk filesystem.
+In the above example, there is a `/mnt/azurefile` directory mounted as cifs filesystem.
 
 ## Kubernetes Development
 Please refer to [development guide](./docs/csi-dev.md)
-
 
 ### Links
  - [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/Home.html)
