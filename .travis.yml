@@ -17,16 +17,16 @@ before_install:
 jobs:
   include:
     - stage: test
-      name: "BVT Tests"
+      name: "build test"
       script:
-        - make verify-modules
-        - go test -covermode=count -coverprofile=profile.cov ./pkg/...
         - make azurefile
         - make azurefile-windows
+        - go test -covermode=count -coverprofile=profile.cov ./pkg/...
     - stage: test
-      name: "verification test"
+      name: "code verification test"
       script:
         - hack/verify-all.sh   
+        - make verify-modules        
     - stage: test
       name: "Sanity Test"
       script: make sanity-test
