@@ -25,13 +25,13 @@ jobs:
         - make verify-modules      
         - hack/verify-all.sh
     - stage: test
-      name: "Sanity Test"
+      name: "sanity test"
       install:
         - sudo apt update && sudo apt install cifs-utils procps -y
       script: make sanity-test
       # after_failure: TRAVIS_TEST_RESULT=0
     - stage: test
-      name: "Integration Test"
+      name: "integration test"
       install:
         - GO111MODULE=off go get github.com/rexray/gocsi/csc
         - sudo apt update && sudo apt install cifs-utils procps -y

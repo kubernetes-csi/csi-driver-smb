@@ -16,7 +16,10 @@
 
 set -euo pipefail
 
-csc=$GOPATH/bin/csc
+csc="csc"
+if [ -v GOPATH ]; then
+	csc=$GOPATH/bin/csc
+fi
 
 endpoint="tcp://127.0.0.1:10000"
 if [ $# -gt 0 ]; then

@@ -32,7 +32,7 @@ all: azurefile
 test:
 	go test -v -race ./pkg/...
 integration-test:
-	sudo test/integration/run-tests-all-clouds.sh
+	test/integration/run-tests-all-clouds.sh
 sanity-test:
 	test/sanity/run-tests-all-clouds.sh
 test-e2e:
