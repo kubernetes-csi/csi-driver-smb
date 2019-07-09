@@ -17,11 +17,16 @@ limitations under the License.
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"net"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"k8s.io/klog"
 )
 
@@ -30,9 +35,10 @@ func init() {
 }
 
 var (
-	endpoint = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
-	nodeID   = flag.String("nodeid", "", "node id")
-	version  = flag.Bool("version", false, "Print the version and exit.")
+	endpoint       = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
+	nodeID         = flag.String("nodeid", "", "node id")
+	version        = flag.Bool("version", false, "Print the version and exit.")
+	metricsAddress = flag.String("metrics-address", "0.0.0.0:10252", "export the metrics")
 )
 
 func main() {
@@ -49,6 +55,7 @@ func main() {
 		klog.Error("--nodeid is a required parameter")
 		os.Exit(1)
 	}
+	exportMetrics()
 	handle()
 	os.Exit(0)
 }
@@ -59,4 +66,40 @@ func handle() {
 		klog.Fatalln("Failed to initialize azurefile CSI Driver")
 	}
 	driver.Run(*endpoint)
+}
+
+func exportMetrics() {
+	l, err := net.Listen("tcp", *metricsAddress)
+	if err != nil {
+		klog.Warningf("failed to get listener for metrics endpoint: %v", err)
+		return
+	}
+	serve(context.Background(), l, serveMetrics)
+}
+
+func serve(ctx context.Context, l net.Listener, serveFunc func(net.Listener) error) {
+	path := l.Addr().String()
+	klog.V(2).Infof("set up prometheus server on %v", path)
+	go func() {
+		defer l.Close()
+		if err := serveFunc(l); err != nil {
+			klog.Fatalf("serve failure(%v), address(%v)", err, path)
+		}
+	}()
+}
+
+func serveMetrics(l net.Listener) error {
+	m := http.NewServeMux()
+	m.Handle("/metrics", promhttp.Handler())
+	return trapClosedConnErr(http.Serve(l, m))
+}
+
+func trapClosedConnErr(err error) error {
+	if err == nil {
+		return nil
+	}
+	if strings.Contains(err.Error(), "use of closed network connection") {
+		return nil
+	}
+	return err
 }
