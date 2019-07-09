@@ -1,4 +1,4 @@
-# Install azurefile CSI driveri v0.2.0 on a kubernetes cluster
+# Install azurefile CSI driveri v0.2.0-alpha on a kubernetes cluster
 
 If you have already installed Helm, you can also use it to install azurefile CSI driver. Please see [Installation with Helm](../charts/README.md).
 
