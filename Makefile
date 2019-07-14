@@ -34,9 +34,9 @@ test:
 integration-test:
 	test/integration/run-tests-all-clouds.sh
 sanity-test:
-	test/sanity/run-tests-all-clouds.sh
-test-e2e:
-	hack/run-e2e-test.sh
+	test/sanity/run-test.sh
+e2e-test:
+	test/e2e/run-test.sh
 azurefile:
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags ${LDFLAGS} -o _output/azurefileplugin ./pkg/azurefileplugin
 azurefile-windows:
