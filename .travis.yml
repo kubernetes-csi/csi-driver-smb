@@ -17,6 +17,7 @@ jobs:
         - GO111MODULE=off go get github.com/mattn/goveralls
       script:
         - make azurefile
+        - make azurefile-container
         - make azurefile-windows
         - go test -covermode=count -coverprofile=profile.cov ./pkg/...
     - stage: test
