@@ -20,7 +20,7 @@ kubectl get daemonsets csi-azurefile-node -n kube-system; checkAzureFileDriver=$
 if [ $checkAzureFileDriver -ne 0 ]; then
     echo "AzureFile csi driver daemonset not found";
     echo "Installing AzureFile csi driver";
-    ../../deploy/install-driver.sh
+    deploy/install-driver.sh
     echo "AzureFile csi driver installed";    
 fi
 
