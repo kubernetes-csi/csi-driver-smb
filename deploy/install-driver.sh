@@ -16,8 +16,8 @@
 
 set -uo pipefail
 
-kubectl apply -f ./crd-csi-driver-registry.yaml
-kubectl apply -f ./crd-csi-node-info.yaml
-kubectl apply -f ./rbac-csi-azurefile-controller.yaml
-kubectl apply -f ./csi-azurefile-controller.yaml
-kubectl apply -f ./csi-azurefile-node.yaml
+kubectl apply -f deploy/crd-csi-driver-registry.yaml
+kubectl apply -f deploy/crd-csi-node-info.yaml
+kubectl apply -f deploy/rbac-csi-azurefile-controller.yaml
+kubectl apply -f deploy/csi-azurefile-controller.yaml
+kubectl apply -f deploy/csi-azurefile-node.yaml
