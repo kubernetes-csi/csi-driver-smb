@@ -7,7 +7,7 @@
 This driver allows Kubernetes to use [azure file](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) volume, csi plugin name: `file.csi.azure.com`
 
 ### Project Status
-Status: Aplha
+Status: Alpha
 
 ### Container Images & CSI Compatibility:
 |Azure File CSI Driver Version  | Image                                              | v0.3.0| v1.0.0 |
