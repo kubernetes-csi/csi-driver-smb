@@ -17,7 +17,7 @@ Status: Alpha
 |master branch                  |mcr.microsoft.com/k8s/csi/azurefile-csi:latest      | no    | yes    |
 
 ### Kubernetes Compatibility
-| Azure File CSI Driver\Kubernetes Version | 1.12 | 1.13+ | 
+| Azure File CSI Driver\Kubernetes Version | 1.12 | 1.13+ |
 |------------------------------------------|------|-------|
 | v0.1.0-alpha                             | yes  | yes    |
 | v0.2.0-alpha                             | no   | yes    |
@@ -30,7 +30,7 @@ Please refer to [`file.csi.azure.com` driver parameters](./docs/driver-parameter
 ### Prerequisite
  - The driver initialization depends on a [Cloud provider config file](https://github.com/kubernetes/cloud-provider-azure/blob/master/docs/cloud-provider-config.md), usually it's `/etc/kubernetes/azure.json` on all kubernetes nodes deployed by AKS or aks-engine, here is an [azure.json example](./deploy/example/azure.json)
  > if cluster is based on Managed Service Identity(MSI), make sure all agent nodes have `Contributor` role for current resource group
- 
+
 ### Install azurefile CSI driver on a kubernetes cluster
 Please refer to [install azurefile csi driver](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/install-azurefile-csi-driver.md)
 
