@@ -63,4 +63,41 @@ var _ = Describe("Dynamic Provisioning", func() {
 		}
 		test.Run(cs, ns)
 	})
+
+	It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node", func() {
+		pods := []testsuites.PodDetails{
+			{
+				Cmd: "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done",
+				Volumes: []testsuites.VolumeDetails{
+					{
+						FSType:    "ext3",
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+			},
+			{
+				Cmd: "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done",
+				Volumes: []testsuites.VolumeDetails{
+					{
+						FSType:    "ext4",
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+			},
+		}
+		test := testsuites.DynamicallyProvisionedCollocatedPodTest{
+			CSIDriver:    azureFileDriver,
+			Pods:         pods,
+			ColocatePods: true,
+		}
+		test.Run(cs, ns)
+	})
 })
