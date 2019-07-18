@@ -17,6 +17,7 @@ https://git.k8s.io/community/contributors/devel/release.md#issue-kind-label
 > /kind cleanup
 > /kind design
 > /kind documentation
+> /kind test
 > /kind failing-test
 > /kind feature
 > /kind flake
