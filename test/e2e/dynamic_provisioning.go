@@ -100,4 +100,29 @@ var _ = Describe("Dynamic Provisioning", func() {
 		}
 		test.Run(cs, ns)
 	})
+
+	It("should create a deployment object, write and read to it, delete the pod and write and read to it again", func() {
+		pod := testsuites.PodDetails{
+			Cmd: "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 1; done",
+			Volumes: []testsuites.VolumeDetails{
+				{
+					FSType:    "ext3",
+					ClaimSize: "10Gi",
+					VolumeMount: testsuites.VolumeMountDetails{
+						NameGenerate:      "test-volume-",
+						MountPathGenerate: "/mnt/test-",
+					},
+				},
+			},
+		}
+		test := testsuites.DynamicallyProvisionedDeletePodTest{
+			CSIDriver: azureFileDriver,
+			Pod:       pod,
+			PodCheck: &testsuites.PodExecCheck{
+				Cmd:            []string{"cat", "/mnt/test-1/data"},
+				ExpectedString: "hello world\nhello world\n", // pod will be restarted so expect to see 2 instances of string
+			},
+		}
+		test.Run(cs, ns)
+	})
 })
