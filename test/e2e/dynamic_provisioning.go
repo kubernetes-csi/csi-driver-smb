@@ -18,7 +18,9 @@ package e2e
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/driver"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/testsuites"
 	. "github.com/onsi/ginkgo"
@@ -31,17 +33,25 @@ var _ = Describe("Dynamic Provisioning", func() {
 	f := framework.NewDefaultFramework("azurefile")
 
 	var (
-		cs              clientset.Interface
-		ns              *v1.Namespace
-		azureFileDriver driver.PVTestDriver
+		cs         clientset.Interface
+		ns         *v1.Namespace
+		testDriver driver.PVTestDriver
 	)
+
+	nodeid := os.Getenv("nodeid")
+	azurefileDriver := azurefile.NewDriver(nodeid)
+	endpoint := "unix:///tmp/csi.sock"
+
+	go func() {
+		azurefileDriver.Run(endpoint)
+	}()
 
 	BeforeEach(func() {
 		cs = f.ClientSet
 		ns = f.Namespace
 	})
 
-	azureFileDriver = driver.InitAzureFileCSIDriver()
+	testDriver = driver.InitAzureFileCSIDriver()
 	It(fmt.Sprintf("should create a volume on demand"), func() {
 		pods := []testsuites.PodDetails{
 			{
@@ -58,7 +68,7 @@ var _ = Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedCmdVolumeTest{
-			CSIDriver: azureFileDriver,
+			CSIDriver: testDriver,
 			Pods:      pods,
 		}
 		test.Run(cs, ns)
@@ -94,7 +104,7 @@ var _ = Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedCollocatedPodTest{
-			CSIDriver:    azureFileDriver,
+			CSIDriver:    testDriver,
 			Pods:         pods,
 			ColocatePods: true,
 		}
@@ -120,7 +130,7 @@ var _ = Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedReadOnlyVolumeTest{
-			CSIDriver: azureFileDriver,
+			CSIDriver: testDriver,
 			Pods:      pods,
 		}
 		test.Run(cs, ns)
@@ -141,12 +151,45 @@ var _ = Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedDeletePodTest{
-			CSIDriver: azureFileDriver,
+			CSIDriver: testDriver,
 			Pod:       pod,
 			PodCheck: &testsuites.PodExecCheck{
 				Cmd:            []string{"cat", "/mnt/test-1/data"},
 				ExpectedString: "hello world\nhello world\n", // pod will be restarted so expect to see 2 instances of string
 			},
+		}
+		test.Run(cs, ns)
+	})
+
+	It(fmt.Sprintf("should delete PV with reclaimPolicy %q", v1.PersistentVolumeReclaimDelete), func() {
+		reclaimPolicy := v1.PersistentVolumeReclaimDelete
+		volumes := []testsuites.VolumeDetails{
+			{
+				FSType:        "ext4",
+				ClaimSize:     "10Gi",
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
+			CSIDriver: testDriver,
+			Volumes:   volumes,
+		}
+		test.Run(cs, ns)
+	})
+
+	It(fmt.Sprintf("[env] should retain PV with reclaimPolicy %q", v1.PersistentVolumeReclaimRetain), func() {
+		reclaimPolicy := v1.PersistentVolumeReclaimRetain
+		volumes := []testsuites.VolumeDetails{
+			{
+				FSType:        "ext4",
+				ClaimSize:     "10Gi",
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
+			CSIDriver: testDriver,
+			Volumes:   volumes,
+			Azurefile: azurefileDriver,
 		}
 		test.Run(cs, ns)
 	})

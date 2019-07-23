@@ -17,11 +17,14 @@ limitations under the License.
 package testsuites
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"time"
 
+	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/kubernetes-csi/external-snapshotter/pkg/apis/volumesnapshot/v1alpha1"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
 
 	snapshotclientset "github.com/kubernetes-csi/external-snapshotter/pkg/client/clientset/versioned"
 	. "github.com/onsi/ginkgo"
@@ -334,6 +337,18 @@ func (t *TestPersistentVolumeClaim) DeleteBoundPersistentVolume() {
 	By(fmt.Sprintf("waiting for claim's PV %q to be deleted", t.persistentVolume.Name))
 	err = framework.WaitForPersistentVolumeDeleted(t.client, t.persistentVolume.Name, 5*time.Second, 10*time.Minute)
 	framework.ExpectNoError(err)
+}
+
+func (t *TestPersistentVolumeClaim) DeleteBackingVolume(azfile *azurefile.Driver) {
+	volumeID := t.persistentVolume.Spec.CSI.VolumeHandle
+	By(fmt.Sprintf("deleting azurefile volume %q", volumeID))
+	req := &csi.DeleteVolumeRequest{
+		VolumeId: volumeID,
+	}
+	_, err := azfile.DeleteVolume(context.Background(), req)
+	if err != nil {
+		Fail(fmt.Sprintf("could not delete volume %q: %v", volumeID, err))
+	}
 }
 
 type TestDeployment struct {
