@@ -32,8 +32,6 @@ import (
 
 const (
 	defaultDiskSize = 10
-
-	dummyVolumeName = "pre-provisioned"
 )
 
 var (
@@ -48,11 +46,9 @@ var _ = Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func() {
 		ns         *v1.Namespace
 		testDriver driver.PreProvisionedVolumeTestDriver
 		volumeID   string
-		diskSize   string
 		// Set to true if the volume should be deleted automatically after test
 		skipManuallyDeletingVolume bool
 	)
-
 	nodeid := os.Getenv("nodeid")
 	azurefileDriver := azurefile.NewDriver(nodeid)
 	endpoint := "unix:///tmp/csi.sock"
@@ -65,32 +61,6 @@ var _ = Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func() {
 		cs = f.ClientSet
 		ns = f.Namespace
 		testDriver = driver.InitAzureFileCSIDriver()
-
-		req := &csi.CreateVolumeRequest{
-			Name: dummyVolumeName,
-			VolumeCapabilities: []*csi.VolumeCapability{
-				{
-					AccessType: &csi.VolumeCapability_Mount{
-						Mount: &csi.VolumeCapability_MountVolume{},
-					},
-					AccessMode: &csi.VolumeCapability_AccessMode{
-						Mode: csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER,
-					},
-				},
-			},
-			CapacityRange: &csi.CapacityRange{
-				RequiredBytes: defaultDiskSizeBytes,
-				LimitBytes:    defaultDiskSizeBytes,
-			},
-		}
-		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
-		if err != nil {
-			Fail(fmt.Sprintf("create volume error: %v", err))
-		}
-
-		volumeID = resp.Volume.VolumeId
-		diskSize = fmt.Sprintf("%dGi", defaultDiskSize)
-		By(fmt.Sprintf("Successfully provisioned AzureFile volume: %q\n", volumeID))
 	})
 
 	AfterEach(func() {
@@ -106,6 +76,15 @@ var _ = Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func() {
 	})
 
 	It("[env] should use a pre-provisioned volume and mount it as readOnly in a pod", func() {
+		req := makeCreateVolumeReq("pre-provisioned-readOnly")
+		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
+		if err != nil {
+			Fail(fmt.Sprintf("create volume error: %v", err))
+		}
+		volumeID = resp.Volume.VolumeId
+		By(fmt.Sprintf("Successfully provisioned AzureFile volume: %q\n", volumeID))
+
+		diskSize := fmt.Sprintf("%dGi", defaultDiskSize)
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data",
@@ -129,4 +108,52 @@ var _ = Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func() {
 		}
 		test.Run(cs, ns)
 	})
+
+	It(fmt.Sprintf("[env] should use a pre-provisioned volume and retain PV with reclaimPolicy %q", v1.PersistentVolumeReclaimRetain), func() {
+		req := makeCreateVolumeReq("pre-provisioned-retain-reclaimPolicy")
+		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
+		if err != nil {
+			Fail(fmt.Sprintf("create volume error: %v", err))
+		}
+		volumeID = resp.Volume.VolumeId
+		By(fmt.Sprintf("Successfully provisioned AzureFile volume: %q\n", volumeID))
+
+		diskSize := fmt.Sprintf("%dGi", defaultDiskSize)
+		reclaimPolicy := v1.PersistentVolumeReclaimRetain
+		volumes := []testsuites.VolumeDetails{
+			{
+				VolumeID:      volumeID,
+				FSType:        "ext4",
+				ClaimSize:     diskSize,
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.PreProvisionedReclaimPolicyTest{
+			CSIDriver: testDriver,
+			Volumes:   volumes,
+		}
+		test.Run(cs, ns)
+	})
 })
+
+func makeCreateVolumeReq(volumeName string) *csi.CreateVolumeRequest {
+	req := &csi.CreateVolumeRequest{
+		Name: volumeName,
+		VolumeCapabilities: []*csi.VolumeCapability{
+			{
+				AccessType: &csi.VolumeCapability_Mount{
+					Mount: &csi.VolumeCapability_MountVolume{},
+				},
+				AccessMode: &csi.VolumeCapability_AccessMode{
+					Mode: csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER,
+				},
+			},
+		},
+		CapacityRange: &csi.CapacityRange{
+			RequiredBytes: defaultDiskSizeBytes,
+			LimitBytes:    defaultDiskSizeBytes,
+		},
+	}
+
+	return req
+}
