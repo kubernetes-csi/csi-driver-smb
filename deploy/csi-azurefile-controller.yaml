@@ -66,7 +66,7 @@ spec:
             - name: socket-dir
               mountPath: /csi
         - name: azurefile
-          image: mcr.microsoft.com/k8s/csi/azurefile-csi:v0.3.0
+          image: mcr.microsoft.com/k8s/csi/azurefile-csi:latest
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"
