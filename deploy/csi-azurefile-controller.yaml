@@ -17,6 +17,7 @@ spec:
       serviceAccountName: csi-azurefile-controller-sa
       nodeSelector:
         beta.kubernetes.io/os: linux
+      priorityClassName: system-cluster-critical
       containers:
         - name: csi-provisioner
           image: quay.io/k8scsi/csi-provisioner:v1.0.1
