@@ -1,20 +1,22 @@
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: csi-azurefile
+  name: csi-azurefile-node
   namespace: {{ .Release.Namespace }}
 {{ include "azurefile.labels" . | indent 2 }}
 spec:
   selector:
     matchLabels:
-      app: csi-azurefile
+      app: csi-azurefile-node
   template:
     metadata:
 {{ include "azurefile.labels" . | indent 6 }}
-        app: csi-azurefile
+        app: csi-azurefile-node
     spec:
-      serviceAccountName: csi-driver-registrar
       hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      priorityClassName: system-node-critical
       containers:
         - name: liveness-probe
           imagePullPolicy: Always
@@ -25,33 +27,27 @@ spec:
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
-        - name: driver-registrar
-          image: quay.io/k8scsi/csi-node-driver-registrar:v1.0.2
+            - --health-port=9702
+        - name: node-driver-registrar
+          image: quay.io/k8scsi/csi-node-driver-registrar:v1.1.0
           args:
+            - --csi-address=$(ADDRESS)
+            - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
             - --v=5
-            - --csi-address=/csi/csi.sock
-            - --kubelet-registration-path=/var/lib/kubelet/plugins/file.csi.azure.com/csi.sock
           lifecycle:
             preStop:
               exec:
-                command:
-                  [
-                    "/bin/sh",
-                    "-c",
-                    "rm -rf /registration/disk.csi.azure.com /registration/disk.csi.azure.com-reg.sock",
-                  ]
+                command: ["/bin/sh", "-c", "rm -rf /registration/file.csi.azure.com-reg.sock /csi/csi.sock"]
           env:
-            - name: KUBE_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: spec.nodeName
-          imagePullPolicy: Always
+            - name: ADDRESS
+              value: /csi/csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: /var/lib/kubelet/plugins/file.csi.azure.com/csi.sock
           volumeMounts:
-            - mountPath: /csi
-              name: socket-dir
-            - mountPath: /registration
-              name: registration-dir
+            - name: socket-dir
+              mountPath: /csi
+            - name: registration-dir
+              mountPath: /registration
         - name: azurefile
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           args:
@@ -59,7 +55,7 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
           ports:
-            - containerPort: 9808
+            - containerPort: 9702
               name: healthz
               protocol: TCP
           livenessProbe:
@@ -80,13 +76,13 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             privileged: true
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-            - mountPath: /var/lib/kubelet/pods
+            - mountPath: /var/lib/kubelet/
               mountPropagation: Bidirectional
               name: mountpoint-dir
             - mountPath: /etc/kubernetes/
@@ -94,13 +90,19 @@ spec:
             - mountPath: /var/lib/waagent/ManagedIdentity-Settings
               readOnly: true
               name: msi
+            - mountPath: /devhost #use /devhost to avoid conflict
+              name: device-dir
+            - mountPath: /sys/bus/scsi/devices
+              name: sys-devices-dir
+            - mountPath: /sys/class/scsi_host/
+              name: scsi-host-dir
       volumes:
         - hostPath:
             path: /var/lib/kubelet/plugins/file.csi.azure.com
             type: DirectoryOrCreate
           name: socket-dir
         - hostPath:
-            path: /var/lib/kubelet/pods
+            path: /var/lib/kubelet/
             type: DirectoryOrCreate
           name: mountpoint-dir
         - hostPath:
@@ -114,3 +116,15 @@ spec:
         - hostPath:
             path: /var/lib/waagent/ManagedIdentity-Settings
           name: msi
+        - hostPath:
+            path: /dev
+            type: Directory
+          name: device-dir
+        - hostPath:
+            path: /sys/bus/scsi/devices
+            type: Directory
+          name: sys-devices-dir
+        - hostPath:
+            path: /sys/class/scsi_host/
+            type: Directory
+          name: scsi-host-dir
