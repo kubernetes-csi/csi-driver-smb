@@ -1,0 +1,10 @@
+image:
+  repository: mcr.microsoft.com/k8s/csi/azurefile-csi
+  tag: latest
+  pullPolicy: Always
+
+serviceAccount:
+  create: true
+
+rbac:
+  create: true
