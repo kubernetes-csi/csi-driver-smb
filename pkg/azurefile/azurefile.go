@@ -38,6 +38,7 @@ const (
 	DriverName       = "file.csi.azure.com"
 	seperator        = "#"
 	volumeIDTemplate = "%s#%s#%s"
+	fileUrlTemplate  = "https://%s.file.%s"
 	fileMode         = "file_mode"
 	dirMode          = "dir_mode"
 	vers             = "vers"

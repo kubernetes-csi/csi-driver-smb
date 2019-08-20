@@ -5,6 +5,7 @@ go 1.12
 require (
 	contrib.go.opencensus.io/exporter/ocagent v0.2.0 // indirect
 	github.com/Azure/azure-sdk-for-go v21.4.0+incompatible
+	github.com/Azure/azure-storage-file-go v0.5.0
 	github.com/Azure/go-autorest v11.5.1+incompatible // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.1.0 // indirect
@@ -71,7 +72,6 @@ require (
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1 // indirect
 	golang.org/x/net v0.0.0-20190301231341-16b79f2e4e95
-	golang.org/x/sys v0.0.0-20190308023053-584f3b12f43e // indirect
 	golang.org/x/time v0.0.0-20181108054448-85acf8d2951c // indirect
 	google.golang.org/api v0.1.0 // indirect
 	google.golang.org/genproto v0.0.0-20190307195333-5fe7a883aa19 // indirect
@@ -100,7 +100,9 @@ replace (
 	cloud.google.com/go => cloud.google.com/go v0.34.0
 	contrib.go.opencensus.io/exporter/ocagent => contrib.go.opencensus.io/exporter/ocagent v0.2.0
 	git.apache.org/thrift.git => git.apache.org/thrift.git v0.0.0-20180902110319-2566ecd5d999
+	github.com/Azure/azure-pipeline-go => github.com/Azure/azure-pipeline-go v0.2.1
 	github.com/Azure/azure-sdk-for-go => github.com/Azure/azure-sdk-for-go v21.4.0+incompatible
+	github.com/Azure/azure-storage-file-go => github.com/Azure/azure-storage-file-go v0.5.0
 	github.com/Azure/go-autorest => github.com/Azure/go-autorest v11.5.1+incompatible
 	github.com/BurntSushi/toml => github.com/BurntSushi/toml v0.3.1
 	github.com/GoogleCloudPlatform/k8s-cloud-provider => github.com/GoogleCloudPlatform/k8s-cloud-provider v0.0.0-20181220005116-f8e995905100
@@ -164,10 +166,14 @@ replace (
 	github.com/kisielk/gotool => github.com/kisielk/gotool v1.0.0
 	github.com/konsorten/go-windows-terminal-sequences => github.com/konsorten/go-windows-terminal-sequences v1.0.1
 	github.com/kr/logfmt => github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515
+	github.com/kr/pretty => github.com/kr/pretty v0.1.0
+	github.com/kr/pty => github.com/kr/pty v1.1.5
+	github.com/kr/text => github.com/kr/text v0.1.0
 	github.com/kubernetes-csi/csi-test => github.com/kubernetes-csi/csi-test v1.1.0
 	github.com/kubernetes-csi/external-snapshotter => github.com/kubernetes-csi/external-snapshotter v1.0.1
 	github.com/mailru/easyjson => github.com/mailru/easyjson v0.0.0-20190312143242-1de009706dbe
 	github.com/marstr/guid => github.com/marstr/guid v1.1.0
+	github.com/mattn/go-ieproxy => github.com/mattn/go-ieproxy v0.0.0-20190610004146-91bb50d98149
 	github.com/matttproud/golang_protobuf_extensions => github.com/matttproud/golang_protobuf_extensions v1.0.1
 	github.com/modern-go/concurrent => github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 	github.com/modern-go/reflect2 => github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742

@@ -19,10 +19,13 @@ package azurefile
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2018-07-01/storage"
+	"github.com/Azure/azure-storage-file-go/azfile"
 	"github.com/container-storage-interface/spec/lib/go/csi"
+	"github.com/golang/protobuf/ptypes"
 	volumehelper "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/util"
 
 	"k8s.io/klog"
@@ -212,7 +215,51 @@ func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.Control
 
 // CreateSnapshot create a snapshot (todo)
 func (d *Driver) CreateSnapshot(ctx context.Context, req *csi.CreateSnapshotRequest) (*csi.CreateSnapshotResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	klog.V(2).Infof("CreateSnapshot called with request %v", *req)
+
+	sourceVolumeID := req.GetSourceVolumeId()
+	snapshotName := req.Name
+	if len(snapshotName) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Snapshot name must be provided")
+	}
+	if len(sourceVolumeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "CreateSnapshot Source Volume ID must be provided")
+	}
+
+	shareURL, err := d.getShareUrl(sourceVolumeID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get share url with (%s): %v", sourceVolumeID, err)
+	}
+
+	snapshotShare, err := shareURL.CreateSnapshot(ctx, azfile.Metadata{})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "create snapshot from(%s) failed with %v, shareURL: %q", sourceVolumeID, err, shareURL)
+	}
+
+	klog.V(2).Infof("Created share snapshot: %s", snapshotShare.Snapshot())
+
+	properties, err := shareURL.GetProperties(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get snapshot properties from (%s): %v", snapshotShare.Snapshot(), err)
+	}
+
+	tp, err := ptypes.TimestampProto(properties.LastModified())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to covert creation timestamp: %v", err)
+	}
+
+	createResp := &csi.CreateSnapshotResponse{
+		Snapshot: &csi.Snapshot{
+			SizeBytes:      volumehelper.GiBToBytes(int64(properties.Quota())),
+			SnapshotId:     snapshotShare.Snapshot(),
+			SourceVolumeId: sourceVolumeID,
+			CreationTime:   tp,
+			// Since the snapshot of azurefile has no field of ReadyToUse, here ReadyToUse is always set to true.
+			ReadyToUse: true,
+		},
+	}
+
+	return createResp, nil
 }
 
 // DeleteSnapshot delete a snapshot (todo)
@@ -228,4 +275,43 @@ func (d *Driver) ListSnapshots(ctx context.Context, req *csi.ListSnapshotsReques
 // ControllerExpandVolume controller expand volume
 func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "ControllerExpandVolume is not yet implemented")
+}
+
+// getShareUrl: sourceVolumeID is the id of source file share, returns a ShareURL of source file share.
+// A ShareURL < https://<account>.file.core.windows.net/<fileShareName> > represents a URL to the Azure Storage share allowing you to manipulate its directories and files.
+// e.g. The ID of source file share is #fb8fff227be6511e9b24123#createsnapshot-volume-1. Returns https://fb8fff227be6511e9b24123.file.core.windows.net/createsnapshot-volume-1
+func (d *Driver) getShareUrl(sourceVolumeID string) (azfile.ShareURL, error) {
+	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(sourceVolumeID)
+	if err != nil {
+		klog.Errorf("getFileShareInfo(%s) failed with error: %v", sourceVolumeID, err)
+		return azfile.ShareURL{}, err
+	}
+
+	if resourceGroupName == "" {
+		resourceGroupName = d.cloud.ResourceGroup
+	}
+
+	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
+	if err != nil {
+		return azfile.ShareURL{}, fmt.Errorf("could not find key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
+	}
+
+	credential, err := azfile.NewSharedKeyCredential(accountName, accountKey)
+	if err != nil {
+		klog.Errorf("NewSharedKeyCredential(%s) in CreateSnapshot failed with error: %v", accountName, err)
+		return azfile.ShareURL{}, err
+	}
+
+	u, err := url.Parse(fmt.Sprintf(fileUrlTemplate, accountName, d.cloud.Environment.StorageEndpointSuffix))
+	if err != nil {
+		klog.Errorf("parse fileUrlTemplate error: %v", err)
+		return azfile.ShareURL{}, err
+	}
+	if u == nil {
+		return azfile.ShareURL{}, fmt.Errorf("url is nil")
+	}
+
+	serviceURL := azfile.NewServiceURL(*u, azfile.NewPipeline(credential, azfile.PipelineOptions{}))
+
+	return serviceURL.NewShareURL(fileShareName), nil
 }
