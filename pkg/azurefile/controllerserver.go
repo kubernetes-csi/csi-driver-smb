@@ -131,23 +131,19 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	}
 
 	volumeID := req.VolumeId
+	shareURL, err := d.getShareUrl(volumeID)
+	if err != nil {
+		// According to CSI Driver Sanity Tester, should succeed when an invalid volume id is used
+		klog.V(4).Infof("failed to get share url with (%s): %v, returning with success", volumeID, err)
+		return &csi.DeleteVolumeResponse{}, nil
+	}
 	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
 	if err != nil {
 		klog.Errorf("getFileShareInfo(%s) in DeleteVolume failed with error: %v", volumeID, err)
 		return &csi.DeleteVolumeResponse{}, nil
 	}
 
-	if resourceGroupName == "" {
-		resourceGroupName = d.cloud.ResourceGroup
-	}
-
-	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
-	if err != nil {
-		return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
-	}
-
-	klog.V(2).Infof("deleting azure file(%s) rg(%s) account(%s) volumeID(%s)", fileShareName, resourceGroupName, accountName, volumeID)
-	if err := d.cloud.DeleteFileShare(accountName, accountKey, fileShareName); err != nil {
+	if _, err = shareURL.Delete(ctx, azfile.DeleteSnapshotsOptionInclude); err != nil {
 		return nil, status.Errorf(codes.Internal, "DeleteFileShare %s under %s failed with error: %v", fileShareName, accountName, err)
 	}
 	klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volumeID(%s) is deleted successfully", fileShareName, resourceGroupName, accountName, volumeID)
@@ -251,7 +247,7 @@ func (d *Driver) CreateSnapshot(ctx context.Context, req *csi.CreateSnapshotRequ
 	createResp := &csi.CreateSnapshotResponse{
 		Snapshot: &csi.Snapshot{
 			SizeBytes:      volumehelper.GiBToBytes(int64(properties.Quota())),
-			SnapshotId:     snapshotShare.Snapshot(),
+			SnapshotId:     sourceVolumeID + "#" + snapshotShare.Snapshot(),
 			SourceVolumeId: sourceVolumeID,
 			CreationTime:   tp,
 			// Since the snapshot of azurefile has no field of ReadyToUse, here ReadyToUse is always set to true.
@@ -264,7 +260,29 @@ func (d *Driver) CreateSnapshot(ctx context.Context, req *csi.CreateSnapshotRequ
 
 // DeleteSnapshot delete a snapshot (todo)
 func (d *Driver) DeleteSnapshot(ctx context.Context, req *csi.DeleteSnapshotRequest) (*csi.DeleteSnapshotResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	if len(req.SnapshotId) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Snapshot ID must be provided")
+	}
+
+	shareURL, err := d.getShareUrl(req.SnapshotId)
+	if err != nil {
+		// According to CSI Driver Sanity Tester, should succeed when an invalid snapshot id is used
+		klog.V(4).Infof("failed to get share url with (%s): %v, returning with success", req.SnapshotId, err)
+		return &csi.DeleteSnapshotResponse{}, nil
+	}
+
+	snapshot, err := getSnapshot(req.SnapshotId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get snapshot name with (%s): %v", req.SnapshotId, err)
+	}
+
+	_, err = shareURL.WithSnapshot(snapshot).Delete(ctx, azfile.DeleteSnapshotsOptionNone)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete snapshot(%s): %v", snapshot, err)
+	}
+
+	klog.V(2).Infof("delete snapshot(%s) successfully", snapshot)
+	return &csi.DeleteSnapshotResponse{}, nil
 }
 
 // ListSnapshots list all snapshots (todo)

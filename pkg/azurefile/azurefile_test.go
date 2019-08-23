@@ -288,3 +288,44 @@ func TestCheckShareNameBeginAndEnd(t *testing.T) {
 		}
 	}
 }
+
+func TestGetSnapshot(t *testing.T) {
+	tests := []struct {
+		options   string
+		expected1 string
+		expected2 error
+	}{
+		{
+			options:   "rg#f123#csivolumename#2019-08-22T07:17:53.0000000Z",
+			expected1: "2019-08-22T07:17:53.0000000Z",
+			expected2: nil,
+		},
+		{
+			options:   "rg#f123#csivolumename",
+			expected1: "",
+			expected2: fmt.Errorf("error parsing volume id: \"rg#f123#csivolumename\", should at least contain three #"),
+		},
+		{
+			options:   "rg#f123",
+			expected1: "",
+			expected2: fmt.Errorf("error parsing volume id: \"rg#f123\", should at least contain three #"),
+		},
+		{
+			options:   "rg",
+			expected1: "",
+			expected2: fmt.Errorf("error parsing volume id: \"rg\", should at least contain three #"),
+		},
+		{
+			options:   "",
+			expected1: "",
+			expected2: fmt.Errorf("error parsing volume id: \"\", should at least contain three #"),
+		},
+	}
+
+	for _, test := range tests {
+		result1, result2 := getSnapshot(test.options)
+		if !reflect.DeepEqual(result1, test.expected1) || !reflect.DeepEqual(result2, test.expected2) {
+			t.Errorf("input: %q, getSnapshot result1: %q, expected1: %q, result2: %q, expected2: %q, ", test.options, result1, test.expected1, result2, test.expected2)
+		}
+	}
+}

@@ -95,7 +95,7 @@ func (d *Driver) Run(endpoint string) {
 	d.AddControllerServiceCapabilities(
 		[]csi.ControllerServiceCapability_RPC_Type{
 			csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME,
-			//csi.ControllerServiceCapability_RPC_CREATE_DELETE_SNAPSHOT,
+			csi.ControllerServiceCapability_RPC_CREATE_DELETE_SNAPSHOT,
 			//csi.ControllerServiceCapability_RPC_LIST_SNAPSHOTS,
 		})
 	d.AddVolumeCapabilityAccessModes([]csi.VolumeCapability_AccessMode_Mode{
@@ -267,4 +267,15 @@ func checkShareNameBeginAndEnd(fileShareName string) bool {
 	}
 
 	return false
+}
+
+// get snapshot name according to snapshot id, e.g.
+// input: "rg#f5713de20cde511e8ba4900#csivolumename#2019-08-22T07:17:53.0000000Z"
+// output: 2019-08-22T07:17:53.0000000Z
+func getSnapshot(id string) (string, error) {
+	segments := strings.Split(id, seperator)
+	if len(segments) != 4 {
+		return "", fmt.Errorf("error parsing volume id: %q, should at least contain three #", id)
+	}
+	return segments[3], nil
 }

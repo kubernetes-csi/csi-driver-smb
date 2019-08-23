@@ -28,7 +28,9 @@ jobs:
       name: "sanity test"
       install:
         - sudo apt update && sudo apt install cifs-utils procps -y
-      script: make sanity-test
+      script: 
+        - make azurefile
+        - make sanity-test
       # after_failure: TRAVIS_TEST_RESULT=0
     - stage: test
       name: "integration test"

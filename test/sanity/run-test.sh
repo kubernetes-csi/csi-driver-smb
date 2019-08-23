@@ -16,30 +16,38 @@
 
 set -euo pipefail
 
-if [ ! -v AZURE_CREDENTIAL_FILE ]; then
-	export set AZURE_CREDENTIAL_FILE=/tmp/azure.json
+ if [ -v GOPATH ]; then
+		mkdir $GOPATH/src/github.com/kubernetes-csi
+		pushd $GOPATH/src/github.com/kubernetes-csi
+		git clone https://github.com/kubernetes-csi/csi-test.git -b v1.1.0
+        pushd $GOPATH/src/github.com/kubernetes-csi/csi-test/cmd/csi-sanity
+		make && make install 
+		popd
+		popd
 fi
 
-GO_BIN_PATH=`which go`
+ endpoint="unix:///tmp/csi.sock"
 
-# run test on AzurePublicCloud
-if [ -v aadClientSecret ]; then
-	# run test in CI env
-	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
-
-	sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s#aadClientSecret-input#$aadClientSecret#g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
-	
-	sudo ${GO_BIN_PATH} test -v ./test/sanity/...
-else
-	if [ -v subscriptionId ]; then
-		echo "skip sanity test in CI env"
-	else
-		# run test in user mode
-		${GO_BIN_PATH} test -v ./test/sanity/...
-	fi
+node="CSINode"
+if [ $# -gt 0 ]; then
+	node=$1
 fi
+
+ echo "begin to run sanity test ..."
+
+ sudo _output/azurefileplugin --endpoint $endpoint --nodeid $node -v=5 &
+
+# skip "should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.", because azurefile cannot specify the snapshot name.
+ sudo $GOPATH/src/github.com/kubernetes-csi/csi-test/cmd/csi-sanity/csi-sanity --ginkgo.v --csi.endpoint=$endpoint -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
+
+ retcode=$?
+
+ if [ $retcode -ne 0 ]; then
+	exit $retcode
+fi
+
+ # kill azurefileplugin first
+echo "pkill -f azurefileplugin"
+sudo /usr/bin/pkill -f azurefileplugin
+
+echo "sanity test is completed."
