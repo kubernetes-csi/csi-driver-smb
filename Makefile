@@ -34,7 +34,7 @@ test:
 integration-test:
 	test/integration/run-tests-all-clouds.sh
 sanity-test:
-	test/sanity/run-test.sh
+	test/sanity/run-tests-all-clouds.sh
 e2e-test:
 	test/e2e/run-test.sh
 azurefile:
