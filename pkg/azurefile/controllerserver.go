@@ -222,12 +222,37 @@ func (d *Driver) CreateSnapshot(ctx context.Context, req *csi.CreateSnapshotRequ
 		return nil, status.Error(codes.InvalidArgument, "CreateSnapshot Source Volume ID must be provided")
 	}
 
+	exists, item, err := d.snapshotExists(ctx, sourceVolumeID, snapshotName)
+	if err != nil {
+		if exists {
+			return nil, status.Errorf(codes.AlreadyExists, "%v", err)
+		}
+		return nil, status.Errorf(codes.Internal, "failed to check if snapshot(%v) exists: %v", snapshotName, err)
+	}
+	if exists {
+		klog.V(2).Infof("snapshot(%s) already exists", snapshotName)
+		tp, err := ptypes.TimestampProto(item.Properties.LastModified)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Failed to covert creation timestamp: %v", err)
+		}
+		return &csi.CreateSnapshotResponse{
+			Snapshot: &csi.Snapshot{
+				SizeBytes:      volumehelper.GiBToBytes(int64(item.Properties.Quota)),
+				SnapshotId:     sourceVolumeID + "#" + *item.Snapshot,
+				SourceVolumeId: sourceVolumeID,
+				CreationTime:   tp,
+				// Since the snapshot of azurefile has no field of ReadyToUse, here ReadyToUse is always set to true.
+				ReadyToUse: true,
+			},
+		}, nil
+	}
+
 	shareURL, err := d.getShareUrl(sourceVolumeID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get share url with (%s): %v", sourceVolumeID, err)
 	}
 
-	snapshotShare, err := shareURL.CreateSnapshot(ctx, azfile.Metadata{})
+	snapshotShare, err := shareURL.CreateSnapshot(ctx, azfile.Metadata{snapshotNameKey: snapshotName})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "create snapshot from(%s) failed with %v, shareURL: %q", sourceVolumeID, err, shareURL)
 	}
@@ -278,6 +303,10 @@ func (d *Driver) DeleteSnapshot(ctx context.Context, req *csi.DeleteSnapshotRequ
 
 	_, err = shareURL.WithSnapshot(snapshot).Delete(ctx, azfile.DeleteSnapshotsOptionNone)
 	if err != nil {
+		if strings.Contains(err.Error(), "ShareSnapshotNotFound") {
+			klog.Warningf("the specify snapshot(%s) was not found", snapshot)
+			return &csi.DeleteSnapshotResponse{}, nil
+		}
 		return nil, status.Errorf(codes.Internal, "failed to delete snapshot(%s): %v", snapshot, err)
 	}
 
@@ -299,10 +328,19 @@ func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.Controller
 // A ShareURL < https://<account>.file.core.windows.net/<fileShareName> > represents a URL to the Azure Storage share allowing you to manipulate its directories and files.
 // e.g. The ID of source file share is #fb8fff227be6511e9b24123#createsnapshot-volume-1. Returns https://fb8fff227be6511e9b24123.file.core.windows.net/createsnapshot-volume-1
 func (d *Driver) getShareUrl(sourceVolumeID string) (azfile.ShareURL, error) {
+	serviceURL, fileShareName, err := d.getServiceURL(sourceVolumeID)
+	if err != nil {
+		return azfile.ShareURL{}, err
+	}
+
+	return serviceURL.NewShareURL(fileShareName), nil
+}
+
+func (d *Driver) getServiceURL(sourceVolumeID string) (azfile.ServiceURL, string, error) {
 	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(sourceVolumeID)
 	if err != nil {
 		klog.Errorf("getFileShareInfo(%s) failed with error: %v", sourceVolumeID, err)
-		return azfile.ShareURL{}, err
+		return azfile.ServiceURL{}, "", err
 	}
 
 	if resourceGroupName == "" {
@@ -311,25 +349,55 @@ func (d *Driver) getShareUrl(sourceVolumeID string) (azfile.ShareURL, error) {
 
 	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
 	if err != nil {
-		return azfile.ShareURL{}, fmt.Errorf("could not find key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
+		return azfile.ServiceURL{}, "", fmt.Errorf("could not find key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
 	}
 
 	credential, err := azfile.NewSharedKeyCredential(accountName, accountKey)
 	if err != nil {
 		klog.Errorf("NewSharedKeyCredential(%s) in CreateSnapshot failed with error: %v", accountName, err)
-		return azfile.ShareURL{}, err
+		return azfile.ServiceURL{}, "", err
 	}
 
 	u, err := url.Parse(fmt.Sprintf(fileUrlTemplate, accountName, d.cloud.Environment.StorageEndpointSuffix))
 	if err != nil {
 		klog.Errorf("parse fileUrlTemplate error: %v", err)
-		return azfile.ShareURL{}, err
+		return azfile.ServiceURL{}, "", err
 	}
 	if u == nil {
-		return azfile.ShareURL{}, fmt.Errorf("url is nil")
+		return azfile.ServiceURL{}, "", fmt.Errorf("url is nil")
 	}
 
 	serviceURL := azfile.NewServiceURL(*u, azfile.NewPipeline(credential, azfile.PipelineOptions{}))
 
-	return serviceURL.NewShareURL(fileShareName), nil
+	return serviceURL, fileShareName, nil
+}
+
+// snapshotExists: sourceVolumeID is the id of source file share, returns the existence of snapshot and its detail info.
+// Since `ListSharesSegment` lists all file shares and snapshots, the process of checking existence is divided into two steps.
+// 1. Judge if the specify snapshot name already exists.
+// 2. If it exists, we should judge if its source file share name equals that we specify.
+//    As long as the snapshot already exists, returns true. But when the source is different, an error will be returned.
+func (d *Driver) snapshotExists(ctx context.Context, sourceVolumeID string, snapshotName string) (bool, azfile.ShareItem, error) {
+	serviceURL, fileShareName, err := d.getServiceURL(sourceVolumeID)
+	if err != nil {
+		return false, azfile.ShareItem{}, err
+	}
+
+	// List share snapshots.
+	listSnapshot, err := serviceURL.ListSharesSegment(ctx, azfile.Marker{}, azfile.ListSharesOptions{Detail: azfile.ListSharesDetail{Metadata: true, Snapshots: true}})
+	if err != nil {
+		return false, azfile.ShareItem{}, err
+	}
+	for _, share := range listSnapshot.ShareItems {
+		if share.Metadata[snapshotNameKey] == snapshotName {
+			if share.Name == fileShareName {
+				klog.V(2).Infof("found share(%s) snapshot(%s) Metadata(%v)", share.Name, *share.Snapshot, share.Metadata)
+				return true, share, nil
+			} else {
+				return true, azfile.ShareItem{}, fmt.Errorf("snapshot(%s) already exists, while the current file share name(%s) does not equal to %s, SourceVolumeId(%s)", snapshotName, share.Name, fileShareName, sourceVolumeID)
+			}
+		}
+	}
+
+	return false, azfile.ShareItem{}, nil
 }

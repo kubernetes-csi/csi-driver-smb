@@ -53,6 +53,9 @@ const (
 	// Minimum size of Azure Premium Files is 100GiB
 	// See https://docs.microsoft.com/en-us/azure/storage/files/storage-files-planning#provisioned-shares
 	defaultAzureFileQuota = 100
+
+	// key of snapshot name in metadata
+	snapshotNameKey = "initiator"
 )
 
 // Driver implements all interfaces of CSI drivers

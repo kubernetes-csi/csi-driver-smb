@@ -37,8 +37,7 @@ fi
 
  sudo _output/azurefileplugin --endpoint $endpoint --nodeid $node -v=5 &
 
-# skip "should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.", because azurefile cannot specify the snapshot name.
- sudo $GOPATH/src/github.com/kubernetes-csi/csi-test/cmd/csi-sanity/csi-sanity --ginkgo.v --csi.endpoint=$endpoint -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
+ sudo $GOPATH/src/github.com/kubernetes-csi/csi-test/cmd/csi-sanity/csi-sanity --ginkgo.v --csi.endpoint=$endpoint
 
  retcode=$?
 
