@@ -54,5 +54,5 @@ clean:
 	-rm -rf _output
 update:
 	hack/update-dependencies.sh
-verify-modules: update
-	hack/verify-update.sh
+verify: update
+	hack/verify-all.sh
