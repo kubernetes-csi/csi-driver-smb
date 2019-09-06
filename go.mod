@@ -99,7 +99,7 @@ require (
 replace (
 	cloud.google.com/go => cloud.google.com/go v0.34.0
 	contrib.go.opencensus.io/exporter/ocagent => contrib.go.opencensus.io/exporter/ocagent v0.2.0
-	git.apache.org/thrift.git => git.apache.org/thrift.git v0.0.0-20180902110319-2566ecd5d999
+	git.apache.org/thrift.git => github.com/apache/thrift v0.0.0-20180902110319-2566ecd5d999
 	github.com/Azure/azure-pipeline-go => github.com/Azure/azure-pipeline-go v0.2.1
 	github.com/Azure/azure-sdk-for-go => github.com/Azure/azure-sdk-for-go v21.4.0+incompatible
 	github.com/Azure/azure-storage-file-go => github.com/Azure/azure-storage-file-go v0.5.0
