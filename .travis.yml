@@ -12,6 +12,10 @@ go:
 jobs:
   include:
     - stage: test
+      name: "code verification test"
+      script:
+        - make verify
+    - stage: test
       name: "build test"
       install:
         - GO111MODULE=off go get github.com/mattn/goveralls
@@ -20,15 +24,10 @@ jobs:
         - make azurefile-windows
         - go test -covermode=count -coverprofile=profile.cov ./pkg/...
     - stage: test
-      name: "code verification test"
-      script:
-        - make verify-modules      
-        - hack/verify-all.sh
-    - stage: test
       name: "sanity test"
       install:
         - sudo apt update && sudo apt install cifs-utils procps -y
-      script: 
+      script:
         - make azurefile
         - make sanity-test
       # after_failure: TRAVIS_TEST_RESULT=0
