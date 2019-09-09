@@ -9,6 +9,12 @@ env:
 go:
   - "1.12.1"
 
+cache:
+  directories:
+    - $GOPATH/pkg
+    - $GOPATH/bin
+    - $GOROOT
+
 jobs:
   include:
     - stage: build

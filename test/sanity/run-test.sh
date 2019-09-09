@@ -25,7 +25,7 @@ function cleanup {
 function install_csi_sanity_bin {
   git clone https://github.com/kubernetes-csi/csi-test.git -b v1.1.0
   pushd csi-test/cmd/csi-sanity
-  make install
+  make
   popd
 }
 
@@ -65,5 +65,9 @@ echo "sanity test is completed."
 =======
 # Skip "should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.", because azurefile cannot specify the snapshot name.
 echo "Begin to run sanity test..."
+<<<<<<< HEAD
 sudo csi-sanity --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
 >>>>>>> 84c0eaef... Modify scripts for sanity test
+=======
+sudo csi-test/cmd/csi-sanity/csi-sanity --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
+>>>>>>> f84d9226... Cache go modules and binaries in Travis CI
