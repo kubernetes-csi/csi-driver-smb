@@ -17,7 +17,7 @@
 set -euo pipefail
 
 function cleanup {
-  echo "pkill -f azurefileplugin"
+  echo 'pkill -f azurefileplugin'
   pkill -f azurefileplugin
   rm -rf csi-test
 }
@@ -39,6 +39,7 @@ fi
 sudo _output/azurefileplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 trap cleanup EXIT
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 node="CSINode"
 if [ $# -gt 0 ]; then
@@ -69,5 +70,9 @@ echo "Begin to run sanity test..."
 sudo csi-sanity --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
 >>>>>>> 84c0eaef... Modify scripts for sanity test
 =======
+=======
+echo 'Begin to run sanity test...'
+# Skip "should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.", because azurefile cannot specify the snapshot name.
+>>>>>>> 4ab3645c... Clean up scripts for sanity and integration test
 sudo csi-test/cmd/csi-sanity/csi-sanity --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
 >>>>>>> f84d9226... Cache go modules and binaries in Travis CI

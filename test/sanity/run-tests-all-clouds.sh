@@ -16,21 +16,11 @@
 
 set -eo pipefail
 
+sudo apt update && sudo apt install cifs-utils procps -y
+
 if [[ -z "$AZURE_CREDENTIAL_FILE" ]]; then
-  export AZURE_CREDENTIAL_FILE=/tmp/azure.json
-  cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
-  # Run test on AzurePublicCloud
-  if [[ ! -z "$tenantId" ]] && [[ ! -z "$subscriptionId" ]] && [[ ! -z "$aadClientId" ]] && [[ ! -z "$aadClientSecret" ]] && [[ ! -z "$resourceGroup" ]] && [[ ! -z "$location" ]]; then
-    sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
-    sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
-    sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
-    sed -i "s#aadClientSecret-input#$aadClientSecret#g" $AZURE_CREDENTIAL_FILE
-    sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
-    sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
-  else
-    echo 'Since $AZURE_CREDENTIAL_FILE is not supplied, $tenantId, $subscriptionId, $aadClientId, $aadClientSecret, $resourceGroup, $location are required to run the sanity test.'
-    exit 1
-  fi
+  export AZURE_CREDENTIAL_FILE='/tmp/azure.json'
+  hack/create-azure-credential-file.sh 'AzurePublicCloud'
 fi
 
 test/sanity/run-test.sh "$nodeid"
