@@ -14,19 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -eo pipefail
+set -euo pipefail
 
 sudo apt update && sudo apt install cifs-utils procps -y
 go install -v github.com/rexray/gocsi/csc
 export csc="$GOBIN/csc"
-export AZURE_CREDENTIAL_FILE='/tmp/azure.json'
 
-if [[ -n "$tenantId" ]] && [[ -n "$subscriptionId" ]] && [[ -n "$aadClientId" ]] && [[ -n "$aadClientSecret" ]] && [[ -n "$resourceGroup" ]] && [[ -n "$location" ]]; then
+if [[ ! -v AZURE_CREDENTIAL_FILE ]]; then
+  export AZURE_CREDENTIAL_FILE='/tmp/azure.json'
   hack/create-azure-credential-file.sh 'AzurePublicCloud'
-  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' 'AzurePublicCloud'
 fi
 
-if [[ -n "$tenantId_china" ]] && [[ -n "$subscriptionId_china" ]] && [[ -n "$aadClientId_china" ]] && [[ -n "$aadClientSecret_china" ]] && [[ -n "$resourceGroup_china" ]] && [[ -n "$location_china" ]]; then
+sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' 'AzurePublicCloud'
+
+# Only test on AzureChinaCloud if the following environment variables are set
+if [[ -v tenantId_china ]] && [[ -v subscriptionId_china ]] && [[ -v aadClientId_china ]] && [[ -v aadClientSecret_china ]] && [[ -v resourceGroup_china ]] && [[ -v location_china ]]; then
   hack/create-azure-credential-file.sh 'AzureChinaCloud'
   sudo test/integration/run-test.sh 'tcp://127.0.0.1:10001' '/tmp/testmount2' 'AzureChinaCloud'
 fi

@@ -18,21 +18,19 @@ cache:
 jobs:
   include:
     - stage: test
-      name: "Code verification"
+      name: "code verification test"
       script:
         - make verify
     - stage: test
-      name: "Unit test"
-      install:
-        - GO111MODULE=off go get github.com/mattn/goveralls
+      name: "unit test"
       script:
-        - go test -covermode=count -coverprofile=profile.cov ./pkg/...
+        - make unit-test
     - stage: test
-      name: "Sanity test"
+      name: "sanity test"
       script:
         - make sanity-test
       # after_failure: TRAVIS_TEST_RESULT=0
     - stage: test
-      name: "Integration test"
+      name: "integration test"
       script:
         - make integration-test

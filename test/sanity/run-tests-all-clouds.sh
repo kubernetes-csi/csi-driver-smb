@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -eo pipefail
+set -euo pipefail
 
 sudo apt update && sudo apt install cifs-utils procps -y
 
-if [[ -z "$AZURE_CREDENTIAL_FILE" ]]; then
+if [[ ! -v AZURE_CREDENTIAL_FILE ]]; then
   export AZURE_CREDENTIAL_FILE='/tmp/azure.json'
   hack/create-azure-credential-file.sh 'AzurePublicCloud'
 fi
