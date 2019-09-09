@@ -16,18 +16,30 @@
 
 set -euo pipefail
 
- if [ -v GOPATH ]; then
-		mkdir $GOPATH/src/github.com/kubernetes-csi
-		pushd $GOPATH/src/github.com/kubernetes-csi
-		git clone https://github.com/kubernetes-csi/csi-test.git -b v1.1.0
-        pushd $GOPATH/src/github.com/kubernetes-csi/csi-test/cmd/csi-sanity
-		make && make install 
-		popd
-		popd
+function cleanup {
+  echo "pkill -f azurefileplugin"
+  pkill -f azurefileplugin
+  rm -rf csi-test
+}
+
+function install_csi_sanity_bin {
+  git clone https://github.com/kubernetes-csi/csi-test.git -b v1.1.0
+  pushd csi-test/cmd/csi-sanity
+  make install
+  popd
+}
+
+install_csi_sanity_bin
+endpoint='unix:///tmp/csi.sock'
+nodeid='CSINode'
+if [[ "$#" -gt 0 ]]; then
+  nodeid="$1"
 fi
 
- endpoint="unix:///tmp/csi.sock"
+sudo _output/azurefileplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+trap cleanup EXIT
 
+<<<<<<< HEAD
 node="CSINode"
 if [ $# -gt 0 ]; then
 	node=$1
@@ -50,3 +62,8 @@ echo "pkill -f azurefileplugin"
 sudo /usr/bin/pkill -f azurefileplugin
 
 echo "sanity test is completed."
+=======
+# Skip "should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.", because azurefile cannot specify the snapshot name.
+echo "Begin to run sanity test..."
+sudo csi-sanity --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
+>>>>>>> 84c0eaef... Modify scripts for sanity test

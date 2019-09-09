@@ -19,10 +19,11 @@ set -euo pipefail
 echo "Verifying gofmt"
 
 diff=$(find . -name "*.go" | grep -v "\/vendor\/" | xargs gofmt -s -d 2>&1)
-if [[ -n "${diff}" ]]; then
-  echo "${diff}"
+if [[ -n "$diff" ]]; then
+  echo "$diff"
   echo
   echo "Please run hack/update-gofmt.sh to fix the issue(s)"
   exit 1
 fi
+
 echo "No issue found"

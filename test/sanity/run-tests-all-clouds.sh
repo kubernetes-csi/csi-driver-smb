@@ -14,31 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -eo pipefail
 
-if [ ! -v AZURE_CREDENTIAL_FILE ]; then
-	export set AZURE_CREDENTIAL_FILE=/tmp/azure.json
+if [[ -z "$AZURE_CREDENTIAL_FILE" ]]; then
+  export AZURE_CREDENTIAL_FILE=/tmp/azure.json
+  cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
+  # Run test on AzurePublicCloud
+  if [[ ! -z "$tenantId" ]] && [[ ! -z "$subscriptionId" ]] && [[ ! -z "$aadClientId" ]] && [[ ! -z "$aadClientSecret" ]] && [[ ! -z "$resourceGroup" ]] && [[ ! -z "$location" ]]; then
+    sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
+    sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
+    sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
+    sed -i "s#aadClientSecret-input#$aadClientSecret#g" $AZURE_CREDENTIAL_FILE
+    sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
+    sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
+  else
+    echo 'Since $AZURE_CREDENTIAL_FILE is not supplied, $tenantId, $subscriptionId, $aadClientId, $aadClientSecret, $resourceGroup, $location are required to run the sanity test.'
+    exit 1
+  fi
 fi
 
-GO_BIN_PATH=`which go`
-
-# run test on AzurePublicCloud
-if [ -v aadClientSecret ]; then
-	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
-
-	sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s#aadClientSecret-input#$aadClientSecret#g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
-
-	test/sanity/run-test.sh $nodeid
-else
-	if [ -v subscriptionId ]; then
-		echo "skip sanity test in CI env"
-	else
-		# run test in user mode
-		go test -v ./test/sanity/...
-	fi
-fi
+test/sanity/run-test.sh "$nodeid"

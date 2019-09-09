@@ -11,31 +11,32 @@ go:
 
 jobs:
   include:
-    - stage: test
-      name: "code verification test"
-      script:
-        - make verify
-    - stage: test
-      name: "build test"
-      install:
-        - GO111MODULE=off go get github.com/mattn/goveralls
+    - stage: build
+      name: "Build"
       script:
         - make azurefile-container
         - make azurefile-windows
+    - stage: test
+      name: "Code verification"
+      script:
+        - make verify
+    - stage: test
+      name: "Unit test"
+      install:
+        - GO111MODULE=off go get github.com/mattn/goveralls
+      script:
         - go test -covermode=count -coverprofile=profile.cov ./pkg/...
     - stage: test
-      name: "sanity test"
+      name: "Sanity test"
       install:
         - sudo apt update && sudo apt install cifs-utils procps -y
       script:
-        - make azurefile
         - make sanity-test
       # after_failure: TRAVIS_TEST_RESULT=0
     - stage: test
-      name: "integration test"
+      name: "Integration test"
       install:
         - GO111MODULE=off go get github.com/rexray/gocsi/csc
         - sudo apt update && sudo apt install cifs-utils procps -y
       script:
-        - make azurefile
         - make integration-test

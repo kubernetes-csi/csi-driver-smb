@@ -28,13 +28,12 @@ GO111MODULE=on
 .PHONY: all azurefile azurefile-container clean
 all: azurefile
 
-.PHONY: test
-test:
+unit-test:
 	go test -v -race ./pkg/...
-integration-test:
-	test/integration/run-tests-all-clouds.sh
-sanity-test:
+sanity-test: azurefile
 	test/sanity/run-tests-all-clouds.sh
+integration-test: azurefile
+	test/integration/run-tests-all-clouds.sh
 e2e-test:
 	test/e2e/run-test.sh
 azurefile:
