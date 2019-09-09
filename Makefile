@@ -35,7 +35,7 @@ unit-test:
 	go test -v -race ./pkg/...
 
 .PHONY: sanity-test
-sanity-test:
+sanity-test: azurefile
 	test/sanity/run-tests-all-clouds.sh
 
 .PHONY: integration-test

@@ -14,15 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -eo pipefail
 
 sudo apt update && sudo apt install cifs-utils procps -y
 go install -v github.com/rexray/gocsi/csc
 export csc="$GOBIN/csc"
 export AZURE_CREDENTIAL_FILE='/tmp/azure.json'
 
-hack/create-azure-credential-file.sh 'AzurePublicCloud'
-sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' 'AzurePublicCloud'
+if [[ -n "$tenantId" ]] && [[ -n "$subscriptionId" ]] && [[ -n "$aadClientId" ]] && [[ -n "$aadClientSecret" ]] && [[ -n "$resourceGroup" ]] && [[ -n "$location" ]]; then
+  hack/create-azure-credential-file.sh 'AzurePublicCloud'
+  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' 'AzurePublicCloud'
+fi
 
-hack/create-azure-credential-file.sh 'AzureChinaCloud'
-sudo test/integration/run-test.sh 'tcp://127.0.0.1:10001' '/tmp/testmount2' 'AzureChinaCloud'
+if [[ -n "$tenantId_china" ]] && [[ -n "$subscriptionId_china" ]] && [[ -n "$aadClientId_china" ]] && [[ -n "$aadClientSecret_china" ]] && [[ -n "$resourceGroup_china" ]] && [[ -n "$location_china" ]]; then
+  hack/create-azure-credential-file.sh 'AzureChinaCloud'
+  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10001' '/tmp/testmount2' 'AzureChinaCloud'
+fi
