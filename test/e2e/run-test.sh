@@ -25,7 +25,7 @@ if [[ "$?" -ne 0 ]]; then
 fi
 
 # Fetching ginkgo for running the test
-go install -v github.com/onsi/ginkgo/ginkgo
+GO111MODULE=off go get github.com/onsi/ginkgo/ginkgo
 export KUBECONFIG="$HOME/.kube/config"
 "$GOBIN"/ginkgo test/e2e
 exit "$?"

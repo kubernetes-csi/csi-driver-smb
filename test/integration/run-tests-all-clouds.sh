@@ -17,8 +17,8 @@
 set -euo pipefail
 
 sudo apt update && sudo apt install cifs-utils procps -y
-go install -v github.com/rexray/gocsi/csc
-export csc="$GOBIN/csc"
+GO111MODULE=off go get github.com/rexray/gocsi/csc
+export CSC_BIN="$GOBIN/csc"
 
 if [[ ! -v AZURE_CREDENTIAL_FILE ]]; then
   export AZURE_CREDENTIAL_FILE='/tmp/azure.json'

@@ -18,7 +18,7 @@ set -euo pipefail
 
 if [[ -z "$(command -v golangci-lint)" ]]; then
   echo "Cannot find golangci-lint. Installing golangci-lint..."
-  go install -v github.com/golangci/golangci-lint/cmd/golangci-lint
+  GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 fi
 
 "$GOBIN"/golangci-lint run --deadline=10m

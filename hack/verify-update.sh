@@ -16,12 +16,12 @@
 
 set -euo pipefail
 
-echo "Verifying dependency update"
+echo 'Verifying dependency update'
 
 if [[ "$(git diff --shortstat | wc -l)" != 0 ]]; then
-  echo "Some files got changed after dependencies update"
+  echo 'Some files got changed after dependencies update'
   git diff --stat
   exit 1
 fi
 
-echo "Done"
+echo 'Done'

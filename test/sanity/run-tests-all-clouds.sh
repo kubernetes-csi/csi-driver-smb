@@ -16,6 +16,15 @@
 
 set -euo pipefail
 
+function install_csi_sanity_bin {
+  git clone https://github.com/kubernetes-csi/csi-test.git -b v1.1.0
+  pushd csi-test/cmd/csi-sanity
+  make
+  popd
+  # Path of csi sanity test binary
+  export CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'
+}
+
 sudo apt update && sudo apt install cifs-utils procps -y
 
 if [[ ! -v AZURE_CREDENTIAL_FILE ]]; then
@@ -23,4 +32,5 @@ if [[ ! -v AZURE_CREDENTIAL_FILE ]]; then
   hack/create-azure-credential-file.sh 'AzurePublicCloud'
 fi
 
-test/sanity/run-test.sh "$nodeid"
+install_csi_sanity_bin
+sudo test/sanity/run-test.sh "$nodeid"

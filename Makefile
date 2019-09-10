@@ -77,6 +77,6 @@ clean:
 update:
 	hack/update-dependencies.sh
 
-.PHONY: verifyss
+.PHONY: verify
 verify: update
 	hack/verify-all.sh
