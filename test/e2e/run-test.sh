@@ -16,12 +16,16 @@
 
 set -uo pipefail
 
-kubectl get daemonsets csi-azurefile-node -n kube-system
-if [[ "$?" -ne 0 ]]; then
-  echo 'AzureFile csi driver daemonset not found'
-  echo 'Installing AzureFile csi driver'
-  deploy/install-driver.sh
-  echo 'AzureFile csi driver installed'
+function cleanup {
+  deploy/uninstall-driver.sh
+}
+
+deploy/install-driver.sh
+trap cleanup EXIT
+
+if [[ ! -v AZURE_CREDENTIAL_FILE ]]; then
+  export AZURE_CREDENTIAL_FILE='/tmp/azure.json'
+  hack/create-azure-credential-file.sh 'AzurePublicCloud'
 fi
 
 # Fetching ginkgo for running the test

@@ -16,10 +16,10 @@
 
 set -uo pipefail
 
-echo 'Installing Azure File CSI driver...'
-kubectl apply -f deploy/crd-csi-driver-registry.yaml
-kubectl apply -f deploy/crd-csi-node-info.yaml
-kubectl apply -f deploy/rbac-csi-azurefile-controller.yaml
-kubectl apply -f deploy/csi-azurefile-controller.yaml
-kubectl apply -f deploy/csi-azurefile-node.yaml
-echo 'Azure File CSI driver installed'
+echo 'Uninstalling Azure File CSI driver...'
+kubectl delete -f deploy/crd-csi-driver-registry.yaml --ignore-not-found
+kubectl delete -f deploy/crd-csi-node-info.yaml --ignore-not-found
+kubectl delete -f deploy/rbac-csi-azurefile-controller.yaml --ignore-not-found
+kubectl delete -f deploy/csi-azurefile-controller.yaml --ignore-not-found
+kubectl delete -f deploy/csi-azurefile-node.yaml --ignore-not-found
+echo 'Azure File CSI driver uninstalled'
