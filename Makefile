@@ -40,7 +40,7 @@ sanity-test: azurefile
 
 .PHONY: integration-test
 integration-test: azurefile
-	test/integration/run-tests-all-clouds.sh
+	go test -v -timeout=10m ./test/integration
 
 .PHONY: e2e-test
 e2e-test:
@@ -76,6 +76,7 @@ clean:
 .PHONY: update
 update:
 	hack/update-dependencies.sh
+	hack/verify-update.sh
 
 .PHONY: verify
 verify: update

@@ -18,7 +18,7 @@ set -euo pipefail
 
 echo 'Verifying dependency update'
 
-if [[ "$(git diff --shortstat | wc -l)" != 0 ]]; then
+if [[ -n "$(git diff --shortstat)" ]]; then
   echo 'Some files got changed after dependencies update'
   git diff --stat
   exit 1

@@ -19,10 +19,11 @@ set -euo pipefail
 function cleanup {
   echo 'pkill -f azurefileplugin'
   pkill -f azurefileplugin
-
   echo 'Deleting CSI sanity test binary'
   rm -rf csi-test
 }
+
+trap cleanup EXIT
 
 readonly endpoint='unix:///tmp/csi.sock'
 nodeid='CSINode'
@@ -31,47 +32,8 @@ if [[ "$#" -gt 0 ]] && [[ -n "$1" ]]; then
 fi
 
 _output/azurefileplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
-trap cleanup EXIT
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-node="CSINode"
-if [ $# -gt 0 ]; then
-	node=$1
-fi
 
- echo "begin to run sanity test ..."
-
- sudo _output/azurefileplugin --endpoint $endpoint --nodeid $node -v=5 &
-
- sudo $GOPATH/src/github.com/kubernetes-csi/csi-test/cmd/csi-sanity/csi-sanity --ginkgo.v --csi.endpoint=$endpoint
-
- retcode=$?
-
- if [ $retcode -ne 0 ]; then
-	exit $retcode
-fi
-
- # kill azurefileplugin first
-echo "pkill -f azurefileplugin"
-sudo /usr/bin/pkill -f azurefileplugin
-
-echo "sanity test is completed."
-=======
-# Skip "should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.", because azurefile cannot specify the snapshot name.
-echo "Begin to run sanity test..."
-<<<<<<< HEAD
-sudo csi-sanity --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
->>>>>>> 84c0eaef... Modify scripts for sanity test
-=======
-=======
 echo 'Begin to run sanity test...'
-CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'
-# Skip "should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.", because azurefile cannot specify the snapshot name.
-<<<<<<< HEAD
->>>>>>> 4ab3645c... Clean up scripts for sanity and integration test
-sudo csi-test/cmd/csi-sanity/csi-sanity --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
->>>>>>> f84d9226... Cache go modules and binaries in Travis CI
-=======
-"$CSI_SANITY_BIN" --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.'
->>>>>>> 8e7de4b0... Minor clean up
+readonly CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'
+"$CSI_SANITY_BIN" --ginkgo.v --csi.endpoint="$endpoint"

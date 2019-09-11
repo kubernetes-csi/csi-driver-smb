@@ -21,6 +21,7 @@ function cleanup {
   pkill -f azurefileplugin
 }
 
+readonly CSC_BIN="$GOBIN/csc"
 endpoint='tcp://127.0.0.1:10000'
 if [[ "$#" -gt 0 ]]; then
   endpoint="$1"

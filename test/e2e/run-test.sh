@@ -20,13 +20,9 @@ function cleanup {
   deploy/uninstall-driver.sh
 }
 
-deploy/install-driver.sh
 trap cleanup EXIT
 
-if [[ ! -v AZURE_CREDENTIAL_FILE ]]; then
-  export AZURE_CREDENTIAL_FILE='/tmp/azure.json'
-  hack/create-azure-credential-file.sh 'AzurePublicCloud'
-fi
+deploy/install-driver.sh
 
 # Fetching ginkgo for running the test
 GO111MODULE=off go get github.com/onsi/ginkgo/ginkgo
