@@ -17,6 +17,10 @@ limitations under the License.
 package sanity
 
 import (
+	"context"
+	"os"
+	"os/exec"
+	"strings"
 	"testing"
 
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/azure"
@@ -24,14 +28,40 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	cloudEnvironment = "AzurePublicCloud"
-)
-
 func TestSanity(t *testing.T) {
-	c, err := credentials.Get()
+	creds, err := credentials.Get()
+	assert.NoError(t, err)
+	assert.NotNil(t, creds)
+
+	os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
+
+	azureClient, err := azure.GetAzureClient(creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
 	assert.NoError(t, err)
 
-	azureClient, err := azure.GetAzureClient(cloudEnvironment, c.SubscriptionID, c.AADClientID, c.TenantID, c.AADClientSecret)
+	ctx := context.Background()
+	// Create an empty resource group for sanity test
+	t.Logf("Creating resource group %s", creds.ResourceGroup)
+	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
+	assert.NoError(t, err)
+	defer func() {
+		t.Logf("Deleting resource group %s", creds.ResourceGroup)
+		err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
+		assert.NoError(t, err)
+	}()
 
+	// Execute the script from project root
+	err = os.Chdir("../..")
+	assert.NoError(t, err)
+
+	cwd, err := os.Getwd()
+	assert.NoError(t, err)
+	assert.True(t, strings.HasSuffix(cwd, "azurefile-csi-driver"))
+
+	cmd := exec.Command("./test/sanity/run-tests-all-clouds.sh")
+	cmd.Dir = cwd
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		t.Fatalf("Sanity test failed %v", err)
+	}
 }

@@ -4,11 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/Azure/go-autorest/autorest/azure"
+)
+
+const (
+	defaultCloudEnvironment = "AzurePublicCloud"
 )
 
 type AzureClient struct {
@@ -17,8 +22,17 @@ type AzureClient struct {
 	groupsClient   resources.GroupsClient
 }
 
-func GetAzureClient(envName string, subscriptionID, clientID, tenantID, clientSecret string) (*AzureClient, error) {
-	env, _ := azure.EnvironmentFromName(envName)
+func GetAzureClient(subscriptionID, clientID, tenantID, clientSecret string) (*AzureClient, error) {
+	cloudEnvironment := os.Getenv("cloudEnvironment")
+	if cloudEnvironment == "" {
+		cloudEnvironment = defaultCloudEnvironment
+	}
+
+	env, err := azure.EnvironmentFromName(cloudEnvironment)
+	if err != nil {
+		return nil, err
+	}
+
 	oauthConfig, err := getOAuthConfig(env, subscriptionID, tenantID)
 	if err != nil {
 		return nil, err

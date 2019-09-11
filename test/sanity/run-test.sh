@@ -19,12 +19,14 @@ set -euo pipefail
 function cleanup {
   echo 'pkill -f azurefileplugin'
   pkill -f azurefileplugin
+
+  echo 'Deleting CSI sanity test binary'
   rm -rf csi-test
 }
 
 readonly endpoint='unix:///tmp/csi.sock'
 nodeid='CSINode'
-if [[ "$#" -gt 0 ]]; then
+if [[ "$#" -gt 0 ]] && [[ -n "$1" ]]; then
   nodeid="$1"
 fi
 
@@ -64,6 +66,7 @@ sudo csi-sanity --ginkgo.v --csi.endpoint="$endpoint" -ginkgo.skip='should fail 
 =======
 =======
 echo 'Begin to run sanity test...'
+CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'
 # Skip "should fail when requesting to create a snapshot with already existing name and different SourceVolumeId.", because azurefile cannot specify the snapshot name.
 <<<<<<< HEAD
 >>>>>>> 4ab3645c... Clean up scripts for sanity and integration test

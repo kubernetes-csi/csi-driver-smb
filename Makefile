@@ -32,11 +32,11 @@ all: azurefile
 
 .PHONY: unit-test
 unit-test:
-	go test -v -race ./pkg/...
+	go test -v -race ./pkg/... ./test/credentials
 
 .PHONY: sanity-test
 sanity-test: azurefile
-	test/sanity/run-tests-all-clouds.sh
+	go test -v -timeout=10m ./test/sanity
 
 .PHONY: integration-test
 integration-test: azurefile

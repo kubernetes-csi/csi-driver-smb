@@ -14,23 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -uo pipefail
+set -eo pipefail
 
 function install_csi_sanity_bin {
+  echo 'Installing CSI sanity test binary...'
   git clone https://github.com/kubernetes-csi/csi-test.git -b v1.1.0
   pushd csi-test/cmd/csi-sanity
   make
   popd
-  # Path of csi sanity test binary
-  export CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'
 }
 
 sudo apt update && sudo apt install cifs-utils procps -y
-
-if [[ ! -v AZURE_CREDENTIAL_FILE ]]; then
-  export AZURE_CREDENTIAL_FILE='/tmp/azure.json'
-  hack/create-azure-credential-file.sh 'AzurePublicCloud'
-fi
-
 install_csi_sanity_bin
 sudo test/sanity/run-test.sh "$nodeid"
