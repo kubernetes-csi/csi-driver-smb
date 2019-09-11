@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -uo pipefail
 
 function install_csi_sanity_bin {
   git clone https://github.com/kubernetes-csi/csi-test.git -b v1.1.0

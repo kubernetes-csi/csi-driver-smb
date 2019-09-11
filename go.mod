@@ -6,7 +6,8 @@ require (
 	contrib.go.opencensus.io/exporter/ocagent v0.2.0 // indirect
 	github.com/Azure/azure-sdk-for-go v21.4.0+incompatible
 	github.com/Azure/azure-storage-file-go v0.5.0
-	github.com/Azure/go-autorest v11.5.1+incompatible // indirect
+	github.com/Azure/go-autorest v11.5.1+incompatible
+	github.com/BurntSushi/toml v0.3.1
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.1.0 // indirect
 	github.com/container-storage-interface/spec v1.1.0
@@ -43,7 +44,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jonboulle/clockwork v0.1.0 // indirect
 	github.com/json-iterator/go v1.1.5 // indirect
-	github.com/kubernetes-csi/csi-test v1.1.0
 	github.com/kubernetes-csi/external-snapshotter v1.0.1
 	github.com/mailru/easyjson v0.0.0-20190312143242-1de009706dbe // indirect
 	github.com/marstr/guid v1.1.0 // indirect
@@ -59,6 +59,7 @@ require (
 	github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90 // indirect
 	github.com/prometheus/common v0.2.0 // indirect
 	github.com/prometheus/procfs v0.0.0-20190306233201-d0f344d83b0c // indirect
+	github.com/satori/go.uuid v1.2.0
 	github.com/soheilhy/cmux v0.1.4 // indirect
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cobra v0.0.3 // indirect

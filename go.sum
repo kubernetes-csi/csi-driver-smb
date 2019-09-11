@@ -123,8 +123,6 @@ github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFB
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.5/go.mod h1:9r2w37qlBe7rQ6e1fg1S/9xpWHSnaqNdHD3WcMdbPDA=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/kubernetes-csi/csi-test v1.1.0 h1:a7CfGqhGDs0h7AZt1f6LTIUzBazcRf6eBdTUBXB4xE4=
-github.com/kubernetes-csi/csi-test v1.1.0/go.mod h1:YxJ4UiuPWIhMBkxUKY5c267DyA0uDZ/MtAimhx/2TA0=
 github.com/kubernetes-csi/external-snapshotter v1.0.1 h1:mR9hun6TViPyNDa+SFoRxnIXQmITIVM840ODiuNG784=
 github.com/kubernetes-csi/external-snapshotter v1.0.1/go.mod h1:oYfxnsuh48V1UDYORl77YQxQbbdokNy7D73phuFpksY=
 github.com/mailru/easyjson v0.0.0-20190312143242-1de009706dbe h1:W/GaMY0y69G4cFlmsC6B9sbuo2fP8OFP1ABjt4kPz+w=

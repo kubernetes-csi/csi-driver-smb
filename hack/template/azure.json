@@ -1,0 +1,8 @@
+{
+    "tenantId": "{{.TenantID}}",
+    "subscriptionId": "{{.SubscriptionID}}",
+    "aadClientId": "{{.AADClientID}}",
+    "aadClientSecret": "{{.AADClientSecret}}",
+    "resourceGroup": "{{.ResourceGroup}}",
+    "location": "{{.Location}}"
+}

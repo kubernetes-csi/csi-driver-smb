@@ -19,30 +19,19 @@ package sanity
 import (
 	"testing"
 
-	sanity "github.com/kubernetes-csi/csi-test/pkg/sanity"
-
-	azurefile "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/azure"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/credentials"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
-	mountPath = "/tmp/csi/mount"
-	stagePath = "/tmp/csi/stage"
-	socket    = "/tmp/csi.sock"
-	endpoint  = "unix://" + socket
+	cloudEnvironment = "AzurePublicCloud"
 )
 
 func TestSanity(t *testing.T) {
-	ddriver := azurefile.NewDriver("someNodeID")
+	c, err := credentials.Get()
+	assert.NoError(t, err)
 
-	go func() {
-		ddriver.Run(endpoint)
-	}()
+	azureClient, err := azure.GetAzureClient(cloudEnvironment, c.SubscriptionID, c.AADClientID, c.TenantID, c.AADClientSecret)
 
-	// Run test
-	config := &sanity.Config{
-		TargetPath:  mountPath,
-		StagingPath: stagePath,
-		Address:     endpoint,
-	}
-	sanity.Test(t, config)
 }
