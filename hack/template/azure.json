@@ -1,4 +1,5 @@
 {
+    "cloud": "{{.Cloud}}",
     "tenantId": "{{.TenantID}}",
     "subscriptionId": "{{.SubscriptionID}}",
     "aadClientId": "{{.AADClientID}}",

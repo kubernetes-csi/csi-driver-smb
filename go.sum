@@ -9,6 +9,7 @@ github.com/Azure/azure-storage-file-go v0.5.0 h1:/eSx3Gyuo5ypeRR0qeOFI4Ge/fi9fRQ
 github.com/Azure/azure-storage-file-go v0.5.0/go.mod h1:KydIlTDlpKjrmhEqu7S36HofRc7Ede+OYOi0+l3gWPc=
 github.com/Azure/go-autorest v11.5.1+incompatible h1:tdB6TZ8w2B7+F8wD6eTQSXXQo31zKKL55b6uqNDAGKw=
 github.com/Azure/go-autorest v11.5.1+incompatible/go.mod h1:r+4oMnoxhatjLLJ6zxSWATqVooLgysK6ZNox3g/xq24=
+github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/GoogleCloudPlatform/k8s-cloud-provider v0.0.0-20181220005116-f8e995905100/go.mod h1:iroGtC8B3tQiqtds1l+mgk/BBOrxbqjH+eUfFQYRc14=
 github.com/PuerkitoBio/purell v1.1.1 h1:WEQqlqaGbrPkxLJWfBwQmfEAE1Z7ONdDLqrN38tNFfI=

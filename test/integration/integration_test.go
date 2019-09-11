@@ -29,22 +29,35 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
-	creds, err := credentials.Get()
+	// Test on AzurePublicCloud
+	creds, err := credentials.Get(false)
 	assert.NoError(t, err)
 	assert.NotNil(t, creds)
+	testIntegration(t, creds)
 
+	// Test on AzureChinaCloud
+	creds, err = credentials.Get(true)
+	// Skip the test if Azure China cloud credentials are not supplied
+	if err != nil {
+		t.Skip()
+	}
+	assert.NotNil(t, creds)
+	testIntegration(t, creds)
+}
+
+func testIntegration(t *testing.T, creds *credentials.Credentials) {
 	os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
 
-	azureClient, err := azure.GetAzureClient(creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
+	azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
 	assert.NoError(t, err)
 
 	ctx := context.Background()
 	// Create an empty resource group for integration test
-	t.Logf("Creating resource group %s", creds.ResourceGroup)
+	t.Logf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
 	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
 	defer func() {
-		t.Logf("Deleting resource group %s", creds.ResourceGroup)
+		t.Logf("Deleting resource group %s in %s", creds.ResourceGroup, creds.Cloud)
 		err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
 		assert.NoError(t, err)
 	}()
@@ -57,7 +70,7 @@ func TestIntegration(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, strings.HasSuffix(cwd, "azurefile-csi-driver"))
 
-	cmd := exec.Command("./test/integration/run-tests-all-clouds.sh")
+	cmd := exec.Command("./test/integration/run-tests-all-clouds.sh", creds.Cloud)
 	cmd.Dir = cwd
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

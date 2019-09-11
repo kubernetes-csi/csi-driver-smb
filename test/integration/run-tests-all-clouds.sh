@@ -19,9 +19,8 @@ set -euo pipefail
 sudo apt update && sudo apt install cifs-utils procps -y
 GO111MODULE=off go get github.com/rexray/gocsi/csc
 
-sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' 'AzurePublicCloud'
-
-# Only test on AzureChinaCloud if the following environment variables are set
-if [[ -v tenantId_china ]] && [[ -v subscriptionId_china ]] && [[ -v aadClientId_china ]] && [[ -v aadClientSecret_china ]] && [[ -v resourceGroup_china ]] && [[ -v location_china ]]; then
-  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10001' '/tmp/testmount2' 'AzureChinaCloud'
+cloud='AzurePublicCloud'
+if [[ "$#" -gt 0 ]]; then
+  cloud="$1"
 fi
+sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' $cloud

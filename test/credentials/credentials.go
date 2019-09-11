@@ -13,7 +13,10 @@ import (
 
 const (
 	TempAzureCredentialFilePath = "/tmp/azure.json"
-	defaultLocation             = "eastus2"
+	defaultCloudLocation        = "eastus2"
+	defaultChinaCloudLocation   = "chinaeast2"
+	AzurePublicCloud            = "AzurePublicCloud"
+	AzureChinaCloud             = "AzurePublicCloud"
 )
 
 // CredentialsConfig is used in Prow to store Azure credentials
@@ -33,6 +36,7 @@ type CredentialsFromProw struct {
 
 // Credentials is used in Azure File CSI Driver to store Azure credentials
 type Credentials struct {
+	Cloud           string
 	TenantID        string
 	SubscriptionID  string
 	AADClientID     string
@@ -42,25 +46,41 @@ type Credentials struct {
 }
 
 // Get returns the Azure credentials needed to perform the test
-func Get() (*Credentials, error) {
+func Get(isAzureChinaCloud bool) (*Credentials, error) {
 	// Search credentials through env vars first
-	tenantId := os.Getenv("tenantId")
-	subscriptionId := os.Getenv("subscriptionId")
-	aadClientId := os.Getenv("aadClientId")
-	aadClientSecret := os.Getenv("aadClientSecret")
+	var cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location string
+	if isAzureChinaCloud {
+		cloud = AzureChinaCloud
+		tenantId = os.Getenv("tenantId_china")
+		subscriptionId = os.Getenv("subscriptionId_china")
+		aadClientId = os.Getenv("aadClientId_china")
+		aadClientSecret = os.Getenv("aadClientSecret_china")
+		resourceGroup = os.Getenv("resourceGroup_china")
+		location = os.Getenv("location_china")
+	} else {
+		cloud = AzurePublicCloud
+		tenantId = os.Getenv("tenantId")
+		subscriptionId = os.Getenv("subscriptionId")
+		aadClientId = os.Getenv("aadClientId")
+		aadClientSecret = os.Getenv("aadClientSecret")
+		resourceGroup = os.Getenv("resourceGroup")
+		location = os.Getenv("location")
+	}
 
-	resourceGroup := os.Getenv("resourceGroup")
 	if resourceGroup == "" {
 		resourceGroup = "azurefile-csi-driver-test-" + uuid.NewV1().String()
 	}
 
-	location := os.Getenv("location")
 	if location == "" {
-		location = defaultLocation
+		if isAzureChinaCloud {
+			location = defaultChinaCloudLocation
+		} else {
+			location = defaultCloudLocation
+		}
 	}
 
 	if tenantId != "" && subscriptionId != "" && aadClientId != "" && aadClientSecret != "" {
-		return parseAndExecuteTemplate(tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location)
+		return parseAndExecuteTemplate(cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location)
 	}
 
 	// If credentials are not supplied through env vars, we need to obtain credentials from env var AZURE_CREDENTIALS
@@ -72,7 +92,8 @@ func Get() (*Credentials, error) {
 		if err != nil {
 			return nil, err
 		}
-		return parseAndExecuteTemplate(c.TenantID, c.SubscriptionID, c.ClientID, c.ClientSecret, resourceGroup, location)
+		// We only test on AzurePublicCloud in Prow
+		return parseAndExecuteTemplate(AzurePublicCloud, c.TenantID, c.SubscriptionID, c.ClientID, c.ClientSecret, resourceGroup, location)
 	}
 
 	return nil, fmt.Errorf("AZURE_CREDENTIALS is not set. You will need to set $tenantId, $subscriptionId, $aadClientId and $aadClientSecret")
@@ -96,7 +117,7 @@ func getCredentialsFromAzureCredentials(azureCredentialsPath string) (*Credentia
 }
 
 // parseAndExecuteTemplate replaces credential placeholders in hack/template/azure.json with actual credentials
-func parseAndExecuteTemplate(tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location string) (*Credentials, error) {
+func parseAndExecuteTemplate(cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location string) (*Credentials, error) {
 	t, err := template.ParseFiles("../../hack/template/azure.json")
 	if err != nil {
 		return nil, fmt.Errorf("error parsing hack/template/azure.json %v", err)
@@ -109,6 +130,7 @@ func parseAndExecuteTemplate(tenantId, subscriptionId, aadClientId, aadClientSec
 	defer f.Close()
 
 	c := Credentials{
+		cloud,
 		tenantId,
 		subscriptionId,
 		aadClientId,

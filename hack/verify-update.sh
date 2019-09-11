@@ -20,7 +20,7 @@ echo 'Verifying dependency update'
 
 if [[ -n "$(git diff --shortstat)" ]]; then
   echo 'Some files got changed after dependencies update'
-  git diff --stat
+  git diff
   exit 1
 fi
 

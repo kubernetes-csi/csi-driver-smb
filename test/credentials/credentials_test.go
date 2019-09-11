@@ -41,8 +41,9 @@ func TestGetWithAzureCredentials(t *testing.T) {
 	_, err = tempFile.Write([]byte(fakeAzureCredentials))
 	assert.NoError(t, err)
 
-	creds, err := Get()
+	creds, err := Get(false)
 	assert.NoError(t, err)
+	assert.Equal(t, AzurePublicCloud, creds.Cloud)
 	assert.Equal(t, "72f988bf-xxxx-xxxx-xxxx-2d7cd011db47", creds.TenantID)
 	assert.Equal(t, "b9d2281e-xxxx-xxxx-xxxx-0d50377cdf76", creds.SubscriptionID)
 	assert.Equal(t, "df7269f2-xxxx-xxxx-xxxx-0f12a7d97404", creds.AADClientID)
@@ -54,6 +55,7 @@ func TestGetWithAzureCredentials(t *testing.T) {
 	assert.NoError(t, err)
 	const expectedAzureCredentialFileContent = `
 	{
+		"cloud": "AzurePublicCloud",
 	    "tenantId": "72f988bf-xxxx-xxxx-xxxx-2d7cd011db47",
 	    "subscriptionId": "b9d2281e-xxxx-xxxx-xxxx-0d50377cdf76",
 	    "aadClientId": "df7269f2-xxxx-xxxx-xxxx-0f12a7d97404",
@@ -78,8 +80,9 @@ func TestGetWithEnvironmentVariables(t *testing.T) {
 	os.Setenv("resourceGroup", "test-resource-group")
 	os.Setenv("location", "test-location")
 
-	creds, err := Get()
+	creds, err := Get(false)
 	assert.NoError(t, err)
+	assert.Equal(t, AzurePublicCloud, creds.Cloud)
 	assert.Equal(t, "test-tenant-id", creds.TenantID)
 	assert.Equal(t, "test-subscription-id", creds.SubscriptionID)
 	assert.Equal(t, "test-aad-client-id", creds.AADClientID)
@@ -91,6 +94,7 @@ func TestGetWithEnvironmentVariables(t *testing.T) {
 	assert.NoError(t, err)
 	const expectedAzureCredentialFileContent = `
 	{
+		"cloud": "AzurePublicCloud",
 	    "tenantId": "test-tenant-id",
 	    "subscriptionId": "test-subscription-id",
 	    "aadClientId": "test-aad-client-id",

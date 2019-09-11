@@ -29,13 +29,13 @@ import (
 )
 
 func TestSanity(t *testing.T) {
-	creds, err := credentials.Get()
+	creds, err := credentials.Get(false)
 	assert.NoError(t, err)
 	assert.NotNil(t, creds)
 
 	os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
 
-	azureClient, err := azure.GetAzureClient(creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
+	azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
 	assert.NoError(t, err)
 
 	ctx := context.Background()
