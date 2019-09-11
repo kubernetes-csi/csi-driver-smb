@@ -7,7 +7,8 @@ import (
 	"os"
 
 	"github.com/BurntSushi/toml"
-	uuid "github.com/satori/go.uuid"
+	"github.com/pborman/uuid"
+
 	"k8s.io/klog"
 )
 
@@ -45,8 +46,9 @@ type Credentials struct {
 	Location        string
 }
 
-// Get returns the Azure credentials needed to perform the test
-func Get(isAzureChinaCloud bool) (*Credentials, error) {
+// CreateAzureCredentialFile creates a temporary Azure credential file for
+// Azure File CSI driver tests and returns the credentials
+func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	// Search credentials through env vars first
 	var cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location string
 	if isAzureChinaCloud {
@@ -68,7 +70,7 @@ func Get(isAzureChinaCloud bool) (*Credentials, error) {
 	}
 
 	if resourceGroup == "" {
-		resourceGroup = "azurefile-csi-driver-test-" + uuid.NewV1().String()
+		resourceGroup = "azurefile-csi-driver-test-" + uuid.NewUUID().String()
 	}
 
 	if location == "" {
@@ -97,6 +99,15 @@ func Get(isAzureChinaCloud bool) (*Credentials, error) {
 	}
 
 	return nil, fmt.Errorf("AZURE_CREDENTIALS is not set. You will need to set $tenantId, $subscriptionId, $aadClientId and $aadClientSecret")
+}
+
+// CreateAzureCredentialFile deletes the temporary Azure credential file
+func DeleteAzureCredentialFile() error {
+	if err := os.Remove(TempAzureCredentialFilePath); err != nil && !os.IsNotExist(err) {
+		return fmt.Errorf("error deleting %s %v", TempAzureCredentialFilePath, err)
+	}
+
+	return nil
 }
 
 // getCredentialsFromAzureCredentials parses the azure credentials toml (AZURE_CREDENTIALS)

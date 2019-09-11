@@ -30,13 +30,21 @@ import (
 
 func TestIntegration(t *testing.T) {
 	// Test on AzurePublicCloud
-	creds, err := credentials.Get(false)
+	creds, err := credentials.CreateAzureCredentialFile(false)
+	defer func() {
+		assert.NoError(t, credentials.DeleteAzureCredentialFile())
+	}()
 	assert.NoError(t, err)
 	assert.NotNil(t, creds)
+
 	testIntegration(t, creds)
 
 	// Test on AzureChinaCloud
-	creds, err = credentials.Get(true)
+	creds, err = credentials.CreateAzureCredentialFile(true)
+	defer func() {
+		assert.NoError(t, credentials.DeleteAzureCredentialFile())
+	}()
+
 	// Skip the test if Azure China cloud credentials are not supplied
 	if err != nil {
 		t.Skip()

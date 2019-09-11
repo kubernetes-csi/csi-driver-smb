@@ -11,10 +11,6 @@ import (
 	"github.com/Azure/go-autorest/autorest/azure"
 )
 
-const (
-	defaultCloudEnvironment = "AzurePublicCloud"
-)
-
 type AzureClient struct {
 	environment    azure.Environment
 	subscriptionID string

@@ -20,7 +20,7 @@ const (
 	`
 )
 
-func TestGetWithAzureCredentials(t *testing.T) {
+func TestCreateAzureCredentialFileWithAzureCredentials(t *testing.T) {
 	defer func() {
 		err := os.Remove(TempAzureCredentialFilePath)
 		assert.NoError(t, err)
@@ -41,7 +41,7 @@ func TestGetWithAzureCredentials(t *testing.T) {
 	_, err = tempFile.Write([]byte(fakeAzureCredentials))
 	assert.NoError(t, err)
 
-	creds, err := Get(false)
+	creds, err := CreateAzureCredentialFile(false)
 	assert.NoError(t, err)
 	assert.Equal(t, AzurePublicCloud, creds.Cloud)
 	assert.Equal(t, "72f988bf-xxxx-xxxx-xxxx-2d7cd011db47", creds.TenantID)
@@ -67,7 +67,7 @@ func TestGetWithAzureCredentials(t *testing.T) {
 	assert.JSONEq(t, expectedAzureCredentialFileContent, string(azureCredentialFileContent))
 }
 
-func TestGetWithEnvironmentVariables(t *testing.T) {
+func TestCreateAzureCredentialFileWithEnvironmentVariables(t *testing.T) {
 	defer func() {
 		err := os.Remove(TempAzureCredentialFilePath)
 		assert.NoError(t, err)
@@ -80,7 +80,7 @@ func TestGetWithEnvironmentVariables(t *testing.T) {
 	os.Setenv("resourceGroup", "test-resource-group")
 	os.Setenv("location", "test-location")
 
-	creds, err := Get(false)
+	creds, err := CreateAzureCredentialFile(false)
 	assert.NoError(t, err)
 	assert.Equal(t, AzurePublicCloud, creds.Cloud)
 	assert.Equal(t, "test-tenant-id", creds.TenantID)
