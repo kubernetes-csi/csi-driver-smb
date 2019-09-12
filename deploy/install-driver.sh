@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -uo pipefail
+set -euo pipefail
 
 echo 'Installing Azure File CSI driver...'
 kubectl apply -f deploy/crd-csi-driver-registry.yaml

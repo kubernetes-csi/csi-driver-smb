@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -uo pipefail
+set -euo pipefail
 
 echo 'Uninstalling Azure File CSI driver...'
 kubectl delete -f deploy/crd-csi-driver-registry.yaml --ignore-not-found

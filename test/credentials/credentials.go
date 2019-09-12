@@ -6,26 +6,29 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/BurntSushi/toml"
 	"github.com/pborman/uuid"
+	"github.com/pelletier/go-toml"
 
 	"k8s.io/klog"
 )
 
 const (
-	TempAzureCredentialFilePath     = "/tmp/azure.json"
+	TempAzureCredentialFilePath = "/tmp/azure.json"
+	AzurePublicCloud            = "AzurePublicCloud"
+	AzureChinaCloud             = "AzureChinaCloud"
+
 	defaultAzurePublicCloudLocation = "eastus2"
 	defaultAzureChinaCloudLocation  = "chinaeast2"
-	AzurePublicCloud                = "AzurePublicCloud"
-	AzureChinaCloud                 = "AzureChinaCloud"
 )
 
 // CredentialsConfig is used in Prow to store Azure credentials
+// https://github.com/kubernetes/test-infra/blob/master/kubetest/azure.go#L116-L118
 type CredentialsConfig struct {
 	Creds CredentialsFromProw
 }
 
 // CredentialsFromProw is used in Prow to store Azure credentials
+// https://github.com/kubernetes/test-infra/blob/master/kubetest/azure.go#L107-L114
 type CredentialsFromProw struct {
 	ClientID           string
 	ClientSecret       string
@@ -85,9 +88,9 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 		return parseAndExecuteTemplate(cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location)
 	}
 
-	// If credentials are not supplied through env vars, we need to obtain credentials from env var AZURE_CREDENTIALS
-	// and convert it to AZURE_CREDENTIAL_FILE for sanity and integration tests if we are testing in Prow
-	// https://github.com/kubernetes/test-infra/blob/master/config/jobs/kubernetes/cloud-provider-azure/cloud-provider-azure-config.yaml#L5
+	// If the tests are being run on Prow, credentials are not supplied through env vars. Instead, it is supplied
+	// through env var AZURE_CREDENTIALS. We need to convert it to AZURE_CREDENTIAL_FILE for sanity, integration and E2E tests
+	// https://github.com/kubernetes/test-infra/blob/master/config/jobs/kubernetes/cloud-provider-azure/cloud-provider-azure-config.yaml#L5-L6
 	if azureCredentialsPath, ok := os.LookupEnv("AZURE_CREDENTIALS"); ok {
 		klog.V(2).Infof("Running in Prow, converting AZURE_CREDENTIALS to AZURE_CREDENTIAL_FILE")
 		c, err := getCredentialsFromAzureCredentials(azureCredentialsPath)
@@ -104,7 +107,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 // CreateAzureCredentialFile deletes the temporary Azure credential file
 func DeleteAzureCredentialFile() error {
 	if err := os.Remove(TempAzureCredentialFilePath); err != nil && !os.IsNotExist(err) {
-		return fmt.Errorf("error deleting %s %v", TempAzureCredentialFilePath, err)
+		return fmt.Errorf("error removing %s %v", TempAzureCredentialFilePath, err)
 	}
 
 	return nil

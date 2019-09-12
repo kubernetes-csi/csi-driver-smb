@@ -67,19 +67,23 @@ func TestCreateAzureCredentialFileOnAzurePublicCloud(t *testing.T) {
 }
 
 func withAzureCredentials(t *testing.T, isAzureChinaCloud bool) {
-	defer func() {
-		assert.NoError(t, os.Remove(TempAzureCredentialFilePath))
-	}()
-
 	tempFile, err := ioutil.TempFile("", "azure.toml")
 	assert.NoError(t, err)
+	defer func() {
+		err := os.Remove(tempFile.Name())
+		assert.NoError(t, err)
+	}()
+
 	os.Setenv("AZURE_CREDENTIALS", tempFile.Name())
-	defer os.Remove(tempFile.Name())
 
 	_, err = tempFile.Write([]byte(fakeAzureCredentials))
 	assert.NoError(t, err)
 
 	creds, err := CreateAzureCredentialFile(isAzureChinaCloud)
+	defer func() {
+		err := os.Remove(TempAzureCredentialFilePath)
+		assert.NoError(t, err)
+	}()
 	assert.NoError(t, err)
 
 	var cloud string
@@ -103,12 +107,12 @@ func withAzureCredentials(t *testing.T, isAzureChinaCloud bool) {
 	const expectedAzureCredentialFileContent = `
 	{
 		"cloud": "{{.Cloud}}",
-	    "tenantId": "72f988bf-xxxx-xxxx-xxxx-2d7cd011db47",
-	    "subscriptionId": "b9d2281e-xxxx-xxxx-xxxx-0d50377cdf76",
-	    "aadClientId": "df7269f2-xxxx-xxxx-xxxx-0f12a7d97404",
-	    "aadClientSecret": "8c416dc5-xxxx-xxxx-xxxx-d77069e2a255",
-	    "resourceGroup": "test-resource-group",
-	    "location": "test-location"
+		"tenantId": "72f988bf-xxxx-xxxx-xxxx-2d7cd011db47",
+		"aadClientId": "df7269f2-xxxx-xxxx-xxxx-0f12a7d97404",
+		"subscriptionId": "b9d2281e-xxxx-xxxx-xxxx-0d50377cdf76",
+		"aadClientSecret": "8c416dc5-xxxx-xxxx-xxxx-d77069e2a255",
+		"resourceGroup": "test-resource-group",
+		"location": "test-location"
 	}
 	`
 	tmpl := template.New("expectedAzureCredentialFileContent")
@@ -126,11 +130,11 @@ func withAzureCredentials(t *testing.T, isAzureChinaCloud bool) {
 }
 
 func withEnvironmentVariables(t *testing.T, isAzureChinaCloud bool) {
-	defer func() {
-		assert.NoError(t, os.Remove(TempAzureCredentialFilePath))
-	}()
-
 	creds, err := CreateAzureCredentialFile(isAzureChinaCloud)
+	defer func() {
+		err := os.Remove(TempAzureCredentialFilePath)
+		assert.NoError(t, err)
+	}()
 	assert.NoError(t, err)
 
 	var cloud string
@@ -154,12 +158,12 @@ func withEnvironmentVariables(t *testing.T, isAzureChinaCloud bool) {
 	const expectedAzureCredentialFileContent = `
 	{
 		"cloud": "{{.Cloud}}",
-	    "tenantId": "test-tenant-id",
-	    "subscriptionId": "test-subscription-id",
-	    "aadClientId": "test-aad-client-id",
-	    "aadClientSecret": "test-aad-client-secret",
-	    "resourceGroup": "test-resource-group",
-	    "location": "test-location"
+		"tenantId": "test-tenant-id",
+		"subscriptionId": "test-subscription-id",
+		"aadClientId": "test-aad-client-id",
+		"aadClientSecret": "test-aad-client-secret",
+		"resourceGroup": "test-resource-group",
+		"location": "test-location"
 	}
 	`
 	tmpl := template.New("expectedAzureCredentialFileContent")

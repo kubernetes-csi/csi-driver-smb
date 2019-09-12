@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/services/resources/mgmt/2018-05-01/resources"
 	"github.com/Azure/go-autorest/autorest"
@@ -58,11 +57,6 @@ func (az *AzureClient) EnsureResourceGroup(ctx context.Context, name, location s
 }
 
 func (az *AzureClient) DeleteResourceGroup(ctx context.Context, groupName string) error {
-	// Only delete resource group the test created if $resourceGroup is not supplied
-	if !strings.HasPrefix(groupName, "azurefile-csi-driver-test-") {
-		return nil
-	}
-
 	_, err := az.groupsClient.Get(ctx, groupName)
 	if err == nil {
 		future, err := az.groupsClient.Delete(ctx, groupName)

@@ -49,8 +49,8 @@ func TestIntegrationOnAzureChinaCloud(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	// Skip the test if Azure China Cloud credentials are not supplied
 	if err != nil {
+		// Skip the test if Azure China Cloud credentials are not supplied
 		t.Skipf("Skipping integration test on Azure China Cloud due to the following error %v", err)
 	}
 	assert.NotNil(t, creds)

@@ -48,14 +48,22 @@ func TestSanity(t *testing.T) {
 	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
 	defer func() {
-		t.Logf("Deleting resource group %s", creds.ResourceGroup)
-		err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
-		assert.NoError(t, err)
+		// Only delete resource group the test created
+		if strings.HasPrefix(creds.ResourceGroup, "azurefile-csi-driver-test-") {
+			t.Logf("Deleting resource group %s", creds.ResourceGroup)
+			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
+			assert.NoError(t, err)
+		}
 	}()
 
 	// Execute the script from project root
 	err = os.Chdir("../..")
 	assert.NoError(t, err)
+	// Change directory back to test/sanity
+	defer func() {
+		err := os.Chdir("test/sanity")
+		assert.NoError(t, err)
+	}()
 
 	cwd, err := os.Getwd()
 	assert.NoError(t, err)
