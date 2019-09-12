@@ -13,11 +13,11 @@ import (
 )
 
 const (
-	TempAzureCredentialFilePath = "/tmp/azure.json"
-	defaultCloudLocation        = "eastus2"
-	defaultChinaCloudLocation   = "chinaeast2"
-	AzurePublicCloud            = "AzurePublicCloud"
-	AzureChinaCloud             = "AzurePublicCloud"
+	TempAzureCredentialFilePath     = "/tmp/azure.json"
+	defaultAzurePublicCloudLocation = "eastus2"
+	defaultAzureChinaCloudLocation  = "chinaeast2"
+	AzurePublicCloud                = "AzurePublicCloud"
+	AzureChinaCloud                 = "AzureChinaCloud"
 )
 
 // CredentialsConfig is used in Prow to store Azure credentials
@@ -75,9 +75,9 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 
 	if location == "" {
 		if isAzureChinaCloud {
-			location = defaultChinaCloudLocation
+			location = defaultAzureChinaCloudLocation
 		} else {
-			location = defaultCloudLocation
+			location = defaultAzurePublicCloudLocation
 		}
 	}
 
@@ -95,7 +95,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 			return nil, err
 		}
 		// We only test on AzurePublicCloud in Prow
-		return parseAndExecuteTemplate(AzurePublicCloud, c.TenantID, c.SubscriptionID, c.ClientID, c.ClientSecret, resourceGroup, location)
+		return parseAndExecuteTemplate(cloud, c.TenantID, c.SubscriptionID, c.ClientID, c.ClientSecret, resourceGroup, location)
 	}
 
 	return nil, fmt.Errorf("AZURE_CREDENTIALS is not set. You will need to set $tenantId, $subscriptionId, $aadClientId and $aadClientSecret")

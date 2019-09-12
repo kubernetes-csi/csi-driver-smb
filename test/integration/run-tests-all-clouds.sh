@@ -23,4 +23,5 @@ cloud='AzurePublicCloud'
 if [[ "$#" -gt 0 ]]; then
   cloud="$1"
 fi
-sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' $cloud
+
+sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"

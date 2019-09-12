@@ -58,7 +58,7 @@ func (az *AzureClient) EnsureResourceGroup(ctx context.Context, name, location s
 }
 
 func (az *AzureClient) DeleteResourceGroup(ctx context.Context, groupName string) error {
-	// Only delete resource group if $resourceGroup is not supplied
+	// Only delete resource group the test created if $resourceGroup is not supplied
 	if !strings.HasPrefix(groupName, "azurefile-csi-driver-test-") {
 		return nil
 	}

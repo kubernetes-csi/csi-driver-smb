@@ -31,7 +31,8 @@ import (
 func TestSanity(t *testing.T) {
 	creds, err := credentials.CreateAzureCredentialFile(false)
 	defer func() {
-		assert.NoError(t, credentials.DeleteAzureCredentialFile())
+		err := credentials.DeleteAzureCredentialFile()
+		assert.NoError(t, err)
 	}()
 	assert.NoError(t, err)
 	assert.NotNil(t, creds)
@@ -43,7 +44,7 @@ func TestSanity(t *testing.T) {
 
 	ctx := context.Background()
 	// Create an empty resource group for sanity test
-	t.Logf("Creating resource group %s", creds.ResourceGroup)
+	t.Logf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
 	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
 	defer func() {

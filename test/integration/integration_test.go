@@ -28,26 +28,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIntegration(t *testing.T) {
+func TestIntegrationOnAzurePublicCloud(t *testing.T) {
 	// Test on AzurePublicCloud
 	creds, err := credentials.CreateAzureCredentialFile(false)
 	defer func() {
-		assert.NoError(t, credentials.DeleteAzureCredentialFile())
+		err := credentials.DeleteAzureCredentialFile()
+		assert.NoError(t, err)
 	}()
 	assert.NoError(t, err)
 	assert.NotNil(t, creds)
 
 	testIntegration(t, creds)
+}
 
+func TestIntegrationOnAzureChinaCloud(t *testing.T) {
 	// Test on AzureChinaCloud
-	creds, err = credentials.CreateAzureCredentialFile(true)
+	creds, err := credentials.CreateAzureCredentialFile(true)
 	defer func() {
-		assert.NoError(t, credentials.DeleteAzureCredentialFile())
+		err := credentials.DeleteAzureCredentialFile()
+		assert.NoError(t, err)
 	}()
 
-	// Skip the test if Azure China cloud credentials are not supplied
+	// Skip the test if Azure China Cloud credentials are not supplied
 	if err != nil {
-		t.Skip()
+		t.Skipf("Skipping integration test on Azure China Cloud due to the following error %v", err)
 	}
 	assert.NotNil(t, creds)
 	testIntegration(t, creds)
@@ -64,15 +68,15 @@ func testIntegration(t *testing.T, creds *credentials.Credentials) {
 	t.Logf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
 	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
-	defer func() {
-		t.Logf("Deleting resource group %s in %s", creds.ResourceGroup, creds.Cloud)
-		err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
-		assert.NoError(t, err)
-	}()
 
 	// Execute the script from project root
 	err = os.Chdir("../..")
 	assert.NoError(t, err)
+	// Change directory back to test/integration in preparation for next test
+	defer func() {
+		err := os.Chdir("test/integration")
+		assert.NoError(t, err)
+	}()
 
 	cwd, err := os.Getwd()
 	assert.NoError(t, err)
