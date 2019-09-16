@@ -6,7 +6,7 @@ require (
 	contrib.go.opencensus.io/exporter/ocagent v0.2.0 // indirect
 	github.com/Azure/azure-sdk-for-go v21.4.0+incompatible
 	github.com/Azure/azure-storage-file-go v0.5.0
-	github.com/Azure/go-autorest v11.5.1+incompatible // indirect
+	github.com/Azure/go-autorest v11.5.1+incompatible
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.1.0 // indirect
 	github.com/container-storage-interface/spec v1.1.0
@@ -43,7 +43,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jonboulle/clockwork v0.1.0 // indirect
 	github.com/json-iterator/go v1.1.5 // indirect
-	github.com/kubernetes-csi/csi-test v1.1.0
 	github.com/kubernetes-csi/external-snapshotter v1.0.1
 	github.com/mailru/easyjson v0.0.0-20190312143242-1de009706dbe // indirect
 	github.com/marstr/guid v1.1.0 // indirect
@@ -53,6 +52,7 @@ require (
 	github.com/onsi/gomega v1.4.3
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/pborman/uuid v0.0.0-20180906182336-adf5a7427709
+	github.com/pelletier/go-toml v1.4.0
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/prometheus/client_golang v0.9.2
@@ -78,7 +78,6 @@ require (
 	google.golang.org/grpc v1.19.0
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/square/go-jose.v2 v2.3.0 // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
 	k8s.io/api v0.0.0-20190624085159-95846d7ef82a
 	k8s.io/apiextensions-apiserver v0.0.0-20190315093550-53c4693659ed // indirect
 	k8s.io/apimachinery v0.0.0-20190624085041-961b39a1baa0
@@ -183,6 +182,7 @@ replace (
 	github.com/opencontainers/go-digest => github.com/opencontainers/go-digest v1.0.0-rc1
 	github.com/openzipkin/zipkin-go => github.com/openzipkin/zipkin-go v0.1.1
 	github.com/pborman/uuid => github.com/pborman/uuid v0.0.0-20180906182336-adf5a7427709
+	github.com/pelletier/go-toml => github.com/pelletier/go-toml v1.4.0
 	github.com/peterbourgon/diskv => github.com/peterbourgon/diskv v2.0.1+incompatible
 	github.com/pkg/errors => github.com/pkg/errors v0.8.1
 	github.com/pmezard/go-difflib => github.com/pmezard/go-difflib v1.0.0

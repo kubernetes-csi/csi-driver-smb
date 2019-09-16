@@ -16,26 +16,15 @@ jobs:
       script:
         - make verify
     - stage: test
-      name: "build test"
-      install:
-        - GO111MODULE=off go get github.com/mattn/goveralls
+      name: "unit test"
       script:
-        - make azurefile-container
-        - make azurefile-windows
-        - go test -covermode=count -coverprofile=profile.cov ./pkg/...
+        - make unit-test
     - stage: test
       name: "sanity test"
-      install:
-        - sudo apt update && sudo apt install cifs-utils procps -y
       script:
-        - make azurefile
         - make sanity-test
       # after_failure: TRAVIS_TEST_RESULT=0
     - stage: test
       name: "integration test"
-      install:
-        - GO111MODULE=off go get github.com/rexray/gocsi/csc
-        - sudo apt update && sudo apt install cifs-utils procps -y
       script:
-        - make azurefile
         - make integration-test

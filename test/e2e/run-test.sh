@@ -16,22 +16,16 @@
 
 set -uo pipefail
 
-kubectl get daemonsets csi-azurefile-node -n kube-system; checkAzureFileDriver=$?;
-if [ $checkAzureFileDriver -ne 0 ]; then
-    echo "AzureFile csi driver daemonset not found";
-    echo "Installing AzureFile csi driver";
-    deploy/install-driver.sh
-    echo "AzureFile csi driver installed";    
-fi
+function cleanup {
+  deploy/uninstall-driver.sh
+}
+
+trap cleanup EXIT
+
+deploy/install-driver.sh
 
 # Fetching ginkgo for running the test
-GO111MODULE=off go get -u github.com/onsi/ginkgo/ginkgo
-# Exporting KUBECONFIG path
-export KUBECONFIG=$HOME/.kube/config
-# Running the e2e test
-ginkgo test/e2e
-# Checking for test status
-TEST_PASS=$?
-if [[ $TEST_PASS -ne 0 ]]; then
-    exit 1
-fi
+GO111MODULE=off go get github.com/onsi/ginkgo/ginkgo
+export KUBECONFIG="$HOME/.kube/config"
+"$GOBIN"/ginkgo test/e2e
+exit "$?"

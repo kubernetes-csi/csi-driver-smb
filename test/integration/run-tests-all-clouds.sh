@@ -16,35 +16,12 @@
 
 set -euo pipefail
 
-if [ ! -v AZURE_CREDENTIAL_FILE ]; then
-        export set AZURE_CREDENTIAL_FILE=/tmp/azure.json
+sudo apt update && sudo apt install cifs-utils procps -y
+GO111MODULE=off go get github.com/rexray/gocsi/csc
+
+cloud='AzurePublicCloud'
+if [[ "$#" -gt 0 ]]; then
+  cloud="$1"
 fi
 
-# run test on AzurePublicCloud
-if [ -v aadClientSecret ]; then
-	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
-
-	sed -i "s/tenantId-input/$tenantId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/subscriptionId-input/$subscriptionId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/aadClientId-input/$aadClientId/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s#aadClientSecret-input#$aadClientSecret#g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/resourceGroup-input/$resourceGroup/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/location-input/$location/g" $AZURE_CREDENTIAL_FILE
-fi
-
-sudo test/integration/run-test.sh "tcp://127.0.0.1:10000" "/tmp/testmount1" "AzurePublicCloud"
-
-# run test on AzureChinaCloud
-if [ -v aadClientSecret_china ]; then
-	cp test/integration/azure.json $AZURE_CREDENTIAL_FILE
-
-	sed -i "s/AzurePublicCloud/AzureChinaCloud/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/tenantId-input/${tenantId_china}/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/subscriptionId-input/${subscriptionId_china}/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/aadClientId-input/${aadClientId_china}/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s#aadClientSecret-input#${aadClientSecret_china}#g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/resourceGroup-input/${resourceGroup_china}/g" $AZURE_CREDENTIAL_FILE
-	sed -i "s/location-input/${location_china}/g" $AZURE_CREDENTIAL_FILE
-
-	sudo test/integration/run-test.sh "tcp://127.0.0.1:10001" "/tmp/testmount2" "AzureChinaCloud"
-fi
+sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"
