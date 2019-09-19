@@ -17,16 +17,15 @@ const (
 	AzureChinaCloud             = "AzureChinaCloud"
 	TempAzureCredentialFilePath = "/tmp/azure.json"
 
-	azureCredentialFileTemplate = `
-	{
-	    "cloud": "{{.Cloud}}",
-	    "tenantId": "{{.TenantID}}",
-	    "subscriptionId": "{{.SubscriptionID}}",
-	    "aadClientId": "{{.AADClientID}}",
-	    "aadClientSecret": "{{.AADClientSecret}}",
-	    "resourceGroup": "{{.ResourceGroup}}",
-	    "location": "{{.Location}}"
-	}`
+	azureCredentialFileTemplate = `{
+    "cloud": "{{.Cloud}}",
+    "tenantId": "{{.TenantID}}",
+    "subscriptionId": "{{.SubscriptionID}}",
+    "aadClientId": "{{.AADClientID}}",
+    "aadClientSecret": "{{.AADClientSecret}}",
+    "resourceGroup": "{{.ResourceGroup}}",
+    "location": "{{.Location}}"
+}`
 	defaultAzurePublicCloudLocation = "eastus2"
 	defaultAzureChinaCloudLocation  = "chinaeast2"
 )

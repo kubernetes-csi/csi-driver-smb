@@ -63,10 +63,9 @@ func testIntegration(t *testing.T, creds *credentials.Credentials) {
 	azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
 	assert.NoError(t, err)
 
-	ctx := context.Background()
 	// Create an empty resource group for integration test
 	t.Logf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
-	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
+	_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
 
 	// Execute the script from project root

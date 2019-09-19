@@ -21,9 +21,9 @@ import (
 	"os"
 
 	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/driver"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/testsuites"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
 	. "github.com/onsi/ginkgo"
 	"github.com/pborman/uuid"
 	v1 "k8s.io/api/core/v1"
@@ -32,33 +32,28 @@ import (
 )
 
 var _ = Describe("Dynamic Provisioning", func() {
-	f := framework.NewDefaultFramework("azurefile")
-
 	var (
-		cs         clientset.Interface
-		ns         *v1.Namespace
-		testDriver driver.PVTestDriver
+		azurefileDriver *azurefile.Driver
+		cs              clientset.Interface
+		f               *framework.Framework = framework.NewDefaultFramework("azurefile")
+		ns              *v1.Namespace
+		testDriver      driver.PVTestDriver = driver.InitAzureFileCSIDriver()
 	)
 
-	nodeid := os.Getenv("nodeid")
-	azurefileDriver := azurefile.NewDriver(nodeid)
-	endpoint := fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String())
-
-	if _, err := credentials.CreateAzureCredentialFile(false); err != nil {
-		panic(err)
-	}
-	os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
-
-	go func() {
-		azurefileDriver.Run(endpoint)
-	}()
-
 	BeforeEach(func() {
+		if azurefileDriver == nil {
+			nodeid := os.Getenv("nodeid")
+			azurefileDriver = azurefile.NewDriver(nodeid)
+			go func() {
+				os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
+				endpoint := fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String())
+				azurefileDriver.Run(endpoint)
+			}()
+		}
 		cs = f.ClientSet
 		ns = f.Namespace
 	})
 
-	testDriver = driver.InitAzureFileCSIDriver()
 	It(fmt.Sprintf("should create a volume on demand"), func() {
 		pods := []testsuites.PodDetails{
 			{

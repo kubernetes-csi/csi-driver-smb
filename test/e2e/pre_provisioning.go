@@ -21,9 +21,9 @@ import (
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/driver"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/testsuites"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
 	. "github.com/onsi/ginkgo"
 	"github.com/pborman/uuid"
 
@@ -33,38 +33,33 @@ import (
 )
 
 const (
-	defaultDiskSize = 10
-)
-
-var (
-	defaultDiskSizeBytes int64 = defaultDiskSize * 1024 * 1024 * 1024
+	defaultDiskSize      = 10
+	defaultDiskSizeBytes = defaultDiskSize * 1024 * 1024 * 1024
 )
 
 var _ = Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func() {
-	f := framework.NewDefaultFramework("azurefile")
-
 	var (
-		cs         clientset.Interface
-		ns         *v1.Namespace
-		testDriver driver.PreProvisionedVolumeTestDriver
-		volumeID   string
+		azurefileDriver *azurefile.Driver
+		cs              clientset.Interface
+		f               *framework.Framework = framework.NewDefaultFramework("azurefile")
+		ns              *v1.Namespace
+		testDriver      driver.PreProvisionedVolumeTestDriver
+		volumeID        string
 		// Set to true if the volume should be deleted automatically after test
 		skipManuallyDeletingVolume bool
 	)
-	nodeid := os.Getenv("nodeid")
-	azurefileDriver := azurefile.NewDriver(nodeid)
-	endpoint := fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String())
-
-	if _, err := credentials.CreateAzureCredentialFile(false); err != nil {
-		panic(err)
-	}
-	os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
-
-	go func() {
-		azurefileDriver.Run(endpoint)
-	}()
 
 	BeforeEach(func() {
+		if azurefileDriver == nil {
+			nodeid := os.Getenv("nodeid")
+			azurefileDriver := azurefile.NewDriver(nodeid)
+			os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
+			go func() {
+				os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
+				endpoint := fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String())
+				azurefileDriver.Run(endpoint)
+			}()
+		}
 		cs = f.ClientSet
 		ns = f.Namespace
 		testDriver = driver.InitAzureFileCSIDriver()

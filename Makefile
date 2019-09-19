@@ -13,9 +13,9 @@
 # limitations under the License.
 
 PKG = github.com/kubernetes-sigs/azurefile-csi-driver
-REGISTRY_NAME = andyzhangx
+REGISTRY_NAME ?= andyzhangx
 IMAGE_NAME = azurefile-csi
-IMAGE_VERSION = v0.4.0
+IMAGE_VERSION ?= v0.4.0
 IMAGE_TAG = $(REGISTRY_NAME)/$(IMAGE_NAME):$(IMAGE_VERSION)
 IMAGE_TAG_LATEST = $(REGISTRY_NAME)/$(IMAGE_NAME):latest
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
@@ -24,6 +24,8 @@ LDFLAGS ?= "-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
 GOBIN ?= $(GOPATH)/bin
+KIND_VERSION ?= 0.5.1
+KUBERNETES_VERSION ?= 1.15.3
 export GOPATH GOBIN
 
 .EXPORT_ALL_VARIABLES:
@@ -43,9 +45,28 @@ sanity-test: azurefile
 integration-test: azurefile
 	go test -v -timeout=10m ./test/integration
 
+.PHONY: e2e-bootstrap
+e2e-bootstrap:
+	# Download and install kind
+	#curl -L https://github.com/kubernetes-sigs/kind/releases/download/v$(KIND_VERSION)/kind-$(shell uname)-amd64 --output kind && chmod +x kind && sudo mv kind /usr/local/bin/
+	# Create kind cluster
+	kind create cluster --config hack/config/kind.yaml --image kindest/node:v$(KUBERNETES_VERSION)
+	# Build image for e2e test
+	#REGISTRY_NAME=e2e IMAGE_VERSION=$(GIT_COMMIT) make azurefile-container
+	# Load image into kind cluster
+	kind load docker-image e2e/$(IMAGE_NAME):$(GIT_COMMIT)
+	# Set up tiller
+	kubectl --namespace kube-system --output yaml create serviceaccount tiller --dry-run | kubectl --kubeconfig $$(kind get kubeconfig-path)  apply -f -
+	kubectl create --output yaml clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller --dry-run | kubectl --kubeconfig $$(kind get kubeconfig-path) apply -f -
+	helm init --service-account tiller --upgrade --wait --kubeconfig $$(kind get kubeconfig-path)
+	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait \
+		--set image.pullPolicy=IfNotPresent \
+		--set image.repository=e2e/$(IMAGE_NAME) \
+		--set image.tag=$(GIT_COMMIT)
+
 .PHONY: e2e-test
 e2e-test:
-	test/e2e/run-test.sh
+	go test -v ./test/e2e
 
 .PHONY: azurefile
 azurefile:

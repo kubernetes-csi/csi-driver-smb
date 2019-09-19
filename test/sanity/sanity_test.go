@@ -65,12 +65,12 @@ func TestSanity(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	cwd, err := os.Getwd()
+	projectRoot, err := os.Getwd()
 	assert.NoError(t, err)
-	assert.True(t, strings.HasSuffix(cwd, "azurefile-csi-driver"))
+	assert.True(t, strings.HasSuffix(projectRoot, "azurefile-csi-driver"))
 
 	cmd := exec.Command("./test/sanity/run-tests-all-clouds.sh")
-	cmd.Dir = cwd
+	cmd.Dir = projectRoot
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
