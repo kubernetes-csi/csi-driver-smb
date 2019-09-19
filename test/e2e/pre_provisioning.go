@@ -21,7 +21,7 @@ import (
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/credentials"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/driver"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/testsuites"
 	. "github.com/onsi/ginkgo"

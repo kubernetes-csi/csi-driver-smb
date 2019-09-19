@@ -13,22 +13,32 @@ import (
 )
 
 const (
-	TempAzureCredentialFilePath = "/tmp/azure.json"
 	AzurePublicCloud            = "AzurePublicCloud"
 	AzureChinaCloud             = "AzureChinaCloud"
+	TempAzureCredentialFilePath = "/tmp/azure.json"
 
+	azureCredentialFileTemplate = `
+	{
+	    "cloud": "{{.Cloud}}",
+	    "tenantId": "{{.TenantID}}",
+	    "subscriptionId": "{{.SubscriptionID}}",
+	    "aadClientId": "{{.AADClientID}}",
+	    "aadClientSecret": "{{.AADClientSecret}}",
+	    "resourceGroup": "{{.ResourceGroup}}",
+	    "location": "{{.Location}}"
+	}`
 	defaultAzurePublicCloudLocation = "eastus2"
 	defaultAzureChinaCloudLocation  = "chinaeast2"
 )
 
 // CredentialsConfig is used in Prow to store Azure credentials
-// https://github.com/kubernetes/test-infra/blob/master/kubetest/azure.go#L116-L118
+// https://github.com/kubernetes/test-infra/blob/master/kubetest/utils/azure.go#L116-L118
 type CredentialsConfig struct {
 	Creds CredentialsFromProw
 }
 
 // CredentialsFromProw is used in Prow to store Azure credentials
-// https://github.com/kubernetes/test-infra/blob/master/kubetest/azure.go#L107-L114
+// https://github.com/kubernetes/test-infra/blob/master/kubetest/utils/azure.go#L107-L114
 type CredentialsFromProw struct {
 	ClientID           string
 	ClientSecret       string
@@ -101,7 +111,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 		return parseAndExecuteTemplate(cloud, c.TenantID, c.SubscriptionID, c.ClientID, c.ClientSecret, resourceGroup, location)
 	}
 
-	return nil, fmt.Errorf("AZURE_CREDENTIALS is not set. You will need to set $tenantId, $subscriptionId, $aadClientId and $aadClientSecret")
+	return nil, fmt.Errorf("AZURE_CREDENTIALS is not set. You will need to set the following env vars: $tenantId, $subscriptionId, $aadClientId and $aadClientSecret")
 }
 
 // CreateAzureCredentialFile deletes the temporary Azure credential file
@@ -132,9 +142,10 @@ func getCredentialsFromAzureCredentials(azureCredentialsPath string) (*Credentia
 
 // parseAndExecuteTemplate replaces credential placeholders in hack/template/azure.json with actual credentials
 func parseAndExecuteTemplate(cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location string) (*Credentials, error) {
-	t, err := template.ParseFiles("../../hack/template/azure.json")
+	t := template.New("AzureCredentialFileTemplate")
+	t, err := t.Parse(azureCredentialFileTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing hack/template/azure.json %v", err)
+		return nil, fmt.Errorf("error parsing  azureCredentialFileTemplate %v", err)
 	}
 
 	f, err := os.Create(TempAzureCredentialFilePath)

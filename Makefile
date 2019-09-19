@@ -33,7 +33,7 @@ all: azurefile
 
 .PHONY: unit-test
 unit-test:
-	go test -v -race ./pkg/... ./test/credentials
+	go test -v -race ./pkg/... ./test/utils/credentials
 
 .PHONY: sanity-test
 sanity-test: azurefile

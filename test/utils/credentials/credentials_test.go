@@ -80,11 +80,11 @@ func withAzureCredentials(t *testing.T, isAzureChinaCloud bool) {
 	assert.NoError(t, err)
 
 	creds, err := CreateAzureCredentialFile(isAzureChinaCloud)
+	assert.NoError(t, err)
 	defer func() {
-		err := os.Remove(TempAzureCredentialFilePath)
+		err := DeleteAzureCredentialFile()
 		assert.NoError(t, err)
 	}()
-	assert.NoError(t, err)
 
 	var cloud string
 	if isAzureChinaCloud {
@@ -132,7 +132,7 @@ func withAzureCredentials(t *testing.T, isAzureChinaCloud bool) {
 func withEnvironmentVariables(t *testing.T, isAzureChinaCloud bool) {
 	creds, err := CreateAzureCredentialFile(isAzureChinaCloud)
 	defer func() {
-		err := os.Remove(TempAzureCredentialFilePath)
+		err := DeleteAzureCredentialFile()
 		assert.NoError(t, err)
 	}()
 	assert.NoError(t, err)
