@@ -45,28 +45,24 @@ sanity-test: azurefile
 integration-test: azurefile
 	go test -v -timeout=10m ./test/integration
 
-.PHONY: e2e-bootstrap
-e2e-bootstrap:
-	# Download and install kind
-	#curl -L https://github.com/kubernetes-sigs/kind/releases/download/v$(KIND_VERSION)/kind-$(shell uname)-amd64 --output kind && chmod +x kind && sudo mv kind /usr/local/bin/
-	# Create kind cluster
-	kind create cluster --config hack/config/kind.yaml --image kindest/node:v$(KUBERNETES_VERSION)
-	# Build image for e2e test
-	#REGISTRY_NAME=e2e IMAGE_VERSION=$(GIT_COMMIT) make azurefile-container
-	# Load image into kind cluster
-	kind load docker-image e2e/$(IMAGE_NAME):$(GIT_COMMIT)
-	# Set up tiller
-	kubectl --namespace kube-system --output yaml create serviceaccount tiller --dry-run | kubectl --kubeconfig $$(kind get kubeconfig-path)  apply -f -
-	kubectl create --output yaml clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller --dry-run | kubectl --kubeconfig $$(kind get kubeconfig-path) apply -f -
-	helm init --service-account tiller --upgrade --wait --kubeconfig $$(kind get kubeconfig-path)
+.PHONY: install-driver
+install-driver:
+	IMAGE_VERSION=e2e-$(GIT_COMMIT) make azurefile-container push
+	# Install helm
+	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | DESIRED_VERSION=v2.11.0 bash
+	helm version
 	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait \
 		--set image.pullPolicy=IfNotPresent \
-		--set image.repository=e2e/$(IMAGE_NAME) \
-		--set image.tag=$(GIT_COMMIT)
+		--set image.repository=$(REGISTRY_NAME)/$(IMAGE_NAME) \
+		--set image.tag=e2e-$(GIT_COMMIT)
+
+.PHONY: uninstall-driver
+uninstall-driver:
+	helm delete --purge azurefile-csi-driver
 
 .PHONY: e2e-test
 e2e-test:
-	go test -v ./test/e2e
+	go test -v -timeout=30m ./test/e2e
 
 .PHONY: azurefile
 azurefile:
@@ -81,12 +77,11 @@ azurefile-container: azurefile
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
 
 .PHONY: push
-push: azurefile-container
+push:
 	docker push $(IMAGE_TAG)
 
 .PHONY: push-latest
 push-latest: azurefile-container
-	docker push $(IMAGE_TAG)
 	docker tag $(IMAGE_TAG) $(IMAGE_TAG_LATEST)
 	docker push $(IMAGE_TAG_LATEST)
 

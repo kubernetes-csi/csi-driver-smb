@@ -18,20 +18,25 @@ package e2e
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/azure"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pborman/uuid"
 	"k8s.io/kubernetes/test/e2e/framework"
 )
 
 const kubeconfigEnvVar = "KUBECONFIG"
+
+var azurefileDriver *azurefile.Driver
 
 func init() {
 	// k8s.io/kubernetes/test/e2e/framework requires env KUBECONFIG to be set
@@ -52,7 +57,18 @@ var _ = BeforeSuite(func() {
 	_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
 	Expect(err).NotTo(HaveOccurred())
 
-	// make e2e-bootstrap from project root
+	// Need to login to ACR using SP credential if we are running on Prow so we can push images.
+	// If running locally, user should run 'docker login' before running E2E tests
+	if runningInProw() {
+		registry := os.Getenv("REGISTRY_NAME")
+		Expect(registry).NotTo(Equal(""))
+
+		cmd := exec.Command("docker", "login", fmt.Sprintf("--username=%s", creds.AADClientID), fmt.Sprintf("--password=%s", creds.AADClientSecret), registry)
+		err := cmd.Run()
+		Expect(err).NotTo(HaveOccurred())
+	}
+
+	// Install Azure File CSI Driver on cluster from project root
 	err = os.Chdir("../..")
 	Expect(err).NotTo(HaveOccurred())
 	defer func() {
@@ -64,15 +80,49 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(Equal(true))
 
-	cmd := exec.Command("make", "e2e-bootstrap")
+	cmd := exec.Command("make", "install-driver")
 	cmd.Dir = projectRoot
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()
+	Expect(err).NotTo(HaveOccurred())
+
+	azurefileDriver = azurefile.NewDriver(nodeid)
+	go func() {
+		os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
+		azurefileDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()))
+	}()
+})
+
+var _ = AfterSuite(func() {
+	err := os.Chdir("../..")
+	Expect(err).NotTo(HaveOccurred())
+	defer func() {
+		err := os.Chdir("test/e2e")
+		Expect(err).NotTo(HaveOccurred())
+	}()
+
+	projectRoot, err := os.Getwd()
+	Expect(err).NotTo(HaveOccurred())
+	Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(Equal(true))
+
+	cmd := exec.Command("make", "uninstall-driver")
+	cmd.Dir = projectRoot
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err = cmd.Run()
+	Expect(err).NotTo(HaveOccurred())
+
+	err = credentials.DeleteAzureCredentialFile()
 	Expect(err).NotTo(HaveOccurred())
 })
 
 func TestE2E(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "AzureFile CSI Driver End-to-End Tests")
+}
+
+func runningInProw() bool {
+	_, ok := os.LookupEnv("AZURE_CREDENTIALS")
+	return ok
 }

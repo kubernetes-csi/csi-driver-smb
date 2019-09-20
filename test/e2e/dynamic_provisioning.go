@@ -18,38 +18,25 @@ package e2e
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/driver"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/testsuites"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
 	. "github.com/onsi/ginkgo"
-	"github.com/pborman/uuid"
 	v1 "k8s.io/api/core/v1"
 	clientset "k8s.io/client-go/kubernetes"
 	"k8s.io/kubernetes/test/e2e/framework"
 )
 
 var _ = Describe("Dynamic Provisioning", func() {
+	f := framework.NewDefaultFramework("azurefile")
+	testDriver := driver.InitAzureFileCSIDriver()
+
 	var (
-		azurefileDriver *azurefile.Driver
-		cs              clientset.Interface
-		f               *framework.Framework = framework.NewDefaultFramework("azurefile")
-		ns              *v1.Namespace
-		testDriver      driver.PVTestDriver = driver.InitAzureFileCSIDriver()
+		cs clientset.Interface
+		ns *v1.Namespace
 	)
 
 	BeforeEach(func() {
-		if azurefileDriver == nil {
-			nodeid := os.Getenv("nodeid")
-			azurefileDriver = azurefile.NewDriver(nodeid)
-			go func() {
-				os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
-				endpoint := fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String())
-				azurefileDriver.Run(endpoint)
-			}()
-		}
 		cs = f.ClientSet
 		ns = f.Namespace
 	})

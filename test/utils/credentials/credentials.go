@@ -93,6 +93,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 		}
 	}
 
+	// Running test locally
 	if tenantId != "" && subscriptionId != "" && aadClientId != "" && aadClientSecret != "" {
 		return parseAndExecuteTemplate(cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location)
 	}
@@ -106,7 +107,6 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 		if err != nil {
 			return nil, err
 		}
-		// We only test on AzurePublicCloud in Prow
 		return parseAndExecuteTemplate(cloud, c.TenantID, c.SubscriptionID, c.ClientID, c.ClientSecret, resourceGroup, location)
 	}
 
