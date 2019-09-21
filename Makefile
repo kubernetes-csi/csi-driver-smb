@@ -13,11 +13,11 @@
 # limitations under the License.
 
 PKG = github.com/kubernetes-sigs/azurefile-csi-driver
-REGISTRY_NAME ?= andyzhangx
+REGISTRY ?= andyzhangx
 IMAGE_NAME = azurefile-csi
 IMAGE_VERSION ?= v0.4.0
-IMAGE_TAG = $(REGISTRY_NAME)/$(IMAGE_NAME):$(IMAGE_VERSION)
-IMAGE_TAG_LATEST = $(REGISTRY_NAME)/$(IMAGE_NAME):latest
+IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
+IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 LDFLAGS ?= "-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
@@ -56,7 +56,7 @@ install-driver:
 	IMAGE_VERSION=e2e-$(GIT_COMMIT) make azurefile-container push
 	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait \
 		--set image.pullPolicy=IfNotPresent \
-		--set image.repository=$(REGISTRY_NAME)/$(IMAGE_NAME) \
+		--set image.repository=$(REGISTRY)/$(IMAGE_NAME) \
 		--set image.tag=e2e-$(GIT_COMMIT)
 
 .PHONY: uninstall-driver
@@ -84,7 +84,7 @@ push:
 	docker push $(IMAGE_TAG)
 
 .PHONY: push-latest
-push-latest: azurefile-container
+push-latest:
 	docker tag $(IMAGE_TAG) $(IMAGE_TAG_LATEST)
 	docker push $(IMAGE_TAG_LATEST)
 
