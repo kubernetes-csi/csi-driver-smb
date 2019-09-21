@@ -85,7 +85,7 @@ func (d *Driver) Run(endpoint string) {
 
 	cloud, err := GetCloudProvider()
 	if err != nil {
-		klog.Fatalf("failed to get Azure Cloud Provider %v", err)
+		klog.Fatalln("failed to get Azure Cloud Provider")
 	}
 	d.cloud = cloud
 

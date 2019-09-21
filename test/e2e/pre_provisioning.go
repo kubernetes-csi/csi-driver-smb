@@ -35,12 +35,12 @@ const (
 
 var _ = Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func() {
 	f := framework.NewDefaultFramework("azurefile")
-	testDriver := driver.InitAzureFileCSIDriver()
 
 	var (
-		cs       clientset.Interface
-		ns       *v1.Namespace
-		volumeID string
+		cs         clientset.Interface
+		ns         *v1.Namespace
+		testDriver driver.PreProvisionedVolumeTestDriver
+		volumeID   string
 		// Set to true if the volume should be deleted automatically after test
 		skipManuallyDeletingVolume bool
 	)
@@ -48,6 +48,7 @@ var _ = Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func() {
 	BeforeEach(func() {
 		cs = f.ClientSet
 		ns = f.Namespace
+		testDriver = driver.InitAzureFileCSIDriver()
 	})
 
 	AfterEach(func() {

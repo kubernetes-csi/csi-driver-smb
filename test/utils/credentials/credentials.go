@@ -31,13 +31,13 @@ const (
 )
 
 // CredentialsConfig is used in Prow to store Azure credentials
-// https://github.com/kubernetes/test-infra/blob/master/kubetest/utils/azure.go#L116-L118
+// https://github.com/kubernetes/test-infra/blob/master/kubetest/azure.go#L116-L118
 type CredentialsConfig struct {
 	Creds CredentialsFromProw
 }
 
 // CredentialsFromProw is used in Prow to store Azure credentials
-// https://github.com/kubernetes/test-infra/blob/master/kubetest/utils/azure.go#L107-L114
+// https://github.com/kubernetes/test-infra/blob/master/kubetest/azure.go#L107-L114
 type CredentialsFromProw struct {
 	ClientID           string
 	ClientSecret       string
@@ -110,7 +110,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 		return parseAndExecuteTemplate(cloud, c.TenantID, c.SubscriptionID, c.ClientID, c.ClientSecret, resourceGroup, location)
 	}
 
-	return nil, fmt.Errorf("AZURE_CREDENTIALS is not set. You will need to set the following env vars: $tenantId, $subscriptionId, $aadClientId and $aadClientSecret")
+	return nil, fmt.Errorf("If you are running tests locally, you will need to set the following env vars: $tenantId, $subscriptionId, $aadClientId and $aadClientSecret")
 }
 
 // CreateAzureCredentialFile deletes the temporary Azure credential file

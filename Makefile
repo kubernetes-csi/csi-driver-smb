@@ -24,8 +24,6 @@ LDFLAGS ?= "-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
 GOBIN ?= $(GOPATH)/bin
-KIND_VERSION ?= 0.5.1
-KUBERNETES_VERSION ?= 1.15.3
 export GOPATH GOBIN
 
 .EXPORT_ALL_VARIABLES:
@@ -45,12 +43,17 @@ sanity-test: azurefile
 integration-test: azurefile
 	go test -v -timeout=10m ./test/integration
 
+.PHONY: install-helm
+install-helm:
+	# Use v2.11.0 helm to match tiller's version
+	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | DESIRED_VERSION=v2.11.0 bash
+	# Make sure tiller is ready
+	kubectl wait pod -l name=tiller --namespace kube-system --for condition=ready
+	helm version
+
 .PHONY: install-driver
 install-driver:
 	IMAGE_VERSION=e2e-$(GIT_COMMIT) make azurefile-container push
-	# Install helm
-	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | DESIRED_VERSION=v2.11.0 bash
-	helm version
 	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait \
 		--set image.pullPolicy=IfNotPresent \
 		--set image.repository=$(REGISTRY_NAME)/$(IMAGE_NAME) \
@@ -61,7 +64,7 @@ uninstall-driver:
 	helm delete --purge azurefile-csi-driver
 
 .PHONY: e2e-test
-e2e-test:
+e2e-test: install-helm
 	go test -v -timeout=30m ./test/e2e
 
 .PHONY: azurefile

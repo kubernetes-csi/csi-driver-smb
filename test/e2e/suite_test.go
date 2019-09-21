@@ -87,6 +87,7 @@ var _ = BeforeSuite(func() {
 	err = cmd.Run()
 	Expect(err).NotTo(HaveOccurred())
 
+	nodeid := os.Getenv("nodeid")
 	azurefileDriver = azurefile.NewDriver(nodeid)
 	go func() {
 		os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)

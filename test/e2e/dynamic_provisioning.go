@@ -29,11 +29,11 @@ import (
 
 var _ = Describe("Dynamic Provisioning", func() {
 	f := framework.NewDefaultFramework("azurefile")
-	testDriver := driver.InitAzureFileCSIDriver()
 
 	var (
-		cs clientset.Interface
-		ns *v1.Namespace
+		cs         clientset.Interface
+		ns         *v1.Namespace
+		testDriver driver.PVTestDriver
 	)
 
 	BeforeEach(func() {
@@ -41,6 +41,7 @@ var _ = Describe("Dynamic Provisioning", func() {
 		ns = f.Namespace
 	})
 
+	testDriver = driver.InitAzureFileCSIDriver()
 	It(fmt.Sprintf("should create a volume on demand"), func() {
 		pods := []testsuites.PodDetails{
 			{
