@@ -21,6 +21,7 @@ IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 LDFLAGS ?= "-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
+GINKGO_FLAGS = "-ginkgo.noColor"
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
 GOBIN ?= $(GOPATH)/bin
@@ -30,6 +31,15 @@ export GOPATH GOBIN
 
 .PHONY: all
 all: azurefile
+
+.PHONY: update
+update:
+	hack/update-dependencies.sh
+	hack/verify-update.sh
+
+.PHONY: verify
+verify: update
+	hack/verify-all.sh
 
 .PHONY: unit-test
 unit-test:
@@ -42,6 +52,10 @@ sanity-test: azurefile
 .PHONY: integration-test
 integration-test: azurefile
 	go test -v -timeout=10m ./test/integration
+
+.PHONY: e2e-test
+e2e-test: install-helm
+	go test -v -timeout=30m ./test/e2e ${GINKGO_FLAGS}
 
 .PHONY: install-helm
 install-helm:
@@ -62,10 +76,6 @@ install-driver:
 .PHONY: uninstall-driver
 uninstall-driver:
 	helm delete --purge azurefile-csi-driver
-
-.PHONY: e2e-test
-e2e-test: install-helm
-	go test -v -timeout=30m ./test/e2e
 
 .PHONY: azurefile
 azurefile:
@@ -92,12 +102,3 @@ push-latest:
 clean:
 	go clean -r -x
 	-rm -rf _output
-
-.PHONY: update
-update:
-	hack/update-dependencies.sh
-	hack/verify-update.sh
-
-.PHONY: verify
-verify: update
-	hack/verify-all.sh

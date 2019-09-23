@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-sudo apt update && sudo apt install cifs-utils procps -y
+apt update && apt install cifs-utils procps -y
 GO111MODULE=off go get github.com/rexray/gocsi/csc
 
 cloud='AzurePublicCloud'
@@ -24,4 +24,4 @@ if [[ "$#" -gt 0 ]]; then
   cloud="$1"
 fi
 
-sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"
+test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"

@@ -24,6 +24,6 @@ function install_csi_sanity_bin {
   popd
 }
 
-sudo apt update && sudo apt install cifs-utils procps -y
+apt update && apt install cifs-utils procps -y
 install_csi_sanity_bin
-sudo test/sanity/run-test.sh "$nodeid"
+test/sanity/run-test.sh "$nodeid"
