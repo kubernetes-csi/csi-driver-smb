@@ -16,11 +16,8 @@
 
 set -euo pipefail
 
-if [[ -z "$(command -v golangci-lint)" ]]; then
-  echo "Cannot find golangci-lint. Installing golangci-lint..."
-  GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
-fi
+curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s v1.17.1
 
-"$GOBIN"/golangci-lint run --deadline=10m
+./bin/golangci-lint run --deadline=10m
 
 echo "Congratulations! All Go source files have been linted."

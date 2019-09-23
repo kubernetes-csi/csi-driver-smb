@@ -45,7 +45,7 @@ integration-test: azurefile
 
 .PHONY: install-helm
 install-helm:
-	# Use v2.11.0 helm to match tiller's version
+	# Use v2.11.0 helm to match tiller's version in clusters made by aks-engine
 	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | DESIRED_VERSION=v2.11.0 bash
 	# Make sure tiller is ready
 	kubectl wait pod -l name=tiller --namespace kube-system --for condition=ready

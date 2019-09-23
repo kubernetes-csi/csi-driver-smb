@@ -57,10 +57,10 @@ var _ = BeforeSuite(func() {
 	_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
 	Expect(err).NotTo(HaveOccurred())
 
-	// Need to login to ACR using SP credential if we are running on Prow so we can push images.
+	// Need to login to ACR using SP credential if we are running on Prow so we can push test images.
 	// If running locally, user should run 'docker login' before running E2E tests
 	if runningInProw() {
-		registry := os.Getenv("REGISTRY_NAME")
+		registry := os.Getenv("REGISTRY")
 		Expect(registry).NotTo(Equal(""))
 
 		cmd := exec.Command("docker", "login", fmt.Sprintf("--username=%s", creds.AADClientID), fmt.Sprintf("--password=%s", creds.AADClientSecret), registry)
