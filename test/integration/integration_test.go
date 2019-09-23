@@ -25,6 +25,7 @@ import (
 
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/azure"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,6 +43,10 @@ func TestIntegrationOnAzurePublicCloud(t *testing.T) {
 }
 
 func TestIntegrationOnAzureChinaCloud(t *testing.T) {
+	if testutil.IsRunningInProw() {
+		t.Skipf("Skipping integration test on Azure China Cloud because Prow only tests on Azure Public Cloud at the moment")
+	}
+
 	// Test on AzureChinaCloud
 	creds, err := credentials.CreateAzureCredentialFile(true)
 	defer func() {

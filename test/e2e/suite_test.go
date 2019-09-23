@@ -28,6 +28,7 @@ import (
 	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/azure"
 	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/testutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pborman/uuid"
@@ -59,7 +60,7 @@ var _ = BeforeSuite(func() {
 
 	// Need to login to ACR using SP credential if we are running in Prow so we can push test images.
 	// If running locally, user should run 'docker login' before running E2E tests
-	if runningInProw() {
+	if testutil.IsRunningInProw() {
 		registry := os.Getenv("REGISTRY")
 		Expect(registry).NotTo(Equal(""))
 
@@ -121,9 +122,4 @@ var _ = AfterSuite(func() {
 func TestE2E(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "AzureFile CSI Driver End-to-End Tests")
-}
-
-func runningInProw() bool {
-	_, ok := os.LookupEnv("AZURE_CREDENTIALS")
-	return ok
 }
