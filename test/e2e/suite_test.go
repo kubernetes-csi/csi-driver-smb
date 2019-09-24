@@ -19,6 +19,7 @@ package e2e
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -64,9 +65,11 @@ var _ = BeforeSuite(func() {
 		registry := os.Getenv("REGISTRY")
 		Expect(registry).NotTo(Equal(""))
 
+		log.Println("Attempting docker login with Azure service principal")
 		cmd := exec.Command("docker", "login", fmt.Sprintf("--username=%s", creds.AADClientID), fmt.Sprintf("--password=%s", creds.AADClientSecret), registry)
 		err := cmd.Run()
 		Expect(err).NotTo(HaveOccurred())
+		log.Println("docker login is successful")
 	}
 
 	// Install Azure File CSI Driver on cluster from project root
@@ -81,12 +84,14 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(Equal(true))
 
+	log.Println("Installing Azure File CSI Driver...")
 	cmd := exec.Command("make", "install-driver")
 	cmd.Dir = projectRoot
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	Expect(err).NotTo(HaveOccurred())
+	log.Println("Azure File CSI Driver installed")
 
 	nodeid := os.Getenv("nodeid")
 	azurefileDriver = azurefile.NewDriver(nodeid)
@@ -108,12 +113,14 @@ var _ = AfterSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(Equal(true))
 
+	log.Println("Uninstalling Azure File CSI Driver...")
 	cmd := exec.Command("make", "uninstall-driver")
 	cmd.Dir = projectRoot
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	Expect(err).NotTo(HaveOccurred())
+	log.Println("Azure File CSI Driver uninstalled")
 
 	err = credentials.DeleteAzureCredentialFile()
 	Expect(err).NotTo(HaveOccurred())

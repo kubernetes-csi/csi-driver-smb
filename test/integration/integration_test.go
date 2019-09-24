@@ -18,6 +18,7 @@ package integration
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -68,10 +69,19 @@ func testIntegration(t *testing.T, creds *credentials.Credentials) {
 	azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
 	assert.NoError(t, err)
 
+	ctx := context.Background()
 	// Create an empty resource group for integration test
-	t.Logf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
-	_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
+	log.Printf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
+	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
+	defer func() {
+		// Only delete resource group the test created
+		if strings.HasPrefix(creds.ResourceGroup, credentials.ResourceGroupPrefix) {
+			log.Printf("Deleting resource group %s", creds.ResourceGroup)
+			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
+			assert.NoError(t, err)
+		}
+	}()
 
 	// Execute the script from project root
 	err = os.Chdir("../..")

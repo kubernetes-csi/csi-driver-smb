@@ -15,6 +15,7 @@ import (
 const (
 	AzurePublicCloud            = "AzurePublicCloud"
 	AzureChinaCloud             = "AzureChinaCloud"
+	ResourceGroupPrefix         = "azurefile-csi-driver-test-"
 	TempAzureCredentialFilePath = "/tmp/azure.json"
 
 	azureCredentialFileTemplate = `{
@@ -82,7 +83,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	}
 
 	if resourceGroup == "" {
-		resourceGroup = "azurefile-csi-driver-test-" + uuid.NewUUID().String()
+		resourceGroup = ResourceGroupPrefix + uuid.NewUUID().String()
 	}
 
 	if location == "" {

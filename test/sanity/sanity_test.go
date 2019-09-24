@@ -18,6 +18,7 @@ package sanity
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -44,13 +45,13 @@ func TestSanity(t *testing.T) {
 
 	ctx := context.Background()
 	// Create an empty resource group for sanity test
-	t.Logf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
+	log.Printf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
 	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
 	defer func() {
 		// Only delete resource group the test created
-		if strings.HasPrefix(creds.ResourceGroup, "azurefile-csi-driver-test-") {
-			t.Logf("Deleting resource group %s", creds.ResourceGroup)
+		if strings.HasPrefix(creds.ResourceGroup, credentials.ResourceGroupPrefix) {
+			log.Printf("Deleting resource group %s", creds.ResourceGroup)
 			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
 			assert.NoError(t, err)
 		}
