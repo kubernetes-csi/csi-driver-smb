@@ -6,12 +6,12 @@
 - `$KUBECONFIG` is set or your kubeconfig is under `$HOME/.kube/config`
 - Export the following environment varibles:
 ```bash
-export tenantId=<your tenant ID>
-export subscriptionId=<the Azure subscription ID that your cluster is under>
-export aadClientId=<the service principal ID that your cluster is using>
-export aadClientSecret=<the service principal password that your cluster is using>
-export resourceGroup=<the resource group that your cluster is under>
-export location=<the location of your resource group>
+export TENANT_ID=<your tenant ID>
+export SUBSCRIPTION_ID=<the Azure subscription ID that your cluster is under>
+export AAD_CLIENT_ID=<the service principal ID that your cluster is using>
+export AAD_CLIENT_SECRET=<the service principal password that your cluster is using>
+export RESOURCE_GROUP=<the resource group that your cluster is under>
+export LOCATION=<the location of your resource group>
 ```
 
 To run the E2E tests:

@@ -29,6 +29,21 @@ const (
 }`
 	defaultAzurePublicCloudLocation = "eastus2"
 	defaultAzureChinaCloudLocation  = "chinaeast2"
+
+	// Env vars
+	tenantIdEnvVar        = "TENANT_ID"
+	subscriptionIdEnvVar  = "SUBSCRIPTION_ID"
+	aadClientIdEnvVar     = "AAD_CLIENT_ID"
+	aadClientSecretEnvVar = "AAD_CLIENT_SECRET"
+	resourceGroupEnvVar   = "RESOURCE_GROUP"
+	locationEnvVar        = "LOCATION"
+
+	tenantIdChinaEnvVar        = "TENANT_ID_CHINA"
+	subscriptionIdChinaEnvVar  = "SUBSCRIPTION_ID_CHINA"
+	aadClientIdChinaEnvVar     = "AAD_CLIENT_ID_CHINA"
+	aadClientSecretChinaEnvVar = "AAD_CLIENT_SECRET_CHINA"
+	resourceGroupChinaEnvVar   = "RESOURCE_GROUP_CHINA"
+	locationChinaEnvVar        = "LOCATION_CHINA"
 )
 
 // CredentialsConfig is used in Prow to store Azure credentials
@@ -66,20 +81,20 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	var cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location string
 	if isAzureChinaCloud {
 		cloud = AzureChinaCloud
-		tenantId = os.Getenv("tenantId_china")
-		subscriptionId = os.Getenv("subscriptionId_china")
-		aadClientId = os.Getenv("aadClientId_china")
-		aadClientSecret = os.Getenv("aadClientSecret_china")
-		resourceGroup = os.Getenv("resourceGroup_china")
-		location = os.Getenv("location_china")
+		tenantId = os.Getenv(tenantIdChinaEnvVar)
+		subscriptionId = os.Getenv(subscriptionIdChinaEnvVar)
+		aadClientId = os.Getenv(aadClientIdChinaEnvVar)
+		aadClientSecret = os.Getenv(aadClientSecretChinaEnvVar)
+		resourceGroup = os.Getenv(resourceGroupChinaEnvVar)
+		location = os.Getenv(locationChinaEnvVar)
 	} else {
 		cloud = AzurePublicCloud
-		tenantId = os.Getenv("tenantId")
-		subscriptionId = os.Getenv("subscriptionId")
-		aadClientId = os.Getenv("aadClientId")
-		aadClientSecret = os.Getenv("aadClientSecret")
-		resourceGroup = os.Getenv("resourceGroup")
-		location = os.Getenv("location")
+		tenantId = os.Getenv(tenantIdEnvVar)
+		subscriptionId = os.Getenv(subscriptionIdChinaEnvVar)
+		aadClientId = os.Getenv(aadClientIdEnvVar)
+		aadClientSecret = os.Getenv(aadClientSecretEnvVar)
+		resourceGroup = os.Getenv(resourceGroupEnvVar)
+		location = os.Getenv(locationEnvVar)
 	}
 
 	if resourceGroup == "" {

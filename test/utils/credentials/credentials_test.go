@@ -24,44 +24,44 @@ const (
 
 func TestCreateAzureCredentialFileOnAzureChinaCloud(t *testing.T) {
 	t.Run("WithAzureCredentials", func(t *testing.T) {
-		os.Setenv("tenantId_china", "")
-		os.Setenv("subscriptionId_china", "")
-		os.Setenv("aadClientId_china", "")
-		os.Setenv("aadClientSecret_china", "")
-		os.Setenv("resourceGroup_china", "test-resource-group")
-		os.Setenv("location_china", "test-location")
+		os.Setenv(tenantIdChinaEnvVar, "")
+		os.Setenv(subscriptionIdChinaEnvVar, "")
+		os.Setenv(aadClientIdChinaEnvVar, "")
+		os.Setenv(aadClientSecretChinaEnvVar, "")
+		os.Setenv(resourceGroupChinaEnvVar, "test-resource-group")
+		os.Setenv(locationChinaEnvVar, "test-location")
 		withAzureCredentials(t, true)
 	})
 
 	t.Run("WithEnvironmentVariables", func(t *testing.T) {
-		os.Setenv("tenantId_china", "test-tenant-id")
-		os.Setenv("subscriptionId_china", "test-subscription-id")
-		os.Setenv("aadClientId_china", "test-aad-client-id")
-		os.Setenv("aadClientSecret_china", "test-aad-client-secret")
-		os.Setenv("resourceGroup_china", "test-resource-group")
-		os.Setenv("location_china", "test-location")
+		os.Setenv(tenantIdChinaEnvVar, "test-tenant-id")
+		os.Setenv(subscriptionIdChinaEnvVar, "test-subscription-id")
+		os.Setenv(aadClientIdChinaEnvVar, "test-aad-client-id")
+		os.Setenv(aadClientSecretChinaEnvVar, "test-aad-client-secret")
+		os.Setenv(resourceGroupChinaEnvVar, "test-resource-group")
+		os.Setenv(locationChinaEnvVar, "test-location")
 		withEnvironmentVariables(t, true)
 	})
 }
 
 func TestCreateAzureCredentialFileOnAzurePublicCloud(t *testing.T) {
 	t.Run("WithAzureCredentials", func(t *testing.T) {
-		os.Setenv("tenantId", "")
-		os.Setenv("subscriptionId", "")
-		os.Setenv("aadClientId", "")
-		os.Setenv("aadClientSecret", "")
-		os.Setenv("resourceGroup", "test-resource-group")
-		os.Setenv("location", "test-location")
+		os.Setenv(tenantIdEnvVar, "")
+		os.Setenv(subscriptionIdEnvVar, "")
+		os.Setenv(aadClientIdEnvVar, "")
+		os.Setenv(aadClientSecretEnvVar, "")
+		os.Setenv(resourceGroupEnvVar, "test-resource-group")
+		os.Setenv(locationEnvVar, "test-location")
 		withAzureCredentials(t, false)
 	})
 
 	t.Run("WithEnvironmentVariables", func(t *testing.T) {
-		os.Setenv("tenantId", "test-tenant-id")
-		os.Setenv("subscriptionId", "test-subscription-id")
-		os.Setenv("aadClientId", "test-aad-client-id")
-		os.Setenv("aadClientSecret", "test-aad-client-secret")
-		os.Setenv("resourceGroup", "test-resource-group")
-		os.Setenv("location", "test-location")
+		os.Setenv(tenantIdEnvVar, "test-tenant-id")
+		os.Setenv(subscriptionIdEnvVar, "test-subscription-id")
+		os.Setenv(aadClientIdEnvVar, "test-aad-client-id")
+		os.Setenv(aadClientSecretEnvVar, "test-aad-client-secret")
+		os.Setenv(resourceGroupEnvVar, "test-resource-group")
+		os.Setenv(locationEnvVar, "test-location")
 		withEnvironmentVariables(t, false)
 	})
 }
