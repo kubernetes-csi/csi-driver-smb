@@ -90,7 +90,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	} else {
 		cloud = AzurePublicCloud
 		tenantId = os.Getenv(tenantIdEnvVar)
-		subscriptionId = os.Getenv(subscriptionIdChinaEnvVar)
+		subscriptionId = os.Getenv(subscriptionIdEnvVar)
 		aadClientId = os.Getenv(aadClientIdEnvVar)
 		aadClientSecret = os.Getenv(aadClientSecretEnvVar)
 		resourceGroup = os.Getenv(resourceGroupEnvVar)
@@ -126,7 +126,8 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 		return parseAndExecuteTemplate(cloud, c.TenantID, c.SubscriptionID, c.ClientID, c.ClientSecret, resourceGroup, location)
 	}
 
-	return nil, fmt.Errorf("If you are running tests locally, you will need to set the following env vars: $tenantId, $subscriptionId, $aadClientId and $aadClientSecret")
+	return nil, fmt.Errorf("If you are running tests locally, you will need to set the following env vars: $%s, $%s, $%s, $%s, $%s, $%s",
+		tenantIdEnvVar, subscriptionIdEnvVar, aadClientIdEnvVar, aadClientSecretEnvVar, resourceGroupEnvVar, locationEnvVar)
 }
 
 // CreateAzureCredentialFile deletes the temporary Azure credential file

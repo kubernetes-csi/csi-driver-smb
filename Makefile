@@ -13,12 +13,16 @@
 # limitations under the License.
 
 PKG = github.com/kubernetes-sigs/azurefile-csi-driver
+GIT_COMMIT ?= $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
 IMAGE_NAME = azurefile-csi
 IMAGE_VERSION ?= v0.4.0
+# Use a custom version for E2E tests if we are in Prow
+ifdef AZURE_CREDENTIALS
+override IMAGE_VERSION := e2e-$(GIT_COMMIT)
+endif
 IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
 IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
-GIT_COMMIT ?= $(shell git rev-parse HEAD)
 BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 LDFLAGS ?= "-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
 GINKGO_FLAGS = "-ginkgo.noColor"
@@ -54,8 +58,17 @@ integration-test: azurefile
 	go test -v -timeout=10m ./test/integration
 
 .PHONY: e2e-test
-e2e-test: install-helm
+e2e-test:
 	go test -v -timeout=30m ./test/e2e ${GINKGO_FLAGS}
+
+.PHONY: e2e-bootstrap
+e2e-bootstrap: install-helm
+	# Only build and push the image if it does not exist in the registry
+	docker pull $(IMAGE_TAG) || make azurefile-container push
+	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait \
+		--set image.pullPolicy=IfNotPresent \
+		--set image.repository=$(REGISTRY)/$(IMAGE_NAME) \
+		--set image.tag=$(IMAGE_VERSION)
 
 .PHONY: install-helm
 install-helm:
@@ -65,16 +78,8 @@ install-helm:
 	kubectl wait pod -l name=tiller --namespace kube-system --for condition=ready
 	helm version
 
-.PHONY: install-driver
-install-driver:
-	IMAGE_VERSION=e2e-$(GIT_COMMIT) make azurefile-container push
-	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait \
-		--set image.pullPolicy=IfNotPresent \
-		--set image.repository=$(REGISTRY)/$(IMAGE_NAME) \
-		--set image.tag=e2e-$(GIT_COMMIT)
-
-.PHONY: uninstall-driver
-uninstall-driver:
+.PHONY: e2e-teardown
+e2e-teardown:
 	helm delete --purge azurefile-csi-driver
 
 .PHONY: azurefile

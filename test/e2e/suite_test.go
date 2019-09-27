@@ -85,7 +85,7 @@ var _ = BeforeSuite(func() {
 	Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(Equal(true))
 
 	log.Println("Installing Azure File CSI Driver...")
-	cmd := exec.Command("make", "install-driver")
+	cmd := exec.Command("make", "e2e-bootstrap")
 	cmd.Dir = projectRoot
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -114,7 +114,7 @@ var _ = AfterSuite(func() {
 	Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(Equal(true))
 
 	log.Println("Uninstalling Azure File CSI Driver...")
-	cmd := exec.Command("make", "uninstall-driver")
+	cmd := exec.Command("make", "e2e-teardown")
 	cmd.Dir = projectRoot
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

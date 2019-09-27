@@ -18,5 +18,7 @@ To run the E2E tests:
 
 ```bash
 docker login # Login to docker so the test image can be pushed to your Docker Hub
-REGISTRY=<your Docker Hub ID> make e2e-test
+REGISTRY=<your Docker Hub ID / registry> make e2e-test
+# Run E2E tests on an existing Azure File CSI Driver image
+REGISTRY=<your Docker Hub ID / registry> IMAGE_VERSION=<desired image version> make e2e-test
 ```
