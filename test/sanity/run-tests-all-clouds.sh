@@ -18,7 +18,7 @@ set -eo pipefail
 
 function install_csi_sanity_bin {
   echo 'Installing CSI sanity test binary...'
-  git clone https://github.com/kubernetes-csi/csi-test.git -b v1.1.0
+  git clone https://github.com/kubernetes-csi/csi-test.git -b v2.2.0
   pushd csi-test/cmd/csi-sanity
   make
   popd
