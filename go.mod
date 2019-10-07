@@ -168,7 +168,7 @@ replace (
 	github.com/kr/pretty => github.com/kr/pretty v0.1.0
 	github.com/kr/pty => github.com/kr/pty v1.1.5
 	github.com/kr/text => github.com/kr/text v0.1.0
-	github.com/kubernetes-csi/csi-test => github.com/kubernetes-csi/csi-test v1.1.0
+	github.com/kubernetes-csi/csi-test => github.com/kubernetes-csi/csi-test v2.2.0+incompatible
 	github.com/kubernetes-csi/external-snapshotter => github.com/kubernetes-csi/external-snapshotter v1.0.1
 	github.com/mailru/easyjson => github.com/mailru/easyjson v0.0.0-20190312143242-1de009706dbe
 	github.com/marstr/guid => github.com/marstr/guid v1.1.0
