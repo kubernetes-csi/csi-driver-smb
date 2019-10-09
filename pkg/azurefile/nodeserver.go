@@ -173,11 +173,23 @@ func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublish
 	volumeID := req.GetVolumeId()
 
 	// Unmounting the image
-	err := d.mounter.Unmount(req.GetTargetPath())
+	err := d.mounter.Unmount(targetPath)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	klog.V(4).Infof("azurefile: volume %s/%s has been unmounted.", targetPath, volumeID)
+
+	// Deleting the target directory
+	notMnt, err := d.mounter.IsLikelyNotMountPoint(targetPath)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	if notMnt {
+		if err := os.Remove(targetPath); err != nil {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+		klog.V(4).Infof("azurefile: the directory %s has been deleted.", targetPath)
+	}
 
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }
