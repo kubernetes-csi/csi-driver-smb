@@ -1,0 +1,21 @@
+language: go
+go_import_path: github.com/kubernetes-sigs/azurefile-csi-driver
+dist: bionic
+
+env:
+  global:
+    - GO111MODULE=on
+
+go:
+  - "1.12.1"
+
+jobs:
+  include:
+    - stage: test
+      name: "sanity test"
+      script:
+        - make sanity-test
+    - stage: test
+      name: "integration test"
+      script:
+        - make integration-test

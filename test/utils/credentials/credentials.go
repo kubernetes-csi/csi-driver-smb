@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"os"
 
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/testutil"
 	"github.com/pborman/uuid"
 	"github.com/pelletier/go-toml"
-
-	"k8s.io/klog"
 )
 
 const (
@@ -117,9 +117,9 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	// If the tests are being run in Prow, credentials are not supplied through env vars. Instead, it is supplied
 	// through env var AZURE_CREDENTIALS. We need to convert it to AZURE_CREDENTIAL_FILE for sanity, integration and E2E tests
 	// https://github.com/kubernetes/test-infra/blob/master/config/jobs/kubernetes/cloud-provider-azure/cloud-provider-azure-config.yaml#L5-L6
-	if azureCredentialsPath, ok := os.LookupEnv("AZURE_CREDENTIALS"); ok {
-		klog.V(2).Infof("Running in Prow, converting AZURE_CREDENTIALS to AZURE_CREDENTIAL_FILE")
-		c, err := getCredentialsFromAzureCredentials(azureCredentialsPath)
+	if testutil.IsRunningInProw() {
+		log.Println("Running in Prow, converting AZURE_CREDENTIALS to AZURE_CREDENTIAL_FILE")
+		c, err := getCredentialsFromAzureCredentials(os.Getenv("AZURE_CREDENTIALS"))
 		if err != nil {
 			return nil, err
 		}
@@ -130,7 +130,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 		tenantIdEnvVar, subscriptionIdEnvVar, aadClientIdEnvVar, aadClientSecretEnvVar, resourceGroupEnvVar, locationEnvVar)
 }
 
-// CreateAzureCredentialFile deletes the temporary Azure credential file
+// DeleteAzureCredentialFile deletes the temporary Azure credential file
 func DeleteAzureCredentialFile() error {
 	if err := os.Remove(TempAzureCredentialFilePath); err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("error removing %s %v", TempAzureCredentialFilePath, err)
@@ -140,10 +140,10 @@ func DeleteAzureCredentialFile() error {
 }
 
 // getCredentialsFromAzureCredentials parses the azure credentials toml (AZURE_CREDENTIALS)
-// in Prow and return the credential information usable to Azure File CSI driver
+// in Prow and returns the credential information usable to Azure File CSI driver
 func getCredentialsFromAzureCredentials(azureCredentialsPath string) (*CredentialsFromProw, error) {
 	content, err := ioutil.ReadFile(azureCredentialsPath)
-	klog.V(2).Infof("Reading credentials file %v", azureCredentialsPath)
+	log.Printf("Reading credentials file %v", azureCredentialsPath)
 	if err != nil {
 		return nil, fmt.Errorf("error reading credentials file %v %v", azureCredentialsPath, err)
 	}
@@ -156,12 +156,12 @@ func getCredentialsFromAzureCredentials(azureCredentialsPath string) (*Credentia
 	return &c.Creds, nil
 }
 
-// parseAndExecuteTemplate replaces credential placeholders in hack/template/azure.json with actual credentials
+// parseAndExecuteTemplate replaces credential placeholders in azureCredentialFileTemplate with actual credentials
 func parseAndExecuteTemplate(cloud, tenantId, subscriptionId, aadClientId, aadClientSecret, resourceGroup, location string) (*Credentials, error) {
 	t := template.New("AzureCredentialFileTemplate")
 	t, err := t.Parse(azureCredentialFileTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing  azureCredentialFileTemplate %v", err)
+		return nil, fmt.Errorf("error parsing azureCredentialFileTemplate %v", err)
 	}
 
 	f, err := os.Create(TempAzureCredentialFilePath)
