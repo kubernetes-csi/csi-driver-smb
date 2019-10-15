@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -eo pipefail
 
 function cleanup {
   echo 'pkill -f azurefileplugin'
@@ -60,7 +60,7 @@ echo "Got volume id: $volumeid"
 
 "$CSC_BIN" controller validate-volume-capabilities --endpoint "$endpoint" --cap 1,block "$volumeid"
 
-if [[ "$cloud" != 'AzureChinaCloud' ]]; then
+if [[ "$cloud" != 'AzureChinaCloud' ]] && [[ "$TRAVIS" == 'true' ]]; then
   # azure file mount/unmount on travis VM does not work against AzureChinaCloud
   echo 'Mount volume test:'
   "$CSC_BIN" node publish --endpoint "$endpoint" --cap 1,block --target-path "$target_path" "$volumeid"

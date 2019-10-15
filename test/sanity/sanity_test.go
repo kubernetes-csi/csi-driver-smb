@@ -18,13 +18,14 @@ package sanity
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
 
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/azure"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/credentials"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/azure"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -44,13 +45,13 @@ func TestSanity(t *testing.T) {
 
 	ctx := context.Background()
 	// Create an empty resource group for sanity test
-	t.Logf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
+	log.Printf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
 	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
 	defer func() {
 		// Only delete resource group the test created
-		if strings.HasPrefix(creds.ResourceGroup, "azurefile-csi-driver-test-") {
-			t.Logf("Deleting resource group %s", creds.ResourceGroup)
+		if strings.HasPrefix(creds.ResourceGroup, credentials.ResourceGroupPrefix) {
+			log.Printf("Deleting resource group %s", creds.ResourceGroup)
 			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
 			assert.NoError(t, err)
 		}
@@ -65,12 +66,12 @@ func TestSanity(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	cwd, err := os.Getwd()
+	projectRoot, err := os.Getwd()
 	assert.NoError(t, err)
-	assert.True(t, strings.HasSuffix(cwd, "azurefile-csi-driver"))
+	assert.True(t, strings.HasSuffix(projectRoot, "azurefile-csi-driver"))
 
 	cmd := exec.Command("./test/sanity/run-tests-all-clouds.sh")
-	cmd.Dir = cwd
+	cmd.Dir = projectRoot
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {

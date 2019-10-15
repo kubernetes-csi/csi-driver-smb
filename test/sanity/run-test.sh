@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -eo pipefail
 
 function cleanup {
   echo 'pkill -f azurefileplugin'
@@ -33,7 +33,10 @@ fi
 
 _output/azurefileplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 
-
 echo 'Begin to run sanity test...'
 readonly CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'
-"$CSI_SANITY_BIN" --ginkgo.v --csi.endpoint="$endpoint"  -ginkgo.skip="should fail when the volume source snapshot is not found"
+if [[ "$TRAVIS" == 'true' ]]; then
+  "$CSI_SANITY_BIN" --ginkgo.v --ginkgo.noColor --csi.endpoint="$endpoint"  --ginkgo.focus='should work'
+else
+  "$CSI_SANITY_BIN" --ginkgo.v --ginkgo.noColor --csi.endpoint="$endpoint"  --ginkgo.skip='should fail when the volume source snapshot is not found|should work'
+fi

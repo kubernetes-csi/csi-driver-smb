@@ -18,13 +18,15 @@ package integration
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
 
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/azure"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/credentials"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/azure"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
+	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,6 +44,10 @@ func TestIntegrationOnAzurePublicCloud(t *testing.T) {
 }
 
 func TestIntegrationOnAzureChinaCloud(t *testing.T) {
+	if testutil.IsRunningInProw() {
+		t.Skipf("Skipping integration test on Azure China Cloud because Prow only tests on Azure Public Cloud at the moment")
+	}
+
 	// Test on AzureChinaCloud
 	creds, err := credentials.CreateAzureCredentialFile(true)
 	defer func() {
@@ -65,9 +71,17 @@ func testIntegration(t *testing.T, creds *credentials.Credentials) {
 
 	ctx := context.Background()
 	// Create an empty resource group for integration test
-	t.Logf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
+	log.Printf("Creating resource group %s in %s", creds.ResourceGroup, creds.Cloud)
 	_, err = azureClient.EnsureResourceGroup(ctx, creds.ResourceGroup, creds.Location, nil)
 	assert.NoError(t, err)
+	defer func() {
+		// Only delete resource group the test created
+		if strings.HasPrefix(creds.ResourceGroup, credentials.ResourceGroupPrefix) {
+			log.Printf("Deleting resource group %s", creds.ResourceGroup)
+			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
+			assert.NoError(t, err)
+		}
+	}()
 
 	// Execute the script from project root
 	err = os.Chdir("../..")

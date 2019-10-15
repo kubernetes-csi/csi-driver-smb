@@ -14,9 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -eo pipefail
 
-sudo apt update && sudo apt install cifs-utils procps -y
 GO111MODULE=off go get github.com/rexray/gocsi/csc
 
 cloud='AzurePublicCloud'
@@ -24,4 +23,10 @@ if [[ "$#" -gt 0 ]]; then
   cloud="$1"
 fi
 
-sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"
+if [[ "$TRAVIS" == 'true' ]]; then
+  sudo apt update && sudo apt install cifs-utils procps -y
+  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"
+else
+  apt update && apt install cifs-utils procps -y
+  test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"
+fi

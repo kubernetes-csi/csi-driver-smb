@@ -13,14 +13,19 @@
 # limitations under the License.
 
 PKG = github.com/kubernetes-sigs/azurefile-csi-driver
-REGISTRY_NAME = andyzhangx
-IMAGE_NAME = azurefile-csi
-IMAGE_VERSION = v0.4.0
-IMAGE_TAG = $(REGISTRY_NAME)/$(IMAGE_NAME):$(IMAGE_VERSION)
-IMAGE_TAG_LATEST = $(REGISTRY_NAME)/$(IMAGE_NAME):latest
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
+REGISTRY ?= andyzhangx
+IMAGE_NAME = azurefile-csi
+IMAGE_VERSION ?= v0.4.0
+# Use a custom version for E2E tests if we are in Prow
+ifdef AZURE_CREDENTIALS
+override IMAGE_VERSION := e2e-$(GIT_COMMIT)
+endif
+IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
+IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
 BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 LDFLAGS ?= "-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
+GINKGO_FLAGS = "-ginkgo.noColor"
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
 GOBIN ?= $(GOPATH)/bin
@@ -31,9 +36,18 @@ export GOPATH GOBIN
 .PHONY: all
 all: azurefile
 
+.PHONY: update
+update:
+	hack/update-dependencies.sh
+	hack/verify-update.sh
+
+.PHONY: verify
+verify: update
+	hack/verify-all.sh
+
 .PHONY: unit-test
 unit-test:
-	go test -v -race ./pkg/... ./test/credentials
+	go test -v -race ./pkg/... ./test/utils/credentials
 
 .PHONY: sanity-test
 sanity-test: azurefile
@@ -45,7 +59,28 @@ integration-test: azurefile
 
 .PHONY: e2e-test
 e2e-test:
-	test/e2e/run-test.sh
+	go test -v -timeout=30m ./test/e2e ${GINKGO_FLAGS}
+
+.PHONY: e2e-bootstrap
+e2e-bootstrap: install-helm
+	# Only build and push the image if it does not exist in the registry
+	docker pull $(IMAGE_TAG) || make azurefile-container push
+	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait \
+		--set image.pullPolicy=IfNotPresent \
+		--set image.repository=$(REGISTRY)/$(IMAGE_NAME) \
+		--set image.tag=$(IMAGE_VERSION)
+
+.PHONY: install-helm
+install-helm:
+	# Use v2.11.0 helm to match tiller's version in clusters made by aks-engine
+	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | DESIRED_VERSION=v2.11.0 bash
+	# Make sure tiller is ready
+	kubectl wait pod -l name=tiller --namespace kube-system --for condition=ready
+	helm version
+
+.PHONY: e2e-teardown
+e2e-teardown:
+	helm delete --purge azurefile-csi-driver
 
 .PHONY: azurefile
 azurefile:
@@ -60,12 +95,11 @@ azurefile-container: azurefile
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
 
 .PHONY: push
-push: azurefile-container
+push:
 	docker push $(IMAGE_TAG)
 
 .PHONY: push-latest
-push-latest: azurefile-container
-	docker push $(IMAGE_TAG)
+push-latest:
 	docker tag $(IMAGE_TAG) $(IMAGE_TAG_LATEST)
 	docker push $(IMAGE_TAG_LATEST)
 
@@ -73,12 +107,3 @@ push-latest: azurefile-container
 clean:
 	go clean -r -x
 	-rm -rf _output
-
-.PHONY: update
-update:
-	hack/update-dependencies.sh
-	hack/verify-update.sh
-
-.PHONY: verify
-verify: update
-	hack/verify-all.sh
