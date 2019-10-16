@@ -321,7 +321,38 @@ func (d *Driver) ListSnapshots(ctx context.Context, req *csi.ListSnapshotsReques
 
 // ControllerExpandVolume controller expand volume
 func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "ControllerExpandVolume is not yet implemented")
+	if len(req.GetVolumeId()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	}
+	if err := d.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_EXPAND_VOLUME); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid expand volume request: %v", req)
+	}
+
+	capacityBytes := req.GetCapacityRange().GetRequiredBytes()
+	if capacityBytes == 0 {
+		return nil, status.Error(codes.InvalidArgument, "volume capacity range missing in request")
+	}
+	volSizeBytes := int64(capacityBytes)
+	requestGiB := int32(volumehelper.RoundUpGiB(volSizeBytes))
+
+	volumeID := req.VolumeId
+	shareURL, err := d.getShareUrl(volumeID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get share url with (%s): %v, returning with success", volumeID, err)
+	}
+
+	if _, err = shareURL.SetQuota(ctx, requestGiB); err != nil {
+		return nil, status.Errorf(codes.Internal, "expand volume error: %v", err)
+	}
+
+	resp, err := shareURL.GetProperties(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get properties of share(%v): %v", shareURL, err)
+	}
+
+	currentQuota := volumehelper.GiBToBytes(int64(resp.Quota()))
+
+	return &csi.ControllerExpandVolumeResponse{CapacityBytes: currentQuota}, nil
 }
 
 // getShareUrl: sourceVolumeID is the id of source file share, returns a ShareURL of source file share.
