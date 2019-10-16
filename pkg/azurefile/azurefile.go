@@ -26,12 +26,15 @@ import (
 	azs "github.com/Azure/azure-sdk-for-go/storage"
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	csicommon "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/csi-common"
+	volumehelper "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/util"
 	"github.com/pborman/uuid"
 	"k8s.io/klog"
 	"k8s.io/legacy-cloud-providers/azure"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"golang.org/x/net/context"
 )
 
 const (
@@ -111,7 +114,7 @@ func (d *Driver) Run(endpoint string) {
 	})
 
 	d.AddNodeServiceCapabilities([]csi.NodeServiceCapability_RPC_Type{
-		csi.NodeServiceCapability_RPC_UNKNOWN,
+		csi.NodeServiceCapability_RPC_EXPAND_VOLUME,
 	})
 
 	s := csicommon.NewNonBlockingGRPCServer()
@@ -282,4 +285,27 @@ func getSnapshot(id string) (string, error) {
 		return "", fmt.Errorf("error parsing volume id: %q, should at least contain three #", id)
 	}
 	return segments[3], nil
+}
+
+func (d *Driver) expandVolume(ctx context.Context, volumeID string, capacityBytes int64) (int64, error) {
+	if capacityBytes == 0 {
+		return -1, status.Error(codes.InvalidArgument, "volume capacity range missing in request")
+	}
+	requestGiB := int32(volumehelper.RoundUpGiB(capacityBytes))
+
+	shareURL, err := d.getShareUrl(volumeID)
+	if err != nil {
+		return -1, status.Errorf(codes.Internal, "failed to get share url with (%s): %v, returning with success", volumeID, err)
+	}
+
+	if _, err = shareURL.SetQuota(ctx, requestGiB); err != nil {
+		return -1, status.Errorf(codes.Internal, "expand volume error: %v", err)
+	}
+
+	resp, err := shareURL.GetProperties(ctx)
+	if err != nil {
+		return -1, status.Errorf(codes.Internal, "failed to get properties of share(%v): %v", shareURL, err)
+	}
+
+	return volumehelper.GiBToBytes(int64(resp.Quota())), nil
 }

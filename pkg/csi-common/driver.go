@@ -73,6 +73,19 @@ func (d *CSIDriver) ValidateControllerServiceRequest(c csi.ControllerServiceCapa
 	return status.Error(codes.InvalidArgument, c.String())
 }
 
+func (d *CSIDriver) ValidateNodeServiceRequest(c csi.NodeServiceCapability_RPC_Type) error {
+	if c == csi.NodeServiceCapability_RPC_UNKNOWN {
+		return nil
+	}
+
+	for _, cap := range d.NSCap {
+		if c == cap.GetRpc().GetType() {
+			return nil
+		}
+	}
+	return status.Error(codes.InvalidArgument, c.String())
+}
+
 func (d *CSIDriver) AddControllerServiceCapabilities(cl []csi.ControllerServiceCapability_RPC_Type) {
 	var csc []*csi.ControllerServiceCapability
 

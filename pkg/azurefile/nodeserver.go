@@ -251,5 +251,30 @@ func (d *Driver) NodeGetVolumeStats(ctx context.Context, in *csi.NodeGetVolumeSt
 
 // NodeExpandVolume node expand volume
 func (d *Driver) NodeExpandVolume(ctx context.Context, req *csi.NodeExpandVolumeRequest) (*csi.NodeExpandVolumeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, fmt.Sprintf("NodeExpandVolume is not yet implemented"))
+	volumeID := req.GetVolumeId()
+	volumePath := req.GetVolumePath()
+	if len(volumeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	}
+	if len(volumePath) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume Path missing in request")
+	}
+	if err := d.ValidateNodeServiceRequest(csi.NodeServiceCapability_RPC_EXPAND_VOLUME); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid expand volume request: %v", req)
+	}
+
+	notMnt, err := d.mounter.IsLikelyNotMountPoint(volumePath)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to check volume path(%s): %v", volumePath, err)
+	}
+	if notMnt {
+		return nil, status.Errorf(codes.InvalidArgument, "the specified volume path(%s) is not a mount path", volumePath)
+	}
+
+	currentQuota, err := d.expandVolume(ctx, volumeID, req.GetCapacityRange().GetRequiredBytes())
+	if err != nil {
+		return nil, err
+	}
+
+	return &csi.NodeExpandVolumeResponse{CapacityBytes: currentQuota}, nil
 }

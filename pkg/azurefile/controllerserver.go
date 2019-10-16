@@ -51,8 +51,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	capacityBytes := req.GetCapacityRange().GetRequiredBytes()
-	volSizeBytes := int64(capacityBytes)
-	requestGiB := int(volumehelper.RoundUpGiB(volSizeBytes))
+	requestGiB := int(volumehelper.RoundUpGiB(capacityBytes))
 	if requestGiB == 0 {
 		requestGiB = defaultAzureFileQuota
 		klog.Warningf("no quota specified, set as default value(%d GiB)", defaultAzureFileQuota)
@@ -328,29 +327,10 @@ func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.Controller
 		return nil, status.Errorf(codes.InvalidArgument, "invalid expand volume request: %v", req)
 	}
 
-	capacityBytes := req.GetCapacityRange().GetRequiredBytes()
-	if capacityBytes == 0 {
-		return nil, status.Error(codes.InvalidArgument, "volume capacity range missing in request")
-	}
-	volSizeBytes := int64(capacityBytes)
-	requestGiB := int32(volumehelper.RoundUpGiB(volSizeBytes))
-
-	volumeID := req.VolumeId
-	shareURL, err := d.getShareUrl(volumeID)
+	currentQuota, err := d.expandVolume(ctx, req.VolumeId, req.GetCapacityRange().GetRequiredBytes())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get share url with (%s): %v, returning with success", volumeID, err)
+		return nil, err
 	}
-
-	if _, err = shareURL.SetQuota(ctx, requestGiB); err != nil {
-		return nil, status.Errorf(codes.Internal, "expand volume error: %v", err)
-	}
-
-	resp, err := shareURL.GetProperties(ctx)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get properties of share(%v): %v", shareURL, err)
-	}
-
-	currentQuota := volumehelper.GiBToBytes(int64(resp.Quota()))
 
 	return &csi.ControllerExpandVolumeResponse{CapacityBytes: currentQuota}, nil
 }
