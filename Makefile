@@ -103,6 +103,11 @@ push-latest:
 	docker tag $(IMAGE_TAG) $(IMAGE_TAG_LATEST)
 	docker push $(IMAGE_TAG_LATEST)
 
+.PHONY: build-push
+build-push: azurefile-container
+	docker tag $(IMAGE_TAG) $(IMAGE_TAG_LATEST)
+	docker push $(IMAGE_TAG_LATEST)
+
 .PHONY: clean
 clean:
 	go clean -r -x
