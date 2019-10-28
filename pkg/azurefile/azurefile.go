@@ -20,21 +20,19 @@ import (
 	"fmt"
 	"strings"
 
-	"k8s.io/kubernetes/pkg/util/mount"
-	"k8s.io/kubernetes/pkg/volume/util"
+	csicommon "sigs.k8s.io/azurefile-csi-driver/pkg/csi-common"
+	volumehelper "sigs.k8s.io/azurefile-csi-driver/pkg/util"
 
 	azs "github.com/Azure/azure-sdk-for-go/storage"
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	csicommon "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/csi-common"
-	volumehelper "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/util"
 	"github.com/pborman/uuid"
-	"k8s.io/klog"
-	"k8s.io/legacy-cloud-providers/azure"
-
+	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"golang.org/x/net/context"
+	"k8s.io/klog"
+	"k8s.io/kubernetes/pkg/util/mount"
+	"k8s.io/kubernetes/pkg/volume/util"
+	"k8s.io/legacy-cloud-providers/azure"
 )
 
 const (

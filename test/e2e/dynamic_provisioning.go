@@ -19,8 +19,9 @@ package e2e
 import (
 	"fmt"
 
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/driver"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/testsuites"
+	"sigs.k8s.io/azurefile-csi-driver/test/e2e/driver"
+	"sigs.k8s.io/azurefile-csi-driver/test/e2e/testsuites"
+
 	. "github.com/onsi/ginkgo"
 	v1 "k8s.io/api/core/v1"
 	clientset "k8s.io/client-go/kubernetes"

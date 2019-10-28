@@ -25,7 +25,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
+	"sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
+
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"k8s.io/klog"
 )

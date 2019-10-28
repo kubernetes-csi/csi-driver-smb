@@ -15,10 +15,10 @@ limitations under the License.
 package testsuites
 
 import (
-	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/driver"
+	"sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
+	"sigs.k8s.io/azurefile-csi-driver/test/e2e/driver"
 
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	clientset "k8s.io/client-go/kubernetes"
 )
 

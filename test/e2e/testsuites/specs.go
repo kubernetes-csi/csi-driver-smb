@@ -19,14 +19,13 @@ package testsuites
 import (
 	"fmt"
 
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/e2e/driver"
+	"sigs.k8s.io/azurefile-csi-driver/test/e2e/driver"
 
+	. "github.com/onsi/ginkgo"
 	v1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	clientset "k8s.io/client-go/kubernetes"
 	restclientset "k8s.io/client-go/rest"
-
-	. "github.com/onsi/ginkgo"
 )
 
 type PodDetails struct {

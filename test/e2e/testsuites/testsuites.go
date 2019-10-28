@@ -22,10 +22,10 @@ import (
 	"math/rand"
 	"time"
 
+	"sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
+
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/kubernetes-csi/external-snapshotter/pkg/apis/volumesnapshot/v1alpha1"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
-
 	snapshotclientset "github.com/kubernetes-csi/external-snapshotter/pkg/client/clientset/versioned"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

@@ -19,8 +19,9 @@ package driver
 import (
 	"fmt"
 
+	azurefile "sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
+
 	"github.com/kubernetes-csi/external-snapshotter/pkg/apis/volumesnapshot/v1alpha1"
-	azurefile "github.com/kubernetes-sigs/azurefile-csi-driver/pkg/azurefile"
 	v1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
