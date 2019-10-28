@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM debian:9
+FROM aksrepos.azurecr.io/fundamental/base-ubuntu:v0.0.5
 RUN apt-get update && apt-get install -y ca-certificates cifs-utils
 LABEL maintainers="andyzhangx"
 LABEL description="AzureFile CSI Driver"
