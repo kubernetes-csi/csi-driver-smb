@@ -1,4 +1,4 @@
-module github.com/kubernetes-sigs/azurefile-csi-driver
+module sigs.k8s.io/azurefile-csi-driver
 
 go 1.12
 

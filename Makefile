@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-PKG = github.com/kubernetes-sigs/azurefile-csi-driver
+PKG = sigs.k8s.io/azurefile-csi-driver
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
 IMAGE_NAME = azurefile-csi

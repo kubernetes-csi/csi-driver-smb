@@ -24,8 +24,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/azure"
-	"github.com/kubernetes-sigs/azurefile-csi-driver/test/utils/credentials"
+	"sigs.k8s.io/azurefile-csi-driver/test/utils/azure"
+	"sigs.k8s.io/azurefile-csi-driver/test/utils/credentials"
+
 	"github.com/stretchr/testify/assert"
 )
 
