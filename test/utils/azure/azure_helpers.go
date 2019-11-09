@@ -11,13 +11,13 @@ import (
 	"github.com/Azure/go-autorest/autorest/azure"
 )
 
-type AzureClient struct {
+type Client struct {
 	environment    azure.Environment
 	subscriptionID string
 	groupsClient   resources.GroupsClient
 }
 
-func GetAzureClient(cloud, subscriptionID, clientID, tenantID, clientSecret string) (*AzureClient, error) {
+func GetClient(cloud, subscriptionID, clientID, tenantID, clientSecret string) (*Client, error) {
 	env, err := azure.EnvironmentFromName(cloud)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func GetAzureClient(cloud, subscriptionID, clientID, tenantID, clientSecret stri
 	return getClient(env, subscriptionID, tenantID, armSpt), nil
 }
 
-func (az *AzureClient) EnsureResourceGroup(ctx context.Context, name, location string, managedBy *string) (resourceGroup *resources.Group, err error) {
+func (az *Client) EnsureResourceGroup(ctx context.Context, name, location string, managedBy *string) (resourceGroup *resources.Group, err error) {
 	var tags map[string]*string
 	group, err := az.groupsClient.Get(ctx, name)
 	if err == nil {
@@ -56,7 +56,7 @@ func (az *AzureClient) EnsureResourceGroup(ctx context.Context, name, location s
 	return &response, nil
 }
 
-func (az *AzureClient) DeleteResourceGroup(ctx context.Context, groupName string) error {
+func (az *Client) DeleteResourceGroup(ctx context.Context, groupName string) error {
 	_, err := az.groupsClient.Get(ctx, groupName)
 	if err == nil {
 		future, err := az.groupsClient.Delete(ctx, groupName)
@@ -82,8 +82,8 @@ func getOAuthConfig(env azure.Environment, subscriptionID, tenantID string) (*ad
 	return oauthConfig, nil
 }
 
-func getClient(env azure.Environment, subscriptionID, tenantID string, armSpt *adal.ServicePrincipalToken) *AzureClient {
-	c := &AzureClient{
+func getClient(env azure.Environment, subscriptionID, tenantID string, armSpt *adal.ServicePrincipalToken) *Client {
+	c := &Client{
 		environment:    env,
 		subscriptionID: subscriptionID,
 		groupsClient:   resources.NewGroupsClientWithBaseURI(env.ResourceManagerEndpoint, subscriptionID),

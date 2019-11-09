@@ -27,8 +27,8 @@ import (
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/kubernetes-csi/external-snapshotter/pkg/apis/volumesnapshot/v1alpha1"
 	snapshotclientset "github.com/kubernetes-csi/external-snapshotter/pkg/client/clientset/versioned"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"github.com/onsi/ginkgo"
+	"github.com/onsi/gomega"
 	apps "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
@@ -67,7 +67,7 @@ func NewTestStorageClass(c clientset.Interface, ns *v1.Namespace, sc *storagev1.
 func (t *TestStorageClass) Create() storagev1.StorageClass {
 	var err error
 
-	By("creating a StorageClass " + t.storageClass.Name)
+	ginkgo.By("creating a StorageClass " + t.storageClass.Name)
 	t.storageClass, err = t.client.StorageV1().StorageClasses().Create(t.storageClass)
 	framework.ExpectNoError(err)
 	return *t.storageClass
@@ -94,14 +94,14 @@ func NewTestVolumeSnapshotClass(c restclientset.Interface, ns *v1.Namespace, vsc
 }
 
 func (t *TestVolumeSnapshotClass) Create() {
-	By("creating a VolumeSnapshotClass")
+	ginkgo.By("creating a VolumeSnapshotClass")
 	var err error
 	t.volumeSnapshotClass, err = snapshotclientset.New(t.client).VolumesnapshotV1alpha1().VolumeSnapshotClasses().Create(t.volumeSnapshotClass)
 	framework.ExpectNoError(err)
 }
 
 func (t *TestVolumeSnapshotClass) CreateSnapshot(pvc *v1.PersistentVolumeClaim) *v1alpha1.VolumeSnapshot {
-	By("creating a VolumeSnapshot for " + pvc.Name)
+	ginkgo.By("creating a VolumeSnapshot for " + pvc.Name)
 	snapshot := &v1alpha1.VolumeSnapshot{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       VolumeSnapshotKind,
@@ -125,7 +125,7 @@ func (t *TestVolumeSnapshotClass) CreateSnapshot(pvc *v1.PersistentVolumeClaim) 
 }
 
 func (t *TestVolumeSnapshotClass) ReadyToUse(snapshot *v1alpha1.VolumeSnapshot) {
-	By("waiting for VolumeSnapshot to be ready to use - " + snapshot.Name)
+	ginkgo.By("waiting for VolumeSnapshot to be ready to use - " + snapshot.Name)
 	err := wait.Poll(15*time.Second, 5*time.Minute, func() (bool, error) {
 		vs, err := snapshotclientset.New(t.client).VolumesnapshotV1alpha1().VolumeSnapshots(t.namespace.Name).Get(snapshot.Name, metav1.GetOptions{})
 		if err != nil {
@@ -137,7 +137,7 @@ func (t *TestVolumeSnapshotClass) ReadyToUse(snapshot *v1alpha1.VolumeSnapshot) 
 }
 
 func (t *TestVolumeSnapshotClass) DeleteSnapshot(vs *v1alpha1.VolumeSnapshot) {
-	By("deleting a VolumeSnapshot " + vs.Name)
+	ginkgo.By("deleting a VolumeSnapshot " + vs.Name)
 	err := snapshotclientset.New(t.client).VolumesnapshotV1alpha1().VolumeSnapshots(t.namespace.Name).Delete(vs.Name, &metav1.DeleteOptions{})
 	framework.ExpectNoError(err)
 }
@@ -156,14 +156,14 @@ type TestPreProvisionedPersistentVolume struct {
 
 func NewTestPreProvisionedPersistentVolume(c clientset.Interface, pv *v1.PersistentVolume) *TestPreProvisionedPersistentVolume {
 	return &TestPreProvisionedPersistentVolume{
-		client:                    c,
+		client: c,
 		requestedPersistentVolume: pv,
 	}
 }
 
 func (pv *TestPreProvisionedPersistentVolume) Create() v1.PersistentVolume {
 	var err error
-	By("creating a PV")
+	ginkgo.By("creating a PV")
 	pv.persistentVolume, err = pv.client.CoreV1().PersistentVolumes().Create(pv.requestedPersistentVolume)
 	framework.ExpectNoError(err)
 	return *pv.persistentVolume
@@ -213,7 +213,7 @@ func NewTestPersistentVolumeClaimWithDataSource(c clientset.Interface, ns *v1.Na
 func (t *TestPersistentVolumeClaim) Create() {
 	var err error
 
-	By("creating a PVC")
+	ginkgo.By("creating a PVC")
 	storageClassName := ""
 	if t.storageClass != nil {
 		storageClassName = t.storageClass.Name
@@ -227,37 +227,37 @@ func (t *TestPersistentVolumeClaim) ValidateProvisionedPersistentVolume() {
 	var err error
 
 	// Get the bound PersistentVolume
-	By("validating provisioned PV")
+	ginkgo.By("validating provisioned PV")
 	t.persistentVolume, err = t.client.CoreV1().PersistentVolumes().Get(t.persistentVolumeClaim.Spec.VolumeName, metav1.GetOptions{})
 	framework.ExpectNoError(err)
 
 	// Check sizes
 	expectedCapacity := t.requestedPersistentVolumeClaim.Spec.Resources.Requests[v1.ResourceName(v1.ResourceStorage)]
 	claimCapacity := t.persistentVolumeClaim.Spec.Resources.Requests[v1.ResourceName(v1.ResourceStorage)]
-	Expect(claimCapacity.Value()).To(Equal(expectedCapacity.Value()), "claimCapacity is not equal to requestedCapacity")
+	gomega.Expect(claimCapacity.Value()).To(gomega.Equal(expectedCapacity.Value()), "claimCapacity is not equal to requestedCapacity")
 
 	pvCapacity := t.persistentVolume.Spec.Capacity[v1.ResourceName(v1.ResourceStorage)]
-	Expect(pvCapacity.Value()).To(Equal(expectedCapacity.Value()), "pvCapacity is not equal to requestedCapacity")
+	gomega.Expect(pvCapacity.Value()).To(gomega.Equal(expectedCapacity.Value()), "pvCapacity is not equal to requestedCapacity")
 
 	// Check PV properties
-	By("checking the PV")
+	ginkgo.By("checking the PV")
 	expectedAccessModes := t.requestedPersistentVolumeClaim.Spec.AccessModes
-	Expect(t.persistentVolume.Spec.AccessModes).To(Equal(expectedAccessModes))
-	Expect(t.persistentVolume.Spec.ClaimRef.Name).To(Equal(t.persistentVolumeClaim.ObjectMeta.Name))
-	Expect(t.persistentVolume.Spec.ClaimRef.Namespace).To(Equal(t.persistentVolumeClaim.ObjectMeta.Namespace))
+	gomega.Expect(t.persistentVolume.Spec.AccessModes).To(gomega.Equal(expectedAccessModes))
+	gomega.Expect(t.persistentVolume.Spec.ClaimRef.Name).To(gomega.Equal(t.persistentVolumeClaim.ObjectMeta.Name))
+	gomega.Expect(t.persistentVolume.Spec.ClaimRef.Namespace).To(gomega.Equal(t.persistentVolumeClaim.ObjectMeta.Namespace))
 	// If storageClass is nil, PV was pre-provisioned with these values already set
 	if t.storageClass != nil {
-		Expect(t.persistentVolume.Spec.PersistentVolumeReclaimPolicy).To(Equal(*t.storageClass.ReclaimPolicy))
-		Expect(t.persistentVolume.Spec.MountOptions).To(Equal(t.storageClass.MountOptions))
+		gomega.Expect(t.persistentVolume.Spec.PersistentVolumeReclaimPolicy).To(gomega.Equal(*t.storageClass.ReclaimPolicy))
+		gomega.Expect(t.persistentVolume.Spec.MountOptions).To(gomega.Equal(t.storageClass.MountOptions))
 		if *t.storageClass.VolumeBindingMode == storagev1.VolumeBindingWaitForFirstConsumer {
-			Expect(t.persistentVolume.Spec.NodeAffinity.Required.NodeSelectorTerms[0].MatchExpressions[0].Values).
-				To(HaveLen(1))
+			gomega.Expect(t.persistentVolume.Spec.NodeAffinity.Required.NodeSelectorTerms[0].MatchExpressions[0].Values).
+				To(gomega.HaveLen(1))
 		}
 		if len(t.storageClass.AllowedTopologies) > 0 {
-			Expect(t.persistentVolume.Spec.NodeAffinity.Required.NodeSelectorTerms[0].MatchExpressions[0].Key).
-				To(Equal(t.storageClass.AllowedTopologies[0].MatchLabelExpressions[0].Key))
+			gomega.Expect(t.persistentVolume.Spec.NodeAffinity.Required.NodeSelectorTerms[0].MatchExpressions[0].Key).
+				To(gomega.Equal(t.storageClass.AllowedTopologies[0].MatchLabelExpressions[0].Key))
 			for _, v := range t.persistentVolume.Spec.NodeAffinity.Required.NodeSelectorTerms[0].MatchExpressions[0].Values {
-				Expect(t.storageClass.AllowedTopologies[0].MatchLabelExpressions[0].Values).To(ContainElement(v))
+				gomega.Expect(t.storageClass.AllowedTopologies[0].MatchLabelExpressions[0].Values).To(gomega.ContainElement(v))
 			}
 
 		}
@@ -267,11 +267,11 @@ func (t *TestPersistentVolumeClaim) ValidateProvisionedPersistentVolume() {
 func (t *TestPersistentVolumeClaim) WaitForBound() v1.PersistentVolumeClaim {
 	var err error
 
-	By(fmt.Sprintf("waiting for PVC to be in phase %q", v1.ClaimBound))
+	ginkgo.By(fmt.Sprintf("waiting for PVC to be in phase %q", v1.ClaimBound))
 	err = framework.WaitForPersistentVolumeClaimPhase(v1.ClaimBound, t.client, t.namespace.Name, t.persistentVolumeClaim.Name, framework.Poll, framework.ClaimProvisionTimeout)
 	framework.ExpectNoError(err)
 
-	By("checking the PVC")
+	ginkgo.By("checking the PVC")
 	// Get new copy of the claim
 	t.persistentVolumeClaim, err = t.client.CoreV1().PersistentVolumeClaims(t.namespace.Name).Get(t.persistentVolumeClaim.Name, metav1.GetOptions{})
 	framework.ExpectNoError(err)
@@ -312,7 +312,7 @@ func (t *TestPersistentVolumeClaim) Cleanup() {
 	// kubelet is slowly cleaning up the previous pod, however it should succeed
 	// in a couple of minutes.
 	if t.persistentVolume.Spec.PersistentVolumeReclaimPolicy == v1.PersistentVolumeReclaimDelete {
-		By(fmt.Sprintf("waiting for claim's PV %q to be deleted", t.persistentVolume.Name))
+		ginkgo.By(fmt.Sprintf("waiting for claim's PV %q to be deleted", t.persistentVolume.Name))
 		err := framework.WaitForPersistentVolumeDeleted(t.client, t.persistentVolume.Name, 5*time.Second, 10*time.Minute)
 		framework.ExpectNoError(err)
 	}
@@ -331,23 +331,23 @@ func (t *TestPersistentVolumeClaim) WaitForPersistentVolumePhase(phase v1.Persis
 }
 
 func (t *TestPersistentVolumeClaim) DeleteBoundPersistentVolume() {
-	By(fmt.Sprintf("deleting PV %q", t.persistentVolume.Name))
+	ginkgo.By(fmt.Sprintf("deleting PV %q", t.persistentVolume.Name))
 	err := framework.DeletePersistentVolume(t.client, t.persistentVolume.Name)
 	framework.ExpectNoError(err)
-	By(fmt.Sprintf("waiting for claim's PV %q to be deleted", t.persistentVolume.Name))
+	ginkgo.By(fmt.Sprintf("waiting for claim's PV %q to be deleted", t.persistentVolume.Name))
 	err = framework.WaitForPersistentVolumeDeleted(t.client, t.persistentVolume.Name, 5*time.Second, 10*time.Minute)
 	framework.ExpectNoError(err)
 }
 
 func (t *TestPersistentVolumeClaim) DeleteBackingVolume(azfile *azurefile.Driver) {
 	volumeID := t.persistentVolume.Spec.CSI.VolumeHandle
-	By(fmt.Sprintf("deleting azurefile volume %q", volumeID))
+	ginkgo.By(fmt.Sprintf("deleting azurefile volume %q", volumeID))
 	req := &csi.DeleteVolumeRequest{
 		VolumeId: volumeID,
 	}
 	_, err := azfile.DeleteVolume(context.Background(), req)
 	if err != nil {
-		Fail(fmt.Sprintf("could not delete volume %q: %v", volumeID, err))
+		ginkgo.Fail(fmt.Sprintf("could not delete volume %q: %v", volumeID, err))
 	}
 }
 
@@ -526,7 +526,7 @@ func (t *TestPod) WaitForRunning() {
 var podFailedCondition = func(pod *v1.Pod) (bool, error) {
 	switch pod.Status.Phase {
 	case v1.PodFailed:
-		By("Saw pod failure")
+		ginkgo.By("Saw pod failure")
 		return true, nil
 	case v1.PodSucceeded:
 		return true, fmt.Errorf("pod %q successed with reason: %q, message: %q", pod.Name, pod.Status.Reason, pod.Status.Message)

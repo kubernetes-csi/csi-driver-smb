@@ -39,7 +39,7 @@ const (
 	DriverName       = "file.csi.azure.com"
 	seperator        = "#"
 	volumeIDTemplate = "%s#%s#%s"
-	fileUrlTemplate  = "https://%s.file.%s"
+	fileURLTemplate  = "https://%s.file.%s"
 	fileMode         = "file_mode"
 	dirMode          = "dir_mode"
 	vers             = "vers"
@@ -291,7 +291,7 @@ func (d *Driver) expandVolume(ctx context.Context, volumeID string, capacityByte
 	}
 	requestGiB := int32(volumehelper.RoundUpGiB(capacityBytes))
 
-	shareURL, err := d.getShareUrl(volumeID)
+	shareURL, err := d.getShareURL(volumeID)
 	if err != nil {
 		return -1, status.Errorf(codes.Internal, "failed to get share url with (%s): %v, returning with success", volumeID, err)
 	}

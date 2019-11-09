@@ -21,7 +21,7 @@ import (
 
 	"sigs.k8s.io/azurefile-csi-driver/test/e2e/driver"
 
-	. "github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo"
 	v1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	clientset "k8s.io/client-go/kubernetes"
@@ -117,18 +117,18 @@ func (pod *PodDetails) SetupWithPreProvisionedVolumes(client clientset.Interface
 func (pod *PodDetails) SetupDeployment(client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver) (*TestDeployment, []func()) {
 	cleanupFuncs := make([]func(), 0)
 	volume := pod.Volumes[0]
-	By("setting up the StorageClass")
+	ginkgo.By("setting up the StorageClass")
 	storageClass := csiDriver.GetDynamicProvisionStorageClass(driver.GetParameters(), volume.MountOptions, volume.ReclaimPolicy, volume.VolumeBindingMode, volume.AllowedTopologyValues, namespace.Name)
 	tsc := NewTestStorageClass(client, namespace, storageClass)
 	createdStorageClass := tsc.Create()
 	cleanupFuncs = append(cleanupFuncs, tsc.Cleanup)
-	By("setting up the PVC")
+	ginkgo.By("setting up the PVC")
 	tpvc := NewTestPersistentVolumeClaim(client, namespace, volume.ClaimSize, volume.VolumeMode, &createdStorageClass)
 	tpvc.Create()
 	tpvc.WaitForBound()
 	tpvc.ValidateProvisionedPersistentVolume()
 	cleanupFuncs = append(cleanupFuncs, tpvc.Cleanup)
-	By("setting up the Deployment")
+	ginkgo.By("setting up the Deployment")
 	tDeployment := NewTestDeployment(client, namespace, pod.Cmd, tpvc.persistentVolumeClaim, fmt.Sprintf("%s%d", volume.VolumeMount.NameGenerate, 1), fmt.Sprintf("%s%d", volume.VolumeMount.MountPathGenerate, 1), volume.VolumeMount.ReadOnly)
 
 	cleanupFuncs = append(cleanupFuncs, tDeployment.Cleanup)
@@ -137,12 +137,12 @@ func (pod *PodDetails) SetupDeployment(client clientset.Interface, namespace *v1
 
 func (volume *VolumeDetails) SetupDynamicPersistentVolumeClaim(client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver) (*TestPersistentVolumeClaim, []func()) {
 	cleanupFuncs := make([]func(), 0)
-	By("setting up the StorageClass")
+	ginkgo.By("setting up the StorageClass")
 	storageClass := csiDriver.GetDynamicProvisionStorageClass(driver.GetParameters(), volume.MountOptions, volume.ReclaimPolicy, volume.VolumeBindingMode, volume.AllowedTopologyValues, namespace.Name)
 	tsc := NewTestStorageClass(client, namespace, storageClass)
 	createdStorageClass := tsc.Create()
 	cleanupFuncs = append(cleanupFuncs, tsc.Cleanup)
-	By("setting up the PVC and PV")
+	ginkgo.By("setting up the PVC and PV")
 	var tpvc *TestPersistentVolumeClaim
 	if volume.DataSource != nil {
 		dataSource := &v1.TypedLocalObjectReference{
@@ -167,11 +167,11 @@ func (volume *VolumeDetails) SetupDynamicPersistentVolumeClaim(client clientset.
 
 func (volume *VolumeDetails) SetupPreProvisionedPersistentVolumeClaim(client clientset.Interface, namespace *v1.Namespace, csiDriver driver.PreProvisionedVolumeTestDriver) (*TestPersistentVolumeClaim, []func()) {
 	cleanupFuncs := make([]func(), 0)
-	By("setting up the PV")
+	ginkgo.By("setting up the PV")
 	pv := csiDriver.GetPersistentVolume(volume.VolumeID, volume.FSType, volume.ClaimSize, volume.ReclaimPolicy, namespace.Name)
 	tpv := NewTestPreProvisionedPersistentVolume(client, pv)
 	tpv.Create()
-	By("setting up the PVC")
+	ginkgo.By("setting up the PVC")
 	tpvc := NewTestPersistentVolumeClaim(client, namespace, volume.ClaimSize, volume.VolumeMode, nil)
 	tpvc.Create()
 	cleanupFuncs = append(cleanupFuncs, tpvc.DeleteBoundPersistentVolume)
@@ -183,7 +183,7 @@ func (volume *VolumeDetails) SetupPreProvisionedPersistentVolumeClaim(client cli
 }
 
 func CreateVolumeSnapshotClass(client restclientset.Interface, namespace *v1.Namespace, csiDriver driver.VolumeSnapshotTestDriver) (*TestVolumeSnapshotClass, func()) {
-	By("setting up the VolumeSnapshotClass")
+	ginkgo.By("setting up the VolumeSnapshotClass")
 	volumeSnapshotClass := csiDriver.GetVolumeSnapshotClass(namespace.Name)
 	tvsc := NewTestVolumeSnapshotClass(client, namespace, volumeSnapshotClass)
 	tvsc.Create()
