@@ -156,7 +156,7 @@ type TestPreProvisionedPersistentVolume struct {
 
 func NewTestPreProvisionedPersistentVolume(c clientset.Interface, pv *v1.PersistentVolume) *TestPreProvisionedPersistentVolume {
 	return &TestPreProvisionedPersistentVolume{
-		client: c,
+		client:                    c,
 		requestedPersistentVolume: pv,
 	}
 }
