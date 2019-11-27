@@ -32,30 +32,30 @@ const (
 	defaultAzureChinaCloudLocation  = "chinaeast2"
 
 	// Env vars
-	tenantIdEnvVar        = "TENANT_ID"
-	subscriptionIdEnvVar  = "SUBSCRIPTION_ID"
-	aadClientIdEnvVar     = "AAD_CLIENT_ID"
+	tenantIDEnvVar        = "TENANT_ID"
+	subscriptionIDEnvVar  = "SUBSCRIPTION_ID"
+	aadClientIDEnvVar     = "AAD_CLIENT_ID"
 	aadClientSecretEnvVar = "AAD_CLIENT_SECRET"
 	resourceGroupEnvVar   = "RESOURCE_GROUP"
 	locationEnvVar        = "LOCATION"
 
-	tenantIdChinaEnvVar        = "TENANT_ID_CHINA"
-	subscriptionIdChinaEnvVar  = "SUBSCRIPTION_ID_CHINA"
-	aadClientIdChinaEnvVar     = "AAD_CLIENT_ID_CHINA"
+	tenantIDChinaEnvVar        = "TENANT_ID_CHINA"
+	subscriptionIDChinaEnvVar  = "SUBSCRIPTION_ID_CHINA"
+	aadClientIDChinaEnvVar     = "AAD_CLIENT_ID_CHINA"
 	aadClientSecretChinaEnvVar = "AAD_CLIENT_SECRET_CHINA"
 	resourceGroupChinaEnvVar   = "RESOURCE_GROUP_CHINA"
 	locationChinaEnvVar        = "LOCATION_CHINA"
 )
 
-// CredentialsConfig is used in Prow to store Azure credentials
+// Config is used in Prow to store Azure credentials
 // https://github.com/kubernetes/test-infra/blob/master/kubetest/azure.go#L116-L118
-type CredentialsConfig struct {
-	Creds CredentialsFromProw
+type Config struct {
+	Creds FromProw
 }
 
-// CredentialsFromProw is used in Prow to store Azure credentials
+// FromProw is used in Prow to store Azure credentials
 // https://github.com/kubernetes/test-infra/blob/master/kubetest/azure.go#L107-L114
-type CredentialsFromProw struct {
+type FromProw struct {
 	ClientID           string
 	ClientSecret       string
 	TenantID           string
@@ -82,17 +82,17 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	var cloud, tenantID, subscriptionID, aadClientID, aadClientSecret, resourceGroup, location string
 	if isAzureChinaCloud {
 		cloud = AzureChinaCloud
-		tenantID = os.Getenv(tenantIdChinaEnvVar)
-		subscriptionID = os.Getenv(subscriptionIdChinaEnvVar)
-		aadClientID = os.Getenv(aadClientIdChinaEnvVar)
+		tenantID = os.Getenv(tenantIDChinaEnvVar)
+		subscriptionID = os.Getenv(subscriptionIDChinaEnvVar)
+		aadClientID = os.Getenv(aadClientIDChinaEnvVar)
 		aadClientSecret = os.Getenv(aadClientSecretChinaEnvVar)
 		resourceGroup = os.Getenv(resourceGroupChinaEnvVar)
 		location = os.Getenv(locationChinaEnvVar)
 	} else {
 		cloud = AzurePublicCloud
-		tenantID = os.Getenv(tenantIdEnvVar)
-		subscriptionID = os.Getenv(subscriptionIdEnvVar)
-		aadClientID = os.Getenv(aadClientIdEnvVar)
+		tenantID = os.Getenv(tenantIDEnvVar)
+		subscriptionID = os.Getenv(subscriptionIDEnvVar)
+		aadClientID = os.Getenv(aadClientIDEnvVar)
 		aadClientSecret = os.Getenv(aadClientSecretEnvVar)
 		resourceGroup = os.Getenv(resourceGroupEnvVar)
 		location = os.Getenv(locationEnvVar)
@@ -128,7 +128,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	}
 
 	return nil, fmt.Errorf("If you are running tests locally, you will need to set the following env vars: $%s, $%s, $%s, $%s, $%s, $%s",
-		tenantIdEnvVar, subscriptionIdEnvVar, aadClientIdEnvVar, aadClientSecretEnvVar, resourceGroupEnvVar, locationEnvVar)
+		tenantIDEnvVar, subscriptionIDEnvVar, aadClientIDEnvVar, aadClientSecretEnvVar, resourceGroupEnvVar, locationEnvVar)
 }
 
 // DeleteAzureCredentialFile deletes the temporary Azure credential file
@@ -142,14 +142,14 @@ func DeleteAzureCredentialFile() error {
 
 // getCredentialsFromAzureCredentials parses the azure credentials toml (AZURE_CREDENTIALS)
 // in Prow and returns the credential information usable to Azure File CSI driver
-func getCredentialsFromAzureCredentials(azureCredentialsPath string) (*CredentialsFromProw, error) {
+func getCredentialsFromAzureCredentials(azureCredentialsPath string) (*FromProw, error) {
 	content, err := ioutil.ReadFile(azureCredentialsPath)
 	log.Printf("Reading credentials file %v", azureCredentialsPath)
 	if err != nil {
 		return nil, fmt.Errorf("error reading credentials file %v %v", azureCredentialsPath, err)
 	}
 
-	c := CredentialsConfig{}
+	c := Config{}
 	if err := toml.Unmarshal(content, &c); err != nil {
 		return nil, fmt.Errorf("error parsing credentials file %v %v", azureCredentialsPath, err)
 	}

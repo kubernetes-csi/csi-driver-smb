@@ -19,7 +19,7 @@ package testsuites
 import (
 	"sigs.k8s.io/azurefile-csi-driver/test/e2e/driver"
 
-	. "github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo"
 	v1 "k8s.io/api/core/v1"
 	clientset "k8s.io/client-go/kubernetes"
 )
@@ -40,10 +40,10 @@ func (t *DynamicallyProvisionedCmdVolumeTest) Run(client clientset.Interface, na
 			defer cleanup[i]()
 		}
 
-		By("deploying the pod")
+		ginkgo.By("deploying the pod")
 		tpod.Create()
 		defer tpod.Cleanup()
-		By("checking that the pods command exits with no error")
+		ginkgo.By("checking that the pods command exits with no error")
 		tpod.WaitForSuccess()
 	}
 }

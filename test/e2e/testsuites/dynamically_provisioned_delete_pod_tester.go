@@ -17,7 +17,7 @@ package testsuites
 import (
 	"sigs.k8s.io/azurefile-csi-driver/test/e2e/driver"
 
-	. "github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo"
 	v1 "k8s.io/api/core/v1"
 	clientset "k8s.io/client-go/kubernetes"
 )
@@ -43,20 +43,20 @@ func (t *DynamicallyProvisionedDeletePodTest) Run(client clientset.Interface, na
 		defer cleanup[i]()
 	}
 
-	By("deploying the deployment")
+	ginkgo.By("deploying the deployment")
 	tDeployment.Create()
 
-	By("checking that the pod is running")
+	ginkgo.By("checking that the pod is running")
 	tDeployment.WaitForPodReady()
 
-	By("deleting the pod for deployment")
+	ginkgo.By("deleting the pod for deployment")
 	tDeployment.DeletePodAndWait()
 
-	By("checking again that the pod is running")
+	ginkgo.By("checking again that the pod is running")
 	tDeployment.WaitForPodReady()
 
 	if t.PodCheck != nil {
-		By("checking pod exec")
+		ginkgo.By("checking pod exec")
 		tDeployment.Exec(t.PodCheck.Cmd, t.PodCheck.ExpectedString)
 	}
 }

@@ -24,9 +24,9 @@ const (
 
 func TestCreateAzureCredentialFileOnAzureChinaCloud(t *testing.T) {
 	t.Run("WithAzureCredentials", func(t *testing.T) {
-		os.Setenv(tenantIdChinaEnvVar, "")
-		os.Setenv(subscriptionIdChinaEnvVar, "")
-		os.Setenv(aadClientIdChinaEnvVar, "")
+		os.Setenv(tenantIDChinaEnvVar, "")
+		os.Setenv(subscriptionIDChinaEnvVar, "")
+		os.Setenv(aadClientIDChinaEnvVar, "")
 		os.Setenv(aadClientSecretChinaEnvVar, "")
 		os.Setenv(resourceGroupChinaEnvVar, "test-resource-group")
 		os.Setenv(locationChinaEnvVar, "test-location")
@@ -34,9 +34,9 @@ func TestCreateAzureCredentialFileOnAzureChinaCloud(t *testing.T) {
 	})
 
 	t.Run("WithEnvironmentVariables", func(t *testing.T) {
-		os.Setenv(tenantIdChinaEnvVar, "test-tenant-id")
-		os.Setenv(subscriptionIdChinaEnvVar, "test-subscription-id")
-		os.Setenv(aadClientIdChinaEnvVar, "test-aad-client-id")
+		os.Setenv(tenantIDChinaEnvVar, "test-tenant-id")
+		os.Setenv(subscriptionIDChinaEnvVar, "test-subscription-id")
+		os.Setenv(aadClientIDChinaEnvVar, "test-aad-client-id")
 		os.Setenv(aadClientSecretChinaEnvVar, "test-aad-client-secret")
 		os.Setenv(resourceGroupChinaEnvVar, "test-resource-group")
 		os.Setenv(locationChinaEnvVar, "test-location")
@@ -46,9 +46,9 @@ func TestCreateAzureCredentialFileOnAzureChinaCloud(t *testing.T) {
 
 func TestCreateAzureCredentialFileOnAzurePublicCloud(t *testing.T) {
 	t.Run("WithAzureCredentials", func(t *testing.T) {
-		os.Setenv(tenantIdEnvVar, "")
-		os.Setenv(subscriptionIdEnvVar, "")
-		os.Setenv(aadClientIdEnvVar, "")
+		os.Setenv(tenantIDEnvVar, "")
+		os.Setenv(subscriptionIDEnvVar, "")
+		os.Setenv(aadClientIDEnvVar, "")
 		os.Setenv(aadClientSecretEnvVar, "")
 		os.Setenv(resourceGroupEnvVar, "test-resource-group")
 		os.Setenv(locationEnvVar, "test-location")
@@ -56,9 +56,9 @@ func TestCreateAzureCredentialFileOnAzurePublicCloud(t *testing.T) {
 	})
 
 	t.Run("WithEnvironmentVariables", func(t *testing.T) {
-		os.Setenv(tenantIdEnvVar, "test-tenant-id")
-		os.Setenv(subscriptionIdEnvVar, "test-subscription-id")
-		os.Setenv(aadClientIdEnvVar, "test-aad-client-id")
+		os.Setenv(tenantIDEnvVar, "test-tenant-id")
+		os.Setenv(subscriptionIDEnvVar, "test-subscription-id")
+		os.Setenv(aadClientIDEnvVar, "test-aad-client-id")
 		os.Setenv(aadClientSecretEnvVar, "test-aad-client-secret")
 		os.Setenv(resourceGroupEnvVar, "test-resource-group")
 		os.Setenv(locationEnvVar, "test-location")

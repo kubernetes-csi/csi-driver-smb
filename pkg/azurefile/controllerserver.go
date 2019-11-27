@@ -129,7 +129,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	}
 
 	volumeID := req.VolumeId
-	shareURL, err := d.getShareUrl(volumeID)
+	shareURL, err := d.getShareURL(volumeID)
 	if err != nil {
 		// According to CSI Driver Sanity Tester, should succeed when an invalid volume id is used
 		klog.V(4).Infof("failed to get share url with (%s): %v, returning with success", volumeID, err)
@@ -245,7 +245,7 @@ func (d *Driver) CreateSnapshot(ctx context.Context, req *csi.CreateSnapshotRequ
 		}, nil
 	}
 
-	shareURL, err := d.getShareUrl(sourceVolumeID)
+	shareURL, err := d.getShareURL(sourceVolumeID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get share url with (%s): %v", sourceVolumeID, err)
 	}
@@ -287,7 +287,7 @@ func (d *Driver) DeleteSnapshot(ctx context.Context, req *csi.DeleteSnapshotRequ
 		return nil, status.Error(codes.InvalidArgument, "Snapshot ID must be provided")
 	}
 
-	shareURL, err := d.getShareUrl(req.SnapshotId)
+	shareURL, err := d.getShareURL(req.SnapshotId)
 	if err != nil {
 		// According to CSI Driver Sanity Tester, should succeed when an invalid snapshot id is used
 		klog.V(4).Infof("failed to get share url with (%s): %v, returning with success", req.SnapshotId, err)
@@ -334,10 +334,10 @@ func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.Controller
 	return &csi.ControllerExpandVolumeResponse{CapacityBytes: currentQuota}, nil
 }
 
-// getShareUrl: sourceVolumeID is the id of source file share, returns a ShareURL of source file share.
+// getShareURL: sourceVolumeID is the id of source file share, returns a ShareURL of source file share.
 // A ShareURL < https://<account>.file.core.windows.net/<fileShareName> > represents a URL to the Azure Storage share allowing you to manipulate its directories and files.
 // e.g. The ID of source file share is #fb8fff227be6511e9b24123#createsnapshot-volume-1. Returns https://fb8fff227be6511e9b24123.file.core.windows.net/createsnapshot-volume-1
-func (d *Driver) getShareUrl(sourceVolumeID string) (azfile.ShareURL, error) {
+func (d *Driver) getShareURL(sourceVolumeID string) (azfile.ShareURL, error) {
 	serviceURL, fileShareName, err := d.getServiceURL(sourceVolumeID)
 	if err != nil {
 		return azfile.ShareURL{}, err
@@ -368,7 +368,7 @@ func (d *Driver) getServiceURL(sourceVolumeID string) (azfile.ServiceURL, string
 		return azfile.ServiceURL{}, "", err
 	}
 
-	u, err := url.Parse(fmt.Sprintf(fileUrlTemplate, accountName, d.cloud.Environment.StorageEndpointSuffix))
+	u, err := url.Parse(fmt.Sprintf(fileURLTemplate, accountName, d.cloud.Environment.StorageEndpointSuffix))
 	if err != nil {
 		klog.Errorf("parse fileUrlTemplate error: %v", err)
 		return azfile.ServiceURL{}, "", err
@@ -403,9 +403,8 @@ func (d *Driver) snapshotExists(ctx context.Context, sourceVolumeID string, snap
 			if share.Name == fileShareName {
 				klog.V(2).Infof("found share(%s) snapshot(%s) Metadata(%v)", share.Name, *share.Snapshot, share.Metadata)
 				return true, share, nil
-			} else {
-				return true, azfile.ShareItem{}, fmt.Errorf("snapshot(%s) already exists, while the current file share name(%s) does not equal to %s, SourceVolumeId(%s)", snapshotName, share.Name, fileShareName, sourceVolumeID)
 			}
+			return true, azfile.ShareItem{}, fmt.Errorf("snapshot(%s) already exists, while the current file share name(%s) does not equal to %s, SourceVolumeId(%s)", snapshotName, share.Name, fileShareName, sourceVolumeID)
 		}
 	}
 
