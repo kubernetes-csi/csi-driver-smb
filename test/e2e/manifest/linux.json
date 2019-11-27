@@ -1,0 +1,65 @@
+{
+    "apiVersion": "vlabs",
+    "location": "westus2",
+    "properties": {
+        "orchestratorProfile": {
+            "orchestratorType": "Kubernetes",
+            "orchestratorRelease": "1.16",
+            "kubernetesConfig": {
+                "useCloudControllerManager": true,
+                "customCcmImage": "mcr.microsoft.com/k8s/core/azure-cloud-controller-manager:v0.3.0",
+                "networkPolicy": "none",
+                "cloudProviderRateLimitQPS": 6,
+                "cloudProviderRateLimitBucket": 20,
+                "controllerManagerConfig": {
+                    "--feature-gates": "CSIInlineVolume=true,LocalStorageCapacityIsolation=true,ServiceNodeExclusion=true"
+                },
+                "apiServerConfig": {
+                    "--enable-admission-plugins": "NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota,AlwaysPullImages"
+                },
+                "addons": [
+                    {
+                        "name": "azuredisk-csi-driver",
+                        "enabled": false
+                    },
+                    {
+                        "name": "azurefile-csi-driver",
+                        "enabled": false
+                    },
+                    {
+                        "name": "tiller",
+                        "enabled": true
+                    }
+                ]
+            }
+        },
+        "masterProfile": {
+            "count": 1,
+            "dnsPrefix": "{dnsPrefix}",
+            "vmSize": "Standard_DS2_v2"
+        },
+        "agentPoolProfiles": [
+            {
+                "name": "agentpool1",
+                "count": 2,
+                "vmSize": "Standard_D4s_v3",
+                "availabilityProfile": "AvailabilitySet",
+                "storageProfile": "ManagedDisks"
+            }
+        ],
+        "linuxProfile": {
+            "adminUsername": "azureuser",
+            "ssh": {
+                "publicKeys": [
+                    {
+                        "keyData": "{keyData}"
+                    }
+                ]
+            }
+        },
+        "servicePrincipalProfile": {
+            "clientID": "{clientID}",
+            "secret": "{secret}"
+        }
+    }
+}
