@@ -82,17 +82,17 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	var cloud, tenantID, subscriptionID, aadClientID, aadClientSecret, resourceGroup, location string
 	if isAzureChinaCloud {
 		cloud = AzureChinaCloud
-		tenantID = os.Getenv(tenantIdChinaEnvVar)
-		subscriptionID = os.Getenv(subscriptionIdChinaEnvVar)
-		aadClientID = os.Getenv(aadClientIdChinaEnvVar)
+		tenantID = os.Getenv(tenantIDChinaEnvVar)
+		subscriptionID = os.Getenv(subscriptionIDChinaEnvVar)
+		aadClientID = os.Getenv(aadClientIDChinaEnvVar)
 		aadClientSecret = os.Getenv(aadClientSecretChinaEnvVar)
 		resourceGroup = os.Getenv(resourceGroupChinaEnvVar)
 		location = os.Getenv(locationChinaEnvVar)
 	} else {
 		cloud = AzurePublicCloud
-		tenantID = os.Getenv(tenantIdEnvVar)
-		subscriptionID = os.Getenv(subscriptionIdEnvVar)
-		aadClientID = os.Getenv(aadClientIdEnvVar)
+		tenantID = os.Getenv(tenantIDEnvVar)
+		subscriptionID = os.Getenv(subscriptionIDEnvVar)
+		aadClientID = os.Getenv(aadClientIDEnvVar)
 		aadClientSecret = os.Getenv(aadClientSecretEnvVar)
 		resourceGroup = os.Getenv(resourceGroupEnvVar)
 		location = os.Getenv(locationEnvVar)
