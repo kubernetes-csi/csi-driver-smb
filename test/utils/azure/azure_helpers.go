@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"github.com/Azure/azure-sdk-for-go/services/resources/mgmt/2018-05-01/resources"
 	"github.com/Azure/go-autorest/autorest"
@@ -39,9 +41,15 @@ func GetClient(cloud, subscriptionID, clientID, tenantID, clientSecret string) (
 func (az *Client) EnsureResourceGroup(ctx context.Context, name, location string, managedBy *string) (resourceGroup *resources.Group, err error) {
 	var tags map[string]*string
 	group, err := az.groupsClient.Get(ctx, name)
-	if err == nil {
+	if err == nil && group.Tags != nil {
 		tags = group.Tags
+	} else {
+		tags = make(map[string]*string)
 	}
+	// Tags for correlating resource groups with prow jobs on testgrid
+	tags["buildID"] = stringPointer(os.Getenv("BUILD_ID"))
+	tags["jobName"] = stringPointer(os.Getenv("JOB_NAME"))
+	tags["creationTimestamp"] = stringPointer(time.Now().UTC().Format(time.RFC3339))
 
 	response, err := az.groupsClient.CreateOrUpdate(ctx, name, resources.Group{
 		Name:      &name,
@@ -93,4 +101,8 @@ func getClient(env azure.Environment, subscriptionID, tenantID string, armSpt *a
 	c.groupsClient.Authorizer = authorizer
 
 	return c
+}
+
+func stringPointer(s string) *string {
+	return &s
 }
