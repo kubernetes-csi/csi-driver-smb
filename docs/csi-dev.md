@@ -1,21 +1,36 @@
 # Azure file CSI driver development guide
 
+ - Clone repo
+```
+$ mkdir -p $GOPATH/src/sigs.k8s.io/
+$ git clone https://github.com/kubernetes-sigs/azurefile-csi-driver $GOPATH/src/sigs.k8s.io/azurefile-csi-driver
+```
+
  - Build azure file plugin
 ```
+$ cd $GOPATH/src/sigs.k8s.io/azurefile-csi-driver
 $ make azurefile
 ```
-> Before running CSI driver, create "/etc/kubernetes/azure.json" file under testing server(it's better copy `azure.json` file from a k8s cluster with service principle configured correctly) and set `AZURE_CREDENTIAL_FILE` as following:
+
+ - Run unit test
 ```
-export set AZURE_CREDENTIAL_FILE=/etc/kubernetes/azure.json
+$ make unit-test
 ```
- - Run test
+
+ - Build continer image and push to dockerhub
 ```
-$ make test
+export REGISTRY=<dockerhub-alias>
+make azurefile-container
+make push-latest
 ```
 
 ### Start CSI driver
 ```
 $ ./_output/azurefileplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5
+```
+> Before running CSI driver, create "/etc/kubernetes/azure.json" file under testing server(it's better copy `azure.json` file from a k8s cluster with service principle configured correctly) and set `AZURE_CREDENTIAL_FILE` as following:
+```
+export set AZURE_CREDENTIAL_FILE=/etc/kubernetes/azure.json
 ```
 
 ### Test using csc
