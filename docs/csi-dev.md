@@ -24,22 +24,30 @@ make azurefile-container
 make push-latest
 ```
 
-### Start CSI driver
+### Test locally using csc tool
+Install `csc` tool according to https://github.com/rexray/gocsi/tree/master/csc:
 ```
-$ ./_output/azurefileplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5
+$ mkdir -p $GOPATH/src/github.com
+$ cd $GOPATH/src/github.com
+$ git clone https://github.com/rexray/gocsi.git
+$ cd rexray/gocsi/csc
+$ make build
+```
+
+#### Start CSI driver locally
+```
+$ cd $GOPATH/src/sigs.k8s.io/azurefile-csi-driver
+$ ./_output/azurefileplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5 &
 ```
 > Before running CSI driver, create "/etc/kubernetes/azure.json" file under testing server(it's better copy `azure.json` file from a k8s cluster with service principle configured correctly) and set `AZURE_CREDENTIAL_FILE` as following:
 ```
 export set AZURE_CREDENTIAL_FILE=/etc/kubernetes/azure.json
 ```
 
-### Test using csc
-Get ```csc``` tool from https://github.com/rexray/gocsi/tree/master/csc
-
 #### 1. Get plugin info
 ```
 $ csc identity plugin-info --endpoint tcp://127.0.0.1:10000
-"csi-azurefile" "v0.5.0-alpha"
+"file.csi.azure.com"    "v0.4.0"
 ```
 
 #### 2. Create an azure file volume
