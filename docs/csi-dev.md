@@ -1,12 +1,13 @@
 # Azure file CSI driver development guide
 
+## How to build this project
  - Clone repo
 ```
 $ mkdir -p $GOPATH/src/sigs.k8s.io/
 $ git clone https://github.com/kubernetes-sigs/azurefile-csi-driver $GOPATH/src/sigs.k8s.io/azurefile-csi-driver
 ```
 
- - Build azure file plugin
+ - Build CSI driver
 ```
 $ cd $GOPATH/src/sigs.k8s.io/azurefile-csi-driver
 $ make azurefile
@@ -17,15 +18,9 @@ $ make azurefile
 $ make unit-test
 ```
 
- - Build continer image and push to dockerhub
-```
-export REGISTRY=<dockerhub-alias>
-make azurefile-container
-make push-latest
-```
+## How to test CSI driver in local environment
 
-### Test locally using csc tool
-Install `csc` tool according to https://github.com/rexray/gocsi/tree/master/csc:
+Install `csc` tool according to https://github.com/rexray/gocsi/tree/master/csc
 ```
 $ mkdir -p $GOPATH/src/github.com
 $ cd $GOPATH/src/github.com
@@ -96,3 +91,25 @@ $  csc controller create-snapshot
 ```
 $  csc controller delete-snapshot
 ```
+
+
+## How to test CSI driver in a Kubernetes cluster
+
+ - Build continer image and push image to dockerhub
+```
+# run `docker login` first
+export REGISTRY=<dockerhub-alias>
+make azurefile-container
+make push-latest
+```
+
+ - Replace `mcr.microsoft.com/k8s/csi/azurefile-csi:latest` in `csi-azurefile-controller.yaml` and `csi-azurefile-node.yaml` with above dockerhub image urls and then follow [install CSI driver master version](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/install-csi-driver-master.md)
+ ```
+wget -O csi-azurefile-controller.yaml https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-controller.yaml
+# edit csi-azurefile-controller.yaml
+kubectl apply -f csi-azurefile-controller.yaml
+
+wget -O csi-azurefile-node.yaml https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-node.yaml
+# edit csi-azurefile-node.yaml
+kubectl apply -f csi-azurefile-node.yaml
+ ```
