@@ -23,13 +23,13 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-          image: quay.io/k8scsi/livenessprobe:v1.0.2
+          image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
             - --health-port=9702
         - name: node-driver-registrar
-          image: quay.io/k8scsi/csi-node-driver-registrar:v1.1.0
+          image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
           args:
             - --csi-address=$(ADDRESS)
             - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
@@ -49,7 +49,7 @@ spec:
             - name: registration-dir
               mountPath: /registration
         - name: azurefile
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.azurefile.repository }}:{{ .Values.image.azurefile.tag }}"
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"
