@@ -103,7 +103,7 @@ make azurefile-container
 make push-latest
 ```
 
- - Replace `mcr.microsoft.com/k8s/csi/azurefile-csi:latest` in `csi-azurefile-controller.yaml` and `csi-azurefile-node.yaml` with above dockerhub image urls and then follow [install CSI driver master version](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/install-csi-driver-master.md)
+ - Replace `mcr.microsoft.com/k8s/csi/azurefile-csi:latest` in [`csi-azurefile-controller.yaml`](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/deploy/csi-azurefile-controller.yaml) and [`csi-azurefile-node.yaml`](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/deploy/csi-azurefile-node.yaml) with above dockerhub image urls and then follow [install CSI driver master version](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/install-csi-driver-master.md)
  ```
 wget -O csi-azurefile-controller.yaml https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-controller.yaml
 # edit csi-azurefile-controller.yaml
