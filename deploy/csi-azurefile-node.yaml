@@ -22,7 +22,7 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-          image: quay.io/k8scsi/livenessprobe:v1.0.2
+          image: quay.io/k8scsi/livenessprobe:v1.1.0
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
