@@ -182,7 +182,7 @@ func parseAndExecuteTemplate(cloud, tenantID, subscriptionID, aadClientID, aadCl
 	}
 	err = t.Execute(f, c)
 	if err != nil {
-		return nil, fmt.Errorf("error executing parsed azure credential file tempalte %v", err)
+		return nil, fmt.Errorf("error executing parsed azure credential file template %v", err)
 	}
 
 	return &c, nil
