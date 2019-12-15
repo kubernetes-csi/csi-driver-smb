@@ -37,7 +37,7 @@ import (
 
 const (
 	DriverName       = "file.csi.azure.com"
-	seperator        = "#"
+	separator        = "#"
 	volumeIDTemplate = "%s#%s#%s"
 	fileURLTemplate  = "https://%s.file.%s"
 	fileMode         = "file_mode"
@@ -166,7 +166,7 @@ func (d *Driver) getFileSvcClient(accountName, accountKey string) (*azs.FileServ
 // input: "rg#f5713de20cde511e8ba4900#pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41"
 // output: rg, f5713de20cde511e8ba4900, pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41
 func getFileShareInfo(id string) (string, string, string, error) {
-	segments := strings.Split(id, seperator)
+	segments := strings.Split(id, separator)
 	if len(segments) < 3 {
 		return "", "", "", fmt.Errorf("error parsing volume id: %q, should at least contain two #", id)
 	}
@@ -223,11 +223,11 @@ func getStorageAccount(secrets map[string]string) (string, string, error) {
 		switch strings.ToLower(k) {
 		case "accountname":
 			accountName = v
-		case "azurestorageaccountname": // for compatability with built-in azurefile plugin
+		case "azurestorageaccountname": // for compatibility with built-in azurefile plugin
 			accountName = v
 		case "accountkey":
 			accountKey = v
-		case "azurestorageaccountkey": // for compatability with built-in azurefile plugin
+		case "azurestorageaccountkey": // for compatibility with built-in azurefile plugin
 			accountKey = v
 		}
 	}
@@ -278,7 +278,7 @@ func checkShareNameBeginAndEnd(fileShareName string) bool {
 // input: "rg#f5713de20cde511e8ba4900#csivolumename#2019-08-22T07:17:53.0000000Z"
 // output: 2019-08-22T07:17:53.0000000Z
 func getSnapshot(id string) (string, error) {
-	segments := strings.Split(id, seperator)
+	segments := strings.Split(id, separator)
 	if len(segments) != 4 {
 		return "", fmt.Errorf("error parsing volume id: %q, should at least contain three #", id)
 	}

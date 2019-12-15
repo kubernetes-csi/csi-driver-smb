@@ -16,7 +16,7 @@ To upgrade to the latest version for all direct and indirect dependencies of the
 
 * run `go get -u <package>` to use the latest minor or patch releases
 * run `go get -u=patch <package>` to use the latest patch releases
-* run `go get <pacakge>@VERSION` to use the specified version
+* run `go get <package>@VERSION` to use the specified version
 
 You can also manually editing `go.mod`.
 
