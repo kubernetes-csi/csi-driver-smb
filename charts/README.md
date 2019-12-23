@@ -13,7 +13,7 @@ Quick start instructions for the setup and configuration of azurefile CSI driver
 ```console
 $ cd $GOPATH/src/sigs.k8s.io/azurefile-csi-driver/charts/latest
 $ helm package azurefile-csi-driver
-$ helm install azurefile-csi-driver-latest.tgz --name azurefile-csi-driver --namespace kube-system
+$ helm install azurefile-csi-driver azurefile-csi-driver-latest.tgz --namespace kube-system
 ```
 
 ## Uninstall

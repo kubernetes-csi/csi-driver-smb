@@ -5,11 +5,11 @@ image:
     pullPolicy: Always
   csiProvisioner:
     repository: quay.io/k8scsi/csi-provisioner
-    tag: v1.0.1
+    tag: v1.4.0
     pullPolicy: Always
   csiAttacher:
     repository: quay.io/k8scsi/csi-attacher
-    tag: v1.0.1
+    tag: v1.2.0
     pullPolicy: Always
   clusterDriverRegistrar:
     repository: quay.io/k8scsi/csi-cluster-driver-registrar
@@ -33,3 +33,6 @@ serviceAccount:
 
 rbac:
   create: true
+
+controller:
+  replicas: 3
