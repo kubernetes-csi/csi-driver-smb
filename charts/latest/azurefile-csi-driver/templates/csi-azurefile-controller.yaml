@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 {{ include "azurefile.labels" . | indent 2 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.controller.replicas }}
   selector:
     matchLabels:
       app: csi-azurefile-controller
@@ -25,6 +25,8 @@ spec:
             - "--provisioner=file.csi.azure.com"
             - "--csi-address=$(ADDRESS)"
             - "--connection-timeout=15s"
+            - "--enable-leader-election"
+            - "--leader-election-type=leases"
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -35,9 +37,11 @@ spec:
         - name: csi-attacher
           image: "{{ .Values.image.csiAttacher.repository }}:{{ .Values.image.csiAttacher.tag }}"
           args:
-            - --v=5
-            - --csi-address=$(ADDRESS)
-            - --timeout=120s
+            - "-v=5"
+            - "-csi-address=$(ADDRESS)"
+            - "-timeout=120s"
+            - "-leader-election"
+            - "-leader-election-type=leases"
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -60,7 +64,8 @@ spec:
         - name: csi-snapshotter
           image: "{{ .Values.image.csiSnapshotter.repository }}:{{ .Values.image.csiSnapshotter.tag }}"
           args:
-            - --csi-address=$(ADDRESS)
+            - "-csi-address=$(ADDRESS)"
+            - "-leader-election"
           env:
             - name: ADDRESS
               value: /csi/csi.sock
