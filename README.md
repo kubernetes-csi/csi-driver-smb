@@ -17,7 +17,7 @@ Status: Beta
 |v0.2.0                         |mcr.microsoft.com/k8s/csi/azurefile-csi:v0.2.0      | yes    |
 
 ### Kubernetes Compatibility
-| Azure File CSI Driver\Kubernetes Version | 1.13+ |
+| Azure File CSI Driver\Kubernetes Version | 1.14+ |
 |------------------------------------------|-------|
 | master branch                            | yes   |
 | v0.3.0                                   | yes   |
