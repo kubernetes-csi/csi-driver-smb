@@ -13,7 +13,8 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi
 - check pods status:
 
 ```
-watch kubectl get po -o wide -n kube-system | grep csi-azurefile
+kubectl -n kube-system get pod -o wide --watch -l app=csi-azurefile-controller
+kubectl -n kube-system get pod -o wide --watch -l app=csi-azurefile-node
 ```
 
 example output:
