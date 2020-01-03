@@ -29,25 +29,29 @@ const (
 )
 
 type PVTestDriver interface {
-	DynamicPVTestDriver
-	PreProvisionedVolumeTestDriver
-	VolumeSnapshotTestDriver
+	GetDynamicProvisionStorageClass(parameters map[string]string, mountOptions []string, reclaimPolicy *v1.PersistentVolumeReclaimPolicy, bindingMode *storagev1.VolumeBindingMode, allowedTopologyValues []string, namespace string) *storagev1.StorageClass
+	GetPersistentVolume(volumeID string, fsType string, size string, reclaimPolicy *v1.PersistentVolumeReclaimPolicy, namespace string) *v1.PersistentVolume
+	GetVolumeSnapshotClass(namespace string) *v1alpha1.VolumeSnapshotClass
+	IsInTree() bool
 }
 
 // DynamicPVTestDriver represents an interface for a CSI driver that supports DynamicPV
 type DynamicPVTestDriver interface {
 	// GetDynamicProvisionStorageClass returns a StorageClass dynamic provision Persistent Volume
 	GetDynamicProvisionStorageClass(parameters map[string]string, mountOptions []string, reclaimPolicy *v1.PersistentVolumeReclaimPolicy, bindingMode *storagev1.VolumeBindingMode, allowedTopologyValues []string, namespace string) *storagev1.StorageClass
+	IsInTree() bool
 }
 
 // PreProvisionedVolumeTestDriver represents an interface for a CSI driver that supports pre-provisioned volume
 type PreProvisionedVolumeTestDriver interface {
 	// GetPersistentVolume returns a PersistentVolume with pre-provisioned volumeHandle
 	GetPersistentVolume(volumeID string, fsType string, size string, reclaimPolicy *v1.PersistentVolumeReclaimPolicy, namespace string) *v1.PersistentVolume
+	IsInTree() bool
 }
 
 type VolumeSnapshotTestDriver interface {
 	GetVolumeSnapshotClass(namespace string) *v1alpha1.VolumeSnapshotClass
+	IsInTree() bool
 }
 
 func getStorageClass(
