@@ -94,6 +94,10 @@ azurefile-windows:
 azurefile-container: azurefile
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
 
+.PHONY: azurefile-container-windows
+azurefile-container-windows: azurefile-windows
+	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Windows.Dockerfile .
+
 .PHONY: push
 push:
 	docker push $(IMAGE_TAG)
