@@ -22,3 +22,11 @@ REGISTRY=<your Docker Hub ID / registry> make e2e-test
 # Run E2E tests on an existing Azure File CSI Driver image
 REGISTRY=<your Docker Hub ID / registry> IMAGE_VERSION=<desired image version> make e2e-test
 ```
+
+### Run the test for in-tree driver
+
+```
+export KUBECONFIG='<path to kubeconfig>'
+export AZURE_STORAGE_DRIVER="kubernetes.io/azure-file"
+make e2e-test
+```

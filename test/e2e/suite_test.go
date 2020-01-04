@@ -33,6 +33,7 @@ import (
 	"github.com/pborman/uuid"
 	"k8s.io/kubernetes/test/e2e/framework"
 	"sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
+	"sigs.k8s.io/azurefile-csi-driver/test/e2e/driver"
 	"sigs.k8s.io/azurefile-csi-driver/test/utils/azure"
 	"sigs.k8s.io/azurefile-csi-driver/test/utils/credentials"
 	"sigs.k8s.io/azurefile-csi-driver/test/utils/testutil"
@@ -56,78 +57,82 @@ var _ = ginkgo.BeforeSuite(func() {
 	framework.HandleFlags()
 	framework.AfterReadingAllFlags(&framework.TestContext)
 
-	creds, err := credentials.CreateAzureCredentialFile(false)
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	azureClient, err := azure.GetClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-	// Need to login to ACR using SP credential if we are running in Prow so we can push test images.
-	// If running locally, user should run 'docker login' before running E2E tests
-	if testutil.IsRunningInProw() {
-		registry := os.Getenv("REGISTRY")
-		gomega.Expect(registry).NotTo(gomega.Equal(""))
-
-		log.Println("Attempting docker login with Azure service principal")
-		cmd := exec.Command("docker", "login", fmt.Sprintf("--username=%s", creds.AADClientID), fmt.Sprintf("--password=%s", creds.AADClientSecret), registry)
-		err := cmd.Run()
+	if os.Getenv(driver.AzureDriverNameVar) == "" && testutil.IsRunningInProw() {
+		creds, err := credentials.CreateAzureCredentialFile(false)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-		log.Println("docker login is successful")
+		azureClient, err := azure.GetClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+
+		// Need to login to ACR using SP credential if we are running in Prow so we can push test images.
+		// If running locally, user should run 'docker login' before running E2E tests
+		if testutil.IsRunningInProw() {
+			registry := os.Getenv("REGISTRY")
+			gomega.Expect(registry).NotTo(gomega.Equal(""))
+
+			log.Println("Attempting docker login with Azure service principal")
+			cmd := exec.Command("docker", "login", fmt.Sprintf("--username=%s", creds.AADClientID), fmt.Sprintf("--password=%s", creds.AADClientSecret), registry)
+			err := cmd.Run()
+			gomega.Expect(err).NotTo(gomega.HaveOccurred())
+			log.Println("docker login is successful")
+		}
+
+		// Install Azure File CSI Driver on cluster from project root
+		err = os.Chdir("../..")
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		defer func() {
+			err := os.Chdir("test/e2e")
+			gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		}()
+
+		projectRoot, err := os.Getwd()
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		gomega.Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(gomega.Equal(true))
+
+		log.Println("Installing Azure File CSI Driver...")
+		cmd := exec.Command("make", "e2e-bootstrap")
+		cmd.Dir = projectRoot
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err = cmd.Run()
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		log.Println("Azure File CSI Driver installed")
+
+		nodeid := os.Getenv("nodeid")
+		azurefileDriver = azurefile.NewDriver(nodeid)
+		go func() {
+			os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
+			azurefileDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()))
+		}()
 	}
-
-	// Install Azure File CSI Driver on cluster from project root
-	err = os.Chdir("../..")
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	defer func() {
-		err := os.Chdir("test/e2e")
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	}()
-
-	projectRoot, err := os.Getwd()
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	gomega.Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(gomega.Equal(true))
-
-	log.Println("Installing Azure File CSI Driver...")
-	cmd := exec.Command("make", "e2e-bootstrap")
-	cmd.Dir = projectRoot
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	log.Println("Azure File CSI Driver installed")
-
-	nodeid := os.Getenv("nodeid")
-	azurefileDriver = azurefile.NewDriver(nodeid)
-	go func() {
-		os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
-		azurefileDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()))
-	}()
 })
 
 var _ = ginkgo.AfterSuite(func() {
-	err := os.Chdir("../..")
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	defer func() {
-		err := os.Chdir("test/e2e")
+	if os.Getenv(driver.AzureDriverNameVar) == "" && testutil.IsRunningInProw() {
+		err := os.Chdir("../..")
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	}()
+		defer func() {
+			err := os.Chdir("test/e2e")
+			gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		}()
 
-	projectRoot, err := os.Getwd()
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	gomega.Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(gomega.Equal(true))
+		projectRoot, err := os.Getwd()
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		gomega.Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(gomega.Equal(true))
 
-	log.Println("Uninstalling Azure File CSI Driver...")
-	cmd := exec.Command("make", "e2e-teardown")
-	cmd.Dir = projectRoot
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	log.Println("Azure File CSI Driver uninstalled")
+		log.Println("Uninstalling Azure File CSI Driver...")
+		cmd := exec.Command("make", "e2e-teardown")
+		cmd.Dir = projectRoot
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err = cmd.Run()
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		log.Println("Azure File CSI Driver uninstalled")
 
-	err = credentials.DeleteAzureCredentialFile()
-	gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		err = credentials.DeleteAzureCredentialFile()
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+	}
 })
 
 func TestE2E(t *testing.T) {

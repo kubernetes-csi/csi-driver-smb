@@ -48,7 +48,7 @@ var _ = ginkgo.Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func(
 	ginkgo.BeforeEach(func() {
 		cs = f.ClientSet
 		ns = f.Namespace
-		testDriver = driver.InitAzureFileCSIDriver()
+		testDriver = driver.InitAzureFileDriver()
 	})
 
 	ginkgo.AfterEach(func() {
@@ -64,6 +64,10 @@ var _ = ginkgo.Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func(
 	})
 
 	ginkgo.It("[env] should use a pre-provisioned volume and mount it as readOnly in a pod", func() {
+		// Az tests are not yet working for in-tree
+		if testDriver.IsInTree() {
+			ginkgo.Skip("Test running with in tree configuration")
+		}
 		req := makeCreateVolumeReq("pre-provisioned-readOnly")
 		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
 		if err != nil {
@@ -98,6 +102,10 @@ var _ = ginkgo.Describe("[azurefile-csi-e2e] [single-az] Pre-Provisioned", func(
 	})
 
 	ginkgo.It(fmt.Sprintf("[env] should use a pre-provisioned volume and retain PV with reclaimPolicy %q", v1.PersistentVolumeReclaimRetain), func() {
+		// Az tests are not yet working for in tree driver
+		if testDriver.IsInTree() {
+			ginkgo.Skip("Test running with in tree configuration")
+		}
 		req := makeCreateVolumeReq("pre-provisioned-retain-reclaimPolicy")
 		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
 		if err != nil {
