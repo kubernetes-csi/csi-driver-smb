@@ -39,6 +39,8 @@ import (
 	clientset "k8s.io/client-go/kubernetes"
 	restclientset "k8s.io/client-go/rest"
 	"k8s.io/kubernetes/test/e2e/framework"
+	"k8s.io/kubernetes/test/e2e/framework/deployment"
+	e2elog "k8s.io/kubernetes/test/e2e/framework/log"
 	imageutils "k8s.io/kubernetes/test/utils/image"
 )
 
@@ -74,7 +76,7 @@ func (t *TestStorageClass) Create() storagev1.StorageClass {
 }
 
 func (t *TestStorageClass) Cleanup() {
-	framework.Logf("deleting StorageClass %s", t.storageClass.Name)
+	e2elog.Logf("deleting StorageClass %s", t.storageClass.Name)
 	err := t.client.StorageV1().StorageClasses().Delete(t.storageClass.Name, nil)
 	framework.ExpectNoError(err)
 }
@@ -143,7 +145,7 @@ func (t *TestVolumeSnapshotClass) DeleteSnapshot(vs *v1alpha1.VolumeSnapshot) {
 }
 
 func (t *TestVolumeSnapshotClass) Cleanup() {
-	framework.Logf("deleting VolumeSnapshotClass %s", t.volumeSnapshotClass.Name)
+	e2elog.Logf("deleting VolumeSnapshotClass %s", t.volumeSnapshotClass.Name)
 	err := snapshotclientset.New(t.client).VolumesnapshotV1alpha1().VolumeSnapshotClasses().Delete(t.volumeSnapshotClass.Name, nil)
 	framework.ExpectNoError(err)
 }
@@ -302,7 +304,7 @@ func generatePVC(namespace, storageClassName, claimSize string, volumeMode v1.Pe
 }
 
 func (t *TestPersistentVolumeClaim) Cleanup() {
-	framework.Logf("deleting PVC %q/%q", t.namespace.Name, t.persistentVolumeClaim.Name)
+	e2elog.Logf("deleting PVC %q/%q", t.namespace.Name, t.persistentVolumeClaim.Name)
 	err := framework.DeletePersistentVolumeClaim(t.client, t.persistentVolumeClaim.Name, t.namespace.Name)
 	framework.ExpectNoError(err)
 	// Wait for the PV to get deleted if reclaim policy is Delete. (If it's
@@ -416,16 +418,16 @@ func (t *TestDeployment) Create() {
 	var err error
 	t.deployment, err = t.client.AppsV1().Deployments(t.namespace.Name).Create(t.deployment)
 	framework.ExpectNoError(err)
-	err = framework.WaitForDeploymentComplete(t.client, t.deployment)
+	err = deployment.WaitForDeploymentComplete(t.client, t.deployment)
 	framework.ExpectNoError(err)
-	pods, err := framework.GetPodsForDeployment(t.client, t.deployment)
+	pods, err := deployment.GetPodsForDeployment(t.client, t.deployment)
 	framework.ExpectNoError(err)
 	// always get first pod as there should only be one
 	t.podName = pods.Items[0].Name
 }
 
 func (t *TestDeployment) WaitForPodReady() {
-	pods, err := framework.GetPodsForDeployment(t.client, t.deployment)
+	pods, err := deployment.GetPodsForDeployment(t.client, t.deployment)
 	framework.ExpectNoError(err)
 	// always get first pod as there should only be one
 	pod := pods.Items[0]
@@ -440,7 +442,7 @@ func (t *TestDeployment) Exec(command []string, expectedString string) {
 }
 
 func (t *TestDeployment) DeletePodAndWait() {
-	framework.Logf("Deleting pod %q in namespace %q", t.podName, t.namespace.Name)
+	e2elog.Logf("Deleting pod %q in namespace %q", t.podName, t.namespace.Name)
 	err := t.client.CoreV1().Pods(t.namespace.Name).Delete(t.podName, nil)
 	if err != nil {
 		if !apierrs.IsNotFound(err) {
@@ -448,7 +450,7 @@ func (t *TestDeployment) DeletePodAndWait() {
 		}
 		return
 	}
-	framework.Logf("Waiting for pod %q in namespace %q to be fully deleted", t.podName, t.namespace.Name)
+	e2elog.Logf("Waiting for pod %q in namespace %q to be fully deleted", t.podName, t.namespace.Name)
 	err = framework.WaitForPodNoLongerRunningInNamespace(t.client, t.podName, t.namespace.Name)
 	if err != nil {
 		if !apierrs.IsNotFound(err) {
@@ -458,12 +460,12 @@ func (t *TestDeployment) DeletePodAndWait() {
 }
 
 func (t *TestDeployment) Cleanup() {
-	framework.Logf("deleting Deployment %q/%q", t.namespace.Name, t.deployment.Name)
+	e2elog.Logf("deleting Deployment %q/%q", t.namespace.Name, t.deployment.Name)
 	body, err := t.Logs()
 	if err != nil {
-		framework.Logf("Error getting logs for pod %s: %v", t.podName, err)
+		e2elog.Logf("Error getting logs for pod %s: %v", t.podName, err)
 	} else {
-		framework.Logf("Pod %s has the following logs: %s", t.podName, body)
+		e2elog.Logf("Pod %s has the following logs: %s", t.podName, body)
 	}
 	err = t.client.AppsV1().Deployments(t.namespace.Name).Delete(t.deployment.Name, nil)
 	framework.ExpectNoError(err)
@@ -590,12 +592,12 @@ func (t *TestPod) Logs() ([]byte, error) {
 }
 
 func cleanupPodOrFail(client clientset.Interface, name, namespace string) {
-	framework.Logf("deleting Pod %q/%q", namespace, name)
+	e2elog.Logf("deleting Pod %q/%q", namespace, name)
 	body, err := podLogs(client, name, namespace)
 	if err != nil {
-		framework.Logf("Error getting logs for pod %s: %v", name, err)
+		e2elog.Logf("Error getting logs for pod %s: %v", name, err)
 	} else {
-		framework.Logf("Pod %s has the following logs: %s", name, body)
+		e2elog.Logf("Pod %s has the following logs: %s", name, body)
 	}
 	framework.DeletePodOrFail(client, namespace, name)
 }

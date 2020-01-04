@@ -21,6 +21,6 @@ if [[ -z "$(command -v golangci-lint)" ]]; then
   GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 fi
 
-"$GOBIN"/golangci-lint run --no-config --enable=golint --disable=typecheck --deadline=10m
+golangci-lint run --no-config --enable=golint --disable=typecheck --deadline=10m
 
 echo "Congratulations! Lint check completed for all Go source files."
