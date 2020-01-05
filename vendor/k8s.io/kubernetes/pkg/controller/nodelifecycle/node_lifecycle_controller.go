@@ -23,8 +23,6 @@ package nodelifecycle
 
 import (
 	"fmt"
-	"hash/fnv"
-	"io"
 	"sync"
 	"time"
 
@@ -128,7 +126,8 @@ const (
 
 const (
 	// The amount of time the nodecontroller should sleep between retrying node health updates
-	retrySleepTime = 20 * time.Millisecond
+	retrySleepTime   = 20 * time.Millisecond
+	nodeNameKeyIndex = "spec.nodeName"
 )
 
 // labelReconcileInfo lists Node labels to reconcile, and how to reconcile them.
@@ -366,11 +365,40 @@ func NewNodeLifecycleController(
 	nc.podInformerSynced = podInformer.Informer().HasSynced
 
 	if nc.runTaintManager {
+		podInformer.Informer().AddIndexers(cache.Indexers{
+			nodeNameKeyIndex: func(obj interface{}) ([]string, error) {
+				pod, ok := obj.(*v1.Pod)
+				if !ok {
+					return []string{}, nil
+				}
+				if len(pod.Spec.NodeName) == 0 {
+					return []string{}, nil
+				}
+				return []string{pod.Spec.NodeName}, nil
+			},
+		})
+
+		podIndexer := podInformer.Informer().GetIndexer()
 		podLister := podInformer.Lister()
 		podGetter := func(name, namespace string) (*v1.Pod, error) { return podLister.Pods(namespace).Get(name) }
+		podByNodeNameLister := func(nodeName string) ([]v1.Pod, error) {
+			objs, err := podIndexer.ByIndex(nodeNameKeyIndex, nodeName)
+			if err != nil {
+				return nil, err
+			}
+			pods := make([]v1.Pod, 0, len(objs))
+			for _, obj := range objs {
+				pod, ok := obj.(*v1.Pod)
+				if !ok {
+					continue
+				}
+				pods = append(pods, *pod)
+			}
+			return pods, nil
+		}
 		nodeLister := nodeInformer.Lister()
 		nodeGetter := func(name string) (*v1.Node, error) { return nodeLister.Get(name) }
-		nc.taintManager = scheduler.NewNoExecuteTaintManager(kubeClient, podGetter, nodeGetter)
+		nc.taintManager = scheduler.NewNoExecuteTaintManager(kubeClient, podGetter, nodeGetter, podByNodeNameLister)
 		nodeInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 			AddFunc: nodeutil.CreateAddNodeHandler(func(node *v1.Node) error {
 				nc.taintManager.NodeUpdated(nil, node)
@@ -625,8 +653,10 @@ func (nc *Controller) doEvictionPass() {
 }
 
 // monitorNodeHealth verifies node health are constantly updated by kubelet, and
-// if not, post "NodeReady==ConditionUnknown". It also evicts all pods if node
-// is not ready or not reachable for a long period of time.
+// if not, post "NodeReady==ConditionUnknown".
+// For nodes who are not ready or not reachable for a long period of time.
+// This function will taint them if TaintBasedEvictions feature was enabled.
+// Otherwise, it would evict it directly.
 func (nc *Controller) monitorNodeHealth() error {
 	// We are listing nodes from local cache as we can tolerate some small delays
 	// comparing to state from etcd and there is eventual consistency anyway.
@@ -862,7 +892,7 @@ func (nc *Controller) tryUpdateNodeHealth(node *v1.Node) (time.Duration, v1.Node
 			transitionTime = savedNodeHealth.readyTransitionTimestamp
 		}
 		if klog.V(5) {
-			klog.V(5).Infof("Node %s ReadyCondition updated. Updating timestamp: %+v vs %+v.", node.Name, savedNodeHealth.status, node.Status)
+			klog.Infof("Node %s ReadyCondition updated. Updating timestamp: %+v vs %+v.", node.Name, savedNodeHealth.status, node.Status)
 		} else {
 			klog.V(3).Infof("Node %s ReadyCondition updated. Updating timestamp.", node.Name)
 		}
@@ -1275,10 +1305,4 @@ func (nc *Controller) reconcileNodeLabels(nodeName string) error {
 		return fmt.Errorf("failed update labels for node %+v", node)
 	}
 	return nil
-}
-
-func hash(val string, max int) int {
-	hasher := fnv.New32a()
-	io.WriteString(hasher, val)
-	return int(hasher.Sum32()) % max
 }

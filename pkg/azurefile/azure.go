@@ -41,14 +41,5 @@ func GetCloudProvider() (*azure.Cloud, error) {
 	}
 	defer f.Close()
 
-	cloud, err := azure.NewCloud(f)
-	if err != nil {
-		return nil, err
-	}
-
-	az, ok := cloud.(*azure.Cloud)
-	if !ok || az == nil {
-		return nil, fmt.Errorf("failed to get Azure Cloud Provider. GetCloudProvider returned %v instead", cloud)
-	}
-	return az, nil
+	return azure.NewCloudWithoutFeatureGates(f)
 }
