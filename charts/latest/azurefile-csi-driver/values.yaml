@@ -4,27 +4,27 @@ image:
     tag: latest
     pullPolicy: Always
   csiProvisioner:
-    repository: quay.io/k8scsi/csi-provisioner
+    repository: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner
     tag: v1.4.0
     pullPolicy: Always
   csiAttacher:
-    repository: quay.io/k8scsi/csi-attacher
+    repository: mcr.microsoft.com/oss/kubernetes-csi/csi-attacher
     tag: v1.2.0
     pullPolicy: Always
   clusterDriverRegistrar:
-    repository: quay.io/k8scsi/csi-cluster-driver-registrar
+    repository: mcr.microsoft.com/oss/kubernetes-csi/csi-cluster-driver-registrar
     tag: v1.0.1
     pullPolicy: Always
   csiSnapshotter:
-    repository: quay.io/k8scsi/csi-snapshotter
+    repository: mcr.microsoft.com/oss/kubernetes-csi/csi-snapshotter
     tag: v1.1.0
     pullPolicy: Always
   livenessProbe:
-    repository: quay.io/k8scsi/livenessprobe
+    repository: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe
     tag: v1.1.0
     pullPolicy: Always
   nodeDriverRegistrar:
-    repository: quay.io/k8scsi/csi-node-driver-registrar
+    repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
     tag: v1.1.0
     pullPolicy: Always
 

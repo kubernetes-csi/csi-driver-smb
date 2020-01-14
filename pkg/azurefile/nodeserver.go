@@ -73,9 +73,6 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	attrib := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 
-	klog.V(2).Infof("target %v\nfstype %v\n\nreadonly %v\nvolumeId %v\ncontext %v\nmountflags %v\n",
-		targetPath, fsType, readOnly, volumeID, attrib, mountFlags)
-
 	var accountName, accountKey, fileShareName string
 
 	secrets := req.GetSecrets()
@@ -130,6 +127,9 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		mountOptions = util.JoinMountOptions(mountFlags, options)
 		mountOptions = appendDefaultMountOptions(mountOptions)
 	}
+
+	klog.V(2).Infof("target %v\nfstype %v\n\nreadonly %v\nvolumeId %v\ncontext %v\nmountflags %v\nmountOptions %v\n",
+		targetPath, fsType, readOnly, volumeID, attrib, mountFlags, mountOptions)
 
 	err = d.mounter.Mount(source, targetPath, "cifs", mountOptions)
 	if err != nil {
