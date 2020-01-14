@@ -20,7 +20,7 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
         - name: csi-provisioner
-          image: quay.io/k8scsi/csi-provisioner:v1.4.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner:v1.4.0
           args:
             - "--provisioner=file.csi.azure.com"
             - "--csi-address=$(ADDRESS)"
@@ -42,7 +42,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: csi-attacher
-          image: quay.io/k8scsi/csi-attacher:v1.2.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-attacher:v1.2.0
           args:
             - "-v=5"
             - "-csi-address=$(ADDRESS)"
@@ -64,7 +64,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: cluster-driver-registrar
-          image: quay.io/k8scsi/csi-cluster-driver-registrar:v1.0.1
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-cluster-driver-registrar:v1.0.1
           args:
             - --csi-address=$(ADDRESS)
             - --driver-requires-attachment=true
@@ -83,7 +83,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: csi-snapshotter
-          image: quay.io/k8scsi/csi-snapshotter:v1.1.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-snapshotter:v1.1.0
           args:
             - "-csi-address=$(ADDRESS)"
             - "-leader-election"
@@ -101,7 +101,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: liveness-probe
-          image: quay.io/k8scsi/livenessprobe:v1.1.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v1.1.0
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s

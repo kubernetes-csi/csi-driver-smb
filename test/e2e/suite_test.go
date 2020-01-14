@@ -121,6 +121,15 @@ var _ = ginkgo.AfterSuite(func() {
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		gomega.Expect(strings.HasSuffix(projectRoot, "azurefile-csi-driver")).To(gomega.Equal(true))
 
+		log.Println("===================azurefile log===================")
+		cmdSh := exec.Command("sh", "test/utils/azurefile_log.sh")
+		cmdSh.Dir = projectRoot
+		cmdSh.Stdout = os.Stdout
+		cmdSh.Stderr = os.Stderr
+		err = cmdSh.Run()
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		log.Println("===================================================")
+
 		log.Println("Uninstalling Azure File CSI Driver...")
 		cmd := exec.Command("make", "e2e-teardown")
 		cmd.Dir = projectRoot
