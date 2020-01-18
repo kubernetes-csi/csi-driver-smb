@@ -1,9 +1,7 @@
 reviewers:
 - andyzhangx
+- ZeroMagic
 
 approvers:
 - andyzhangx
-- brendandburns
 - feiskyer
-- khenidak
-
