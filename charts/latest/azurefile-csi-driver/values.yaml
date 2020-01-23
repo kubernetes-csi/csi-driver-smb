@@ -35,4 +35,4 @@ rbac:
   create: true
 
 controller:
-  replicas: 3
+  replicas: 2

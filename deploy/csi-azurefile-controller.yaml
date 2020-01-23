@@ -5,7 +5,7 @@ metadata:
   name: csi-azurefile-controller
   namespace: kube-system
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: csi-azurefile-controller
@@ -22,6 +22,7 @@ spec:
         - name: csi-provisioner
           image: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner:v1.4.0
           args:
+            - "-v=5"
             - "--provisioner=file.csi.azure.com"
             - "--csi-address=$(ADDRESS)"
             - "--connection-timeout=15s"
@@ -85,6 +86,7 @@ spec:
         - name: csi-snapshotter
           image: mcr.microsoft.com/oss/kubernetes-csi/csi-snapshotter:v1.1.0
           args:
+            - "-v=5"
             - "-csi-address=$(ADDRESS)"
             - "-leader-election"
           env:
@@ -106,6 +108,7 @@ spec:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
             - --health-port=9702
+            - --v=5
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
