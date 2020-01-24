@@ -27,6 +27,7 @@ spec:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
             - --health-port=9702
+            - --v=5
           resources:
             limits:
               cpu: 200m
