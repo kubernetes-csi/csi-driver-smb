@@ -1,0 +1,13 @@
+language: go
+go_import_path: sigs.k8s.io/azurefile-csi-driver
+dist: bionic
+
+go:
+  - "1.12.1"
+
+before_install:
+  - GO111MODULE=off go get github.com/mattn/goveralls
+
+script:
+  - go test -covermode=count -coverprofile=profile.cov ./pkg/...
+  - $GOPATH/bin/goveralls -coverprofile=profile.cov -service=travis-ci
