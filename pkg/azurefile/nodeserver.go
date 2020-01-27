@@ -46,7 +46,73 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		return nil, status.Error(codes.InvalidArgument, "Target path missing in request")
 	}
 
+	source := req.GetStagingTargetPath()
+	if len(source) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
+	}
+
+	target := req.GetTargetPath()
+	if len(target) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Target path not provided")
+	}
+
+	mountOptions := []string{"bind"}
+	if req.GetReadonly() {
+		mountOptions = append(mountOptions, "ro")
+	}
+
+	if err := d.ensureMountPoint(target); err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", target, err)
+	}
+
+	klog.V(2).Infof("NodePublishVolume: mounting %s at %s with mountOptions: %v", source, target, mountOptions)
+	if err := d.mounter.Mount(source, target, "", mountOptions); err != nil {
+		if removeErr := os.Remove(target); removeErr != nil {
+			return nil, status.Errorf(codes.Internal, "Could not remove mount target %q: %v", target, removeErr)
+		}
+		return nil, status.Errorf(codes.Internal, "Could not mount %q at %q: %v", source, target, err)
+	}
+	klog.V(2).Infof("NodePublishVolume: mount %s at %s successfully", source, target)
+
+	return &csi.NodePublishVolumeResponse{}, nil
+}
+
+// NodeUnpublishVolume unmount the volume from the target path
+func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
+	klog.V(2).Infof("NodeUnPublishVolume: called with args %+v", *req)
+	if len(req.GetVolumeId()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	}
+	if len(req.GetTargetPath()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Target path missing in request")
+	}
 	targetPath := req.GetTargetPath()
+	volumeID := req.GetVolumeId()
+
+	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s on %s", volumeID, targetPath)
+	err := d.mounter.Unmount(req.GetTargetPath())
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	klog.V(2).Infof("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
+
+	return &csi.NodeUnpublishVolumeResponse{}, nil
+}
+
+// NodeStageVolume mount the volume to a staging path
+func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
+	if len(req.GetVolumeId()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	}
+	targetPath := req.GetStagingTargetPath()
+	if len(targetPath) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
+	}
+	volumeCapability := req.GetVolumeCapability()
+	if volumeCapability == nil {
+		return nil, status.Error(codes.InvalidArgument, "Volume capability not provided")
+	}
+
 	notMnt, err := d.mounter.IsLikelyNotMountPoint(targetPath)
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
@@ -55,7 +121,7 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		// testing original mount point, make sure the mount link is valid
 		if _, err := ioutil.ReadDir(targetPath); err == nil {
 			klog.V(2).Infof("azureFile - already mounted to target %s", targetPath)
-			return &csi.NodePublishVolumeResponse{}, nil
+			return &csi.NodeStageVolumeResponse{}, nil
 		}
 		// todo: mount link is invalid, now unmount and remount later (built-in functionality)
 		klog.Warningf("azureFile - ReadDir %s failed with %v, unmount this directory", targetPath, err)
@@ -67,8 +133,6 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	}
 
 	fsType := req.GetVolumeCapability().GetMount().GetFsType()
-
-	readOnly := req.GetReadonly()
 	volumeID := req.GetVolumeId()
 	attrib := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
@@ -121,15 +185,12 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		}
 		// parameters suggested by https://azure.microsoft.com/en-us/documentation/articles/storage-how-to-use-files-linux/
 		options := []string{fmt.Sprintf("username=%s,password=%s", accountName, accountKey)}
-		if readOnly {
-			options = append(options, "ro")
-		}
 		mountOptions = util.JoinMountOptions(mountFlags, options)
 		mountOptions = appendDefaultMountOptions(mountOptions)
 	}
 
-	klog.V(2).Infof("target %v\nfstype %v\n\nreadonly %v\nvolumeId %v\ncontext %v\nmountflags %v\nmountOptions %v\n",
-		targetPath, fsType, readOnly, volumeID, attrib, mountFlags, mountOptions)
+	klog.V(2).Infof("target %v\nfstype %v\nvolumeId %v\ncontext %v\nmountflags %v\nmountOptions %v\n",
+		targetPath, fsType, volumeID, attrib, mountFlags, mountOptions)
 
 	err = d.mounter.Mount(source, targetPath, "cifs", mountOptions)
 	if err != nil {
@@ -158,70 +219,28 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		return nil, err
 	}
 
-	return &csi.NodePublishVolumeResponse{}, nil
-}
-
-// NodeUnpublishVolume unmount the volume from the target path
-func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
-	if len(req.GetVolumeId()) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
-	}
-	if len(req.GetTargetPath()) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Target path missing in request")
-	}
-	targetPath := req.GetTargetPath()
-	volumeID := req.GetVolumeId()
-
-	// Unmounting the image
-	err := d.mounter.Unmount(targetPath)
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-	klog.V(4).Infof("azurefile: volume %s/%s has been unmounted.", targetPath, volumeID)
-
-	// Deleting the target directory
-	notMnt, err := d.mounter.IsLikelyNotMountPoint(targetPath)
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-	if notMnt {
-		if err := os.Remove(targetPath); err != nil {
-			return nil, status.Error(codes.Internal, err.Error())
-		}
-		klog.V(4).Infof("azurefile: the directory %s has been deleted.", targetPath)
-	}
-
-	return &csi.NodeUnpublishVolumeResponse{}, nil
-}
-
-// NodeStageVolume mount the volume to a staging path
-// todo: we may implement this for azure file
-// The reason that mounting is a two step operation is
-// because Kubernetes allows you to use a single volume by multiple pods.
-// This is allowed when the storage system supports it or if all pods run on the same node.
-func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
-	if len(req.GetVolumeId()) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
-	}
-	if len(req.GetStagingTargetPath()) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Target path missing in request")
-	}
-
 	return &csi.NodeStageVolumeResponse{}, nil
 }
 
 // NodeUnstageVolume unmount the volume from the staging path
-// todo: we may implement this for azure file
-// The reason that mounting is a two step operation is
-// because Kubernetes allows you to use a single volume by multiple pods.
-// This is allowed when the storage system supports it or if all pods run on the same node.
 func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolumeRequest) (*csi.NodeUnstageVolumeResponse, error) {
-	if len(req.GetVolumeId()) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	klog.V(2).Infof("NodeUnstageVolume: called with args %+v", *req)
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
 	}
-	if len(req.GetStagingTargetPath()) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Target path missing in request")
+
+	target := req.GetStagingTargetPath()
+	if len(target) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
 	}
+
+	klog.V(2).Infof("NodeUnstageVolume: unmounting %s", target)
+	err := d.mounter.Unmount(target)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not unmount target %q: %v", target, err)
+	}
+	klog.V(2).Infof("NodeUnstageVolume: unmount %s successfully", target)
 
 	return &csi.NodeUnstageVolumeResponse{}, nil
 }
@@ -277,4 +296,35 @@ func (d *Driver) NodeExpandVolume(ctx context.Context, req *csi.NodeExpandVolume
 	}
 
 	return &csi.NodeExpandVolumeResponse{CapacityBytes: currentQuota}, nil
+}
+
+// ensureMountPoint: create mount point if not exists
+func (d *Driver) ensureMountPoint(target string) error {
+	notMnt, err := d.mounter.IsLikelyNotMountPoint(target)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+
+	if !notMnt {
+		// testing original mount point, make sure the mount link is valid
+		_, err := ioutil.ReadDir(target)
+		if err == nil {
+			klog.V(2).Infof("already mounted to target %s", target)
+			return nil
+		}
+		// mount link is invalid, now unmount and remount later
+		klog.Warningf("ReadDir %s failed with %v, unmount this directory", target, err)
+		if err := d.mounter.Unmount(target); err != nil {
+			klog.Errorf("Unmount directory %s failed with %v", target, err)
+			return err
+		}
+		// notMnt = true
+	}
+
+	if err := d.mounter.MakeDir(target); err != nil {
+		klog.Errorf("MakeDir failed on target: %s (%v)", target, err)
+		return err
+	}
+
+	return nil
 }
