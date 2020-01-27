@@ -25,8 +25,8 @@ fi
 
 if [[ "$TRAVIS" == 'true' ]]; then
   sudo apt update && sudo apt install cifs-utils procps -y
-  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"
+  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' "/tmp/stagingtargetpath" "/tmp/targetpath" "$cloud"
 else
   apt update && apt install cifs-utils procps -y
-  test/integration/run-test.sh 'tcp://127.0.0.1:10000' '/tmp/testmount1' "$cloud"
+  test/integration/run-test.sh 'tcp://127.0.0.1:10000' "/tmp/stagingtargetpath" "/tmp/targetpath" "$cloud"
 fi

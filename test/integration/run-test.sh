@@ -22,20 +22,25 @@ function cleanup {
 }
 
 readonly CSC_BIN="$GOBIN/csc"
+readonly volname="citest-$(date +%s)"
 endpoint='tcp://127.0.0.1:10000'
 if [[ "$#" -gt 0 ]]; then
   endpoint="$1"
 fi
 
-target_path='/tmp/testmount'
-readonly volname="citest-$(date +%s)"
+staging_target_path='/tmp/stagingtargetpath'
 if [[ "$#" -gt 1 ]]; then
-  target_path="$2"
+  staging_target_path="$2"
+fi
+
+target_path='/tmp/targetpath'
+if [[ "$#" -gt 2 ]]; then
+  target_path="$3"
 fi
 
 cloud='AzurePublicCloud'
-if [[ "$#" -gt 2 ]]; then
-  cloud="$3"
+if [[ "$#" -gt 3 ]]; then
+  cloud="$4"
 fi
 
 echo "Begin to run integration test on $cloud..."
@@ -62,12 +67,20 @@ echo "Got volume id: $volumeid"
 
 if [[ "$cloud" != 'AzureChinaCloud' ]] && [[ "$TRAVIS" == 'true' ]]; then
   # azure file mount/unmount on travis VM does not work against AzureChinaCloud
+  echo "stage volume test:"
+  "$CSC_BIN" node stage --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" "$volumeid"
+  sleep 2
+
   echo 'Mount volume test:'
-  "$CSC_BIN" node publish --endpoint "$endpoint" --cap 1,block --target-path "$target_path" "$volumeid"
+  "$CSC_BIN" node publish --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" --target-path "$target_path" "$volumeid"
   sleep 2
 
   echo 'Unmount volume test:'
   "$CSC_BIN" node unpublish --endpoint "$endpoint" --target-path "$target_path" "$volumeid"
+  sleep 2
+
+  echo "unstage volume test:"
+  "$CSC_BIN" node unstage --endpoint "$endpoint" --staging-target-path "$staging_target_path" "$volumeid"
   sleep 2
 fi
 
