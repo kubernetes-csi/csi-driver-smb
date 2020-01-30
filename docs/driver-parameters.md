@@ -18,5 +18,5 @@ shareName | specify the azure file share name | existing azure file name | No | 
 Name | Meaning | Available Value | Mandatory | Default value
 --- | --- | --- | --- | ---
 volumeAttributes.sharename | azure file share name | existing azure file share name | Yes |
-nodePublishSecretRef.name | secret name that stores storage account name and key | existing secret name |  Yes  | 
-nodePublishSecretRef.namespace | namespace where the secret is | k8s namespace  |  No  | `default`
+nodeStageSecretRef.name | secret name that stores storage account name and key | existing secret name |  Yes  |
+nodeStageSecretRef.namespace | namespace where the secret is | k8s namespace  |  No  | `default`

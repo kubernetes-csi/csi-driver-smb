@@ -14,6 +14,6 @@ spec:
     volumeHandle: arbitrary-volumeid
     volumeAttributes:
       shareName: EXISTING_FILE_SHARE_NAME  #only file share name, don't use full path, e.g. https://storageaccount.file.core.windows.net/filesharename
-    nodePublishSecretRef:
+    nodeStageSecretRef:
       name: azure-secret
       namespace: default
