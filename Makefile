@@ -16,7 +16,7 @@ PKG = sigs.k8s.io/azurefile-csi-driver
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
 IMAGE_NAME = azurefile-csi
-IMAGE_VERSION ?= v0.4.0
+IMAGE_VERSION ?= v0.5.0
 # Use a custom version for E2E tests if we are in Prow
 ifdef AZURE_CREDENTIALS
 override IMAGE_VERSION := e2e-$(GIT_COMMIT)
