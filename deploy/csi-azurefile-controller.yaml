@@ -55,8 +55,8 @@ spec:
               value: /csi/csi.sock
           imagePullPolicy: Always
           volumeMounts:
-          - mountPath: /csi
-            name: socket-dir
+            - mountPath: /csi
+              name: socket-dir
           resources:
             limits:
               cpu: 200m

@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apt update && apt install yamllint -y
+if [[ -z "$(command -v yamllint)" ]]; then
+  apt update && apt install yamllint -y
+fi
 
 yamllint -f parsable deploy/*.yaml | grep -v "line too long" > /tmp/yamllint.log
 cat /tmp/yamllint.log
