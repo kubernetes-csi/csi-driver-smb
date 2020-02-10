@@ -14,6 +14,7 @@ spec:
       labels:
         app: csi-azurefile-controller
     spec:
+      hostNetwork: true  # only required for MSI enabled cluster
       serviceAccountName: csi-azurefile-controller-sa
       nodeSelector:
         beta.kubernetes.io/os: linux
@@ -55,8 +56,8 @@ spec:
               value: /csi/csi.sock
           imagePullPolicy: Always
           volumeMounts:
-          - mountPath: /csi
-            name: socket-dir
+            - mountPath: /csi
+              name: socket-dir
           resources:
             limits:
               cpu: 200m
@@ -107,7 +108,7 @@ spec:
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
-            - --health-port=9702
+            - --health-port=29612
             - --v=5
           volumeMounts:
             - name: socket-dir
@@ -126,8 +127,11 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
           ports:
-            - containerPort: 9702
+            - containerPort: 29612
               name: healthz
+              protocol: TCP
+            - containerPort: 29614
+              name: metrics
               protocol: TCP
           livenessProbe:
             failureThreshold: 5

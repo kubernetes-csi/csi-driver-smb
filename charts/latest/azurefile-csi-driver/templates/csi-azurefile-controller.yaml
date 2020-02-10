@@ -14,6 +14,7 @@ spec:
 {{ include "azurefile.labels" . | indent 6 }}
         app: csi-azurefile-controller
     spec:
+      hostNetwork: true  # only required for MSI enabled cluster
       serviceAccountName: csi-azurefile-controller-sa
       nodeSelector:
         beta.kubernetes.io/os: linux
@@ -107,7 +108,7 @@ spec:
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
-            - --health-port=9702
+            - --health-port=29612
             - --v=5
           volumeMounts:
             - name: socket-dir
@@ -126,10 +127,10 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
           ports:
-            - containerPort: 9702
+            - containerPort: 29612
               name: healthz
               protocol: TCP
-            - containerPort: 10252
+            - containerPort: 29614
               name: metrics
               protocol: TCP
           livenessProbe:
@@ -171,17 +172,3 @@ spec:
         - name: msi
           hostPath:
             path: /var/lib/waagent/ManagedIdentity-Settings
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: csi-azurefile-controller
-  namespace: {{ .Release.Namespace }}
-{{ include "azurefile.labels" . | indent 2 }}
-spec:
-  selector:
-    app: csi-azurefile-controller
-  ports:
-  - port: 10252
-    targetPort: 10252
-  type: ClusterIP
