@@ -6,8 +6,9 @@
             "orchestratorType": "Kubernetes",
             "orchestratorRelease": "1.16",
             "kubernetesConfig": {
+                "useManagedIdentity": true,
+                "userAssignedID": "azurefile-csi-driver-e2e-test-id",
                 "useCloudControllerManager": true,
-                "customCcmImage": "mcr.microsoft.com/k8s/core/azure-cloud-controller-manager:v0.3.0",
                 "networkPolicy": "none",
                 "cloudProviderRateLimitQPS": 6,
                 "cloudProviderRateLimitBucket": 20,
@@ -56,10 +57,6 @@
                     }
                 ]
             }
-        },
-        "servicePrincipalProfile": {
-            "clientID": "{clientID}",
-            "secret": "{secret}"
         }
     }
 }
