@@ -35,9 +35,11 @@ import (
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/util/wait"
 	clientset "k8s.io/client-go/kubernetes"
 	restclientset "k8s.io/client-go/rest"
+	"k8s.io/kubernetes/pkg/kubelet/events"
 	"k8s.io/kubernetes/test/e2e/framework"
 	"k8s.io/kubernetes/test/e2e/framework/deployment"
 	e2elog "k8s.io/kubernetes/test/e2e/framework/log"
@@ -50,6 +52,7 @@ const (
 	slowPodStartTimeout = 15 * time.Minute
 	// Description that will printed during tests
 	failedConditionDescription = "Error status code"
+	pollLongTimeout            = 5 * time.Minute
 )
 
 type TestStorageClass struct {
@@ -520,6 +523,17 @@ func (t *TestPod) WaitForSuccess() {
 
 func (t *TestPod) WaitForRunning() {
 	err := framework.WaitForPodRunningInNamespace(t.client, t.pod)
+	framework.ExpectNoError(err)
+}
+
+func (t *TestPod) WaitForFailedMountError() {
+	err := framework.WaitTimeoutForPodEvent(
+		t.client,
+		t.pod.Name,
+		t.namespace.Name,
+		fields.Set{"reason": events.FailedMountVolume}.AsSelector().String(),
+		"",
+		pollLongTimeout)
 	framework.ExpectNoError(err)
 }
 
