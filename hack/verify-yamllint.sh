@@ -18,18 +18,28 @@ if [[ -z "$(command -v yamllint)" ]]; then
   apt update && apt install yamllint -y
 fi
 
-yamllint -f parsable deploy/*.yaml | grep -v "line too long" > /tmp/yamllint.log
-cat /tmp/yamllint.log
-linecount=`cat /tmp/yamllint.log | grep -v "line too long" | wc -l`
-if [ $linecount -gt 0 ]; then
-	echo "yaml files under deploy/ are not linted"
-	exit 1
-fi
+LOG=/tmp/yamllint.log
+helmPath=charts/latest/azurefile-csi-driver/templates
 
-yamllint -f parsable charts/latest/azurefile-csi-driver/templates/*.yaml | grep -v "line too long" | grep -v "too many spaces inside braces" | grep -v "missing document start" | grep -v "syntax error" > /tmp/yamllint.log
-linecount=`cat /tmp/yamllint.log | wc -l`
+for path in "deploy/*.yaml" "deploy/example/*.yaml" "deploy/example/snapshot/*.yaml"
+do
+    echo "checking yamllint under path: $path ..."
+    yamllint -f parsable $path | grep -v "line too long" > $LOG
+    cat $LOG
+    linecount=`cat $LOG | grep -v "line too long" | wc -l`
+    if [ $linecount -gt 0 ]; then
+        echo "yaml files under $path are not linted, failed with: "
+        cat $LOG
+        exit 1
+    fi
+done
+
+echo "checking yamllint under path: $helmPath ..."
+yamllint -f parsable $helmPath/*.yaml | grep -v "line too long" | grep -v "too many spaces inside braces" | grep -v "missing document start" | grep -v "syntax error" > $LOG
+linecount=`cat $LOG | wc -l`
 if [ $linecount -gt 0 ]; then
-	echo "yaml files under charts/latest/azuredisk-csi-driver/templates/ are not linted"
+	echo "yaml files under $helmPath/ are not linted, failed with: "
+	cat $LOG
 	exit 1
 fi
 
