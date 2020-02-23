@@ -23,6 +23,13 @@ echo "print out all $NS namespace pods status ..."
 kubectl get pods -n${NS}
 echo "======================================================================================"
 
+echo "print out csi-azurefile-controller pods ..."
+echo "======================================================================================"
+LABEL='app=csi-azurefile-controller'
+kubectl get pods -n${NS} -l${LABEL} \
+    | awk 'NR>1 {print $1}' \
+    | xargs -I {} kubectl describe po {} -n${NS}
+
 echo "print out csi-azurefile-controller logs ..."
 echo "======================================================================================"
 LABEL='app=csi-azurefile-controller'

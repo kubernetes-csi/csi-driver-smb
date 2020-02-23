@@ -195,7 +195,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		targetPath, fsType, volumeID, attrib, mountFlags, mountOptions)
 
 	mountComplete := false
-	err = wait.Poll(1*time.Second, 10*time.Minute, func() (bool, error) {
+	err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
 		err := d.mounter.Mount(source, targetPath, "cifs", mountOptions)
 		mountComplete = true
 		return true, err
