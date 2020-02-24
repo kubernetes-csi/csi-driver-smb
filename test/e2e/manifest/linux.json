@@ -55,6 +55,10 @@
                     }
                 ]
             }
-        }
+        },
+        "servicePrincipalProfile": {
+            "clientID": "{clientID}",
+            "secret": "{secret}"
+        }        
     }
 }
