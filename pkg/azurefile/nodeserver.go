@@ -22,8 +22,10 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/klog"
 
 	"google.golang.org/grpc/codes"
@@ -192,7 +194,16 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	klog.V(2).Infof("target %v\nfstype %v\nvolumeId %v\ncontext %v\nmountflags %v\nmountOptions %v\n",
 		targetPath, fsType, volumeID, attrib, mountFlags, mountOptions)
 
-	err = d.mounter.Mount(source, targetPath, "cifs", mountOptions)
+	mountComplete := false
+	err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
+		err := d.mounter.Mount(source, targetPath, "cifs", mountOptions)
+		mountComplete = true
+		return true, err
+	})
+	if !mountComplete {
+		return nil, fmt.Errorf("volume(%s) mount on %s timeout(10m)", volumeID, targetPath)
+	}
+
 	if err != nil {
 		notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
 		if mntErr != nil {
