@@ -65,7 +65,8 @@ e2e-test:
 e2e-bootstrap: install-helm
 	# Only build and push the image if it does not exist in the registry
 	docker pull $(IMAGE_TAG) || make azurefile-container push
-	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait \
+	# Timeout after waiting 15 minutes = 900 seconds
+	helm install charts/latest/azurefile-csi-driver -n azurefile-csi-driver --namespace kube-system --wait --timeout 900 \
 		--set image.azurefile.pullPolicy=IfNotPresent \
 		--set image.azurefile.repository=$(REGISTRY)/$(IMAGE_NAME) \
 		--set image.azurefile.tag=$(IMAGE_VERSION)
