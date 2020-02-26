@@ -103,6 +103,25 @@ spec:
             requests:
               cpu: 10m
               memory: 20Mi
+        - name: csi-resizer
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-resizer:v0.3.0
+          args:
+            - "-csi-address=$(ADDRESS)"
+            - "-v=5"
+            - "-leader-election"
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
         - name: liveness-probe
           image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v1.1.0
           args:

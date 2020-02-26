@@ -45,8 +45,9 @@ expected_csi_provisioner_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controlle
 expected_csi_attacher_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controller.yaml | yq -r .spec.template.spec.containers[1].image | head -n 1)"
 expected_cluster_driver_registrar_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controller.yaml | yq -r .spec.template.spec.containers[2].image | head -n 1)"
 expected_csi_snapshotter_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controller.yaml | yq -r .spec.template.spec.containers[3].image | head -n 1)"
-expected_liveness_probe_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controller.yaml | yq -r .spec.template.spec.containers[4].image | head -n 1)"
-expected_azurefile_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controller.yaml | yq -r .spec.template.spec.containers[5].image | head -n 1)"
+expected_csi_resizer_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controller.yaml | yq -r .spec.template.spec.containers[4].image | head -n 1)"
+expected_liveness_probe_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controller.yaml | yq -r .spec.template.spec.containers[5].image | head -n 1)"
+expected_azurefile_image="$(cat ${PKG_ROOT}/deploy/csi-azurefile-controller.yaml | yq -r .spec.template.spec.containers[6].image | head -n 1)"
 
 csi_provisioner_image="$(get_image_from_helm_chart "csiProvisioner")"
 validate_image "${expected_csi_provisioner_image}" "${csi_provisioner_image}"
@@ -59,6 +60,9 @@ validate_image "${expected_cluster_driver_registrar_image}" "${cluster_driver_re
 
 csi_snapshotter_image="$(get_image_from_helm_chart "csiSnapshotter")"
 validate_image "${expected_csi_snapshotter_image}" "${csi_snapshotter_image}"
+
+csi_resizer_image="$(get_image_from_helm_chart "csiResizer")"
+validate_image "${expected_csi_resizer_image}" "${csi_resizer_image}"
 
 liveness_probe_image="$(get_image_from_helm_chart "livenessProbe")"
 validate_image "${expected_liveness_probe_image}" "${liveness_probe_image}"

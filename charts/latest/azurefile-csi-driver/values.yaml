@@ -19,6 +19,10 @@ image:
     repository: mcr.microsoft.com/oss/kubernetes-csi/csi-snapshotter
     tag: v1.1.0
     pullPolicy: Always
+  csiResizer:
+    repository: mcr.microsoft.com/oss/kubernetes-csi/csi-resizer
+    tag: v0.3.0
+    pullPolicy: Always
   livenessProbe:
     repository: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe
     tag: v1.1.0
