@@ -4,6 +4,7 @@ kind: StorageClass
 metadata:
   name: file.csi.azure.com
 provisioner: file.csi.azure.com
+allowVolumeExpansion: true
 parameters:
   skuName: Standard_LRS  # available values: Standard_LRS, Standard_GRS, Standard_RAGRS
 reclaimPolicy: Delete
