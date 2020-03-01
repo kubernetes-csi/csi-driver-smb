@@ -6,6 +6,6 @@ metadata:
 provisioner: file.csi.azure.com
 allowVolumeExpansion: true
 parameters:
-  skuName: Standard_LRS  # available values: Standard_LRS, Standard_GRS, Standard_RAGRS
+  skuName: Premium_LRS  # available values: Standard_LRS, Standard_GRS, Standard_ZRS, Standard_RAGRS, Premium_LRS, Premium_ZRS
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
