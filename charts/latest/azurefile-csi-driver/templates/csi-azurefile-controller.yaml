@@ -19,6 +19,11 @@ spec:
       nodeSelector:
         beta.kubernetes.io/os: linux
       priorityClassName: system-cluster-critical
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       containers:
         - name: csi-provisioner
           image: "{{ .Values.image.csiProvisioner.repository }}:{{ .Values.image.csiProvisioner.tag }}"
