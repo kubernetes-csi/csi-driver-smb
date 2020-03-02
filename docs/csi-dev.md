@@ -13,9 +13,9 @@ $ cd $GOPATH/src/sigs.k8s.io/azurefile-csi-driver
 $ make azurefile
 ```
 
- - Run unit test
+ - Run verification test before submitting code
 ```
-$ make unit-test
+$ make verify
 ```
 
 ## How to test CSI driver in local environment
@@ -99,7 +99,7 @@ $  csc controller delete-snapshot
 ```
 # run `docker login` first
 export REGISTRY=<dockerhub-alias>
-make azurefile-container
+make container
 make push-latest
 ```
 
