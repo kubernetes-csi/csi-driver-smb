@@ -116,23 +116,9 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		return nil, status.Error(codes.InvalidArgument, "Volume capability not provided")
 	}
 
-	notMnt, err := d.mounter.IsLikelyNotMountPoint(targetPath)
-	if err != nil && !os.IsNotExist(err) {
-		return nil, err
-	}
-	if !notMnt {
-		// testing original mount point, make sure the mount link is valid
-		if _, err := ioutil.ReadDir(targetPath); err == nil {
-			klog.V(2).Infof("azureFile - already mounted to target %s", targetPath)
-			return &csi.NodeStageVolumeResponse{}, nil
-		}
-		// todo: mount link is invalid, now unmount and remount later (built-in functionality)
-		klog.Warningf("azureFile - ReadDir %s failed with %v, unmount this directory", targetPath, err)
-		if err := d.mounter.Unmount(targetPath); err != nil {
-			klog.Errorf("azureFile - Unmount directory %s failed with %v", targetPath, err)
-			return nil, err
-		}
-		// notMnt = true
+	err := d.ensureMountPoint(targetPath)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", targetPath, err)
 	}
 
 	fsType := req.GetVolumeCapability().GetMount().GetFsType()

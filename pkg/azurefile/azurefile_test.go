@@ -18,6 +18,9 @@ package azurefile
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -327,5 +330,40 @@ func TestGetSnapshot(t *testing.T) {
 		if !reflect.DeepEqual(result1, test.expected1) || !reflect.DeepEqual(result2, test.expected2) {
 			t.Errorf("input: %q, getSnapshot result1: %q, expected1: %q, result2: %q, expected2: %q, ", test.options, result1, test.expected1, result2, test.expected2)
 		}
+	}
+}
+
+func TestIsCorruptedDir(t *testing.T) {
+	existingMountPath, err := ioutil.TempDir(os.TempDir(), "csi-mount-test")
+	if err != nil {
+		t.Fatalf("failed to create tmp dir: %v", err)
+	}
+	defer os.RemoveAll(existingMountPath)
+
+	curruptedPath := filepath.Join(existingMountPath, "curruptedPath")
+	if err := os.Symlink(existingMountPath, curruptedPath); err != nil {
+		t.Fatalf("failed to create curruptedPath: %v", err)
+	}
+
+	tests := []struct {
+		desc           string
+		dir            string
+		expectedResult bool
+	}{
+		{
+			desc:           "NotExist dir",
+			dir:            "/tmp/NotExist",
+			expectedResult: false,
+		},
+		{
+			desc:           "Existing dir",
+			dir:            existingMountPath,
+			expectedResult: false,
+		},
+	}
+
+	for i, test := range tests {
+		isCorruptedDir := IsCorruptedDir(test.dir)
+		assert.Equal(t, test.expectedResult, isCorruptedDir, "TestCase[%d]: %s", i, test.desc)
 	}
 }

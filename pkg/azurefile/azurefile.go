@@ -307,3 +307,9 @@ func (d *Driver) expandVolume(ctx context.Context, volumeID string, capacityByte
 
 	return volumehelper.GiBToBytes(int64(resp.Quota())), nil
 }
+
+func IsCorruptedDir(dir string) bool {
+	_, pathErr := mount.PathExists(dir)
+	fmt.Printf("IsCorruptedDir(%s) returned with error: %v", dir, pathErr)
+	return pathErr != nil && mount.IsCorruptedMnt(pathErr)
+}

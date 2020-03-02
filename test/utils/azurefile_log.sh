@@ -20,7 +20,7 @@ NS=kube-system
 CONTAINER=azurefile
 
 echo "print out all $NS namespace pods status ..."
-kubectl get pods -n${NS}
+kubectl get pods -n${NS} -o wide
 echo "======================================================================================"
 
 echo "print out csi-azurefile-controller pods ..."
