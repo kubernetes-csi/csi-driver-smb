@@ -25,15 +25,16 @@ import (
 	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
+
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/klog"
+	"k8s.io/kubernetes/pkg/util/mount"
+	"k8s.io/kubernetes/pkg/volume/util"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"golang.org/x/net/context"
-
-	"k8s.io/kubernetes/pkg/volume/util"
 )
 
 // NodePublishVolume mount the volume from staging to target path
@@ -92,9 +93,9 @@ func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublish
 	volumeID := req.GetVolumeId()
 
 	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s on %s", volumeID, targetPath)
-	err := d.mounter.Unmount(req.GetTargetPath())
+	err := mount.CleanupMountPoint(targetPath, d.mounter, false)
 	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to unmount target %q: %v", targetPath, err)
 	}
 	klog.V(2).Infof("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
 
@@ -241,17 +242,17 @@ func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
 	}
 
-	target := req.GetStagingTargetPath()
-	if len(target) == 0 {
+	stagingTargetPath := req.GetStagingTargetPath()
+	if len(stagingTargetPath) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
 	}
 
-	klog.V(2).Infof("NodeUnstageVolume: unmounting %s", target)
-	err := d.mounter.Unmount(target)
+	klog.V(2).Infof("NodeUnstageVolume: unmounting %s", stagingTargetPath)
+	err := mount.CleanupMountPoint(stagingTargetPath, d.mounter, false)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Could not unmount target %q: %v", target, err)
+		return nil, status.Errorf(codes.Internal, "failed to unmount staing target %q: %v", stagingTargetPath, err)
 	}
-	klog.V(2).Infof("NodeUnstageVolume: unmount %s successfully", target)
+	klog.V(2).Infof("NodeUnstageVolume: unmount %s successfully", stagingTargetPath)
 
 	return &csi.NodeUnstageVolumeResponse{}, nil
 }
