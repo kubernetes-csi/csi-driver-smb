@@ -71,16 +71,18 @@ func getStorageClass(
 		defaultBindingMode := storagev1.VolumeBindingImmediate
 		bindingMode = &defaultBindingMode
 	}
+	allowVolumeExpansion := true
 	return &storagev1.StorageClass{
 		ObjectMeta: metav1.ObjectMeta{
 			GenerateName: generateName,
 		},
-		Provisioner:       provisioner,
-		Parameters:        parameters,
-		MountOptions:      mountOptions,
-		ReclaimPolicy:     reclaimPolicy,
-		VolumeBindingMode: bindingMode,
-		AllowedTopologies: allowedTopologies,
+		Provisioner:          provisioner,
+		Parameters:           parameters,
+		MountOptions:         mountOptions,
+		ReclaimPolicy:        reclaimPolicy,
+		VolumeBindingMode:    bindingMode,
+		AllowedTopologies:    allowedTopologies,
+		AllowVolumeExpansion: &allowVolumeExpansion,
 	}
 }
 
