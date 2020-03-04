@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
@@ -116,17 +117,13 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		return nil, status.Error(codes.InvalidArgument, "Volume capability not provided")
 	}
 
-	err := d.ensureMountPoint(targetPath)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", targetPath, err)
-	}
-
 	fsType := req.GetVolumeCapability().GetMount().GetFsType()
 	volumeID := req.GetVolumeId()
 	attrib := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 
 	var accountName, accountKey, fileShareName string
+	var err error
 
 	secrets := req.GetSecrets()
 	if len(secrets) == 0 {
@@ -160,6 +157,13 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			return nil, err
 		}
 	}
+	var diskName, stagingPath string
+	for k, v := range attrib {
+		switch strings.ToLower(k) {
+		case diskNameField:
+			diskName = v
+		}
+	}
 
 	var mountOptions []string
 	source := ""
@@ -180,6 +184,14 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 
 	klog.V(2).Infof("target %v\nfstype %v\nvolumeId %v\ncontext %v\nmountflags %v\nmountOptions %v\n",
 		targetPath, fsType, volumeID, attrib, mountFlags, mountOptions)
+
+	if diskName != "" {
+		stagingPath = targetPath
+		targetPath = filepath.Join(filepath.Dir(targetPath), proxyMount)
+	}
+	if err := d.ensureMountPoint(targetPath); err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", targetPath, err)
+	}
 
 	mountComplete := false
 	err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
@@ -217,6 +229,17 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		return nil, err
 	}
 
+	if diskName != "" {
+		targetPath = filepath.Join(targetPath, diskName)
+		options := []string{"loop"}
+		// FormatAndMount will format only if needed
+		klog.V(2).Infof("NodeStageVolume: formatting %s and mounting at %s with mount options(%s)", targetPath, stagingPath, options)
+		if err := d.mounter.FormatAndMount(targetPath, stagingPath, "ext4", options); err != nil {
+			msg := fmt.Sprintf("could not format %q and mount it at %q", targetPath, stagingPath)
+			return nil, status.Error(codes.Internal, msg)
+		}
+		klog.V(2).Infof("NodeStageVolume: format %s and mounting at %s successfully.", targetPath, stagingPath)
+	}
 	return &csi.NodeStageVolumeResponse{}, nil
 }
 
@@ -234,8 +257,12 @@ func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 	}
 
 	klog.V(2).Infof("NodeUnstageVolume: unmounting %s", stagingTargetPath)
-	err := mount.CleanupMountPoint(stagingTargetPath, d.mounter, false)
-	if err != nil {
+	if err := mount.CleanupMountPoint(stagingTargetPath, d.mounter, false); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to unmount staing target %q: %v", stagingTargetPath, err)
+	}
+
+	targetPath := filepath.Join(filepath.Dir(stagingTargetPath), proxyMount)
+	if err := mount.CleanupMountPoint(targetPath, d.mounter, false); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staing target %q: %v", stagingTargetPath, err)
 	}
 	klog.V(2).Infof("NodeUnstageVolume: unmount %s successfully", stagingTargetPath)

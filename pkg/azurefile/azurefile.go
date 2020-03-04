@@ -57,6 +57,9 @@ const (
 
 	// key of snapshot name in metadata
 	snapshotNameKey = "initiator"
+
+	diskNameField = "diskname"
+	proxyMount    = "proxy-mount"
 )
 
 // Driver implements all interfaces of CSI drivers
