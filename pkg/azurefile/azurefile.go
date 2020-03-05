@@ -59,7 +59,9 @@ const (
 	snapshotNameKey = "initiator"
 
 	diskNameField = "diskname"
+	fsTypeField   = "fstype"
 	proxyMount    = "proxy-mount"
+	cifs          = "cifs"
 )
 
 // Driver implements all interfaces of CSI drivers

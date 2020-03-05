@@ -76,6 +76,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		case "sharename":
 			fileShareName = v
 		case diskNameField:
+		case fsTypeField:
 		default:
 			return nil, fmt.Errorf("invalid option %q", k)
 		}

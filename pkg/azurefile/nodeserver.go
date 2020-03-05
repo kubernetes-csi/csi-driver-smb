@@ -117,7 +117,6 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		return nil, status.Error(codes.InvalidArgument, "Volume capability not provided")
 	}
 
-	fsType := req.GetVolumeCapability().GetMount().GetFsType()
 	volumeID := req.GetVolumeId()
 	attrib := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
@@ -157,84 +156,72 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			return nil, err
 		}
 	}
-	var diskName, stagingPath string
+	// don't respect fsType from req.GetVolumeCapability().GetMount().GetFsType()
+	// since it's ext4 by default on Linux
+	var diskName, fsType, stagingPath string
 	for k, v := range attrib {
 		switch strings.ToLower(k) {
+		case fsTypeField:
+			fsType = v
 		case diskNameField:
 			diskName = v
 		}
 	}
 
 	var mountOptions []string
-	source := ""
 	osSeparator := string(os.PathSeparator)
-	source = fmt.Sprintf("%s%s%s.file.%s%s%s", osSeparator, osSeparator, accountName, d.cloud.Environment.StorageEndpointSuffix, osSeparator, fileShareName)
+	source := fmt.Sprintf("%s%s%s.file.%s%s%s", osSeparator, osSeparator, accountName, d.cloud.Environment.StorageEndpointSuffix, osSeparator, fileShareName)
+
+	cifsMountPath := targetPath
+	cifsMountFlags := mountFlags
+	isDiskMount := (fsType != "" && fsType != cifs)
+	if isDiskMount {
+		if diskName == "" {
+			return nil, status.Errorf(codes.Internal, "diskname could not be empty, targetPath: %s", targetPath)
+		}
+		cifsMountFlags = []string{"dir_mode=0777,file_mode=0777,cache=strict,actimeo=30"}
+		cifsMountPath = filepath.Join(filepath.Dir(targetPath), proxyMount)
+	}
 
 	if runtime.GOOS == "windows" {
 		mountOptions = []string{fmt.Sprintf("AZURE\\%s", accountName), accountKey}
 	} else {
-		if err := os.MkdirAll(targetPath, 0700); err != nil {
+		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, err
 		}
 		// parameters suggested by https://azure.microsoft.com/en-us/documentation/articles/storage-how-to-use-files-linux/
 		options := []string{fmt.Sprintf("username=%s,password=%s", accountName, accountKey)}
-		mountOptions = util.JoinMountOptions(mountFlags, options)
+		mountOptions = util.JoinMountOptions(cifsMountFlags, options)
 		mountOptions = appendDefaultMountOptions(mountOptions)
 	}
 
-	klog.V(2).Infof("target %v\nfstype %v\nvolumeId %v\ncontext %v\nmountflags %v\nmountOptions %v\n",
-		targetPath, fsType, volumeID, attrib, mountFlags, mountOptions)
-
-	if diskName != "" {
-		stagingPath = targetPath
-		targetPath = filepath.Join(filepath.Dir(targetPath), proxyMount)
+	if err := d.ensureMountPoint(cifsMountPath); err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", cifsMountPath, err)
 	}
-	if err := d.ensureMountPoint(targetPath); err != nil {
-		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", targetPath, err)
-	}
+	klog.V(2).Infof("cifsMountPath(%v) fstype(%v) volumeId(%v) context(%v) mountflags(%v) mountOptions(%v)",
+		cifsMountPath, fsType, volumeID, attrib, mountFlags, mountOptions)
 
 	mountComplete := false
 	err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
-		err := d.mounter.Mount(source, targetPath, "cifs", mountOptions)
+		err := d.mounter.Mount(source, cifsMountPath, cifs, mountOptions)
 		mountComplete = true
 		return true, err
 	})
 	if !mountComplete {
-		return nil, fmt.Errorf("volume(%s) mount on %s timeout(10m)", volumeID, targetPath)
+		return nil, fmt.Errorf("volume(%s) mount on %s timeout(10m)", volumeID, cifsMountPath)
 	}
-
 	if err != nil {
-		notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
-		if mntErr != nil {
-			klog.Errorf("IsLikelyNotMountPoint check failed: %v", mntErr)
-			return nil, err
-		}
-		if !notMnt {
-			if mntErr = d.mounter.Unmount(targetPath); mntErr != nil {
-				klog.Errorf("Failed to unmount: %v", mntErr)
-				return nil, err
-			}
-			notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
-			if mntErr != nil {
-				klog.Errorf("IsLikelyNotMountPoint check failed: %v", mntErr)
-				return nil, err
-			}
-			if !notMnt {
-				// This is very odd, we don't expect it.  We'll try again next sync loop.
-				klog.Errorf("%s is still mounted, despite call to unmount().  Will try again next sync loop.", targetPath)
-				return nil, err
-			}
-		}
-		os.Remove(targetPath)
-		return nil, err
+		return nil, status.Error(codes.Internal, fmt.Sprintf("could not format %q and mount it at %q", source, cifsMountPath))
 	}
+	klog.V(2).Infof("volume(%s) mount on %s succeeded", volumeID, cifsMountPath)
 
-	if diskName != "" {
-		targetPath = filepath.Join(targetPath, diskName)
-		options := []string{"loop"}
+	if isDiskMount {
+		diskPath := filepath.Join(cifsMountPath, diskName)
+		// todo: add lock for loop device
+		options := util.JoinMountOptions(mountFlags, []string{"loop"})
 		// FormatAndMount will format only if needed
 		klog.V(2).Infof("NodeStageVolume: formatting %s and mounting at %s with mount options(%s)", targetPath, stagingPath, options)
-		if err := d.mounter.FormatAndMount(targetPath, stagingPath, "ext4", options); err != nil {
+		if err := d.mounter.FormatAndMount(diskPath, targetPath, fsType, options); err != nil {
 			msg := fmt.Sprintf("could not format %q and mount it at %q", targetPath, stagingPath)
 			return nil, status.Error(codes.Internal, msg)
 		}
