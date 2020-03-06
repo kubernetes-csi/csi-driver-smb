@@ -203,28 +203,26 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	klog.V(2).Infof("cifsMountPath(%v) fstype(%v) volumeId(%v) context(%v) mountflags(%v) mountOptions(%v)",
 		cifsMountPath, fsType, volumeID, attrib, mountFlags, mountOptions)
 
-	mnt, err := d.ensureMountPoint(cifsMountPath)
+	isDirMounted, err := d.ensureMountPoint(cifsMountPath)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", cifsMountPath, err)
 	}
-	if mnt && !isDiskMount {
-		klog.V(2).Infof("NodeStageVolume: %s is already mounted", cifsMountPath)
-		return &csi.NodeStageVolumeResponse{}, nil
-	}
 
-	mountComplete := false
-	err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
-		err := d.mounter.Mount(source, cifsMountPath, cifs, mountOptions)
-		mountComplete = true
-		return true, err
-	})
-	if !mountComplete {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with timeout(10m)", volumeID, source, cifsMountPath))
+	if !isDirMounted {
+		mountComplete := false
+		err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
+			err := d.mounter.Mount(source, cifsMountPath, cifs, mountOptions)
+			mountComplete = true
+			return true, err
+		})
+		if !mountComplete {
+			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with timeout(10m)", volumeID, source, cifsMountPath))
+		}
+		if err != nil {
+			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with %v", volumeID, source, cifsMountPath, err))
+		}
+		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, cifsMountPath)
 	}
-	if err != nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with %v", volumeID, source, cifsMountPath, err))
-	}
-	klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, cifsMountPath)
 
 	if isDiskMount {
 		diskPath := filepath.Join(cifsMountPath, diskName)
