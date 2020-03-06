@@ -35,13 +35,14 @@ import (
 // Waiting for the PV provisioner to resize the PV
 // Testing if the PV is resized successfully.
 type DynamicallyProvisionedResizeVolumeTest struct {
-	CSIDriver driver.DynamicPVTestDriver
-	Pods      []PodDetails
+	CSIDriver              driver.DynamicPVTestDriver
+	Pods                   []PodDetails
+	StorageClassParameters map[string]string
 }
 
 func (t *DynamicallyProvisionedResizeVolumeTest) Run(client clientset.Interface, namespace *v1.Namespace) {
 	for _, pod := range t.Pods {
-		tpod, cleanup := pod.SetupWithDynamicVolumes(client, namespace, t.CSIDriver)
+		tpod, cleanup := pod.SetupWithDynamicVolumes(client, namespace, t.CSIDriver, t.StorageClassParameters)
 		for i := range cleanup {
 			defer cleanup[i]()
 		}

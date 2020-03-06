@@ -27,14 +27,15 @@ import (
 // DynamicallyProvisionedReclaimPolicyTest will provision required PV(s) and PVC(s)
 // Testing the correct behavior for different reclaimPolicies
 type DynamicallyProvisionedReclaimPolicyTest struct {
-	CSIDriver driver.DynamicPVTestDriver
-	Volumes   []VolumeDetails
-	Azurefile *azurefile.Driver
+	CSIDriver              driver.DynamicPVTestDriver
+	Volumes                []VolumeDetails
+	Azurefile              *azurefile.Driver
+	StorageClassParameters map[string]string
 }
 
 func (t *DynamicallyProvisionedReclaimPolicyTest) Run(client clientset.Interface, namespace *v1.Namespace) {
 	for _, volume := range t.Volumes {
-		tpvc, _ := volume.SetupDynamicPersistentVolumeClaim(client, namespace, t.CSIDriver)
+		tpvc, _ := volume.SetupDynamicPersistentVolumeClaim(client, namespace, t.CSIDriver, t.StorageClassParameters)
 
 		// will delete the PVC
 		// will also wait for PV to be deleted when reclaimPolicy=Delete

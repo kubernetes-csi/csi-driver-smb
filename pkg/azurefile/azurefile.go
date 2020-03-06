@@ -57,6 +57,7 @@ const (
 	fileShareNameMinLength = 3
 	fileShareNameMaxLength = 63
 
+	minimumPremiumShareSize = 100 // GB
 	// Minimum size of Azure Premium Files is 100GiB
 	// See https://docs.microsoft.com/en-us/azure/storage/files/storage-files-planning#provisioned-shares
 	defaultAzureFileQuota = 100

@@ -67,8 +67,9 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedCmdVolumeTest{
-			CSIDriver: testDriver,
-			Pods:      pods,
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: map[string]string{"skuName": "Standard_LRS"},
 		}
 		test.Run(cs, ns)
 	})
@@ -197,8 +198,9 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
-			CSIDriver: testDriver,
-			Volumes:   volumes,
+			CSIDriver:              testDriver,
+			Volumes:                volumes,
+			StorageClassParameters: map[string]string{"skuName": "Standard_LRS"},
 		}
 		test.Run(cs, ns)
 	})
@@ -219,9 +221,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
-			CSIDriver: testDriver,
-			Volumes:   volumes,
-			Azurefile: azurefileDriver,
+			CSIDriver:              testDriver,
+			Volumes:                volumes,
+			Azurefile:              azurefileDriver,
+			StorageClassParameters: map[string]string{"skuName": "Standard_LRS"},
 		}
 		test.Run(cs, ns)
 	})
@@ -244,6 +247,29 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test := testsuites.DynamicallyProvisionedResizeVolumeTest{
 			CSIDriver: testDriver,
 			Pods:      pods,
+		}
+		test.Run(cs, ns)
+	})
+
+	ginkgo.It(fmt.Sprintf("should create a vhd disk volume on demand [kubernetes.io/azurefile] [file.csi.azure.com]"), func() {
+		pods := []testsuites.PodDetails{
+			{
+				Cmd: "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data",
+				Volumes: []testsuites.VolumeDetails{
+					{
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+			},
+		}
+		test := testsuites.DynamicallyProvisionedCmdVolumeTest{
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: map[string]string{"skuName": "Premium_LRS", "fsType": "ext4"},
 		}
 		test.Run(cs, ns)
 	})
