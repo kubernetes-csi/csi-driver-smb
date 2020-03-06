@@ -28,6 +28,7 @@ import (
 	"github.com/Azure/azure-storage-file-go/azfile"
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/pborman/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/klog"
@@ -50,14 +51,14 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	capacityBytes := req.GetCapacityRange().GetRequiredBytes()
-	requestGiB := int(volumehelper.RoundUpGiB(capacityBytes))
+	requestGiB := volumehelper.RoundUpGiB(capacityBytes)
 	if requestGiB == 0 {
 		requestGiB = defaultAzureFileQuota
 		klog.Warningf("no quota specified, set as default value(%d GiB)", defaultAzureFileQuota)
 	}
 
 	parameters := req.GetParameters()
-	var sku, resourceGroup, location, account, fileShareName, volumeID string
+	var sku, resourceGroup, location, account, fileShareName, volumeID, diskName, fsType string
 
 	// Apply ProvisionerParameters (case-insensitive). We leave validation of
 	// the values to the cloud provider.
@@ -76,10 +77,18 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		case "sharename":
 			fileShareName = v
 		case diskNameField:
+			diskName = v
 		case fsTypeField:
+			fsType = v
 		default:
 			return nil, fmt.Errorf("invalid option %q", k)
 		}
+	}
+
+	fileShareSize := int(requestGiB)
+	isDiskMount := (fsType != "" && fsType != cifs)
+	if isDiskMount {
+		fileShareSize = fileShareSize + 1 // there needs a bit more space to store metadata files for VHD and others
 	}
 
 	// when use azure file premium, account kind should be specified as FileStorage
@@ -92,10 +101,10 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		fileShareName = getValidFileShareName(name)
 	}
 
-	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, requestGiB)
-	retAccount, retAccountKey, err := d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, requestGiB)
+	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, fileShareSize)
+	retAccount, retAccountKey, err := d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, fileShareSize)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, requestGiB, err)
+		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, fileShareSize, err)
 	}
 	volumeID = fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName)
 	/* todo: snapshot support
@@ -107,8 +116,17 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	*/
 	klog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
 
-	if err := d.checkFileShareCapacity(retAccount, retAccountKey, fileShareName, requestGiB); err != nil {
+	if err := d.checkFileShareCapacity(retAccount, retAccountKey, fileShareName, fileShareSize); err != nil {
 		return nil, err
+	}
+
+	if isDiskMount && diskName == "" {
+		diskName = uuid.NewUUID().String() + ".vhd"
+		diskSizeBytes := volumehelper.GiBToBytes(requestGiB)
+		if err := d.createDisk(ctx, volumeID, retAccount, retAccountKey, fileShareName, diskName, diskSizeBytes); err != nil {
+			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to create VHD disk: %v", err))
+		}
+		parameters[diskNameField] = diskName
 	}
 
 	return &csi.CreateVolumeResponse{
@@ -370,9 +388,9 @@ func (d *Driver) getServiceURL(sourceVolumeID string) (azfile.ServiceURL, string
 		return azfile.ServiceURL{}, "", err
 	}
 
-	u, err := url.Parse(fmt.Sprintf(fileURLTemplate, accountName, d.cloud.Environment.StorageEndpointSuffix))
+	u, err := url.Parse(fmt.Sprintf(serviceURLTemplate, accountName, d.cloud.Environment.StorageEndpointSuffix))
 	if err != nil {
-		klog.Errorf("parse fileUrlTemplate error: %v", err)
+		klog.Errorf("parse serviceURLTemplate error: %v", err)
 		return azfile.ServiceURL{}, "", err
 	}
 	if u == nil {
