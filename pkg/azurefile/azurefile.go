@@ -17,15 +17,20 @@ limitations under the License.
 package azurefile
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
+	"net/url"
 	"strings"
 
 	csicommon "sigs.k8s.io/azurefile-csi-driver/pkg/csi-common"
 	volumehelper "sigs.k8s.io/azurefile-csi-driver/pkg/util"
 
 	azs "github.com/Azure/azure-sdk-for-go/storage"
+	"github.com/Azure/azure-storage-file-go/azfile"
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/pborman/uuid"
+	"github.com/rubiojr/go-vhd/vhd"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -36,16 +41,17 @@ import (
 )
 
 const (
-	DriverName       = "file.csi.azure.com"
-	separator        = "#"
-	volumeIDTemplate = "%s#%s#%s"
-	fileURLTemplate  = "https://%s.file.%s"
-	fileMode         = "file_mode"
-	dirMode          = "dir_mode"
-	vers             = "vers"
-	defaultFileMode  = "0777"
-	defaultDirMode   = "0777"
-	defaultVers      = "3.0"
+	DriverName         = "file.csi.azure.com"
+	separator          = "#"
+	volumeIDTemplate   = "%s#%s#%s"
+	serviceURLTemplate = "https://%s.file.%s"
+	fileURLTemplate    = "https://%s.file.%s/%s/%s"
+	fileMode           = "file_mode"
+	dirMode            = "dir_mode"
+	vers               = "vers"
+	defaultFileMode    = "0777"
+	defaultDirMode     = "0777"
+	defaultVers        = "3.0"
 
 	// See https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-shares--directories--files--and-metadata#share-names
 	fileShareNameMinLength = 3
@@ -311,6 +317,38 @@ func (d *Driver) expandVolume(ctx context.Context, volumeID string, capacityByte
 	}
 
 	return volumehelper.GiBToBytes(int64(resp.Quota())), nil
+}
+
+func (d *Driver) createDisk(ctx context.Context, volumeID, accountName, accountKey, fileShareName, diskName string, diskSizeBytes int64) error {
+	vhdHeader := vhd.CreateFixedHeader(uint64(diskSizeBytes), &vhd.VHDOptions{})
+	buf := new(bytes.Buffer)
+	if err := binary.Write(buf, binary.BigEndian, vhdHeader); nil != err {
+		return fmt.Errorf("failed to write VHDHeader(%+v): %v", vhdHeader, err)
+	}
+	headerBytes := buf.Bytes()
+	start := diskSizeBytes - int64(len(headerBytes))
+	end := diskSizeBytes - 1
+
+	credential, err := azfile.NewSharedKeyCredential(accountName, accountKey)
+	if err != nil {
+		return fmt.Errorf("NewSharedKeyCredential(%s) in CreateSnapshot failed with error: %v", accountName, err)
+	}
+	u, err := url.Parse(fmt.Sprintf(fileURLTemplate, accountName, d.cloud.Environment.StorageEndpointSuffix, fileShareName, diskName))
+	if err != nil {
+		return fmt.Errorf("parse fileURLTemplate error: %v", err)
+	}
+	if u == nil {
+		return fmt.Errorf("parse fileURLTemplate error: url is nil")
+	}
+	fileURL := azfile.NewFileURL(*u, azfile.NewPipeline(credential, azfile.PipelineOptions{}))
+	if _, err = fileURL.Create(ctx, diskSizeBytes, azfile.FileHTTPHeaders{}, azfile.Metadata{}); err != nil {
+		return err
+	}
+	if _, err = fileURL.UploadRange(ctx, end-start, bytes.NewReader(headerBytes[:vhd.VHD_HEADER_SIZE]), nil); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func IsCorruptedDir(dir string) bool {

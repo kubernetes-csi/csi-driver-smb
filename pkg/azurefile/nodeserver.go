@@ -163,7 +163,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	}
 	// don't respect fsType from req.GetVolumeCapability().GetMount().GetFsType()
 	// since it's ext4 by default on Linux
-	var diskName, fsType, stagingPath string
+	var diskName, fsType string
 	for k, v := range attrib {
 		switch strings.ToLower(k) {
 		case fsTypeField:
@@ -200,7 +200,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		mountOptions = appendDefaultMountOptions(mountOptions)
 	}
 
-	klog.V(2).Infof("cifsMountPath(%v) fstype(%v) volumeId(%v) context(%v) mountflags(%v) mountOptions(%v)",
+	klog.V(2).Infof("cifsMountPath(%v) fstype(%v) volumeID(%v) context(%v) mountflags(%v) mountOptions(%v)",
 		cifsMountPath, fsType, volumeID, attrib, mountFlags, mountOptions)
 
 	isDirMounted, err := d.ensureMountPoint(cifsMountPath)
@@ -229,12 +229,12 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		// todo: add lock for loop device
 		options := util.JoinMountOptions(mountFlags, []string{"loop"})
 		// FormatAndMount will format only if needed
-		klog.V(2).Infof("NodeStageVolume: formatting %s and mounting at %s with mount options(%s)", targetPath, stagingPath, options)
+		klog.V(2).Infof("NodeStageVolume: formatting %s and mounting at %s with mount options(%s)", targetPath, diskPath, options)
 		if err := d.mounter.FormatAndMount(diskPath, targetPath, fsType, options); err != nil {
-			msg := fmt.Sprintf("could not format %q and mount it at %q", targetPath, stagingPath)
+			msg := fmt.Sprintf("could not format %q and mount it at %q", targetPath, diskPath)
 			return nil, status.Error(codes.Internal, msg)
 		}
-		klog.V(2).Infof("NodeStageVolume: format %s and mounting at %s successfully.", targetPath, stagingPath)
+		klog.V(2).Infof("NodeStageVolume: format %s and mounting at %s successfully.", targetPath, diskPath)
 	}
 	return &csi.NodeStageVolumeResponse{}, nil
 }
