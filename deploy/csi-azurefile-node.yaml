@@ -105,6 +105,8 @@ spec:
             - mountPath: /var/lib/waagent/ManagedIdentity-Settings
               readOnly: true
               name: msi
+            - mountPath: /dev
+              name: device-dir
           resources:
             limits:
               cpu: 2
@@ -132,4 +134,8 @@ spec:
         - hostPath:
             path: /var/lib/waagent/ManagedIdentity-Settings
           name: msi
+        - hostPath:
+            path: /dev
+            type: Directory
+          name: device-dir
 ---

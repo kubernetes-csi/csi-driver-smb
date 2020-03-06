@@ -105,12 +105,8 @@ spec:
             - mountPath: /var/lib/waagent/ManagedIdentity-Settings
               readOnly: true
               name: msi
-            - mountPath: /devhost #use /devhost to avoid conflict
+            - mountPath: /dev
               name: device-dir
-            - mountPath: /sys/bus/scsi/devices
-              name: sys-devices-dir
-            - mountPath: /sys/class/scsi_host/
-              name: scsi-host-dir
           resources:
             limits:
               cpu: 2
@@ -142,11 +138,3 @@ spec:
             path: /dev
             type: Directory
           name: device-dir
-        - hostPath:
-            path: /sys/bus/scsi/devices
-            type: Directory
-          name: sys-devices-dir
-        - hostPath:
-            path: /sys/class/scsi_host/
-            type: Directory
-          name: scsi-host-dir
