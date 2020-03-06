@@ -65,8 +65,13 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		mountOptions = append(mountOptions, "ro")
 	}
 
-	if err := d.ensureMountPoint(target); err != nil {
+	mnt, err := d.ensureMountPoint(target)
+	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", target, err)
+	}
+	if mnt {
+		klog.V(2).Infof("NodePublishVolume: %s is already mounted", target)
+		return &csi.NodePublishVolumeResponse{}, nil
 	}
 
 	klog.V(2).Infof("NodePublishVolume: mounting %s at %s with mountOptions: %v", source, target, mountOptions)
@@ -187,7 +192,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		mountOptions = []string{fmt.Sprintf("AZURE\\%s", accountName), accountKey}
 	} else {
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
-			return nil, err
+			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
 		// parameters suggested by https://azure.microsoft.com/en-us/documentation/articles/storage-how-to-use-files-linux/
 		options := []string{fmt.Sprintf("username=%s,password=%s", accountName, accountKey)}
@@ -195,11 +200,17 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		mountOptions = appendDefaultMountOptions(mountOptions)
 	}
 
-	if err := d.ensureMountPoint(cifsMountPath); err != nil {
-		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", cifsMountPath, err)
-	}
 	klog.V(2).Infof("cifsMountPath(%v) fstype(%v) volumeId(%v) context(%v) mountflags(%v) mountOptions(%v)",
 		cifsMountPath, fsType, volumeID, attrib, mountFlags, mountOptions)
+
+	mnt, err := d.ensureMountPoint(cifsMountPath)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", cifsMountPath, err)
+	}
+	if mnt && !isDiskMount {
+		klog.V(2).Infof("NodeStageVolume: %s is already mounted", cifsMountPath)
+		return &csi.NodeStageVolumeResponse{}, nil
+	}
 
 	mountComplete := false
 	err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
@@ -208,12 +219,12 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		return true, err
 	})
 	if !mountComplete {
-		return nil, fmt.Errorf("volume(%s) mount on %s timeout(10m)", volumeID, cifsMountPath)
+		return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with timeout(10m)", volumeID, source, cifsMountPath))
 	}
 	if err != nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("could not format %q and mount it at %q", source, cifsMountPath))
+		return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with %v", volumeID, source, cifsMountPath, err))
 	}
-	klog.V(2).Infof("volume(%s) mount on %s succeeded", volumeID, cifsMountPath)
+	klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, cifsMountPath)
 
 	if isDiskMount {
 		diskPath := filepath.Join(cifsMountPath, diskName)
@@ -233,24 +244,23 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 // NodeUnstageVolume unmount the volume from the staging path
 func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolumeRequest) (*csi.NodeUnstageVolumeResponse, error) {
 	klog.V(2).Infof("NodeUnstageVolume: called with args %+v", *req)
-	volumeID := req.GetVolumeId()
-	if len(volumeID) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
+	if len(req.GetVolumeId()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
-
 	stagingTargetPath := req.GetStagingTargetPath()
 	if len(stagingTargetPath) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
 	}
 
-	klog.V(2).Infof("NodeUnstageVolume: unmounting %s", stagingTargetPath)
+	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint %s", stagingTargetPath)
 	if err := mount.CleanupMountPoint(stagingTargetPath, d.mounter, false); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staing target %q: %v", stagingTargetPath, err)
 	}
 
 	targetPath := filepath.Join(filepath.Dir(stagingTargetPath), proxyMount)
+	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint %s", targetPath)
 	if err := mount.CleanupMountPoint(targetPath, d.mounter, false); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to unmount staing target %q: %v", stagingTargetPath, err)
+		return nil, status.Errorf(codes.Internal, "failed to unmount staing target %q: %v", targetPath, err)
 	}
 	klog.V(2).Infof("NodeUnstageVolume: unmount %s successfully", stagingTargetPath)
 
@@ -287,10 +297,16 @@ func (d *Driver) NodeExpandVolume(ctx context.Context, req *csi.NodeExpandVolume
 }
 
 // ensureMountPoint: create mount point if not exists
-func (d *Driver) ensureMountPoint(target string) error {
+// return <true, nil> if it's already a mounted point otherwise return <false, nil>
+func (d *Driver) ensureMountPoint(target string) (bool, error) {
 	notMnt, err := d.mounter.IsLikelyNotMountPoint(target)
 	if err != nil && !os.IsNotExist(err) {
-		return err
+		if IsCorruptedDir(target) {
+			notMnt = false
+			klog.Warningf("detected corrupted mount for targetPath [%s]", target)
+		} else {
+			return !notMnt, err
+		}
 	}
 
 	if !notMnt {
@@ -298,21 +314,22 @@ func (d *Driver) ensureMountPoint(target string) error {
 		_, err := ioutil.ReadDir(target)
 		if err == nil {
 			klog.V(2).Infof("already mounted to target %s", target)
-			return nil
+			return !notMnt, nil
 		}
 		// mount link is invalid, now unmount and remount later
 		klog.Warningf("ReadDir %s failed with %v, unmount this directory", target, err)
 		if err := d.mounter.Unmount(target); err != nil {
 			klog.Errorf("Unmount directory %s failed with %v", target, err)
-			return err
+			return !notMnt, err
 		}
-		// notMnt = true
+		notMnt = true
+		return !notMnt, err
 	}
 
 	if err := d.mounter.MakeDir(target); err != nil {
 		klog.Errorf("MakeDir failed on target: %s (%v)", target, err)
-		return err
+		return !notMnt, err
 	}
 
-	return nil
+	return false, nil
 }
