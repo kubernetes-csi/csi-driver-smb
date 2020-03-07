@@ -131,9 +131,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedCollocatedPodTest{
-			CSIDriver:    testDriver,
-			Pods:         pods,
-			ColocatePods: true,
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			ColocatePods:           true,
+			StorageClassParameters: map[string]string{"skuName": "Standard_ZRS"},
 		}
 		test.Run(cs, ns)
 	})
@@ -157,8 +158,9 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedReadOnlyVolumeTest{
-			CSIDriver: testDriver,
-			Pods:      pods,
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: map[string]string{"skuName": "Standard_GRS"},
 		}
 		test.Run(cs, ns)
 	})
@@ -200,7 +202,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
 			CSIDriver:              testDriver,
 			Volumes:                volumes,
-			StorageClassParameters: map[string]string{"skuName": "Standard_LRS"},
+			StorageClassParameters: map[string]string{"skuName": "Standard_RAGRS"},
 		}
 		test.Run(cs, ns)
 	})
@@ -224,7 +226,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			CSIDriver:              testDriver,
 			Volumes:                volumes,
 			Azurefile:              azurefileDriver,
-			StorageClassParameters: map[string]string{"skuName": "Standard_LRS"},
+			StorageClassParameters: map[string]string{"skuName": "Premium_LRS"},
 		}
 		test.Run(cs, ns)
 	})
@@ -245,13 +247,14 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedResizeVolumeTest{
-			CSIDriver: testDriver,
-			Pods:      pods,
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: map[string]string{"skuName": "Premium_ZRS"},
 		}
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("should create a vhd disk volume on demand [kubernetes.io/azurefile] [file.csi.azure.com]"), func() {
+	ginkgo.It(fmt.Sprintf("should create a vhd disk volume on demand [kubernetes.io/azurefile] [file.csi.azure.com][disk]"), func() {
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data",
@@ -270,6 +273,44 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			CSIDriver:              testDriver,
 			Pods:                   pods,
 			StorageClassParameters: map[string]string{"skuName": "Premium_LRS", "fsType": "ext4"},
+		}
+		test.Run(cs, ns)
+	})
+
+	ginkgo.It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [kubernetes.io/azurefile] [file.csi.azure.com][disk]", func() {
+		pods := []testsuites.PodDetails{
+			{
+				Cmd: "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done",
+				Volumes: []testsuites.VolumeDetails{
+					{
+						FSType:    "ext3",
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+			},
+			{
+				Cmd: "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done",
+				Volumes: []testsuites.VolumeDetails{
+					{
+						FSType:    "ext4",
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+			},
+		}
+		test := testsuites.DynamicallyProvisionedCollocatedPodTest{
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			ColocatePods:           true,
+			StorageClassParameters: map[string]string{"skuName": "Standard_LRS", "fsType": "xfs"},
 		}
 		test.Run(cs, ns)
 	})
