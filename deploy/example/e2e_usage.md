@@ -1,17 +1,21 @@
 ## CSI driver E2E usage example
-#### 1. create a pod with csi azurefile driver mount on linux
-##### Option#1: Azurefile Dynamic Provisioning
- - Create an azurefile CSI storage class
+#### 1. create a pod with azure file share mount
+##### Option#1: Dynamic Provisioning
+ - Create an azurefile CSI storage class and PVC
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/storageclass-azurefile-csi.yaml
-```
-
- - Create an azurefile CSI PVC
-```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
 ```
 
-##### Option#2: Azurefile Static Provisioning(use an existing azure file share)
+##### Option#2: Static Provisioning(use an existing azure file share)
+> make sure credential in cluster could access that file share
+ - Create an azurefile CSI storage class and PVC
+```console
+kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/storageclass-azurefile-existing-share.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
+```
+
+##### Option#3: Static Provisioning(use an existing azure file share)
  - Use `kubectl create secret` to create `azure-secret` with existing storage account name and key
 ```console
 kubectl create secret generic azure-secret --from-literal accountname=NAME --from-literal accountkey="KEY" --type=Opaque

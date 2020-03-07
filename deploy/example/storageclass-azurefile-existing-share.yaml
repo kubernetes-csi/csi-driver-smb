@@ -4,8 +4,9 @@ kind: StorageClass
 metadata:
   name: file.csi.azure.com
 provisioner: file.csi.azure.com
-allowVolumeExpansion: true
 parameters:
-  skuName: Premium_LRS  # available values: Standard_LRS, Standard_GRS, Standard_ZRS, Standard_RAGRS, Premium_LRS
+  resourceGroup: EXISTING_RESOURCE_GROUP_NAME
+  storageAccount: EXISTING_STORAGE_ACCOUNT_NAME
+  shareName: SHARE_NAME
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
