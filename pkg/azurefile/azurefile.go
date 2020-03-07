@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"time"
 
 	csicommon "sigs.k8s.io/azurefile-csi-driver/pkg/csi-common"
 	volumehelper "sigs.k8s.io/azurefile-csi-driver/pkg/util"
@@ -341,7 +342,17 @@ func (d *Driver) createDisk(ctx context.Context, volumeID, accountName, accountK
 	if u == nil {
 		return fmt.Errorf("parse fileURLTemplate error: url is nil")
 	}
-	fileURL := azfile.NewFileURL(*u, azfile.NewPipeline(credential, azfile.PipelineOptions{}))
+	po := azfile.PipelineOptions{
+		// Set RetryOptions to control how HTTP request are retried when retryable failures occur
+		Retry: azfile.RetryOptions{
+			Policy:        azfile.RetryPolicyExponential, // Use exponential backoff as opposed to linear
+			MaxTries:      3,                             // Try at most 3 times to perform the operation (set to 1 to disable retries)
+			TryTimeout:    time.Second * 3,               // Maximum time allowed for any single try
+			RetryDelay:    time.Second * 1,               // Backoff amount for each retry (exponential or linear)
+			MaxRetryDelay: time.Second * 3,               // Max delay between retries
+		},
+	}
+	fileURL := azfile.NewFileURL(*u, azfile.NewPipeline(credential, po))
 	if _, err = fileURL.Create(ctx, diskSizeBytes, azfile.FileHTTPHeaders{}, azfile.Metadata{}); err != nil {
 		return err
 	}

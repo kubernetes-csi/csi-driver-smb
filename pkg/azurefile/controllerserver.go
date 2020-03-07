@@ -36,6 +36,7 @@ import (
 
 // CreateVolume provisions an azure file
 func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
+	klog.V(2).Infof("CreateVolume called with request %v", *req)
 	if err := d.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME); err != nil {
 		klog.Errorf("invalid create volume req: %v", req)
 		return nil, err
@@ -147,6 +148,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 
 // DeleteVolume delete an azure file
 func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest) (*csi.DeleteVolumeResponse, error) {
+	klog.V(2).Infof("DeleteVolume called with request %v", *req)
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
@@ -205,7 +207,7 @@ func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.Valida
 
 // ControllerGetCapabilities returns the capabilities of the Controller plugin
 func (d *Driver) ControllerGetCapabilities(ctx context.Context, req *csi.ControllerGetCapabilitiesRequest) (*csi.ControllerGetCapabilitiesResponse, error) {
-	klog.V(5).Infof("Using default ControllerGetCapabilities")
+	klog.V(2).Infof("ControllerGetCapabilities called with request %v", *req)
 
 	return &csi.ControllerGetCapabilitiesResponse{
 		Capabilities: d.Cap,
@@ -310,6 +312,7 @@ func (d *Driver) CreateSnapshot(ctx context.Context, req *csi.CreateSnapshotRequ
 
 // DeleteSnapshot delete a snapshot (todo)
 func (d *Driver) DeleteSnapshot(ctx context.Context, req *csi.DeleteSnapshotRequest) (*csi.DeleteSnapshotResponse, error) {
+	klog.V(2).Infof("DeleteSnapshot: called with args %+v", *req)
 	if len(req.SnapshotId) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Snapshot ID must be provided")
 	}
@@ -346,6 +349,7 @@ func (d *Driver) ListSnapshots(ctx context.Context, req *csi.ListSnapshotsReques
 
 // ControllerExpandVolume controller expand volume
 func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
+	klog.V(2).Infof("ControllerExpandVolume: called with args %+v", *req)
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
@@ -358,6 +362,7 @@ func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.Controller
 		return nil, err
 	}
 
+	klog.V(2).Infof("ControllerExpandVolume(%s) successfully, currentQuota: %d", req.VolumeId, currentQuota)
 	return &csi.ControllerExpandVolumeResponse{CapacityBytes: currentQuota}, nil
 }
 
