@@ -345,7 +345,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test := testsuites.DynamicallyProvisionedReadOnlyVolumeTest{
 			CSIDriver:              testDriver,
 			Pods:                   pods,
-			StorageClassParameters: map[string]string{"skuName": "Premium_GRS", "fsType": "ext3"},
+			StorageClassParameters: map[string]string{"skuName": "Premium_LRS", "fsType": "ext3"},
 		}
 		test.Run(cs, ns)
 	})
