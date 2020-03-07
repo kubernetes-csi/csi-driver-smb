@@ -13,7 +13,7 @@
 # limitations under the License.
 
 FROM mcr.microsoft.com/aks/fundamental/base-ubuntu:v0.0.5
-RUN apt-get update && apt-get install -y ca-certificates cifs-utils
+RUN apt-get update && apt-get install -y ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
 LABEL maintainers="andyzhangx"
 LABEL description="AzureFile CSI Driver"
 
