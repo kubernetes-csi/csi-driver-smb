@@ -134,7 +134,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			CSIDriver:              testDriver,
 			Pods:                   pods,
 			ColocatePods:           true,
-			StorageClassParameters: map[string]string{"skuName": "Standard_LRS"},
+			StorageClassParameters: map[string]string{"skuName": "Standard_LRS", "fsType": "cifs"},
 		}
 		test.Run(cs, ns)
 	})
@@ -249,18 +249,21 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test := testsuites.DynamicallyProvisionedResizeVolumeTest{
 			CSIDriver:              testDriver,
 			Pods:                   pods,
-			StorageClassParameters: map[string]string{"skuName": "Premium_LRS"},
+			StorageClassParameters: map[string]string{"skuName": "Standard_LRS"},
 		}
 		test.Run(cs, ns)
 	})
 
 	ginkgo.It(fmt.Sprintf("should create a vhd disk volume on demand [kubernetes.io/azurefile] [file.csi.azure.com][disk]"), func() {
+		if testDriver.IsInTree() {
+			ginkgo.Skip("Test running with in tree configuration. Skip the ")
+		}
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data",
 				Volumes: []testsuites.VolumeDetails{
 					{
-						ClaimSize: "10Gi",
+						ClaimSize: "1024Gi", // test with big size
 						VolumeMount: testsuites.VolumeMountDetails{
 							NameGenerate:      "test-volume-",
 							MountPathGenerate: "/mnt/test-",
@@ -272,12 +275,15 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test := testsuites.DynamicallyProvisionedCmdVolumeTest{
 			CSIDriver:              testDriver,
 			Pods:                   pods,
-			StorageClassParameters: map[string]string{"skuName": "Premium_LRS", "fsType": "ext4"},
+			StorageClassParameters: map[string]string{"skuName": "Standard_LRS", "fsType": "ext4"},
 		}
 		test.Run(cs, ns)
 	})
 
 	ginkgo.It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [kubernetes.io/azurefile] [file.csi.azure.com][disk]", func() {
+		if testDriver.IsInTree() {
+			ginkgo.Skip("Test running with in tree configuration. Skip the ")
+		}
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done",
@@ -310,7 +316,80 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			CSIDriver:              testDriver,
 			Pods:                   pods,
 			ColocatePods:           true,
-			StorageClassParameters: map[string]string{"skuName": "Standard_LRS", "fsType": "xfs"},
+			StorageClassParameters: map[string]string{"skuName": "Premium_LRS", "fsType": "xfs"},
+		}
+		test.Run(cs, ns)
+	})
+
+	// Track issue https://github.com/kubernetes/kubernetes/issues/70505
+	ginkgo.It("should create a vhd disk volume on demand and mount it as readOnly in a pod [kubernetes.io/azurefile] [file.csi.azure.com][disk]", func() {
+		if testDriver.IsInTree() {
+			ginkgo.Skip("Test running with in tree configuration. Skip the ")
+		}
+		pods := []testsuites.PodDetails{
+			{
+				Cmd: "touch /mnt/test-1/data",
+				Volumes: []testsuites.VolumeDetails{
+					{
+						FSType:    "ext4",
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+							ReadOnly:          true,
+						},
+					},
+				},
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReadOnlyVolumeTest{
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: map[string]string{"skuName": "Premium_GRS", "fsType": "ext3"},
+		}
+		test.Run(cs, ns)
+	})
+
+	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [kubernetes.io/azurefile] [file.csi.azure.com] [disk]", v1.PersistentVolumeReclaimDelete), func() {
+		if testDriver.IsInTree() {
+			ginkgo.Skip("Test running with in tree configuration. Skip the ")
+		}
+		reclaimPolicy := v1.PersistentVolumeReclaimDelete
+		volumes := []testsuites.VolumeDetails{
+			{
+				FSType:        "ext4",
+				ClaimSize:     "10Gi",
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
+			CSIDriver:              testDriver,
+			Volumes:                volumes,
+			StorageClassParameters: map[string]string{"skuName": "Standard_RAGRS", "fsType": "ext2"},
+		}
+		test.Run(cs, ns)
+	})
+
+	ginkgo.It(fmt.Sprintf("[env] should retain PV with reclaimPolicy %q [file.csi.azure.com] [disk]", v1.PersistentVolumeReclaimRetain), func() {
+		// This tests uses the CSI driver to delete the PV.
+		// TODO: Go via the k8s interfaces and also make it more reliable for in-tree and then
+		//       test can be enabled.
+		if testDriver.IsInTree() {
+			ginkgo.Skip("Test running with in tree configuration. Skip the ")
+		}
+		reclaimPolicy := v1.PersistentVolumeReclaimRetain
+		volumes := []testsuites.VolumeDetails{
+			{
+				FSType:        "ext4",
+				ClaimSize:     "10Gi",
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
+			CSIDriver:              testDriver,
+			Volumes:                volumes,
+			Azurefile:              azurefileDriver,
+			StorageClassParameters: map[string]string{"skuName": "Premium_LRS", "fsType": "xfs"},
 		}
 		test.Run(cs, ns)
 	})
