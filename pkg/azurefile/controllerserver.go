@@ -95,6 +95,9 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	accountKind := string(storage.StorageV2)
 	if strings.HasPrefix(strings.ToLower(sku), "premium") {
 		accountKind = string(storage.FileStorage)
+		if fileShareSize < minimumPremiumShareSize {
+			fileShareSize = minimumPremiumShareSize
+		}
 	}
 
 	if fileShareName == "" {
@@ -123,9 +126,13 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	if isDiskMount && diskName == "" {
 		diskName = uuid.NewUUID().String() + ".vhd"
 		diskSizeBytes := volumehelper.GiBToBytes(requestGiB)
+		klog.V(2).Infof("begin to create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s)",
+			diskName, diskSizeBytes, fileShareName, account, sku, resourceGroup, location)
 		if err := d.createDisk(ctx, volumeID, retAccount, retAccountKey, fileShareName, diskName, diskSizeBytes); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to create VHD disk: %v", err))
 		}
+		klog.V(2).Infof("create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s) successfully",
+			diskName, diskSizeBytes, fileShareName, account, sku, resourceGroup, location)
 		parameters[diskNameField] = diskName
 	}
 

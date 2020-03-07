@@ -27,13 +27,14 @@ import (
 // DynamicallyProvisionedInvalidMountOptions will provision a storage class with invalid mount options
 // Testing if the Pod(s) Cmd is run with a 0 exit code
 type DynamicallyProvisionedInvalidMountOptions struct {
-	CSIDriver driver.DynamicPVTestDriver
-	Pods      []PodDetails
+	CSIDriver              driver.DynamicPVTestDriver
+	Pods                   []PodDetails
+	StorageClassParameters map[string]string
 }
 
 func (t *DynamicallyProvisionedInvalidMountOptions) Run(client clientset.Interface, namespace *v1.Namespace) {
 	for _, pod := range t.Pods {
-		tpod, cleanup := pod.SetupWithDynamicVolumes(client, namespace, t.CSIDriver)
+		tpod, cleanup := pod.SetupWithDynamicVolumes(client, namespace, t.CSIDriver, t.StorageClassParameters)
 		// defer must be called here for resources not get removed before using them
 		for i := range cleanup {
 			defer cleanup[i]()

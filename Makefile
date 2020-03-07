@@ -42,7 +42,7 @@ update:
 	hack/verify-update.sh
 
 .PHONY: verify
-verify: update
+verify: 
 	hack/verify-all.sh
 
 .PHONY: unit-test
