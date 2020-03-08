@@ -14,7 +14,7 @@ Scheduling 20 pods with one vhd disk each on **one** node **in parallel** could 
  - Create an azurefile CSI storage class and PVC
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/disk/storageclass-azurefile-csi.yaml
-kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/disk/pvc-azurefile-disk.yaml
 ```
 
 ##### Option#2: Static Provisioning(use an existing vhd file in azure file share)
@@ -22,7 +22,7 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-cs
  - Create an azurefile CSI storage class and PVC
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/disk/storageclass-azurefile-existing-disk.yaml
-kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/disk/pvc-azurefile-disk.yaml
 ```
 
 #### 2. validate PVC status and create an nginx pod
