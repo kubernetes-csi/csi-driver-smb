@@ -1,7 +1,7 @@
 ## Azure File CSI driver vhd disk feature example
 Attach Azure disks in < 1 second. Attach as many as you want. Attach them where ever you want. VHD disk feature could mount Azure disks as Linux block device directly on VMs without dependency on the host. 
 
- - [Metadata/namespace heavy workload on Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#cause-2-metadatanamespace-heavy-workload)
+ - Motivation: [Metadata/namespace heavy workload on Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#cause-2-metadatanamespace-heavy-workload)
  
 Add a VHD on the file share and mount VHD over SMB from the client to perform files operations against the data. This approach works for single writer and multiple readers scenarios and allows metadata operations to be local, offering performance similar to a local direct-attached storage. 
 
