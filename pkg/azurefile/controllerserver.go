@@ -59,7 +59,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	parameters := req.GetParameters()
-	var sku, resourceGroup, location, account, fileShareName, volumeID, diskName, fsType string
+	var sku, resourceGroup, location, account, fileShareName, diskName, fsType string
 
 	// Apply ProvisionerParameters (case-insensitive). We leave validation of
 	// the values to the cloud provider.
@@ -110,14 +110,6 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, fileShareSize, err)
 	}
-	volumeID = fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName)
-	/* todo: snapshot support
-	if req.GetVolumeContentSource() != nil {
-		contentSource := req.GetVolumeContentSource()
-		if contentSource.GetSnapshot() != nil {
-		}
-	}
-	*/
 	klog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
 
 	if err := d.checkFileShareCapacity(retAccount, retAccountKey, fileShareName, fileShareSize); err != nil {
@@ -129,7 +121,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		diskSizeBytes := volumehelper.GiBToBytes(requestGiB)
 		klog.V(2).Infof("begin to create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s)",
 			diskName, diskSizeBytes, fileShareName, account, sku, resourceGroup, location)
-		if err := d.createDisk(ctx, volumeID, retAccount, retAccountKey, fileShareName, diskName, diskSizeBytes); err != nil {
+		if err := d.createDisk(ctx, retAccount, retAccountKey, fileShareName, diskName, diskSizeBytes); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to create VHD disk: %v", err))
 		}
 		klog.V(2).Infof("create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s) successfully",
@@ -137,6 +129,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		parameters[diskNameField] = diskName
 	}
 
+	volumeID := fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName, diskName)
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
 			VolumeId:      volumeID,
@@ -164,7 +157,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 		klog.V(4).Infof("failed to get share url with (%s): %v, returning with success", volumeID, err)
 		return &csi.DeleteVolumeResponse{}, nil
 	}
-	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
+	resourceGroupName, accountName, fileShareName, _, err := getFileShareInfo(volumeID)
 	if err != nil {
 		klog.Errorf("getFileShareInfo(%s) in DeleteVolume failed with error: %v", volumeID, err)
 		return &csi.DeleteVolumeResponse{}, nil
@@ -188,7 +181,7 @@ func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.Valida
 	}
 
 	volumeID := req.VolumeId
-	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(volumeID)
+	resourceGroupName, accountName, fileShareName, _, err := getFileShareInfo(volumeID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "error getting volume(%s) info: %v", volumeID, err)
 	}
@@ -379,7 +372,7 @@ func (d *Driver) getShareURL(sourceVolumeID string) (azfile.ShareURL, error) {
 }
 
 func (d *Driver) getServiceURL(sourceVolumeID string) (azfile.ServiceURL, string, error) {
-	resourceGroupName, accountName, fileShareName, err := getFileShareInfo(sourceVolumeID)
+	resourceGroupName, accountName, fileShareName, _, err := getFileShareInfo(sourceVolumeID)
 	if err != nil {
 		klog.Errorf("getFileShareInfo(%s) failed with error: %v", sourceVolumeID, err)
 		return azfile.ServiceURL{}, "", err
