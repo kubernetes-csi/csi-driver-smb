@@ -134,7 +134,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	secrets := req.GetSecrets()
 	if len(secrets) == 0 {
 		var resourceGroupName string
-		resourceGroupName, accountName, fileShareName, err = getFileShareInfo(volumeID)
+		resourceGroupName, accountName, fileShareName, _, err = getFileShareInfo(volumeID)
 		if err != nil {
 			return nil, err
 		}
@@ -230,13 +230,14 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		diskPath := filepath.Join(cifsMountPath, diskName)
 		options := util.JoinMountOptions(mountFlags, []string{"loop"})
 		if strings.HasPrefix(fsType, "ext") {
+			// following mount options are only valid for ext2/ext3/ext4 file systems
 			options = util.JoinMountOptions(options, []string{"noatime", "barrier=0", "errors=remount-ro"})
 		}
-		// FormatAndMount will format only if needed
+
 		klog.V(2).Infof("NodeStageVolume: formatting %s and mounting at %s with mount options(%s)", targetPath, diskPath, options)
+		// FormatAndMount will format only if needed
 		if err := d.mounter.FormatAndMount(diskPath, targetPath, fsType, options); err != nil {
-			msg := fmt.Sprintf("could not format %q and mount it at %q", targetPath, diskPath)
-			return nil, status.Error(codes.Internal, msg)
+			return nil, status.Error(codes.Internal, fmt.Sprintf("could not format %q and mount it at %q", targetPath, diskPath))
 		}
 		klog.V(2).Infof("NodeStageVolume: format %s and mounting at %s successfully.", targetPath, diskPath)
 	}

@@ -44,7 +44,7 @@ import (
 const (
 	DriverName         = "file.csi.azure.com"
 	separator          = "#"
-	volumeIDTemplate   = "%s#%s#%s"
+	volumeIDTemplate   = "%s#%s#%s#%s"
 	serviceURLTemplate = "https://%s.file.%s"
 	fileURLTemplate    = "https://%s.file.%s/%s/%s"
 	fileMode           = "file_mode"
@@ -176,14 +176,14 @@ func (d *Driver) getFileSvcClient(accountName, accountKey string) (*azs.FileServ
 }
 
 // get file share info according to volume id, e.g.
-// input: "rg#f5713de20cde511e8ba4900#pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41"
-// output: rg, f5713de20cde511e8ba4900, pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41
-func getFileShareInfo(id string) (string, string, string, error) {
+// input: "rg#f5713de20cde511e8ba4900#pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41#diskname.vhd"
+// output: rg, f5713de20cde511e8ba4900, pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41, diskname.vhd
+func getFileShareInfo(id string) (string, string, string, string, error) {
 	segments := strings.Split(id, separator)
-	if len(segments) < 3 {
-		return "", "", "", fmt.Errorf("error parsing volume id: %q, should at least contain two #", id)
+	if len(segments) < 4 {
+		return "", "", "", "", fmt.Errorf("error parsing volume id: %q, should at least contain three #", id)
 	}
-	return segments[0], segments[1], segments[2], nil
+	return segments[0], segments[1], segments[2], segments[3], nil
 }
 
 // check whether mountOptions contains file_mode, dir_mode, vers, if not, append default mode
@@ -288,14 +288,14 @@ func checkShareNameBeginAndEnd(fileShareName string) bool {
 }
 
 // get snapshot name according to snapshot id, e.g.
-// input: "rg#f5713de20cde511e8ba4900#csivolumename#2019-08-22T07:17:53.0000000Z"
+// input: "rg#f5713de20cde511e8ba4900#csivolumename#diskname#2019-08-22T07:17:53.0000000Z"
 // output: 2019-08-22T07:17:53.0000000Z
 func getSnapshot(id string) (string, error) {
 	segments := strings.Split(id, separator)
-	if len(segments) != 4 {
-		return "", fmt.Errorf("error parsing volume id: %q, should at least contain three #", id)
+	if len(segments) < 5 {
+		return "", fmt.Errorf("error parsing volume id: %q, should at least contain four #", id)
 	}
-	return segments[3], nil
+	return segments[4], nil
 }
 
 func (d *Driver) expandVolume(ctx context.Context, volumeID string, capacityBytes int64) (int64, error) {
@@ -321,7 +321,7 @@ func (d *Driver) expandVolume(ctx context.Context, volumeID string, capacityByte
 	return volumehelper.GiBToBytes(int64(resp.Quota())), nil
 }
 
-func (d *Driver) createDisk(ctx context.Context, volumeID, accountName, accountKey, fileShareName, diskName string, diskSizeBytes int64) error {
+func (d *Driver) createDisk(ctx context.Context, accountName, accountKey, fileShareName, diskName string, diskSizeBytes int64) error {
 	vhdHeader := vhd.CreateFixedHeader(uint64(diskSizeBytes), &vhd.VHDOptions{})
 	buf := new(bytes.Buffer)
 	if err := binary.Write(buf, binary.BigEndian, vhdHeader); nil != err {
