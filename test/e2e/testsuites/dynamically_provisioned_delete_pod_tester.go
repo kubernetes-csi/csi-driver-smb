@@ -28,9 +28,10 @@ import (
 // Testing if the Pod can write and read to mounted volumes
 // Deleting a pod, and again testing if the Pod can write and read to mounted volumes
 type DynamicallyProvisionedDeletePodTest struct {
-	CSIDriver driver.DynamicPVTestDriver
-	Pod       PodDetails
-	PodCheck  *PodExecCheck
+	CSIDriver              driver.DynamicPVTestDriver
+	Pod                    PodDetails
+	PodCheck               *PodExecCheck
+	StorageClassParameters map[string]string
 }
 
 type PodExecCheck struct {
@@ -39,7 +40,7 @@ type PodExecCheck struct {
 }
 
 func (t *DynamicallyProvisionedDeletePodTest) Run(client clientset.Interface, namespace *v1.Namespace) {
-	tDeployment, cleanup := t.Pod.SetupDeployment(client, namespace, t.CSIDriver)
+	tDeployment, cleanup := t.Pod.SetupDeployment(client, namespace, t.CSIDriver, t.StorageClassParameters)
 	// defer must be called here for resources not get removed before using them
 	for i := range cleanup {
 		defer cleanup[i]()
