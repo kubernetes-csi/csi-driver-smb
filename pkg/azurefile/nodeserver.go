@@ -228,8 +228,10 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 
 	if isDiskMount {
 		diskPath := filepath.Join(cifsMountPath, diskName)
-		// todo: add lock for loop device
 		options := util.JoinMountOptions(mountFlags, []string{"loop"})
+		if strings.HasPrefix(fsType, "ext") {
+			options = util.JoinMountOptions(options, []string{"noatime", "barrier=0", "errors=remount-ro"})
+		}
 		// FormatAndMount will format only if needed
 		klog.V(2).Infof("NodeStageVolume: formatting %s and mounting at %s with mount options(%s)", targetPath, diskPath, options)
 		if err := d.mounter.FormatAndMount(diskPath, targetPath, fsType, options); err != nil {
