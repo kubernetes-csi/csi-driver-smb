@@ -134,7 +134,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			CSIDriver:              testDriver,
 			Pods:                   pods,
 			ColocatePods:           true,
-			StorageClassParameters: map[string]string{"skuName": "Standard_LRS", "fsType": "cifs"},
+			StorageClassParameters: map[string]string{"skuName": "Standard_LRS"},
 		}
 		test.Run(cs, ns)
 	})
@@ -306,7 +306,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It("should receive FailedMount event with invalid mount options [kubernetes.io/azure-file] [file.csi.azure.com] [disk]", func() {
+	ginkgo.It("should receive FailedMount event with invalid mount options [file.csi.azure.com] [disk]", func() {
 		if testDriver.IsInTree() {
 			ginkgo.Skip("Test running with in tree configuration. Skip the ")
 		}
@@ -337,7 +337,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [kubernetes.io/azure-file] [file.csi.azure.com][disk]", func() {
+	ginkgo.It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [file.csi.azure.com][disk]", func() {
 		if testDriver.IsInTree() {
 			ginkgo.Skip("Test running with in tree configuration. Skip the ")
 		}
@@ -379,7 +379,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	})
 
 	// Track issue https://github.com/kubernetes/kubernetes/issues/70505
-	ginkgo.It("should create a vhd disk volume on demand and mount it as readOnly in a pod [kubernetes.io/azure-file] [file.csi.azure.com][disk]", func() {
+	ginkgo.It("should create a vhd disk volume on demand and mount it as readOnly in a pod [file.csi.azure.com][disk]", func() {
 		if testDriver.IsInTree() {
 			ginkgo.Skip("Test running with in tree configuration. Skip the ")
 		}
@@ -407,7 +407,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It("should create a deployment object, write and read to it, delete the pod and write and read to it again [kubernetes.io/azure-file] [file.csi.azure.com] [disk]", func() {
+	ginkgo.It("should create a deployment object, write and read to it, delete the pod and write and read to it again [file.csi.azure.com] [disk]", func() {
 		if testDriver.IsInTree() {
 			ginkgo.Skip("Test running with in tree configuration. Skip the ")
 		}
@@ -436,7 +436,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [kubernetes.io/azure-file] [file.csi.azure.com] [disk]", v1.PersistentVolumeReclaimDelete), func() {
+	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [file.csi.azure.com] [disk]", v1.PersistentVolumeReclaimDelete), func() {
 		if testDriver.IsInTree() {
 			ginkgo.Skip("Test running with in tree configuration. Skip the ")
 		}
