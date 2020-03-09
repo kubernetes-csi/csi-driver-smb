@@ -58,7 +58,7 @@ func TestSanity(t *testing.T) {
 		// Only delete resource group the test created
 		if strings.HasPrefix(creds.ResourceGroup, credentials.ResourceGroupPrefix) {
 			log.Printf("Deleting resource group %s", creds.ResourceGroup)
-			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
+			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup, false)
 			assert.NoError(t, err)
 		}
 	}()

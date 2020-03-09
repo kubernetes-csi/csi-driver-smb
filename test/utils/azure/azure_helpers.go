@@ -87,18 +87,20 @@ func (az *Client) EnsureResourceGroup(ctx context.Context, name, location string
 	return &response, nil
 }
 
-func (az *Client) DeleteResourceGroup(ctx context.Context, groupName string) error {
+func (az *Client) DeleteResourceGroup(ctx context.Context, groupName string, waitForCompletion bool) error {
 	_, err := az.groupsClient.Get(ctx, groupName)
 	if err == nil {
 		future, err := az.groupsClient.Delete(ctx, groupName)
 		if err != nil {
 			return fmt.Errorf("cannot delete resource group %v: %v", groupName, err)
 		}
-		err = future.WaitForCompletionRef(ctx, az.groupsClient.Client)
-		if err != nil {
-			// Skip the teardown errors because of https://github.com/Azure/go-autorest/issues/357
-			// TODO(feiskyer): fix the issue by upgrading go-autorest version >= v11.3.2.
-			log.Printf("Warning: failed to delete resource group %q with error %v", groupName, err)
+		if waitForCompletion {
+			err = future.WaitForCompletionRef(ctx, az.groupsClient.Client)
+			if err != nil {
+				// Skip the teardown errors because of https://github.com/Azure/go-autorest/issues/357
+				// TODO(feiskyer): fix the issue by upgrading go-autorest version >= v11.3.2.
+				log.Printf("Warning: failed to delete resource group %q with error %v", groupName, err)
+			}
 		}
 	}
 	return nil

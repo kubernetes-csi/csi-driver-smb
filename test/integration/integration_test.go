@@ -79,7 +79,7 @@ func testIntegration(t *testing.T, creds *credentials.Credentials) {
 		// Only delete resource group the test created
 		if strings.HasPrefix(creds.ResourceGroup, credentials.ResourceGroupPrefix) {
 			log.Printf("Deleting resource group %s", creds.ResourceGroup)
-			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
+			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup, true)
 			assert.NoError(t, err)
 		}
 	}()
