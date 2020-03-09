@@ -321,26 +321,17 @@ func (d *Driver) expandVolume(ctx context.Context, volumeID string, capacityByte
 	return volumehelper.GiBToBytes(int64(resp.Quota())), nil
 }
 
-func (d *Driver) createDisk(ctx context.Context, accountName, accountKey, fileShareName, diskName string, diskSizeBytes int64) error {
-	vhdHeader := vhd.CreateFixedHeader(uint64(diskSizeBytes), &vhd.VHDOptions{})
-	buf := new(bytes.Buffer)
-	if err := binary.Write(buf, binary.BigEndian, vhdHeader); nil != err {
-		return fmt.Errorf("failed to write VHDHeader(%+v): %v", vhdHeader, err)
-	}
-	headerBytes := buf.Bytes()
-	start := diskSizeBytes - int64(len(headerBytes))
-	end := diskSizeBytes - 1
-
+func getFileURL(accountName, accountKey, storageEndpointSuffix, fileShareName, diskName string) (*azfile.FileURL, error) {
 	credential, err := azfile.NewSharedKeyCredential(accountName, accountKey)
 	if err != nil {
-		return fmt.Errorf("NewSharedKeyCredential(%s) in CreateSnapshot failed with error: %v", accountName, err)
+		return nil, fmt.Errorf("NewSharedKeyCredential(%s) failed with error: %v", accountName, err)
 	}
-	u, err := url.Parse(fmt.Sprintf(fileURLTemplate, accountName, d.cloud.Environment.StorageEndpointSuffix, fileShareName, diskName))
+	u, err := url.Parse(fmt.Sprintf(fileURLTemplate, accountName, storageEndpointSuffix, fileShareName, diskName))
 	if err != nil {
-		return fmt.Errorf("parse fileURLTemplate error: %v", err)
+		return nil, fmt.Errorf("parse fileURLTemplate error: %v", err)
 	}
 	if u == nil {
-		return fmt.Errorf("parse fileURLTemplate error: url is nil")
+		return nil, fmt.Errorf("parse fileURLTemplate error: url is nil")
 	}
 	po := azfile.PipelineOptions{
 		// Set RetryOptions to control how HTTP request are retried when retryable failures occur
@@ -353,13 +344,32 @@ func (d *Driver) createDisk(ctx context.Context, accountName, accountKey, fileSh
 		},
 	}
 	fileURL := azfile.NewFileURL(*u, azfile.NewPipeline(credential, po))
+	return &fileURL, nil
+}
+
+func createDisk(ctx context.Context, accountName, accountKey, storageEndpointSuffix, fileShareName, diskName string, diskSizeBytes int64) error {
+	vhdHeader := vhd.CreateFixedHeader(uint64(diskSizeBytes), &vhd.VHDOptions{})
+	buf := new(bytes.Buffer)
+	if err := binary.Write(buf, binary.BigEndian, vhdHeader); nil != err {
+		return fmt.Errorf("failed to write VHDHeader(%+v): %v", vhdHeader, err)
+	}
+	headerBytes := buf.Bytes()
+	start := diskSizeBytes - int64(len(headerBytes))
+	end := diskSizeBytes - 1
+
+	fileURL, err := getFileURL(accountName, accountKey, storageEndpointSuffix, fileShareName, diskName)
+	if err != nil {
+		return err
+	}
+	if fileURL == nil {
+		return fmt.Errorf("getFileURL(%s,%s,%s,%s) return empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName)
+	}
 	if _, err = fileURL.Create(ctx, diskSizeBytes, azfile.FileHTTPHeaders{}, azfile.Metadata{}); err != nil {
 		return err
 	}
 	if _, err = fileURL.UploadRange(ctx, end-start, bytes.NewReader(headerBytes[:vhd.VHD_HEADER_SIZE]), nil); err != nil {
 		return err
 	}
-
 	return nil
 }
 

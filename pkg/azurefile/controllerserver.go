@@ -117,7 +117,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		diskSizeBytes := volumehelper.GiBToBytes(requestGiB)
 		klog.V(2).Infof("begin to create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s)",
 			diskName, diskSizeBytes, fileShareName, account, sku, resourceGroup, location)
-		if err := d.createDisk(ctx, retAccount, retAccountKey, fileShareName, diskName, diskSizeBytes); err != nil {
+		if err := createDisk(ctx, retAccount, retAccountKey, d.cloud.Environment.StorageEndpointSuffix, fileShareName, diskName, diskSizeBytes); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to create VHD disk: %v", err))
 		}
 		klog.V(2).Infof("create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s) successfully",
