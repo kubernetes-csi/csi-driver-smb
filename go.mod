@@ -7,6 +7,7 @@ require (
 	github.com/Azure/azure-storage-file-go v0.5.0
 	github.com/Azure/go-autorest/autorest v0.9.0
 	github.com/Azure/go-autorest/autorest/adal v0.5.0
+	github.com/Azure/go-autorest/autorest/to v0.2.0
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/container-storage-interface/spec v1.1.0
 	github.com/coreos/bbolt v1.3.2 // indirect

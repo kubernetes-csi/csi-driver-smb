@@ -32,7 +32,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/cloud-provider"
+	cloudprovider "k8s.io/cloud-provider"
 	"k8s.io/klog"
 )
 
@@ -164,7 +164,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	if _, err = shareURL.Delete(ctx, azfile.DeleteSnapshotsOptionInclude); err != nil {
 		return nil, status.Errorf(codes.Internal, "DeleteFileShare %s under %s failed with error: %v", fileShareName, accountName, err)
 	}
-	klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volumeID(%s) is deleted successfully", fileShareName, resourceGroupName, accountName, volumeID)
+	klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volume(%s) is deleted successfully", fileShareName, resourceGroupName, accountName, volumeID)
 
 	return &csi.DeleteVolumeResponse{}, nil
 }
@@ -223,6 +223,11 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
 	}
 
+	volCap := req.GetVolumeCapability()
+	if volCap == nil {
+		return nil, status.Error(codes.InvalidArgument, "Volume capability not provided")
+	}
+
 	nodeID := req.GetNodeId()
 	if len(nodeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Node ID not provided")
@@ -240,8 +245,15 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getFileShareInfo(%s) failed with error: %v", volumeID, err))
 	}
 	if diskName == "" {
-		klog.V(2).Infof("skip ControllerPublishVolume process since disk name is empty, volumeid: %s", volumeID)
+		klog.V(2).Infof("skip ControllerPublishVolume since disk name is empty, volumeid: %s", volumeID)
 		return &csi.ControllerPublishVolumeResponse{}, nil
+	}
+
+	accessMode := volCap.GetAccessMode()
+	if accessMode == nil ||
+		(accessMode.Mode != csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER &&
+			accessMode.Mode != csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY) {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("unsupported AccessMode(%v) for volume(%s)", volCap.GetAccessMode(), volumeID))
 	}
 
 	if resourceGroupName == "" {
@@ -263,18 +275,19 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 
 	properties, err := fileURL.GetProperties(ctx)
 	if err != nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("GetProperties for volumeid(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+		return nil, status.Error(codes.Internal, fmt.Sprintf("GetProperties for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
 	}
 
 	if v, ok := properties.NewMetadata()[metaDataNode]; ok {
 		if v != "" {
-			return nil, status.Error(codes.Internal, fmt.Sprintf("volumeid(%s) cannot be attached to node(%s) since it's already attached to node(%s)", volumeID, nodeID, v))
+			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) cannot be attached to node(%s) since it's already attached to node(%s)", volumeID, nodeID, v))
 		}
 	}
 
-	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: nodeID}); err != nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volumeid(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: strings.ToLower(nodeID)}); err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
 	}
+	klog.V(2).Infof("ControllerPublishVolume: volume(%s) attached to node(%s) successfully", volumeID, nodeID)
 	return &csi.ControllerPublishVolumeResponse{}, nil
 }
 
@@ -296,7 +309,7 @@ func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.Control
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getFileShareInfo(%s) failed with error: %v", volumeID, err))
 	}
 	if diskName == "" {
-		klog.V(2).Infof("skip ControllerUnpublishVolume process since disk name is empty, volumeid: %s", volumeID)
+		klog.V(2).Infof("skip ControllerUnpublishVolume since disk name is empty, volumeid: %s", volumeID)
 		return &csi.ControllerUnpublishVolumeResponse{}, nil
 	}
 
@@ -318,8 +331,9 @@ func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.Control
 	}
 
 	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: ""}); err != nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volumeid(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
 	}
+	klog.V(2).Infof("ControllerPublishVolume: volume(%s) detached from node(%s) successfully", volumeID, nodeID)
 	return &csi.ControllerUnpublishVolumeResponse{}, nil
 }
 

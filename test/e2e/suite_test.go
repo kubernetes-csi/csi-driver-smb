@@ -67,7 +67,7 @@ var _ = ginkgo.BeforeSuite(func() {
 	if os.Getenv(driver.AzureDriverNameVar) == "" && testutil.IsRunningInProw() {
 		creds, err := credentials.CreateAzureCredentialFile(false)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-		azureClient, err := azure.GetClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
+		azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
