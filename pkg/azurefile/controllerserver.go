@@ -87,11 +87,6 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	fileShareSize := int(requestGiB)
-	isDiskMount := (fsType != "" && fsType != cifs)
-	if isDiskMount {
-		fileShareSize = fileShareSize + 1 // there needs a bit more space to store metadata files for VHD and others
-	}
-
 	// when use azure file premium, account kind should be specified as FileStorage
 	accountKind := string(storage.StorageV2)
 	if strings.HasPrefix(strings.ToLower(sku), "premium") {
@@ -116,6 +111,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		return nil, err
 	}
 
+	isDiskMount := (fsType != "" && fsType != cifs)
 	if isDiskMount && diskName == "" {
 		diskName = uuid.NewUUID().String() + ".vhd"
 		diskSizeBytes := volumehelper.GiBToBytes(requestGiB)
