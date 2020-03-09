@@ -70,6 +70,7 @@ const (
 	fsTypeField   = "fstype"
 	proxyMount    = "proxy-mount"
 	cifs          = "cifs"
+	metaDataNode  = "node"
 )
 
 // Driver implements all interfaces of CSI drivers
@@ -112,6 +113,7 @@ func (d *Driver) Run(endpoint string) {
 	d.AddControllerServiceCapabilities(
 		[]csi.ControllerServiceCapability_RPC_Type{
 			csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME,
+			csi.ControllerServiceCapability_RPC_PUBLISH_UNPUBLISH_VOLUME,
 			csi.ControllerServiceCapability_RPC_CREATE_DELETE_SNAPSHOT,
 			//csi.ControllerServiceCapability_RPC_LIST_SNAPSHOTS,
 			csi.ControllerServiceCapability_RPC_EXPAND_VOLUME,

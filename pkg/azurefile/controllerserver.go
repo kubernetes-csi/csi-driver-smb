@@ -31,6 +31,8 @@ import (
 	"github.com/pborman/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/cloud-provider"
 	"k8s.io/klog"
 )
 
@@ -214,15 +216,111 @@ func (d *Driver) ListVolumes(ctx context.Context, req *csi.ListVolumesRequest) (
 }
 
 // ControllerPublishVolume make a volume available on some required node
-// N/A for azure file
 func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.ControllerPublishVolumeRequest) (*csi.ControllerPublishVolumeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	klog.V(2).Infof("ControllerPublishVolume: called with args %+v", *req)
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
+	}
+
+	nodeID := req.GetNodeId()
+	if len(nodeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Node ID not provided")
+	}
+	nodeName := types.NodeName(nodeID)
+	if _, err := d.cloud.InstanceID(ctx, nodeName); err != nil {
+		if err == cloudprovider.InstanceNotFound {
+			return nil, status.Error(codes.NotFound, fmt.Sprintf("failed to get azure instance id for node %q (%v)", nodeName, err))
+		}
+		return nil, status.Error(codes.Internal, fmt.Sprintf("get azure instance id for node %q failed with %v", nodeName, err))
+	}
+
+	resourceGroupName, accountName, fileShareName, diskName, err := getFileShareInfo(volumeID)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getFileShareInfo(%s) failed with error: %v", volumeID, err))
+	}
+	if diskName == "" {
+		klog.V(2).Infof("skip ControllerPublishVolume process since disk name is empty, volumeid: %s", volumeID)
+		return &csi.ControllerPublishVolumeResponse{}, nil
+	}
+
+	if resourceGroupName == "" {
+		resourceGroupName = d.cloud.ResourceGroup
+	}
+	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("could not find key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err))
+	}
+
+	storageEndpointSuffix := d.cloud.Environment.StorageEndpointSuffix
+	fileURL, err := getFileURL(accountName, accountKey, storageEndpointSuffix, fileShareName, diskName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned with error: %v", accountName, storageEndpointSuffix, fileShareName, diskName, err))
+	}
+	if fileURL == nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) return empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
+	}
+
+	properties, err := fileURL.GetProperties(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("GetProperties for volumeid(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+	}
+
+	if v, ok := properties.NewMetadata()[metaDataNode]; ok {
+		if v != "" {
+			return nil, status.Error(codes.Internal, fmt.Sprintf("volumeid(%s) cannot be attached to node(%s) since it's already attached to node(%s)", volumeID, nodeID, v))
+		}
+	}
+
+	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: nodeID}); err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volumeid(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+	}
+	return &csi.ControllerPublishVolumeResponse{}, nil
 }
 
 // ControllerUnpublishVolume make the volume unavailable on a specified node
-// N/A for azure file
 func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.ControllerUnpublishVolumeRequest) (*csi.ControllerUnpublishVolumeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	klog.V(2).Infof("ControllerUnpublishVolume: called with args %+v", *req)
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
+	}
+
+	nodeID := req.GetNodeId()
+	if len(nodeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Node ID not provided")
+	}
+
+	resourceGroupName, accountName, fileShareName, diskName, err := getFileShareInfo(volumeID)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getFileShareInfo(%s) failed with error: %v", volumeID, err))
+	}
+	if diskName == "" {
+		klog.V(2).Infof("skip ControllerUnpublishVolume process since disk name is empty, volumeid: %s", volumeID)
+		return &csi.ControllerUnpublishVolumeResponse{}, nil
+	}
+
+	if resourceGroupName == "" {
+		resourceGroupName = d.cloud.ResourceGroup
+	}
+	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("could not find key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err))
+	}
+
+	storageEndpointSuffix := d.cloud.Environment.StorageEndpointSuffix
+	fileURL, err := getFileURL(accountName, accountKey, storageEndpointSuffix, fileShareName, diskName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned with error: %v", accountName, storageEndpointSuffix, fileShareName, diskName, err))
+	}
+	if fileURL == nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) return empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
+	}
+
+	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: ""}); err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volumeid(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+	}
+	return &csi.ControllerUnpublishVolumeResponse{}, nil
 }
 
 // CreateSnapshot create a snapshot (todo)
