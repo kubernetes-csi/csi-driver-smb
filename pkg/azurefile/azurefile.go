@@ -66,11 +66,12 @@ const (
 	// key of snapshot name in metadata
 	snapshotNameKey = "initiator"
 
-	diskNameField = "diskname"
-	fsTypeField   = "fstype"
-	proxyMount    = "proxy-mount"
-	cifs          = "cifs"
-	metaDataNode  = "node"
+	shareNameField = "sharename"
+	diskNameField  = "diskname"
+	fsTypeField    = "fstype"
+	proxyMount     = "proxy-mount"
+	cifs           = "cifs"
+	metaDataNode   = "node"
 )
 
 // Driver implements all interfaces of CSI drivers
@@ -379,4 +380,34 @@ func IsCorruptedDir(dir string) bool {
 	_, pathErr := mount.PathExists(dir)
 	fmt.Printf("IsCorruptedDir(%s) returned with error: %v", dir, pathErr)
 	return pathErr != nil && mount.IsCorruptedMnt(pathErr)
+}
+
+func (d *Driver) getAccountInfo(volumeID string, secrets, context map[string]string) (string, string, string, string, string, error) {
+	var rgName, accountName, accountKey, fileShareName, diskName string
+	var err error
+	if len(secrets) == 0 {
+		rgName, accountName, fileShareName, diskName, err = getFileShareInfo(volumeID)
+		if err == nil {
+			if rgName == "" {
+				rgName = d.cloud.ResourceGroup
+			}
+			accountKey, err = d.cloud.GetStorageAccesskey(accountName, rgName)
+		}
+	} else {
+		for k, v := range context {
+			switch strings.ToLower(k) {
+			case shareNameField:
+				fileShareName = v
+			case diskNameField:
+				diskName = v
+			}
+		}
+		if fileShareName != "" {
+			accountName, accountKey, err = getStorageAccount(secrets)
+		} else {
+			err = fmt.Errorf("could not find sharename from context(%v)", context)
+		}
+	}
+
+	return rgName, accountName, accountKey, fileShareName, diskName, err
 }

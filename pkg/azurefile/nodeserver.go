@@ -125,48 +125,17 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	}
 
 	volumeID := req.GetVolumeId()
-	attrib := req.GetVolumeContext()
+	context := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 
-	var accountName, accountKey, fileShareName string
-	var err error
-
-	secrets := req.GetSecrets()
-	if len(secrets) == 0 {
-		var resourceGroupName string
-		resourceGroupName, accountName, fileShareName, _, err = getFileShareInfo(volumeID)
-		if err != nil {
-			return nil, err
-		}
-
-		if resourceGroupName == "" {
-			resourceGroupName = d.cloud.ResourceGroup
-		}
-
-		accountKey, err = d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
-		if err != nil {
-			return nil, fmt.Errorf("no key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
-		}
-	} else {
-		for k, v := range attrib {
-			switch strings.ToLower(k) {
-			case "sharename":
-				fileShareName = v
-			}
-		}
-		if fileShareName == "" {
-			return nil, fmt.Errorf("could not find sharename from attributes(%v)", attrib)
-		}
-
-		accountName, accountKey, err = getStorageAccount(secrets)
-		if err != nil {
-			return nil, err
-		}
+	_, accountName, accountKey, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), context)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
 	}
 	// don't respect fsType from req.GetVolumeCapability().GetMount().GetFsType()
 	// since it's ext4 by default on Linux
-	var diskName, fsType string
-	for k, v := range attrib {
+	var fsType string
+	for k, v := range context {
 		switch strings.ToLower(k) {
 		case fsTypeField:
 			fsType = v
@@ -203,7 +172,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	}
 
 	klog.V(2).Infof("cifsMountPath(%v) fstype(%v) volumeID(%v) context(%v) mountflags(%v) mountOptions(%v)",
-		cifsMountPath, fsType, volumeID, attrib, mountFlags, mountOptions)
+		cifsMountPath, fsType, volumeID, context, mountFlags, mountOptions)
 
 	isDirMounted, err := d.ensureMountPoint(cifsMountPath)
 	if err != nil {

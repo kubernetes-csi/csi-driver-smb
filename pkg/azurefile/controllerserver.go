@@ -77,7 +77,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 			account = v
 		case "resourcegroup":
 			resourceGroup = v
-		case "sharename":
+		case shareNameField:
 			fileShareName = v
 		case diskNameField:
 			diskName = v
@@ -240,13 +240,14 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 		return nil, status.Error(codes.Internal, fmt.Sprintf("get azure instance id for node %q failed with %v", nodeName, err))
 	}
 
-	resourceGroupName, accountName, fileShareName, diskName, err := getFileShareInfo(volumeID)
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getFileShareInfo(%s) failed with error: %v", volumeID, err))
-	}
+	_, accountName, accountKey, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
+	// always check diskName first since if it's not vhd disk attach, ControllerPublishVolume is not necessary
 	if diskName == "" {
-		klog.V(2).Infof("skip ControllerPublishVolume since disk name is empty, volumeid: %s", volumeID)
+		klog.V(2).Infof("skip ControllerPublishVolume(%s) since it's not vhd disk attach", volumeID)
 		return &csi.ControllerPublishVolumeResponse{}, nil
+	}
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
 	}
 
 	accessMode := volCap.GetAccessMode()
@@ -256,23 +257,16 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("unsupported AccessMode(%v) for volume(%s)", volCap.GetAccessMode(), volumeID))
 	}
 
-	if resourceGroupName == "" {
-		resourceGroupName = d.cloud.ResourceGroup
-	}
-	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
-	if err != nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("could not find key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err))
-	}
-
 	storageEndpointSuffix := d.cloud.Environment.StorageEndpointSuffix
 	fileURL, err := getFileURL(accountName, accountKey, storageEndpointSuffix, fileShareName, diskName)
 	if err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned with error: %v", accountName, storageEndpointSuffix, fileShareName, diskName, err))
 	}
 	if fileURL == nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) return empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
 	}
 
+	// todo: add a lock here
 	properties, err := fileURL.GetProperties(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("GetProperties for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
@@ -291,7 +285,7 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 	return &csi.ControllerPublishVolumeResponse{}, nil
 }
 
-// ControllerUnpublishVolume make the volume unavailable on a specified node
+// ControllerUnpublishVolume detach the volume on a specified node
 func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.ControllerUnpublishVolumeRequest) (*csi.ControllerUnpublishVolumeResponse, error) {
 	klog.V(2).Infof("ControllerUnpublishVolume: called with args %+v", *req)
 	volumeID := req.GetVolumeId()
@@ -304,21 +298,14 @@ func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.Control
 		return nil, status.Error(codes.InvalidArgument, "Node ID not provided")
 	}
 
-	resourceGroupName, accountName, fileShareName, diskName, err := getFileShareInfo(volumeID)
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getFileShareInfo(%s) failed with error: %v", volumeID, err))
-	}
+	_, accountName, accountKey, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), map[string]string{})
+	// always check diskName first since if it's not vhd disk detach, ControllerUnpublishVolume is not necessary
 	if diskName == "" {
-		klog.V(2).Infof("skip ControllerUnpublishVolume since disk name is empty, volumeid: %s", volumeID)
+		klog.V(2).Infof("skip ControllerUnpublishVolume(%s) since it's not vhd disk detach", volumeID)
 		return &csi.ControllerUnpublishVolumeResponse{}, nil
 	}
-
-	if resourceGroupName == "" {
-		resourceGroupName = d.cloud.ResourceGroup
-	}
-	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
 	if err != nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("could not find key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err))
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
 	}
 
 	storageEndpointSuffix := d.cloud.Environment.StorageEndpointSuffix
@@ -327,13 +314,14 @@ func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.Control
 		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned with error: %v", accountName, storageEndpointSuffix, fileShareName, diskName, err))
 	}
 	if fileURL == nil {
-		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) return empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
 	}
 
+	// todo: add a lock here
 	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: ""}); err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
 	}
-	klog.V(2).Infof("ControllerPublishVolume: volume(%s) detached from node(%s) successfully", volumeID, nodeID)
+	klog.V(2).Infof("ControllerUnpublishVolume: volume(%s) detached from node(%s) successfully", volumeID, nodeID)
 	return &csi.ControllerUnpublishVolumeResponse{}, nil
 }
 
