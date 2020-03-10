@@ -25,7 +25,6 @@ import (
 	"time"
 
 	csicommon "sigs.k8s.io/azurefile-csi-driver/pkg/csi-common"
-	volumehelper "sigs.k8s.io/azurefile-csi-driver/pkg/util"
 
 	azs "github.com/Azure/azure-sdk-for-go/storage"
 	"github.com/Azure/azure-storage-file-go/azfile"
@@ -299,29 +298,6 @@ func getSnapshot(id string) (string, error) {
 		return "", fmt.Errorf("error parsing volume id: %q, should at least contain four #", id)
 	}
 	return segments[4], nil
-}
-
-func (d *Driver) expandVolume(ctx context.Context, volumeID string, capacityBytes int64) (int64, error) {
-	if capacityBytes == 0 {
-		return -1, status.Error(codes.InvalidArgument, "volume capacity range missing in request")
-	}
-	requestGiB := int32(volumehelper.RoundUpGiB(capacityBytes))
-
-	shareURL, err := d.getShareURL(volumeID)
-	if err != nil {
-		return -1, status.Errorf(codes.Internal, "failed to get share url with (%s): %v, returning with success", volumeID, err)
-	}
-
-	if _, err = shareURL.SetQuota(ctx, requestGiB); err != nil {
-		return -1, status.Errorf(codes.Internal, "expand volume error: %v", err)
-	}
-
-	resp, err := shareURL.GetProperties(ctx)
-	if err != nil {
-		return -1, status.Errorf(codes.Internal, "failed to get properties of share(%v): %v", shareURL, err)
-	}
-
-	return volumehelper.GiBToBytes(int64(resp.Quota())), nil
 }
 
 func getFileURL(accountName, accountKey, storageEndpointSuffix, fileShareName, diskName string) (*azfile.FileURL, error) {
