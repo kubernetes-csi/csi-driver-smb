@@ -451,19 +451,29 @@ func (d *Driver) ListSnapshots(ctx context.Context, req *csi.ListSnapshotsReques
 // ControllerExpandVolume controller expand volume
 func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
 	klog.V(2).Infof("ControllerExpandVolume: called with args %+v", *req)
-	if len(req.GetVolumeId()) == 0 {
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
 	if err := d.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_EXPAND_VOLUME); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid expand volume request: %v", req)
 	}
 
-	currentQuota, err := d.expandVolume(ctx, req.VolumeId, req.GetCapacityRange().GetRequiredBytes())
+	_, _, _, diskName, err := getFileShareInfo(volumeID)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getFileShareInfo(%s) failed with error: %v", volumeID, err))
+	}
+	if diskName != "" {
+		// todo: figure out how to support vhd disk resize
+		return nil, status.Error(codes.Unimplemented, fmt.Sprintf("vhd disk volume(%s) is not supported on ControllerExpandVolume", volumeID))
 	}
 
-	klog.V(2).Infof("ControllerExpandVolume(%s) successfully, currentQuota: %d", req.VolumeId, currentQuota)
+	currentQuota, err := d.expandVolume(ctx, volumeID, req.GetCapacityRange().GetRequiredBytes())
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("ControllerExpandVolume(%s) failed with error: %v", volumeID, err))
+	}
+
+	klog.V(2).Infof("ControllerExpandVolume(%s) successfully, currentQuota: %d", volumeID, currentQuota)
 	return &csi.ControllerExpandVolumeResponse{CapacityBytes: currentQuota}, nil
 }
 
