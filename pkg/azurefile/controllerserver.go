@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"time"
 
 	volumehelper "sigs.k8s.io/azurefile-csi-driver/pkg/util"
 
@@ -32,6 +33,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/wait"
 	cloudprovider "k8s.io/cloud-provider"
 	"k8s.io/klog"
 )
@@ -103,9 +105,25 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, fileShareSize)
-	retAccount, retAccountKey, err := d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, fileShareSize)
+
+	var retAccount, retAccountKey string
+	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
+		var retErr error
+		retAccount, retAccountKey, retErr = d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, fileShareSize)
+		if retErr != nil {
+			if strings.Contains(retErr.Error(), accountNotProvisioned) {
+				klog.Warningf("CreateFileShare failed with %s error, sleep 1s to retry", accountNotProvisioned)
+				time.Sleep(time.Second)
+				return false, nil
+			}
+		}
+		return true, retErr
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, fileShareSize, err)
+	}
+	if retAccount == "" || retAccountKey == "" {
+		return nil, fmt.Errorf("create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d) timeout(3m)", fileShareName, account, sku, resourceGroup, location, fileShareSize)
 	}
 	klog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
 
