@@ -71,6 +71,8 @@ const (
 	proxyMount     = "proxy-mount"
 	cifs           = "cifs"
 	metaDataNode   = "node"
+
+	accountNotProvisioned = "StorageAccountIsNotProvisioned"
 )
 
 // Driver implements all interfaces of CSI drivers
