@@ -105,7 +105,9 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, fileShareSize)
-
+	lockKey := account + sku + accountKind + resourceGroup + location
+	d.volLockMap.LockEntry(lockKey)
+	defer d.volLockMap.UnlockEntry(lockKey)
 	var retAccount, retAccountKey string
 	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
 		var retErr error

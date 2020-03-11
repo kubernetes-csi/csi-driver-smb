@@ -82,7 +82,23 @@ Filesystem      Size  Used Avail Use% Mounted on
 ```
 In the above example, there is a `/mnt/azurefile` directory mounted as ext4 filesystem.
 
-#### Example#2. create 20 pods with vhd disk mount by parallel
-```
+#### Example#2. create 10 pods with vhd disk mount in parallel
+```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/disk/statefulset-stress.yaml
+```
+
+ - output
+```console
+# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+statefulset-azurefile-0   1/1     Running   0          2m14s
+statefulset-azurefile-1   1/1     Running   0          2m14s
+statefulset-azurefile-2   1/1     Running   0          2m14s
+statefulset-azurefile-3   1/1     Running   0          2m14s
+statefulset-azurefile-4   1/1     Running   0          2m14s
+statefulset-azurefile-5   1/1     Running   0          2m14s
+statefulset-azurefile-6   1/1     Running   0          2m14s
+statefulset-azurefile-7   1/1     Running   0          2m14s
+statefulset-azurefile-8   1/1     Running   0          2m14s
+statefulset-azurefile-9   1/1     Running   0          2m14s
 ```
