@@ -1,18 +1,48 @@
 ## Azure File CSI driver fast attach disk feature example
 Attach Azure disks in < 1 second. Attach as many as you want. VHD disk(based on azure file) feature could mount Azure disks as Linux block device directly on VMs without dependency on the host.
 
- - Motivation: [Metadata/namespace heavy workload on Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#cause-2-metadatanamespace-heavy-workload)
- 
-Add a VHD on the file share and mount VHD over SMB from the client to perform files operations against the data. This approach works for single writer and multiple readers scenarios and allows metadata operations to be local, offering performance similar to a local direct-attached storage. 
+ - Motivation:
 
- - performance
+There are slow disk attach/detach issues on Azure managed disk(sometimes parallel disk attach/detach costs more than one minute), this feature aims to solve such slow disk attach/detach issues. With this feature, VHD disk file is created on Azure File, VHD disk file is mounted over SMB from the agent node, and on Linux agent node that vhd file will be mounted as a loop device. It could offer performance similar to a local direct-attached storage, while attach/detach disk would only costs < 1 second.
+
+ - Performance test we have done
 
 Scheduling 20 pods with one vhd disk each on **one** node **in parallel** could be completed in 2min, while for azure managed disk driver, it's 30min.
+
+ - How to use
+ 
+Add a new parameter(`fsType`) in Azure File CSI driver storage class, other parameters are same as [`file.csi.azure.com` driver parameters](../../../docs/driver-parameters.md)
+
+```
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: file.csi.azure.com
+provisioner: file.csi.azure.com
+parameters:
+  skuName: Premium_LRS  # available values: Standard_LRS, Standard_GRS, Standard_ZRS, Standard_RAGRS, Premium_LRS
+  fsType: ext4  # available values: ext4, ext3, ext2, xfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azurefile
+spec:
+  accessModes:
+    - ReadWriteOnce  # only support ReadWriteOnce now, will support ReadOnlyMany in the future
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: file.csi.azure.com
+```
 
 #### Feature Status
 Status: Alpha
 
-#### 1. create a pod with vhd disk mount on Linux
+#### Prerequisite
+ - [install azurefile csi driver](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/install-azurefile-csi-driver.md)
+
+#### Example#1. create a pod with vhd disk mount on Linux
 ##### Option#1: Dynamic Provisioning
  - Create an azurefile CSI storage class and PVC
 ```console
@@ -51,3 +81,8 @@ Filesystem      Size  Used Avail Use% Mounted on
 ...
 ```
 In the above example, there is a `/mnt/azurefile` directory mounted as ext4 filesystem.
+
+#### Example#2. create 20 pods with vhd disk mount by parallel
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/disk/statefulset-stress.yaml
+```
