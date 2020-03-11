@@ -1,5 +1,8 @@
 # Snapshot Example
 
+#### Feature Status
+Status: Alpha
+
 > Attention: Since volume snapshot is an alpha feature in Kubernetes currently, you need to enable a new alpha feature gate called `VolumeSnapshotDataSource` in the Kubernetes master.
 >
 > ```

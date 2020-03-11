@@ -1,4 +1,4 @@
-## Azure File CSI driver vhd disk feature example
+## Azure File CSI driver fast attach disk feature example
 Attach Azure disks in < 1 second. Attach as many as you want. Attach them where ever you want. VHD disk feature could mount Azure disks as Linux block device directly on VMs without dependency on the host. 
 
  - Motivation: [Metadata/namespace heavy workload on Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#cause-2-metadatanamespace-heavy-workload)
@@ -8,6 +8,9 @@ Add a VHD on the file share and mount VHD over SMB from the client to perform fi
  - performance
 
 Scheduling 20 pods with one vhd disk each on **one** node **in parallel** could be completed in 2min, while for azure managed disk driver, it's 30min.
+
+#### Feature Status
+Status: Alpha
 
 #### 1. create a pod with csi azurefile vhd disk mount on linux
 ##### Option#1: Dynamic Provisioning

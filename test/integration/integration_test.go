@@ -67,7 +67,7 @@ func TestIntegrationOnAzureChinaCloud(t *testing.T) {
 func testIntegration(t *testing.T, creds *credentials.Credentials) {
 	os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
 
-	azureClient, err := azure.GetClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
+	azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
 	assert.NoError(t, err)
 
 	ctx := context.Background()
@@ -79,7 +79,7 @@ func testIntegration(t *testing.T, creds *credentials.Credentials) {
 		// Only delete resource group the test created
 		if strings.HasPrefix(creds.ResourceGroup, credentials.ResourceGroupPrefix) {
 			log.Printf("Deleting resource group %s", creds.ResourceGroup)
-			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup)
+			err := azureClient.DeleteResourceGroup(ctx, creds.ResourceGroup, true)
 			assert.NoError(t, err)
 		}
 	}()

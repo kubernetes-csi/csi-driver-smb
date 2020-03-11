@@ -31,6 +31,8 @@ import (
 	"github.com/pborman/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"k8s.io/apimachinery/pkg/types"
+	cloudprovider "k8s.io/cloud-provider"
 	"k8s.io/klog"
 )
 
@@ -75,7 +77,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 			account = v
 		case "resourcegroup":
 			resourceGroup = v
-		case "sharename":
+		case shareNameField:
 			fileShareName = v
 		case diskNameField:
 			diskName = v
@@ -147,7 +149,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	}
 
 	volumeID := req.VolumeId
-	shareURL, err := d.getShareURL(volumeID)
+	shareURL, err := d.getShareURL(volumeID, req.GetSecrets())
 	if err != nil {
 		// According to CSI Driver Sanity Tester, should succeed when an invalid volume id is used
 		klog.V(4).Infof("failed to get share url with (%s): %v, returning with success", volumeID, err)
@@ -162,7 +164,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	if _, err = shareURL.Delete(ctx, azfile.DeleteSnapshotsOptionInclude); err != nil {
 		return nil, status.Errorf(codes.Internal, "DeleteFileShare %s under %s failed with error: %v", fileShareName, accountName, err)
 	}
-	klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volumeID(%s) is deleted successfully", fileShareName, resourceGroupName, accountName, volumeID)
+	klog.V(2).Infof("azure file(%s) under rg(%s) account(%s) volume(%s) is deleted successfully", fileShareName, resourceGroupName, accountName, volumeID)
 
 	return &csi.DeleteVolumeResponse{}, nil
 }
@@ -177,7 +179,7 @@ func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.Valida
 	}
 
 	volumeID := req.VolumeId
-	resourceGroupName, accountName, fileShareName, _, err := getFileShareInfo(volumeID)
+	resourceGroupName, accountName, _, fileShareName, _, err := d.getAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "error getting volume(%s) info: %v", volumeID, err)
 	}
@@ -214,15 +216,116 @@ func (d *Driver) ListVolumes(ctx context.Context, req *csi.ListVolumesRequest) (
 }
 
 // ControllerPublishVolume make a volume available on some required node
-// N/A for azure file
 func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.ControllerPublishVolumeRequest) (*csi.ControllerPublishVolumeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	klog.V(2).Infof("ControllerPublishVolume: called with args %+v", *req)
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
+	}
+
+	volCap := req.GetVolumeCapability()
+	if volCap == nil {
+		return nil, status.Error(codes.InvalidArgument, "Volume capability not provided")
+	}
+
+	nodeID := req.GetNodeId()
+	if len(nodeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Node ID not provided")
+	}
+	nodeName := types.NodeName(nodeID)
+	if _, err := d.cloud.InstanceID(ctx, nodeName); err != nil {
+		if err == cloudprovider.InstanceNotFound {
+			return nil, status.Error(codes.NotFound, fmt.Sprintf("failed to get azure instance id for node %q (%v)", nodeName, err))
+		}
+		return nil, status.Error(codes.Internal, fmt.Sprintf("get azure instance id for node %q failed with %v", nodeName, err))
+	}
+
+	_, accountName, accountKey, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
+	// always check diskName first since if it's not vhd disk attach, ControllerPublishVolume is not necessary
+	if diskName == "" {
+		klog.V(2).Infof("skip ControllerPublishVolume(%s) since it's not vhd disk attach", volumeID)
+		return &csi.ControllerPublishVolumeResponse{}, nil
+	}
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
+	}
+
+	accessMode := volCap.GetAccessMode()
+	if accessMode == nil ||
+		(accessMode.Mode != csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER &&
+			accessMode.Mode != csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY) {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("unsupported AccessMode(%v) for volume(%s)", volCap.GetAccessMode(), volumeID))
+	}
+
+	storageEndpointSuffix := d.cloud.Environment.StorageEndpointSuffix
+	fileURL, err := getFileURL(accountName, accountKey, storageEndpointSuffix, fileShareName, diskName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned with error: %v", accountName, storageEndpointSuffix, fileShareName, diskName, err))
+	}
+	if fileURL == nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
+	}
+
+	d.volLockMap.LockEntry(volumeID)
+	defer d.volLockMap.UnlockEntry(volumeID)
+	properties, err := fileURL.GetProperties(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("GetProperties for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+	}
+
+	if v, ok := properties.NewMetadata()[metaDataNode]; ok {
+		if v != "" {
+			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) cannot be attached to node(%s) since it's already attached to node(%s)", volumeID, nodeID, v))
+		}
+	}
+
+	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: strings.ToLower(nodeID)}); err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+	}
+	klog.V(2).Infof("ControllerPublishVolume: volume(%s) attached to node(%s) successfully", volumeID, nodeID)
+	return &csi.ControllerPublishVolumeResponse{}, nil
 }
 
-// ControllerUnpublishVolume make the volume unavailable on a specified node
-// N/A for azure file
+// ControllerUnpublishVolume detach the volume on a specified node
 func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.ControllerUnpublishVolumeRequest) (*csi.ControllerUnpublishVolumeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	klog.V(2).Infof("ControllerUnpublishVolume: called with args %+v", *req)
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
+	}
+
+	nodeID := req.GetNodeId()
+	if len(nodeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Node ID not provided")
+	}
+
+	_, accountName, accountKey, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), map[string]string{})
+	// always check diskName first since if it's not vhd disk detach, ControllerUnpublishVolume is not necessary
+	if diskName == "" {
+		klog.V(2).Infof("skip ControllerUnpublishVolume(%s) since it's not vhd disk detach", volumeID)
+		return &csi.ControllerUnpublishVolumeResponse{}, nil
+	}
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
+	}
+
+	storageEndpointSuffix := d.cloud.Environment.StorageEndpointSuffix
+	fileURL, err := getFileURL(accountName, accountKey, storageEndpointSuffix, fileShareName, diskName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned with error: %v", accountName, storageEndpointSuffix, fileShareName, diskName, err))
+	}
+	if fileURL == nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
+	}
+
+	d.volLockMap.LockEntry(volumeID)
+	defer d.volLockMap.UnlockEntry(volumeID)
+
+	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: ""}); err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
+	}
+	klog.V(2).Infof("ControllerUnpublishVolume: volume(%s) detached from node(%s) successfully", volumeID, nodeID)
+	return &csi.ControllerUnpublishVolumeResponse{}, nil
 }
 
 // CreateSnapshot create a snapshot (todo)
@@ -238,7 +341,7 @@ func (d *Driver) CreateSnapshot(ctx context.Context, req *csi.CreateSnapshotRequ
 		return nil, status.Error(codes.InvalidArgument, "CreateSnapshot Source Volume ID must be provided")
 	}
 
-	exists, item, err := d.snapshotExists(ctx, sourceVolumeID, snapshotName)
+	exists, item, err := d.snapshotExists(ctx, sourceVolumeID, snapshotName, req.GetSecrets())
 	if err != nil {
 		if exists {
 			return nil, status.Errorf(codes.AlreadyExists, "%v", err)
@@ -263,7 +366,7 @@ func (d *Driver) CreateSnapshot(ctx context.Context, req *csi.CreateSnapshotRequ
 		}, nil
 	}
 
-	shareURL, err := d.getShareURL(sourceVolumeID)
+	shareURL, err := d.getShareURL(sourceVolumeID, req.GetSecrets())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get share url with (%s): %v", sourceVolumeID, err)
 	}
@@ -306,7 +409,7 @@ func (d *Driver) DeleteSnapshot(ctx context.Context, req *csi.DeleteSnapshotRequ
 		return nil, status.Error(codes.InvalidArgument, "Snapshot ID must be provided")
 	}
 
-	shareURL, err := d.getShareURL(req.SnapshotId)
+	shareURL, err := d.getShareURL(req.SnapshotId, req.GetSecrets())
 	if err != nil {
 		// According to CSI Driver Sanity Tester, should succeed when an invalid snapshot id is used
 		klog.V(4).Infof("failed to get share url with (%s): %v, returning with success", req.SnapshotId, err)
@@ -339,27 +442,52 @@ func (d *Driver) ListSnapshots(ctx context.Context, req *csi.ListSnapshotsReques
 // ControllerExpandVolume controller expand volume
 func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
 	klog.V(2).Infof("ControllerExpandVolume: called with args %+v", *req)
-	if len(req.GetVolumeId()) == 0 {
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
+	capacityBytes := req.GetCapacityRange().GetRequiredBytes()
+	if capacityBytes == 0 {
+		return nil, status.Error(codes.InvalidArgument, "volume capacity range missing in request")
+	}
+	requestGiB := int32(volumehelper.RoundUpGiB(capacityBytes))
 	if err := d.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_EXPAND_VOLUME); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid expand volume request: %v", req)
 	}
 
-	currentQuota, err := d.expandVolume(ctx, req.VolumeId, req.GetCapacityRange().GetRequiredBytes())
+	_, _, _, _, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), map[string]string{})
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
+	}
+	if diskName != "" {
+		// todo: figure out how to support vhd disk resize
+		return nil, status.Error(codes.Unimplemented, fmt.Sprintf("vhd disk volume(%s) is not supported on ControllerExpandVolume", volumeID))
 	}
 
-	klog.V(2).Infof("ControllerExpandVolume(%s) successfully, currentQuota: %d", req.VolumeId, currentQuota)
+	shareURL, err := d.getShareURL(volumeID, req.GetSecrets())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get share url with (%s): %v, returning with success", volumeID, err)
+	}
+
+	if _, err = shareURL.SetQuota(ctx, requestGiB); err != nil {
+		return nil, status.Errorf(codes.Internal, "expand volume error: %v", err)
+	}
+
+	resp, err := shareURL.GetProperties(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get properties of share(%v): %v", shareURL, err)
+	}
+
+	currentQuota := volumehelper.GiBToBytes(int64(resp.Quota()))
+	klog.V(2).Infof("ControllerExpandVolume(%s) successfully, currentQuota: %d", volumeID, currentQuota)
 	return &csi.ControllerExpandVolumeResponse{CapacityBytes: currentQuota}, nil
 }
 
 // getShareURL: sourceVolumeID is the id of source file share, returns a ShareURL of source file share.
 // A ShareURL < https://<account>.file.core.windows.net/<fileShareName> > represents a URL to the Azure Storage share allowing you to manipulate its directories and files.
 // e.g. The ID of source file share is #fb8fff227be6511e9b24123#createsnapshot-volume-1. Returns https://fb8fff227be6511e9b24123.file.core.windows.net/createsnapshot-volume-1
-func (d *Driver) getShareURL(sourceVolumeID string) (azfile.ShareURL, error) {
-	serviceURL, fileShareName, err := d.getServiceURL(sourceVolumeID)
+func (d *Driver) getShareURL(sourceVolumeID string, secrets map[string]string) (azfile.ShareURL, error) {
+	serviceURL, fileShareName, err := d.getServiceURL(sourceVolumeID, secrets)
 	if err != nil {
 		return azfile.ShareURL{}, err
 	}
@@ -367,20 +495,10 @@ func (d *Driver) getShareURL(sourceVolumeID string) (azfile.ShareURL, error) {
 	return serviceURL.NewShareURL(fileShareName), nil
 }
 
-func (d *Driver) getServiceURL(sourceVolumeID string) (azfile.ServiceURL, string, error) {
-	resourceGroupName, accountName, fileShareName, _, err := getFileShareInfo(sourceVolumeID)
+func (d *Driver) getServiceURL(sourceVolumeID string, secrets map[string]string) (azfile.ServiceURL, string, error) {
+	_, accountName, accountKey, fileShareName, _, err := d.getAccountInfo(sourceVolumeID, secrets, map[string]string{})
 	if err != nil {
-		klog.Errorf("getFileShareInfo(%s) failed with error: %v", sourceVolumeID, err)
 		return azfile.ServiceURL{}, "", err
-	}
-
-	if resourceGroupName == "" {
-		resourceGroupName = d.cloud.ResourceGroup
-	}
-
-	accountKey, err := d.cloud.GetStorageAccesskey(accountName, resourceGroupName)
-	if err != nil {
-		return azfile.ServiceURL{}, "", fmt.Errorf("could not find key for storage account(%s) under resource group(%s), err %v", accountName, resourceGroupName, err)
 	}
 
 	credential, err := azfile.NewSharedKeyCredential(accountName, accountKey)
@@ -408,8 +526,8 @@ func (d *Driver) getServiceURL(sourceVolumeID string) (azfile.ServiceURL, string
 // 1. Judge if the specify snapshot name already exists.
 // 2. If it exists, we should judge if its source file share name equals that we specify.
 //    As long as the snapshot already exists, returns true. But when the source is different, an error will be returned.
-func (d *Driver) snapshotExists(ctx context.Context, sourceVolumeID string, snapshotName string) (bool, azfile.ShareItem, error) {
-	serviceURL, fileShareName, err := d.getServiceURL(sourceVolumeID)
+func (d *Driver) snapshotExists(ctx context.Context, sourceVolumeID, snapshotName string, secrets map[string]string) (bool, azfile.ShareItem, error) {
+	serviceURL, fileShareName, err := d.getServiceURL(sourceVolumeID, secrets)
 	if err != nil {
 		return false, azfile.ShareItem{}, err
 	}
