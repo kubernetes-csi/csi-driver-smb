@@ -22,7 +22,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -117,16 +116,16 @@ func TestGetFileShareInfo(t *testing.T) {
 
 	for _, test := range tests {
 		resourceGroupName, accountName, fileShareName, diskName, expectedError := getFileShareInfo(test.id)
-		if !strings.EqualFold(resourceGroupName, test.resourceGroupName) {
+		if resourceGroupName != test.resourceGroupName {
 			t.Errorf("getFileShareInfo(%q) returned with: %q, expected: %q", test.id, resourceGroupName, test.resourceGroupName)
 		}
-		if !strings.EqualFold(accountName, test.accountName) {
+		if accountName != test.accountName {
 			t.Errorf("getFileShareInfo(%q) returned with: %q, expected: %q", test.id, accountName, test.accountName)
 		}
-		if !strings.EqualFold(fileShareName, test.fileShareName) {
+		if fileShareName != test.fileShareName {
 			t.Errorf("getFileShareInfo(%q) returned with: %q, expected: %q", test.id, fileShareName, test.fileShareName)
 		}
-		if !strings.EqualFold(diskName, test.diskName) {
+		if diskName != test.diskName {
 			t.Errorf("getFileShareInfo(%q) returned with: %q, expected: %q", test.id, diskName, test.diskName)
 		}
 		if !reflect.DeepEqual(expectedError, test.expectedError) {

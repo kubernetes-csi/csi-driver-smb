@@ -78,6 +78,8 @@ type Driver struct {
 	csicommon.CSIDriver
 	cloud   *azure.Cloud
 	mounter *mount.SafeFormatAndMount
+	// lock per volume attach (only for vhd disk feature)
+	volLockMap *lockMap
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -87,6 +89,7 @@ func NewDriver(nodeID string) *Driver {
 	driver.Name = DriverName
 	driver.Version = driverVersion
 	driver.NodeID = nodeID
+	driver.volLockMap = newLockMap()
 	return &driver
 }
 
@@ -358,9 +361,7 @@ func IsCorruptedDir(dir string) bool {
 	return pathErr != nil && mount.IsCorruptedMnt(pathErr)
 }
 
-func (d *Driver) getAccountInfo(volumeID string, secrets, context map[string]string) (string, string, string, string, string, error) {
-	var rgName, accountName, accountKey, fileShareName, diskName string
-	var err error
+func (d *Driver) getAccountInfo(volumeID string, secrets, context map[string]string) (rgName, accountName, accountKey, fileShareName, diskName string, err error) {
 	if len(secrets) == 0 {
 		rgName, accountName, fileShareName, diskName, err = getFileShareInfo(volumeID)
 		if err == nil {

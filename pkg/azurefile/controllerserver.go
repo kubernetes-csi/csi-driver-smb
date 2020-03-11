@@ -266,7 +266,8 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
 	}
 
-	// todo: add a lock here
+	d.volLockMap.LockEntry(volumeID)
+	defer d.volLockMap.UnlockEntry(volumeID)
 	properties, err := fileURL.GetProperties(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("GetProperties for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
@@ -317,7 +318,9 @@ func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.Control
 		return nil, status.Error(codes.Internal, fmt.Sprintf("getFileURL(%s,%s,%s,%s) returned empty fileURL", accountName, storageEndpointSuffix, fileShareName, diskName))
 	}
 
-	// todo: add a lock here
+	d.volLockMap.LockEntry(volumeID)
+	defer d.volLockMap.UnlockEntry(volumeID)
+
 	if _, err = fileURL.SetMetadata(ctx, azfile.Metadata{metaDataNode: ""}); err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("SetMetadata for volume(%s) on node(%s) returned with error: %v", volumeID, nodeID, err))
 	}
