@@ -1,13 +1,18 @@
 ## Azure File CSI driver fast attach disk feature example
 Attach Azure disks in < 1 second. Attach as many as you want. VHD disk(based on azure file) feature could mount Azure disks as Linux block device directly on VMs without dependency on the host.
 
+### Feature Status
+Status: Alpha
+
  - Motivation:
 
 There are slow disk attach/detach issues on Azure managed disk(sometimes parallel disk attach/detach costs more than one minute), this feature aims to solve such slow disk attach/detach issues. With this feature, VHD disk file is created on Azure File, VHD disk file is mounted over SMB from the agent node, and on Linux agent node that vhd file will be mounted as a loop device. It could offer performance similar to a local direct-attached storage, while attach/detach disk would only costs < 1 second.
 
- - Performance test we have done
+ - Performance test have done
 
 Scheduling 20 pods with one vhd disk each on **one** node **in parallel** could be completed in 2min, while for azure managed disk driver, it's 30min.
+
+
 
  - How to use
  
@@ -35,9 +40,6 @@ spec:
       storage: 100Gi
   storageClassName: file.csi.azure.com
 ```
-
-#### Feature Status
-Status: Alpha
 
 #### Prerequisite
  - [install azurefile csi driver](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/install-azurefile-csi-driver.md)
@@ -97,4 +99,4 @@ provisioner: file.csi.azure.com
 parameters:
   storageAccount: EXISTING_STORAGE_ACCOUNT_NAME
   fsType: ext4  # available values: ext4, ext3, ext2, xfs
----
+```
