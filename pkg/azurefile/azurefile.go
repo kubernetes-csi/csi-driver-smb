@@ -73,6 +73,7 @@ const (
 	metaDataNode   = "node"
 
 	accountNotProvisioned = "StorageAccountIsNotProvisioned"
+	tooManyRequests       = "TooManyRequests"
 )
 
 // Driver implements all interfaces of CSI drivers
