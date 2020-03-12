@@ -88,6 +88,10 @@ In the above example, there is a `/mnt/azurefile` directory mounted as ext4 file
 ```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/disk/statefulset-stress.yaml
 ```
+ - scale pod replicas
+```console
+kubectl scale statefulset statefulset-azurefile --replicas=30
+```
 > note: create multiple vhd disks in parallel in one storage account may cause IO throttling, user could set `storageAccount` to specify different storage accounts for different vhd disks
 
 ```
