@@ -1,8 +1,7 @@
-## Azure File CSI driver fast attach disk feature example
-Attach Azure disks in < 1 second. Attach as many as you want. VHD disk(based on azure file) feature could mount Azure disks as Linux block device directly on VMs without dependency on the host.
+## Azure File CSI driver fast attach(block device) disk feature example
+Attach Azure disks in < 1 second. Attach as many as you want. VHD disk(based on azure file) feature could mount Azure disks as Linux **block device** directly on VMs without dependency on the host.
 
-### Feature Status
-Status: Alpha
+### Feature Status: Alpha
 
  - Motivation:
 
