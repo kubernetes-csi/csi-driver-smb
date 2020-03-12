@@ -17,7 +17,7 @@ metadata:
 spec:
   podManagementPolicy: Parallel  # OrderedReady
   serviceName: statefulset-azurefile
-  replicas: 10
+  replicas: 5
   template:
     metadata:
       labels:

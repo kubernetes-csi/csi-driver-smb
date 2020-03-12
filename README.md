@@ -33,8 +33,8 @@ Please refer to [install azurefile csi driver](https://github.com/kubernetes-sig
 
 ### Examples
  - [Basic usage](./deploy/example/e2e_usage.md)
- - [Snapshot(alpha)](./deploy/example/snapshot)
- - [Fast attach disk(alpha)](./deploy/example/disk)
+ - [Snapshot](./deploy/example/snapshot)
+ - [Fast attach disk](./deploy/example/disk)
 
 ## Kubernetes Development
 Please refer to [development guide](./docs/csi-dev.md)

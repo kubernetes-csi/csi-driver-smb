@@ -82,23 +82,19 @@ Filesystem      Size  Used Avail Use% Mounted on
 ```
 In the above example, there is a `/mnt/azurefile` directory mounted as ext4 filesystem.
 
-#### Example#2. create 10 pods with vhd disk mount in parallel
+#### Example#2. create 5 pods with vhd disk mount in parallel
 ```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/disk/statefulset-stress.yaml
 ```
+> note: create multiple vhd disks in parallel in one storage account may cause IO throttling, user could set `storageAccount` to specify different storage accounts for different vhd disks
 
- - output
-```console
-# kubectl get po
-NAME                      READY   STATUS    RESTARTS   AGE
-statefulset-azurefile-0   1/1     Running   0          2m14s
-statefulset-azurefile-1   1/1     Running   0          2m14s
-statefulset-azurefile-2   1/1     Running   0          2m14s
-statefulset-azurefile-3   1/1     Running   0          2m14s
-statefulset-azurefile-4   1/1     Running   0          2m14s
-statefulset-azurefile-5   1/1     Running   0          2m14s
-statefulset-azurefile-6   1/1     Running   0          2m14s
-statefulset-azurefile-7   1/1     Running   0          2m14s
-statefulset-azurefile-8   1/1     Running   0          2m14s
-statefulset-azurefile-9   1/1     Running   0          2m14s
 ```
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: file.csi.azure.com
+provisioner: file.csi.azure.com
+parameters:
+  storageAccount: EXISTING_STORAGE_ACCOUNT_NAME
+  fsType: ext4  # available values: ext4, ext3, ext2, xfs
+---

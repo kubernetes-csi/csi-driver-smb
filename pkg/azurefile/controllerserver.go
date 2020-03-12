@@ -46,11 +46,10 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		return nil, err
 	}
 
-	volumeCapabilities := req.GetVolumeCapabilities()
-	name := req.GetName()
-	if len(name) == 0 {
+	if len(req.GetName()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "CreateVolume Name must be provided")
 	}
+	volumeCapabilities := req.GetVolumeCapabilities()
 	if len(volumeCapabilities) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "CreateVolume Volume capabilities must be provided")
 	}
@@ -91,7 +90,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	fileShareSize := int(requestGiB)
-	// when use azure file premium, account kind should be specified as FileStorage
+	// account kind should be FileStorage for Premium File
 	accountKind := string(storage.StorageV2)
 	if strings.HasPrefix(strings.ToLower(sku), "premium") {
 		accountKind = string(storage.FileStorage)
@@ -100,18 +99,19 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		}
 	}
 
-	if fileShareName == "" {
-		fileShareName = getValidFileShareName(name)
+	validFileShareName := fileShareName
+	if validFileShareName == "" {
+		validFileShareName = getValidFileShareName(req.GetName())
 	}
 
-	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", fileShareName, account, sku, resourceGroup, location, fileShareSize)
+	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", validFileShareName, account, sku, resourceGroup, location, fileShareSize)
 	lockKey := account + sku + accountKind + resourceGroup + location
 	d.volLockMap.LockEntry(lockKey)
 	defer d.volLockMap.UnlockEntry(lockKey)
 	var retAccount, retAccountKey string
 	err := wait.Poll(1*time.Second, 3*time.Minute, func() (bool, error) {
 		var retErr error
-		retAccount, retAccountKey, retErr = d.cloud.CreateFileShare(fileShareName, account, sku, accountKind, resourceGroup, location, fileShareSize)
+		retAccount, retAccountKey, retErr = d.cloud.CreateFileShare(validFileShareName, account, sku, accountKind, resourceGroup, location, fileShareSize)
 		if retErr != nil {
 			if strings.Contains(retErr.Error(), accountNotProvisioned) {
 				klog.Warningf("CreateFileShare failed with %s error, sleep 1s to retry", accountNotProvisioned)
@@ -122,32 +122,38 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		return true, retErr
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", fileShareName, account, sku, resourceGroup, location, fileShareSize, err)
+		return nil, fmt.Errorf("failed to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d), error: %v", validFileShareName, account, sku, resourceGroup, location, fileShareSize, err)
 	}
 	if retAccount == "" || retAccountKey == "" {
-		return nil, fmt.Errorf("create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d) timeout(3m)", fileShareName, account, sku, resourceGroup, location, fileShareSize)
+		return nil, fmt.Errorf("create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d) timeout(3m)", validFileShareName, account, sku, resourceGroup, location, fileShareSize)
 	}
-	klog.V(2).Infof("create file share %s on storage account %s successfully", fileShareName, retAccount)
+	klog.V(2).Infof("create file share %s on storage account %s successfully", validFileShareName, retAccount)
 
-	if err := d.checkFileShareCapacity(retAccount, retAccountKey, fileShareName, fileShareSize); err != nil {
+	if err := d.checkFileShareCapacity(retAccount, retAccountKey, validFileShareName, fileShareSize); err != nil {
 		return nil, err
 	}
 
 	isDiskMount := (fsType != "" && fsType != cifs)
 	if isDiskMount && diskName == "" {
-		diskName = uuid.NewUUID().String() + ".vhd"
+		if fileShareName == "" {
+			// use pvc name as vhd disk name if file share not specified
+			diskName = validFileShareName + ".vhd"
+		} else {
+			// use uuid as vhd disk name if file share specified
+			diskName = uuid.NewUUID().String() + ".vhd"
+		}
 		diskSizeBytes := volumehelper.GiBToBytes(requestGiB)
 		klog.V(2).Infof("begin to create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s)",
-			diskName, diskSizeBytes, fileShareName, account, sku, resourceGroup, location)
-		if err := createDisk(ctx, retAccount, retAccountKey, d.cloud.Environment.StorageEndpointSuffix, fileShareName, diskName, diskSizeBytes); err != nil {
+			diskName, diskSizeBytes, validFileShareName, account, sku, resourceGroup, location)
+		if err := createDisk(ctx, retAccount, retAccountKey, d.cloud.Environment.StorageEndpointSuffix, validFileShareName, diskName, diskSizeBytes); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to create VHD disk: %v", err))
 		}
 		klog.V(2).Infof("create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s) successfully",
-			diskName, diskSizeBytes, fileShareName, account, sku, resourceGroup, location)
+			diskName, diskSizeBytes, validFileShareName, account, sku, resourceGroup, location)
 		parameters[diskNameField] = diskName
 	}
 
-	volumeID := fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, fileShareName, diskName)
+	volumeID := fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, validFileShareName, diskName)
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
 			VolumeId:      volumeID,
