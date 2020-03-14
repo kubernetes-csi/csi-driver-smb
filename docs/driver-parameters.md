@@ -1,7 +1,7 @@
 ## `file.csi.azure.com` driver parameters
  > storage class `file.csi.azure.com` parameters are compatible with built-in [azurefile](https://kubernetes.io/docs/concepts/storage/volumes/#azurefile) plugin
 
- - Dynamic Provisioning
+ - Dynamic Provision
   > get a quick example [here](../deploy/example/storageclass-azurefile-csi.yaml)
 
 Name | Meaning | Example | Mandatory | Default value 
@@ -11,8 +11,11 @@ storageAccount | specify the storage account name in which azure file share will
 location | specify the location in which azure file share will be created | `eastus`, `westus`, etc. | No | if empty, driver will use the same location name as current k8s cluster
 resourceGroup | specify the resource group in which azure file share will be created | existing resource group name | No | if empty, driver will use the same resource group name as current k8s cluster
 shareName | specify the azure file share name | existing azure file name | No | if empty, driver will generate an azure file share name
+--- | following parameters are only for [VHD disk feature](../deploy/example/disk) | --- | --- |
+fsType | File System Type | `ext4`, `ext3`, `ext2`, `xfs` | Yes | `ext4`
+diskName | existing VHD disk file name | `pvc-062196a6-6436-11ea-ab51-9efb888c0afb.vhd` | No |
 
- - Static Provisioning(use existing azure file)
+ - Static Provision(use existing azure file)
   > get a quick example [here](../deploy/example/pv-azurefile-csi.yaml)
 
 Name | Meaning | Available Value | Mandatory | Default value
