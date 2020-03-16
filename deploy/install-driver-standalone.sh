@@ -16,10 +16,19 @@
 
 set -euo pipefail
 
-echo 'Installing Azure File CSI driver...'
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/rbac-csi-azurefile-controller.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-controller.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-node.yaml
-echo 'Azure File CSI driver installed'
+ver="master"
+if [[ "$#" -gt 0 ]]; then
+  ver="$1"
+fi
+
+repo="https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy"
+if [ $ver != "master" ]; then
+	repo="$repo/$ver"
+fi
+echo "Installing Azure File CSI driver, version: $ver ..."
+kubectl apply -f $repo/crd-csi-driver-registry.yaml
+kubectl apply -f $repo/crd-csi-node-info.yaml
+kubectl apply -f $repo/rbac-csi-azurefile-controller.yaml
+kubectl apply -f $repo/csi-azurefile-controller.yaml
+kubectl apply -f $repo/csi-azurefile-node.yaml
+echo 'Azure File CSI driver installed successfully.'
