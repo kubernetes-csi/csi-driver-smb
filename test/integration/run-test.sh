@@ -38,9 +38,14 @@ if [[ "$#" -gt 2 ]]; then
   target_path="$3"
 fi
 
-cloud='AzurePublicCloud'
+params='skuname=Standard_LRS'
 if [[ "$#" -gt 3 ]]; then
-  cloud="$4"
+  params="$4"
+fi
+
+cloud='AzurePublicCloud'
+if [[ "$#" -gt 4 ]]; then
+  cloud="$5"
 fi
 
 echo "Begin to run integration test on $cloud..."
@@ -57,7 +62,7 @@ fi
 
 # Begin to run CSI functions one by one
 echo 'Create volume test:'
-readonly value=$("$CSC_BIN" controller new --endpoint "$endpoint" --cap 1,block "$volname" --req-bytes 2147483648 --params skuname=Standard_LRS)
+readonly value=$("$CSC_BIN" controller new --endpoint "$endpoint" --cap 1,block "$volname" --req-bytes 2147483648 --params "$params")
 sleep 15
 
 readonly volumeid=$(echo "$value" | awk '{print $1}' | sed 's/"//g')
