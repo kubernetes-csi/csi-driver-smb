@@ -51,7 +51,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	})
 
 	testDriver = driver.InitAzureFileDriver()
-	ginkgo.It(fmt.Sprintf("should create a volume on demand [kubernetes.io/azure-file] [file.csi.azure.com]"), func() {
+	ginkgo.It("should create a volume on demand [kubernetes.io/azure-file] [file.csi.azure.com]", func() {
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data",
@@ -231,7 +231,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("should create a volume on demand and resize it [file.csi.azure.com]"), func() {
+	ginkgo.It("should create a volume on demand and resize it [file.csi.azure.com]", func() {
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data",
@@ -254,7 +254,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("should create a vhd disk volume on demand [kubernetes.io/azure-file] [file.csi.azure.com][disk]"), func() {
+	ginkgo.It("should create a vhd disk volume on demand [kubernetes.io/azure-file] [file.csi.azure.com][disk]", func() {
 		if testDriver.IsInTree() {
 			ginkgo.Skip("Test running with in tree configuration. Skip the ")
 		}
