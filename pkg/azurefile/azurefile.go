@@ -74,6 +74,7 @@ const (
 
 	accountNotProvisioned = "StorageAccountIsNotProvisioned"
 	tooManyRequests       = "TooManyRequests"
+	shareNotFound         = "The specified share does not exist"
 )
 
 // Driver implements all interfaces of CSI drivers

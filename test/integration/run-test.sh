@@ -70,7 +70,7 @@ echo "Got volume id: $volumeid"
 
 "$CSC_BIN" controller validate-volume-capabilities --endpoint "$endpoint" --cap 1,block "$volumeid"
 
-if [[ "$cloud" != 'AzureChinaCloud' ]] && [[ "$TRAVIS" == 'true' ]]; then
+if [[ "$cloud" != 'AzureChinaCloud' ]]; then
   # azure file mount/unmount on travis VM does not work against AzureChinaCloud
   echo "stage volume test:"
   "$CSC_BIN" node stage --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" "$volumeid"

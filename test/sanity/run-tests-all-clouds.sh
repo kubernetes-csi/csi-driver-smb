@@ -25,10 +25,5 @@ function install_csi_sanity_bin {
 }
 
 install_csi_sanity_bin
-if [[ "$TRAVIS" == 'true' ]]; then
-  sudo apt update && sudo apt install cifs-utils procps -y
-  sudo test/sanity/run-test.sh "$nodeid"
-else
-  apt update && apt install cifs-utils procps -y
-  test/sanity/run-test.sh "$nodeid"
-fi
+apt update && apt install cifs-utils procps -y
+test/sanity/run-test.sh "$nodeid"
