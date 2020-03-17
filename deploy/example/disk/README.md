@@ -5,7 +5,7 @@ Attach Azure disks in < 1 second. Attach as many as you want. VHD disk(based on 
 
  - Motivation:
 
-There are slow disk attach/detach issues on Azure managed disk(sometimes parallel disk attach/detach costs more than one minute), this feature aims to solve such slow disk attach/detach issues. With this feature, VHD disk file is created on Azure File, VHD disk file is mounted over SMB from the agent node, and on Linux agent node that vhd file will be mounted as a loop device. It could offer performance similar to a local direct-attached storage, while attach/detach disk would only costs < 1 second.
+There are slow disk attach/detach issues on Azure managed disk(sometimes parallel disk attach/detach costs more than one minute), this feature aims to solve such slow disk attach/detach issues. With this feature, VHD disk file is created on Azure File, VHD disk file is mounted over SMB from agent node, and then vhd file is mounted as a loop block device. It could offer performance similar to a local direct-attached storage, while attach/detach disk would only costs < 1 second.
 
  - Performance test have done
 
