@@ -25,8 +25,12 @@ fi
 
 if [[ "$TRAVIS" == 'true' ]]; then
   sudo apt update && sudo apt install cifs-utils procps -y
-  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' "/tmp/stagingtargetpath" "/tmp/targetpath" "$cloud"
+  sudo test/integration/run-test.sh 'tcp://127.0.0.1:10000' "/tmp/stagingtargetpath" "/tmp/targetpath" "skuname=Standard_LRS" "$cloud"
 else
   apt update && apt install cifs-utils procps -y
-  test/integration/run-test.sh 'tcp://127.0.0.1:10000' "/tmp/stagingtargetpath" "/tmp/targetpath" "$cloud"
+  # test azure file
+  test/integration/run-test.sh 'tcp://127.0.0.1:10000' "/tmp/stagingtargetpath" "/tmp/targetpath" "skuname=Standard_LRS" "$cloud"
+
+  # test vhd disk feature
+  test/integration/run-test.sh 'tcp://127.0.0.1:10000' "/tmp/stagingtargetpath" "/tmp/targetpath" "skuName=Premium_LRS,fsType=xfs" "$cloud"
 fi

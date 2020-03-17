@@ -16,10 +16,20 @@
 
 set -euo pipefail
 
-echo 'Uninstalling Azure File CSI driver...'
-kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-controller.yaml --ignore-not-found
-kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-node.yaml --ignore-not-found
-kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml --ignore-not-found
-kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml --ignore-not-found
-kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/rbac-csi-azurefile-controller.yaml --ignore-not-found
-echo 'Azure File CSI driver uninstalled'
+ver="master"
+if [[ "$#" -gt 0 ]]; then
+  ver="$1"
+fi
+
+repo="https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy"
+if [ $ver != "master" ]; then
+	repo="$repo/$ver"
+fi
+
+echo "Uninstalling Azure File CSI driver, version: $ver ..."
+kubectl delete -f  $repo/csi-azurefile-controller.yaml --ignore-not-found
+kubectl delete -f  $repo/csi-azurefile-node.yaml --ignore-not-found
+kubectl delete -f  $repo/crd-csi-driver-registry.yaml --ignore-not-found
+kubectl delete -f  $repo/crd-csi-node-info.yaml --ignore-not-found
+kubectl delete -f  $repo/rbac-csi-azurefile-controller.yaml --ignore-not-found
+echo 'Uninstalled Azure File CSI driver successfully.'
