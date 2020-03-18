@@ -101,7 +101,12 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 
 	validFileShareName := fileShareName
 	if validFileShareName == "" {
-		validFileShareName = getValidFileShareName(req.GetName())
+		name := req.GetName()
+		if fsType != "" && fsType != cifs {
+			// use "pvcd" prefix for vhd disk file share
+			name = strings.Replace(name, "pvc", "pvcd", 1)
+		}
+		validFileShareName = getValidFileShareName(name)
 	}
 
 	klog.V(2).Infof("begin to create file share(%s) on account(%s) type(%s) rg(%s) location(%s) size(%d)", validFileShareName, account, sku, resourceGroup, location, fileShareSize)
@@ -206,15 +211,17 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 
 // ValidateVolumeCapabilities return the capabilities of the volume
 func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.ValidateVolumeCapabilitiesRequest) (*csi.ValidateVolumeCapabilitiesResponse, error) {
-	if len(req.GetVolumeId()) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	klog.V(4).Infof("ValidateVolumeCapabilities: called with args %+v", *req)
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID not provided")
 	}
-	if req.GetVolumeCapabilities() == nil {
-		return nil, status.Error(codes.InvalidArgument, "Volume capabilities missing in request")
+	volCaps := req.GetVolumeCapabilities()
+	if len(volCaps) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume capabilities not provided")
 	}
 
-	volumeID := req.VolumeId
-	resourceGroupName, accountName, _, fileShareName, _, err := d.getAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
+	resourceGroupName, accountName, _, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "error getting volume(%s) info: %v", volumeID, err)
 	}
@@ -227,8 +234,16 @@ func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.Valida
 		return nil, status.Errorf(codes.NotFound, "the requested volume(%s) does not exist.", volumeID)
 	}
 
-	// azure file supports all AccessModes, no need to check capabilities here
-	return &csi.ValidateVolumeCapabilitiesResponse{Message: ""}, nil
+	confirmed := &csi.ValidateVolumeCapabilitiesResponse_Confirmed{VolumeCapabilities: volCaps}
+	if diskName == "" {
+		return &csi.ValidateVolumeCapabilitiesResponse{Confirmed: confirmed}, nil
+	}
+	for _, c := range volCaps {
+		if c.GetAccessMode().Mode == csi.VolumeCapability_AccessMode_MULTI_NODE_SINGLE_WRITER {
+			return &csi.ValidateVolumeCapabilitiesResponse{}, nil
+		}
+	}
+	return &csi.ValidateVolumeCapabilitiesResponse{Confirmed: confirmed}, nil
 }
 
 // ControllerGetCapabilities returns the capabilities of the Controller plugin
@@ -286,10 +301,16 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 	}
 
 	accessMode := volCap.GetAccessMode()
-	if accessMode == nil ||
-		(accessMode.Mode != csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER &&
-			accessMode.Mode != csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY) {
+	if accessMode == nil || accessMode.Mode == csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("unsupported AccessMode(%v) for volume(%s)", volCap.GetAccessMode(), volumeID))
+	}
+
+	if accessMode.Mode == csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY ||
+		accessMode.Mode == csi.VolumeCapability_AccessMode_MULTI_NODE_READER_ONLY {
+		// don't lock vhd disk here since it's readonly, while it's user's responsibility to make sure
+		// volume is used as ReadOnly, otherwise there would be data corruption for MULTI_NODE_MULTI_WRITER
+		klog.V(2).Infof("skip ControllerPublishVolume(%s) since volume is readonly mode", volumeID)
+		return &csi.ControllerPublishVolumeResponse{}, nil
 	}
 
 	storageEndpointSuffix := d.cloud.Environment.StorageEndpointSuffix
