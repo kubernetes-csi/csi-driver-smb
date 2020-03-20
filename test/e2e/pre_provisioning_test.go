@@ -75,9 +75,8 @@ var _ = ginkgo.Describe("Pre-Provisioned", func() {
 
 	ginkgo.It("should use a pre-provisioned volume and mount it as readOnly in a pod [file.csi.azure.com]", func() {
 		// Az tests are not yet working for in-tree
-		if testDriver.IsInTree() {
-			ginkgo.Skip("Test running with in tree configuration")
-		}
+		skipIfUsingInTreeVolumePlugin()
+
 		req := makeCreateVolumeReq("pre-provisioned-readOnly")
 		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
 		if err != nil {
@@ -113,9 +112,8 @@ var _ = ginkgo.Describe("Pre-Provisioned", func() {
 
 	ginkgo.It(fmt.Sprintf("should use a pre-provisioned volume and retain PV with reclaimPolicy %q [file.csi.azure.com]", v1.PersistentVolumeReclaimRetain), func() {
 		// Az tests are not yet working for in tree driver
-		if testDriver.IsInTree() {
-			ginkgo.Skip("Test running with in tree configuration")
-		}
+		skipIfUsingInTreeVolumePlugin()
+
 		req := makeCreateVolumeReq("pre-provisioned-retain-reclaimPolicy")
 		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
 		if err != nil {

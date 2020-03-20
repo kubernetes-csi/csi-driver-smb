@@ -363,11 +363,11 @@ type TestDeployment struct {
 	podName    string
 }
 
-func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, pvc *v1.PersistentVolumeClaim, volumeName, mountPath string, readOnly bool) *TestDeployment {
+func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, pvc *v1.PersistentVolumeClaim, volumeName, mountPath string, readOnly, isWindows bool) *TestDeployment {
 	generateName := "ebs-volume-tester-"
 	selectorValue := fmt.Sprintf("%s%d", generateName, rand.Int())
 	replicas := int32(1)
-	return &TestDeployment{
+	testDeployment := &TestDeployment{
 		client:    c,
 		namespace: ns,
 		deployment: &apps.Deployment{
@@ -415,6 +415,17 @@ func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, 
 			},
 		},
 	}
+
+	if isWindows {
+		testDeployment.deployment.Spec.Template.Spec.NodeSelector = map[string]string{
+			"beta.kubernetes.io/os": "windows",
+		}
+		testDeployment.deployment.Spec.Template.Spec.Containers[0].Image = "mcr.microsoft.com/dotnet/framework/samples:aspnetapp"
+		testDeployment.deployment.Spec.Template.Spec.Containers[0].Command = []string{"powershell.exe"}
+		testDeployment.deployment.Spec.Template.Spec.Containers[0].Args = []string{command}
+	}
+
+	return testDeployment
 }
 
 func (t *TestDeployment) Create() {
@@ -484,8 +495,8 @@ type TestPod struct {
 	namespace *v1.Namespace
 }
 
-func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string) *TestPod {
-	return &TestPod{
+func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string, isWindows bool) *TestPod {
+	testPod := &TestPod{
 		client:    c,
 		namespace: ns,
 		pod: &v1.Pod{
@@ -507,6 +518,16 @@ func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string) *TestPo
 			},
 		},
 	}
+	if isWindows {
+		testPod.pod.Spec.NodeSelector = map[string]string{
+			"beta.kubernetes.io/os": "windows",
+		}
+		testPod.pod.Spec.Containers[0].Image = "mcr.microsoft.com/dotnet/framework/samples:aspnetapp"
+		testPod.pod.Spec.Containers[0].Command = []string{"powershell.exe"}
+		testPod.pod.Spec.Containers[0].Args = []string{command}
+	}
+
+	return testPod
 }
 
 func (t *TestPod) Create() {

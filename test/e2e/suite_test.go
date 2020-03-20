@@ -40,12 +40,18 @@ import (
 )
 
 const (
-	kubeconfigEnvVar = "KUBECONFIG"
-	reportDirEnv     = "ARTIFACTS"
-	defaultReportDir = "/workspace/_artifacts"
+	kubeconfigEnvVar   = "KUBECONFIG"
+	reportDirEnv       = "ARTIFACTS"
+	testWindowsEnvVar  = "TEST_WINDOWS"
+	defaultReportDir   = "/workspace/_artifacts"
+	inTreeStorageClass = "kubernetes.io/azure-file"
 )
 
-var azurefileDriver *azurefile.Driver
+var (
+	azurefileDriver           *azurefile.Driver
+	isUsingInTreeVolumePlugin = os.Getenv(driver.AzureDriverNameVar) == inTreeStorageClass
+	isWindowsCluster          = os.Getenv(testWindowsEnvVar) != ""
+)
 
 type testCmd struct {
 	command  string
@@ -71,19 +77,6 @@ var _ = ginkgo.BeforeSuite(func() {
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-		// Need to login to ACR using SP credential if we are running in Prow so we can push test images.
-		// If running locally, user should run 'docker login' before running E2E tests
-		if testutil.IsRunningInProw() {
-			registry := os.Getenv("REGISTRY")
-			gomega.Expect(registry).NotTo(gomega.Equal(""))
-
-			log.Println("Attempting docker login with Azure service principal")
-			cmd := exec.Command("docker", "login", fmt.Sprintf("--username=%s", creds.AADClientID), fmt.Sprintf("--password=%s", creds.AADClientSecret), registry)
-			err := cmd.Run()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			log.Println("docker login is successful")
-		}
 
 		// Install Azure File CSI Driver on cluster from project root
 		e2eBootstrap := testCmd{
@@ -155,5 +148,17 @@ func execTestCmd(cmds []testCmd) {
 		err = cmdSh.Run()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		log.Println(cmd.endLog)
+	}
+}
+
+func skipIfTestingInWindowsCluster() {
+	if isWindowsCluster {
+		ginkgo.Skip("test case not supported by Windows clusters")
+	}
+}
+
+func skipIfUsingInTreeVolumePlugin() {
+	if isUsingInTreeVolumePlugin {
+		ginkgo.Skip("test case is only available for CSI drivers")
 	}
 }
