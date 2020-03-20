@@ -189,10 +189,14 @@ func (d *Driver) getFileSvcClient(accountName, accountKey string) (*azs.FileServ
 // output: rg, f5713de20cde511e8ba4900, pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41, diskname.vhd
 func getFileShareInfo(id string) (string, string, string, string, error) {
 	segments := strings.Split(id, separator)
-	if len(segments) < 4 {
-		return "", "", "", "", fmt.Errorf("error parsing volume id: %q, should at least contain three #", id)
+	if len(segments) < 3 {
+		return "", "", "", "", fmt.Errorf("error parsing volume id: %q, should at least contain two #", id)
 	}
-	return segments[0], segments[1], segments[2], segments[3], nil
+	var diskName string
+	if len(segments) > 3 {
+		diskName = segments[3]
+	}
+	return segments[0], segments[1], segments[2], diskName, nil
 }
 
 // check whether mountOptions contains file_mode, dir_mode, vers, if not, append default mode

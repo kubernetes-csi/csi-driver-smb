@@ -89,12 +89,20 @@ func TestGetFileShareInfo(t *testing.T) {
 			expectedError:     nil,
 		},
 		{
+			id:                "rg#f5713de20cde511e8ba4900#pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41",
+			resourceGroupName: "rg",
+			accountName:       "f5713de20cde511e8ba4900",
+			fileShareName:     "pvc-file-dynamic-17e43f84-f474-11e8-acd0-000d3a00df41",
+			diskName:          "",
+			expectedError:     nil,
+		},
+		{
 			id:                "rg#f5713de20cde511e8ba4900",
 			resourceGroupName: "",
 			accountName:       "",
 			fileShareName:     "",
 			diskName:          "",
-			expectedError:     fmt.Errorf("error parsing volume id: \"rg#f5713de20cde511e8ba4900\", should at least contain three #"),
+			expectedError:     fmt.Errorf("error parsing volume id: \"rg#f5713de20cde511e8ba4900\", should at least contain two #"),
 		},
 		{
 			id:                "rg",
@@ -102,7 +110,7 @@ func TestGetFileShareInfo(t *testing.T) {
 			accountName:       "",
 			fileShareName:     "",
 			diskName:          "",
-			expectedError:     fmt.Errorf("error parsing volume id: \"rg\", should at least contain three #"),
+			expectedError:     fmt.Errorf("error parsing volume id: \"rg\", should at least contain two #"),
 		},
 		{
 			id:                "",
@@ -110,7 +118,7 @@ func TestGetFileShareInfo(t *testing.T) {
 			accountName:       "",
 			fileShareName:     "",
 			diskName:          "",
-			expectedError:     fmt.Errorf("error parsing volume id: \"\", should at least contain three #"),
+			expectedError:     fmt.Errorf("error parsing volume id: \"\", should at least contain two #"),
 		},
 	}
 
