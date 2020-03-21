@@ -42,7 +42,7 @@ update:
 	hack/verify-update.sh
 
 .PHONY: verify
-verify: 
+verify:
 	hack/verify-all.sh
 
 .PHONY: unit-test
@@ -59,7 +59,7 @@ integration-test: azurefile
 
 .PHONY: e2e-test
 e2e-test:
-	go test -v -timeout=30m ./test/e2e ${GINKGO_FLAGS}
+	go test -v -timeout=0 ./test/e2e ${GINKGO_FLAGS}
 
 .PHONY: e2e-bootstrap
 e2e-bootstrap: install-helm
