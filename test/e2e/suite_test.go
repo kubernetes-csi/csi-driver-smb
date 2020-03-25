@@ -70,7 +70,7 @@ var _ = ginkgo.BeforeSuite(func() {
 	framework.HandleFlags()
 	framework.AfterReadingAllFlags(&framework.TestContext)
 
-	if os.Getenv(driver.AzureDriverNameVar) == "" && testutil.IsRunningInProw() {
+	if !isUsingInTreeVolumePlugin && testutil.IsRunningInProw() {
 		creds, err := credentials.CreateAzureCredentialFile(false)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
@@ -97,7 +97,7 @@ var _ = ginkgo.BeforeSuite(func() {
 })
 
 var _ = ginkgo.AfterSuite(func() {
-	if os.Getenv(driver.AzureDriverNameVar) == "" && testutil.IsRunningInProw() {
+	if !isUsingInTreeVolumePlugin && testutil.IsRunningInProw() {
 		azurefileLog := testCmd{
 			command:  "sh",
 			args:     []string{"test/utils/azurefile_log.sh"},
@@ -161,4 +161,23 @@ func skipIfUsingInTreeVolumePlugin() {
 	if isUsingInTreeVolumePlugin {
 		ginkgo.Skip("test case is only available for CSI drivers")
 	}
+}
+
+func convertToPowershellCommandIfNecessary(command string) string {
+	if !isWindowsCluster {
+		return command
+	}
+
+	switch command {
+	case "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data":
+		return "echo 'hello world' | Out-File -FilePath C:\\mnt\\test-1\\data.txt; Get-Content C:\\mnt\\test-1\\data.txt | findstr 'hello world'"
+	case "touch /mnt/test-1/data":
+		return "echo $null >> C:\\mnt\\test-1\\data"
+	case "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done":
+		return "while (1) { Add-Content C:\\mnt\\test-1\\data.txt $(Get-Date -Format u); sleep 1 }"
+	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 1; done":
+		return "Add-Content C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
+	}
+
+	return command
 }

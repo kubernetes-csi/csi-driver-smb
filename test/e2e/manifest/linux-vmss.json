@@ -26,10 +26,6 @@
                     {
                         "name": "azurefile-csi-driver",
                         "enabled": false
-                    },
-                    {
-                        "name": "tiller",
-                        "enabled": true
                     }
                 ]
             }
