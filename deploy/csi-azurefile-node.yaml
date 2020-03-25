@@ -17,6 +17,8 @@ spec:
       nodeSelector:
         beta.kubernetes.io/os: linux
       priorityClassName: system-node-critical
+      tolerations:
+        - operator: "Exists"
       containers:
         - name: liveness-probe
           imagePullPolicy: Always
