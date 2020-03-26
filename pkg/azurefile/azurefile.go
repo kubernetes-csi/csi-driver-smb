@@ -38,6 +38,7 @@ import (
 	"k8s.io/kubernetes/pkg/util/mount"
 	"k8s.io/kubernetes/pkg/volume/util"
 	"k8s.io/legacy-cloud-providers/azure"
+	"sigs.k8s.io/azurefile-csi-driver/pkg/mounter"
 )
 
 const (
@@ -111,9 +112,9 @@ func (d *Driver) Run(endpoint string) {
 	}
 	d.cloud = cloud
 
-	d.mounter = &mount.SafeFormatAndMount{
-		Interface: mount.New(""),
-		Exec:      mount.NewOsExec(),
+	d.mounter, err = mounter.NewSafeMounter()
+	if err != nil {
+		klog.Fatalf("Failed to get safe mounter. Error: %v", err)
 	}
 
 	// Initialize default library driver

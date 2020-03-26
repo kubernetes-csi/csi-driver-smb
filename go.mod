@@ -23,6 +23,7 @@ require (
 	github.com/googleapis/gnostic v0.2.0 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
+	github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200325215425-9bcfda444fee
 	github.com/kubernetes-csi/external-snapshotter v1.0.1
 	github.com/onsi/ginkgo v1.10.1
 	github.com/onsi/gomega v1.7.0
@@ -38,7 +39,7 @@ require (
 	go.etcd.io/bbolt v0.0.0-00010101000000-000000000000 // indirect
 	golang.org/x/net v0.0.0-20191004110552-13f9640d40b9
 	golang.org/x/time v0.0.0-20181108054448-85acf8d2951c // indirect
-	google.golang.org/grpc v1.23.1
+	google.golang.org/grpc v1.27.0
 	gopkg.in/square/go-jose.v2 v2.3.0 // indirect
 	k8s.io/api v0.0.0
 	k8s.io/apimachinery v0.0.0
@@ -72,7 +73,7 @@ replace (
 	github.com/GoogleCloudPlatform/k8s-cloud-provider => github.com/GoogleCloudPlatform/k8s-cloud-provider v0.0.0-20181220005116-f8e995905100
 	github.com/JeffAshton/win_pdh => github.com/JeffAshton/win_pdh v0.0.0-20161109143554-76bb4ee9f0ab
 	github.com/MakeNowJust/heredoc => github.com/MakeNowJust/heredoc v0.0.0-20170808103936-bb23615498cd
-	github.com/Microsoft/go-winio => github.com/Microsoft/go-winio v0.4.11
+	github.com/Microsoft/go-winio => github.com/Microsoft/go-winio v0.4.14
 	github.com/Microsoft/hcsshim => github.com/Microsoft/hcsshim v0.8.6
 	github.com/NYTimes/gziphandler => github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46
 	github.com/PuerkitoBio/purell => github.com/PuerkitoBio/purell v1.1.1
@@ -126,6 +127,8 @@ replace (
 	github.com/elazarl/goproxy => github.com/elazarl/goproxy v0.0.0-20190410145444-c548f45dcf1d
 	github.com/elazarl/goproxy/ext => github.com/elazarl/goproxy/ext v0.0.0-20190410145444-c548f45dcf1d
 	github.com/emicklei/go-restful => github.com/emicklei/go-restful v2.9.3+incompatible
+	github.com/envoyproxy/go-control-plane => github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473
+	github.com/envoyproxy/protoc-gen-validate => github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/euank/go-kmsg-parser => github.com/euank/go-kmsg-parser v2.0.0+incompatible
 	github.com/evanphx/json-patch => github.com/evanphx/json-patch v3.0.0+incompatible
 	github.com/exponent-io/jsonpath => github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d
@@ -198,6 +201,7 @@ replace (
 	github.com/kr/pretty => github.com/kr/pretty v0.1.0
 	github.com/kr/pty => github.com/kr/pty v1.1.5
 	github.com/kr/text => github.com/kr/text v0.1.0
+	github.com/kubernetes-csi/csi-proxy/client => github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200325215425-9bcfda444fee
 	github.com/kubernetes-csi/csi-test => github.com/kubernetes-csi/csi-test v2.2.0+incompatible
 	github.com/kubernetes-csi/external-snapshotter => github.com/kubernetes-csi/external-snapshotter v1.0.1
 	github.com/libopenstorage/openstorage => github.com/libopenstorage/openstorage v0.0.0-20170906232338-093a0c388875
@@ -301,7 +305,7 @@ replace (
 	google.golang.org/api => google.golang.org/api v0.1.0
 	google.golang.org/appengine => google.golang.org/appengine v1.4.0
 	google.golang.org/genproto => google.golang.org/genproto v0.0.0-20190307195333-5fe7a883aa19
-	google.golang.org/grpc => google.golang.org/grpc v1.19.0
+	google.golang.org/grpc => google.golang.org/grpc v1.27.0
 	gopkg.in/alecthomas/kingpin.v2 => gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/check.v1 => gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405
 	gopkg.in/fsnotify.v1 => gopkg.in/fsnotify.v1 v1.4.7

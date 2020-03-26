@@ -29,7 +29,6 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/klog"
-	"k8s.io/kubernetes/pkg/util/mount"
 	"k8s.io/kubernetes/pkg/volume/util"
 
 	"google.golang.org/grpc/codes"
@@ -75,6 +74,10 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		return &csi.NodePublishVolumeResponse{}, nil
 	}
 
+	if err = preparePublishPath(target, d.mounter); err != nil {
+		return nil, fmt.Errorf("prepare publish failed for %s with error: %v", target, err)
+	}
+
 	klog.V(2).Infof("NodePublishVolume: mounting %s at %s with mountOptions: %v", source, target, mountOptions)
 	if err := d.mounter.Mount(source, target, "", mountOptions); err != nil {
 		if removeErr := os.Remove(target); removeErr != nil {
@@ -100,7 +103,7 @@ func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublish
 	volumeID := req.GetVolumeId()
 
 	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s on %s", volumeID, targetPath)
-	err := mount.CleanupMountPoint(targetPath, d.mounter, false)
+	err := CleanupMountPoint(d.mounter, targetPath, false)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount target %q: %v", targetPath, err)
 	}
@@ -180,9 +183,12 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	}
 
 	if !isDirMounted {
+		if err = prepareStagePath(cifsMountPath, d.mounter); err != nil {
+			return nil, fmt.Errorf("prepare stage path failed for %s with error: %v", cifsMountPath, err)
+		}
 		mountComplete := false
 		err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
-			err := d.mounter.Mount(source, cifsMountPath, cifs, mountOptions)
+			err := SMBMount(d.mounter, source, cifsMountPath, cifs, mountOptions)
 			mountComplete = true
 			return true, err
 		})
@@ -225,13 +231,13 @@ func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 	}
 
 	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint %s", stagingTargetPath)
-	if err := mount.CleanupMountPoint(stagingTargetPath, d.mounter, false); err != nil {
+	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, false); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staing target %q: %v", stagingTargetPath, err)
 	}
 
 	targetPath := filepath.Join(filepath.Dir(stagingTargetPath), proxyMount)
 	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint %s", targetPath)
-	if err := mount.CleanupMountPoint(targetPath, d.mounter, false); err != nil {
+	if err := CleanupMountPoint(d.mounter, targetPath, false); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staing target %q: %v", targetPath, err)
 	}
 	klog.V(2).Infof("NodeUnstageVolume: unmount %s successfully", stagingTargetPath)
