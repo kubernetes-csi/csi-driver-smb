@@ -142,11 +142,9 @@ func (mounter *CSIProxyMounter) IsLikelyNotMountPoint(path string) (bool, error)
 	klog.V(4).Infof("IsLikelyNotMountPoint: %s", path)
 	isExists, err := mounter.ExistsPath(path)
 	if err != nil {
-		klog.Error(err)
 		return false, err
 	}
 	if !isExists {
-		klog.Error("returning not exists")
 		return true, os.ErrNotExist
 	}
 
@@ -155,10 +153,8 @@ func (mounter *CSIProxyMounter) IsLikelyNotMountPoint(path string) (bool, error)
 			Path: normalizeWindowsPath(path),
 		})
 	if err != nil {
-		klog.Error(err)
 		return false, err
 	}
-	klog.Error(response.IsMountPoint)
 	return !response.IsMountPoint, nil
 }
 
@@ -197,7 +193,6 @@ func (mounter *CSIProxyMounter) MakeDir(path string) error {
 	}
 	_, err := mounter.FsClient.Mkdir(context.Background(), mkdirReq)
 	if err != nil {
-		klog.Infof("Error: %v", err)
 		return err
 	}
 
