@@ -28,7 +28,7 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 )
 
-const expectedReadOnlyLog = "Read-only file system"
+var expectedReadOnlyLog = "Read-only file system"
 
 // DynamicallyProvisionedReadOnlyVolumeTest will provision required StorageClass(es), PVC(s) and Pod(s)
 // Waiting for the PV provisioner to create a new PV
@@ -41,6 +41,10 @@ type DynamicallyProvisionedReadOnlyVolumeTest struct {
 
 func (t *DynamicallyProvisionedReadOnlyVolumeTest) Run(client clientset.Interface, namespace *v1.Namespace) {
 	for _, pod := range t.Pods {
+		if pod.IsWindows {
+			expectedReadOnlyLog = "FileOpenFailure"
+		}
+
 		tpod, cleanup := pod.SetupWithDynamicVolumes(client, namespace, t.CSIDriver, t.StorageClassParameters)
 		// defer must be called here for resources not get removed before using them
 		for i := range cleanup {

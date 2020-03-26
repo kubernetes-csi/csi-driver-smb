@@ -2,31 +2,21 @@
 
 ## Run E2E tests Locally
 ### Prerequisite
-- Set up a Kubernetes cluster (with version >= 1.13) using [aks-engine](https://github.com/Azure/aks-engine) or [AKS](https://docs.microsoft.com/en-us/azure/aks/)
-- `$KUBECONFIG` is set or your kubeconfig is under `$HOME/.kube/config`
-- Export the following environment varibles:
-```bash
-export TENANT_ID=<your tenant ID>
-export SUBSCRIPTION_ID=<the Azure subscription ID that your cluster is under>
-export AAD_CLIENT_ID=<the service principal ID that your cluster is using>
-export AAD_CLIENT_SECRET=<the service principal password that your cluster is using>
-export RESOURCE_GROUP=<the resource group that your cluster is under>
-export LOCATION=<the location of your resource group>
-```
+ - Make sure a kubernetes cluster(with version >= 1.13) is set up and kubeconfig is under `$HOME/.kube/config`
+ - Copy out `/etc/kubernetes/azure.json` under one agent node to local machine
+ > For AKS cluster, need to modify `resourceGroup` to the node resource group name inside `/etc/kubernetes/azure.json`
 
-To run the E2E tests:
+### How to run E2E tests
 
 ```bash
-docker login # Login to docker so the test image can be pushed to your Docker Hub
-REGISTRY=<your Docker Hub ID / registry> make e2e-test
-# Run E2E tests on an existing Azure File CSI Driver image
-REGISTRY=<your Docker Hub ID / registry> IMAGE_VERSION=<desired image version> make e2e-test
-```
+# Using CSI Driver
+make e2e-test
 
-### Run the test for in-tree driver
-
-```
-export KUBECONFIG='<path to kubeconfig>'
+# Using in-tree volume plugin
 export AZURE_STORAGE_DRIVER="kubernetes.io/azure-file"
+make e2e-test
+
+# Run in a Windows cluster
+export TEST_WINDOWS="true"
 make e2e-test
 ```

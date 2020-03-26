@@ -40,12 +40,18 @@ import (
 )
 
 const (
-	kubeconfigEnvVar = "KUBECONFIG"
-	reportDirEnv     = "ARTIFACTS"
-	defaultReportDir = "/workspace/_artifacts"
+	kubeconfigEnvVar   = "KUBECONFIG"
+	reportDirEnv       = "ARTIFACTS"
+	testWindowsEnvVar  = "TEST_WINDOWS"
+	defaultReportDir   = "/workspace/_artifacts"
+	inTreeStorageClass = "kubernetes.io/azure-file"
 )
 
-var azurefileDriver *azurefile.Driver
+var (
+	azurefileDriver           *azurefile.Driver
+	isUsingInTreeVolumePlugin = os.Getenv(driver.AzureDriverNameVar) == inTreeStorageClass
+	isWindowsCluster          = os.Getenv(testWindowsEnvVar) != ""
+)
 
 type testCmd struct {
 	command  string
@@ -64,26 +70,13 @@ var _ = ginkgo.BeforeSuite(func() {
 	framework.HandleFlags()
 	framework.AfterReadingAllFlags(&framework.TestContext)
 
-	if os.Getenv(driver.AzureDriverNameVar) == "" && testutil.IsRunningInProw() {
+	if !isUsingInTreeVolumePlugin && testutil.IsRunningInProw() {
 		creds, err := credentials.CreateAzureCredentialFile(false)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		_, err = azureClient.EnsureResourceGroup(context.Background(), creds.ResourceGroup, creds.Location, nil)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-		// Need to login to ACR using SP credential if we are running in Prow so we can push test images.
-		// If running locally, user should run 'docker login' before running E2E tests
-		if testutil.IsRunningInProw() {
-			registry := os.Getenv("REGISTRY")
-			gomega.Expect(registry).NotTo(gomega.Equal(""))
-
-			log.Println("Attempting docker login with Azure service principal")
-			cmd := exec.Command("docker", "login", fmt.Sprintf("--username=%s", creds.AADClientID), fmt.Sprintf("--password=%s", creds.AADClientSecret), registry)
-			err := cmd.Run()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			log.Println("docker login is successful")
-		}
 
 		// Install Azure File CSI Driver on cluster from project root
 		e2eBootstrap := testCmd{
@@ -104,7 +97,7 @@ var _ = ginkgo.BeforeSuite(func() {
 })
 
 var _ = ginkgo.AfterSuite(func() {
-	if os.Getenv(driver.AzureDriverNameVar) == "" && testutil.IsRunningInProw() {
+	if !isUsingInTreeVolumePlugin && testutil.IsRunningInProw() {
 		azurefileLog := testCmd{
 			command:  "sh",
 			args:     []string{"test/utils/azurefile_log.sh"},
@@ -156,4 +149,35 @@ func execTestCmd(cmds []testCmd) {
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		log.Println(cmd.endLog)
 	}
+}
+
+func skipIfTestingInWindowsCluster() {
+	if isWindowsCluster {
+		ginkgo.Skip("test case not supported by Windows clusters")
+	}
+}
+
+func skipIfUsingInTreeVolumePlugin() {
+	if isUsingInTreeVolumePlugin {
+		ginkgo.Skip("test case is only available for CSI drivers")
+	}
+}
+
+func convertToPowershellCommandIfNecessary(command string) string {
+	if !isWindowsCluster {
+		return command
+	}
+
+	switch command {
+	case "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data":
+		return "echo 'hello world' | Out-File -FilePath C:\\mnt\\test-1\\data.txt; Get-Content C:\\mnt\\test-1\\data.txt | findstr 'hello world'"
+	case "touch /mnt/test-1/data":
+		return "echo $null >> C:\\mnt\\test-1\\data"
+	case "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done":
+		return "while (1) { Add-Content C:\\mnt\\test-1\\data.txt $(Get-Date -Format u); sleep 1 }"
+	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 1; done":
+		return "Add-Content C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
+	}
+
+	return command
 }

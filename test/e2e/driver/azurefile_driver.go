@@ -18,10 +18,11 @@ package driver
 
 import (
 	"fmt"
-	"k8s.io/klog"
 	"os"
-	azurefile "sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
 	"strings"
+
+	"k8s.io/klog"
+	azurefile "sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
 
 	"github.com/kubernetes-csi/external-snapshotter/pkg/apis/volumesnapshot/v1alpha1"
 	v1 "k8s.io/api/core/v1"
@@ -55,10 +56,6 @@ func InitAzureFileDriver() PVTestDriver {
 // StorageClass name cannot container '/' character.
 func normalizeProvisioner(provisioner string) string {
 	return strings.ReplaceAll(provisioner, "/", "-")
-}
-
-func (d *AzureFileDriver) IsInTree() bool {
-	return d.driverName != azurefile.DriverName
 }
 
 func (d *AzureFileDriver) GetDynamicProvisionStorageClass(parameters map[string]string, mountOptions []string, reclaimPolicy *v1.PersistentVolumeReclaimPolicy, bindingMode *storagev1.VolumeBindingMode, allowedTopologyValues []string, namespace string) *storagev1.StorageClass {

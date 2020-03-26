@@ -24,10 +24,6 @@
                     {
                         "name": "azurefile-csi-driver",
                         "enabled": false
-                    },
-                    {
-                        "name": "tiller",
-                        "enabled": true
                     }
                 ]
             }
@@ -59,6 +55,6 @@
         "servicePrincipalProfile": {
             "clientID": "{clientID}",
             "secret": "{secret}"
-        }        
+        }
     }
 }
