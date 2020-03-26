@@ -418,7 +418,7 @@ func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, 
 
 	if isWindows {
 		testDeployment.deployment.Spec.Template.Spec.NodeSelector = map[string]string{
-			"beta.kubernetes.io/os": "windows",
+			"kubernetes.io/os": "windows",
 		}
 		testDeployment.deployment.Spec.Template.Spec.Containers[0].Image = "e2eteam/busybox:1.29"
 		testDeployment.deployment.Spec.Template.Spec.Containers[0].Command = []string{"powershell.exe"}
@@ -520,7 +520,7 @@ func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string, isWindo
 	}
 	if isWindows {
 		testPod.pod.Spec.NodeSelector = map[string]string{
-			"beta.kubernetes.io/os": "windows",
+			"kubernetes.io/os": "windows",
 		}
 		testPod.pod.Spec.Containers[0].Image = "e2eteam/busybox:1.29"
 		testPod.pod.Spec.Containers[0].Command = []string{"powershell.exe"}
