@@ -21,7 +21,6 @@ spec:
         - operator: "Exists"
       containers:
         - name: liveness-probe
-          imagePullPolicy: Always
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
@@ -92,8 +91,6 @@ spec:
               valueFrom:
                 fieldRef:
                   apiVersion: v1
-                  fieldPath: spec.nodeName
-          imagePullPolicy: Always
           securityContext:
             privileged: true
           volumeMounts:
