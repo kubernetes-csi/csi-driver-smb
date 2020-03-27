@@ -29,7 +29,7 @@ image:
     pullPolicy: Always
   nodeDriverRegistrar:
     repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
-    tag: v1.1.0
+    tag: v1.2.0
     pullPolicy: Always
 
 serviceAccount:
