@@ -1,7 +1,7 @@
 image:
   repository: mcr.microsoft.com/k8s/csi/azurefile-csi
   tag: v0.2.0-alpha
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 serviceAccount:
   create: true
