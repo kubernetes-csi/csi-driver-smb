@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: aspnet-azurefile
+  labels:
+    app: aspnet
+spec:
+  serviceName: aspnet-azurefile
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: aspnet
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+        - name: aspnet-azurefile
+          image: mcr.microsoft.com/dotnet/framework/samples:aspnetapp
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /mnt/azurefile
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: aspnet
+  volumeClaimTemplates:
+    - metadata:
+        name: persistent-storage
+        annotations:
+          volume.beta.kubernetes.io/storage-class: file.csi.azure.com
+      spec:
+        accessModes: ["ReadWriteMany"]
+        resources:
+          requests:
+            storage: 100Gi

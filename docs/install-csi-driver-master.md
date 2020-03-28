@@ -18,7 +18,15 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-node.yaml
 ```
 
-- check pods status:
+- Enable Windows support
+
+> Note: Windows CSI driver is in alpha stage.
+
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-node-windows.yaml
+```
+
+### check pods status:
 
 ```console
 kubectl -n kube-system get pod -o wide --watch -l app=csi-azurefile-controller
@@ -49,4 +57,5 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-cs
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-driver-registry.yaml --ignore-not-found
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/crd-csi-node-info.yaml --ignore-not-found
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/rbac-csi-azurefile-controller.yaml --ignore-not-found
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/csi-azurefile-node-windows.yaml
 ```
