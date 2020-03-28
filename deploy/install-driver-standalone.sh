@@ -31,4 +31,11 @@ kubectl apply -f $repo/crd-csi-node-info.yaml
 kubectl apply -f $repo/rbac-csi-azurefile-controller.yaml
 kubectl apply -f $repo/csi-azurefile-controller.yaml
 kubectl apply -f $repo/csi-azurefile-node.yaml
+
+if [[ "$#" -gt 1 ]]; then
+  if [[ "$2" = "windows" ]]; then
+    echo "Install Azure File CSI Windows driver ..."
+    kubectl apply -f $repo/csi-azurefile-node-windows.yaml
+  fi
+fi
 echo 'Azure File CSI driver installed successfully.'
