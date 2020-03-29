@@ -8,13 +8,13 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain  # if set as "Delete" file share would be removed after pvc deletion
+  persistentVolumeReclaimPolicy: Retain  # if set as "Delete" file share would be removed in pvc deletion
   csi:
     driver: file.csi.azure.com
     readOnly: false
     volumeHandle: arbitrary-volumeid
     volumeAttributes:
-      shareName: EXISTING_FILE_SHARE_NAME  # only file share name, don't use full path, e.g. https://storageaccount.file.core.windows.net/filesharename
+      shareName: EXISTING_FILE_SHARE_NAME  # only file share name, don't use full path
     nodeStageSecretRef:
       name: azure-secret
       namespace: default
