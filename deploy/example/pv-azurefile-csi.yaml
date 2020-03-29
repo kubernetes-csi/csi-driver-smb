@@ -12,7 +12,7 @@ spec:
   csi:
     driver: file.csi.azure.com
     readOnly: false
-    volumeHandle: arbitrary-volumeid
+    volumeHandle: arbitrary-volumeid  # make sure it's a uniqe id
     volumeAttributes:
       shareName: EXISTING_FILE_SHARE_NAME  # only file share name, don't use full path
     nodeStageSecretRef:
