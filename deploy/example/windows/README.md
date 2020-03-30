@@ -1,18 +1,17 @@
 # CSI on Windows example
 
 ## Feature Status: Alpha
-
 CSI on Windows support is an alpha feature since Kubernetes v1.18, refer to [Windows-CSI-Support](https://github.com/kubernetes/enhancements/blob/master/keps/sig-windows/20190714-windows-csi-support.md) for more details.
 
 ## Prerequisite
-
 - Install CSI-Proxy on Windows Node
 
 [csi-proxy installation](https://github.com/Azure/aks-engine/blob/master/docs/topics/csi-proxy-windows.md) is supported with [aks-engine v0.48.0](https://github.com/Azure/aks-engine/releases/tag/v0.48.0).
 
 ## Install CSI Driver
-
-Follow the [instructions](https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/install-csi-driver-master.md#windows) to install windows version driver.
+```console
+curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/install-driver-standalone.sh | bash -s master,windows --
+```
 
 ## Deploy a Windows pod with PVC mount
 
