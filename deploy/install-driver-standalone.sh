@@ -33,8 +33,8 @@ kubectl apply -f $repo/csi-azurefile-controller.yaml
 kubectl apply -f $repo/csi-azurefile-node.yaml
 
 if [[ "$#" -gt 1 ]]; then
-  if [[ "$2" = "windows" ]]; then
-    echo "Install Azure File CSI Windows driver ..."
+  if [[ "$2" == *"windows"* ]]; then
+    echo "install Windows driver ..."
     kubectl apply -f $repo/csi-azurefile-node-windows.yaml
   fi
 fi
