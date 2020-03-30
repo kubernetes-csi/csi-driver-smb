@@ -13,6 +13,7 @@ spec:
       labels:
         app: csi-azurefile-node-win
     spec:
+      serviceAccountName: csi-azurefile-node-sa
       nodeSelector:
         kubernetes.io/os: windows
       priorityClassName: system-node-critical

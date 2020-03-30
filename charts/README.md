@@ -19,5 +19,5 @@ $ helm install azurefile-csi-driver azurefile-csi-driver-latest.tgz --namespace 
 ## Uninstall
 
 ```console
-$ helm delete --purge azurefile-csi-driver
+$ helm delete azurefile-csi-driver
 ```

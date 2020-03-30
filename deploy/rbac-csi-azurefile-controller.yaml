@@ -218,7 +218,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: azure-cloud-provider-secret-getter
+  name: azure-cloud-provider-secret-getter-controller
 subjects:
   - kind: ServiceAccount
     name: csi-azurefile-controller-sa
@@ -229,3 +229,22 @@ roleRef:
   name: azure-cloud-provider-secret-getter
 
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: csi-azurefile-node-sa
+  namespace: kube-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: azure-cloud-provider-secret-getter-node
+subjects:
+  - kind: ServiceAccount
+    name: csi-azurefile-node-sa
+    namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: azure-cloud-provider-secret-getter
