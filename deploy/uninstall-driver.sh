@@ -22,6 +22,13 @@ if [[ "$#" -gt 0 ]]; then
 fi
 
 repo="https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy"
+if [[ "$#" -gt 1 ]]; then
+  if [[ "$2" == *"local"* ]]; then
+    echo "use local deploy"
+    repo="./deploy"
+  fi
+fi
+
 if [ $ver != "master" ]; then
 	repo="$repo/$ver"
 fi
