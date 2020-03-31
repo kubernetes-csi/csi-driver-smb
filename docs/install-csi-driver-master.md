@@ -5,14 +5,7 @@
 curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/install-driver-standalone.sh | bash -s master --
 ```
 
-- Enable Windows support
-> Note: Windows CSI driver is in alpha stage.
-
-```console
-curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/install-driver-standalone.sh | bash -s master,windows --
-```
-
-### check pods status:
+ - check pods status:
 ```console
 kubectl -n kube-system get pod -o wide --watch -l app=csi-azurefile-controller
 kubectl -n kube-system get pod -o wide --watch -l app=csi-azurefile-node
