@@ -189,10 +189,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		}
 
 		podCheckCmd := []string{"cat", "/mnt/test-1/data"}
-		expectedString := "hello world\nhello world\n"
+		expectedString := "hello world\n"
 		if isWindowsCluster {
 			podCheckCmd = []string{"powershell.exe", "cat", "C:\\mnt\\test-1\\data.txt"}
-			expectedString = "hello world\r\nhello world\r\n"
+			expectedString = "hello world\r\n"
 		}
 		test := testsuites.DynamicallyProvisionedDeletePodTest{
 			CSIDriver: testDriver,
@@ -438,7 +438,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			Pod:       pod,
 			PodCheck: &testsuites.PodExecCheck{
 				Cmd:            []string{"cat", "/mnt/test-1/data"},
-				ExpectedString: "hello world\nhello world\n", // pod will be restarted so expect to see 2 instances of string
+				ExpectedString: "hello world\n",
 			},
 			StorageClassParameters: map[string]string{"skuName": "Standard_LRS", "fsType": "xfs"},
 		}
