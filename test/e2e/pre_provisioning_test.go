@@ -73,7 +73,7 @@ var _ = ginkgo.Describe("Pre-Provisioned", func() {
 		}
 	})
 
-	ginkgo.It("should use a pre-provisioned volume and mount it as readOnly in a pod [file.csi.azure.com]", func() {
+	ginkgo.It("should use a pre-provisioned volume and mount it as readOnly in a pod [file.csi.azure.com] [Windows]", func() {
 		// Az tests are not yet working for in-tree
 		skipIfUsingInTreeVolumePlugin()
 
@@ -88,7 +88,7 @@ var _ = ginkgo.Describe("Pre-Provisioned", func() {
 		diskSize := fmt.Sprintf("%dGi", defaultDiskSize)
 		pods := []testsuites.PodDetails{
 			{
-				Cmd: "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data",
+				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
 				Volumes: []testsuites.VolumeDetails{
 					{
 						VolumeID:  volumeID,
@@ -101,6 +101,7 @@ var _ = ginkgo.Describe("Pre-Provisioned", func() {
 						},
 					},
 				},
+				IsWindows: isWindowsCluster,
 			},
 		}
 		test := testsuites.PreProvisionedReadOnlyVolumeTest{
@@ -110,7 +111,7 @@ var _ = ginkgo.Describe("Pre-Provisioned", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("should use a pre-provisioned volume and retain PV with reclaimPolicy %q [file.csi.azure.com]", v1.PersistentVolumeReclaimRetain), func() {
+	ginkgo.It(fmt.Sprintf("should use a pre-provisioned volume and retain PV with reclaimPolicy %q [file.csi.azure.com] [Windows]", v1.PersistentVolumeReclaimRetain), func() {
 		// Az tests are not yet working for in tree driver
 		skipIfUsingInTreeVolumePlugin()
 

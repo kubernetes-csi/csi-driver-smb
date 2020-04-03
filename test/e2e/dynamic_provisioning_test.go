@@ -95,7 +95,6 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 						},
 					},
 				},
-				IsWindows: isWindowsCluster,
 			},
 		}
 		test := testsuites.DynamicallyProvisionedInvalidMountOptions{
@@ -205,7 +204,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [kubernetes.io/azure-file] [file.csi.azure.com]", v1.PersistentVolumeReclaimDelete), func() {
+	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [kubernetes.io/azure-file] [file.csi.azure.com] [Windows]", v1.PersistentVolumeReclaimDelete), func() {
 		reclaimPolicy := v1.PersistentVolumeReclaimDelete
 		volumes := []testsuites.VolumeDetails{
 			{
@@ -222,7 +221,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("[env] should retain PV with reclaimPolicy %q [file.csi.azure.com]", v1.PersistentVolumeReclaimRetain), func() {
+	ginkgo.It(fmt.Sprintf("should retain PV with reclaimPolicy %q [file.csi.azure.com] [Windows]", v1.PersistentVolumeReclaimRetain), func() {
 		// This tests uses the CSI driver to delete the PV.
 		// TODO: Go via the k8s interfaces and also make it more reliable for in-tree and then
 		//       test can be enabled.
@@ -271,6 +270,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 
 	ginkgo.It("should create a vhd disk volume on demand [kubernetes.io/azure-file] [file.csi.azure.com][disk]", func() {
 		skipIfUsingInTreeVolumePlugin()
+		skipIfTestingInWindowsCluster()
 
 		pods := []testsuites.PodDetails{
 			{
@@ -296,10 +296,11 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 
 	ginkgo.It("should receive FailedMount event with invalid fsType [kubernetes.io/azure-file] [file.csi.azure.com] [disk]", func() {
 		skipIfUsingInTreeVolumePlugin()
+		skipIfTestingInWindowsCluster()
 
 		pods := []testsuites.PodDetails{
 			{
-				Cmd: "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data",
+				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
 				Volumes: []testsuites.VolumeDetails{
 					{
 						ClaimSize: "10Gi",
@@ -309,6 +310,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 						},
 					},
 				},
+				IsWindows: isWindowsCluster,
 			},
 		}
 		test := testsuites.DynamicallyProvisionedInvalidMountOptions{
@@ -321,6 +323,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 
 	ginkgo.It("should receive FailedMount event with invalid mount options [file.csi.azure.com] [disk]", func() {
 		skipIfUsingInTreeVolumePlugin()
+		skipIfTestingInWindowsCluster()
 
 		pods := []testsuites.PodDetails{
 			{
@@ -351,6 +354,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 
 	ginkgo.It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [file.csi.azure.com][disk]", func() {
 		skipIfUsingInTreeVolumePlugin()
+		skipIfTestingInWindowsCluster()
 
 		pods := []testsuites.PodDetails{
 			{
@@ -367,7 +371,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 				},
 			},
 			{
-				Cmd: "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done",
+				Cmd: convertToPowershellCommandIfNecessary("while true; do echo $(date -u) >> /mnt/test-1/data; sleep 1; done"),
 				Volumes: []testsuites.VolumeDetails{
 					{
 						FSType:    "ext4",
@@ -378,6 +382,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 						},
 					},
 				},
+				IsWindows: isWindowsCluster,
 			},
 		}
 		test := testsuites.DynamicallyProvisionedCollocatedPodTest{
@@ -392,6 +397,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	// Track issue https://github.com/kubernetes/kubernetes/issues/70505
 	ginkgo.It("should create a vhd disk volume on demand and mount it as readOnly in a pod [file.csi.azure.com][disk]", func() {
 		skipIfUsingInTreeVolumePlugin()
+		skipIfTestingInWindowsCluster()
 
 		pods := []testsuites.PodDetails{
 			{
@@ -419,6 +425,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 
 	ginkgo.It("should create a deployment object, write and read to it, delete the pod and write and read to it again [file.csi.azure.com] [disk]", func() {
 		skipIfUsingInTreeVolumePlugin()
+		skipIfTestingInWindowsCluster()
 
 		pod := testsuites.PodDetails{
 			Cmd: "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 1; done",
@@ -447,6 +454,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 
 	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [file.csi.azure.com] [disk]", v1.PersistentVolumeReclaimDelete), func() {
 		skipIfUsingInTreeVolumePlugin()
+		skipIfTestingInWindowsCluster()
 
 		reclaimPolicy := v1.PersistentVolumeReclaimDelete
 		volumes := []testsuites.VolumeDetails{
@@ -469,6 +477,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		// TODO: Go via the k8s interfaces and also make it more reliable for in-tree and then
 		//       test can be enabled.
 		skipIfUsingInTreeVolumePlugin()
+		skipIfTestingInWindowsCluster()
 
 		reclaimPolicy := v1.PersistentVolumeReclaimRetain
 		volumes := []testsuites.VolumeDetails{

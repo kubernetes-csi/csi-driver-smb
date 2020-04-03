@@ -28,8 +28,6 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 )
 
-var expectedReadOnlyLog = "Read-only file system"
-
 // DynamicallyProvisionedReadOnlyVolumeTest will provision required StorageClass(es), PVC(s) and Pod(s)
 // Waiting for the PV provisioner to create a new PV
 // Testing that the Pod(s) cannot write to the volume when mounted
@@ -41,6 +39,7 @@ type DynamicallyProvisionedReadOnlyVolumeTest struct {
 
 func (t *DynamicallyProvisionedReadOnlyVolumeTest) Run(client clientset.Interface, namespace *v1.Namespace) {
 	for _, pod := range t.Pods {
+		expectedReadOnlyLog := "Read-only file system"
 		if pod.IsWindows {
 			expectedReadOnlyLog = "FileOpenFailure"
 		}

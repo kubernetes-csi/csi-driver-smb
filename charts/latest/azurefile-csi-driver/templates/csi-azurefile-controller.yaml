@@ -37,6 +37,7 @@ spec:
           env:
             - name: ADDRESS
               value: /csi/csi.sock
+          imagePullPolicy: {{ .Values.image.csiProvisioner.pullPolicy }}
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
@@ -58,6 +59,7 @@ spec:
           env:
             - name: ADDRESS
               value: /csi/csi.sock
+          imagePullPolicy: {{ .Values.image.csiAttacher.pullPolicy }}
           volumeMounts:
           - mountPath: /csi
             name: socket-dir
@@ -77,6 +79,7 @@ spec:
           env:
             - name: ADDRESS
               value: /csi/csi.sock
+          imagePullPolicy: {{ .Values.image.csiSnapshotter.pullPolicy }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -96,6 +99,7 @@ spec:
           env:
             - name: ADDRESS
               value: /csi/csi.sock
+          imagePullPolicy: {{ .Values.image.csiResizer.pullPolicy }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -113,6 +117,7 @@ spec:
             - --connection-timeout=3s
             - --health-port=29612
             - --v=5
+          imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -149,7 +154,7 @@ spec:
               value: "/etc/kubernetes/azure.json"
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.azurefile.pullPolicy }}
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
