@@ -43,7 +43,7 @@ func GiBToBytes(volumeSizeGiB int64) int64 {
 }
 
 // roundUpSize calculates how many allocation units are needed to accommodate
-// a volume of given size. E.g. when user wants 1500MiB volume, while AWS EBS
+// a volume of given size. E.g. when user wants 1500MiB volume, while Azure File
 // allocates volumes in gibibyte-sized chunks,
 // RoundUpSize(1500 * 1024*1024, 1024*1024*1024) returns '2'
 // (2 GiB is the smallest allocatable volume that can hold 1500MiB)

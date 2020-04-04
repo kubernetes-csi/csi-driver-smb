@@ -68,25 +68,6 @@ spec:
             requests:
               cpu: 10m
               memory: 20Mi
-        - name: cluster-driver-registrar
-          image: mcr.microsoft.com/oss/kubernetes-csi/csi-cluster-driver-registrar:v1.0.1
-          args:
-            - --csi-address=$(ADDRESS)
-            - --driver-requires-attachment=true
-            - --v=5
-          env:
-            - name: ADDRESS
-              value: /csi/csi.sock
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /csi
-          resources:
-            limits:
-              cpu: 200m
-              memory: 200Mi
-            requests:
-              cpu: 10m
-              memory: 20Mi
         - name: csi-snapshotter
           image: mcr.microsoft.com/oss/kubernetes-csi/csi-snapshotter:v1.1.0
           args:

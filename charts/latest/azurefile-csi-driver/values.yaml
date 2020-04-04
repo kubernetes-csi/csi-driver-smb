@@ -11,10 +11,6 @@ image:
     repository: mcr.microsoft.com/oss/kubernetes-csi/csi-attacher
     tag: v1.2.0
     pullPolicy: IfNotPresent
-  clusterDriverRegistrar:
-    repository: mcr.microsoft.com/oss/kubernetes-csi/csi-cluster-driver-registrar
-    tag: v1.0.1
-    pullPolicy: IfNotPresent
   csiSnapshotter:
     repository: mcr.microsoft.com/oss/kubernetes-csi/csi-snapshotter
     tag: v1.1.0
