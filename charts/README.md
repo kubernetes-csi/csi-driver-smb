@@ -26,11 +26,11 @@ The following table lists the configurable parameters of the latest Azure File C
 
 | Parameter                                         | Description                                                | Default                                                           |
 |---------------------------------------------------|------------------------------------------------------------|-------------------------------------------------------------------|
-| `image.azurefile.repository`                      | azurefile-csi-driver docker image                          | mcr.microsoft.com/k8s/csi/azurefile-csi                           |
-| `image.azurefile.tag`                             | azurefile-csi-driver docker image tag                      | latest                                                            |
-| `image.azurefile.pullPolicy`                      | azurefile-csi-driver image pull policy                     | IfNotPresent                                                      |
+| `image.azurefile.repository`                       | azurefile-csi-driver docker image                           | mcr.microsoft.com/k8s/csi/azurefile-csi                            |
+| `image.azurefile.tag`                              | azurefile-csi-driver docker image tag                       | latest                                                            |
+| `image.azurefile.pullPolicy`                       | azurefile-csi-driver image pull policy                      | IfNotPresent                                                      |
 | `image.csiProvisioner.repository`                 | csi-provisioner docker image                               | mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner              |
-| `image.csiProvisioner.tag`                        | csi-provisioner docker image tag                           | v1.5.0                                                            |
+| `image.csiProvisioner.tag`                        | csi-provisioner docker image tag                           | v1.4.0                                                            |
 | `image.csiProvisioner.pullPolicy`                 | csi-provisioner image pull policy                          | IfNotPresent                                                      |
 | `image.csiAttacher.repository`                    | csi-attacher docker image                                  | mcr.microsoft.com/oss/kubernetes-csi/csi-attacher                 |
 | `image.csiAttacher.tag`                           | csi-attacher docker image tag                              | v1.2.0                                                            |
@@ -47,10 +47,9 @@ The following table lists the configurable parameters of the latest Azure File C
 | `image.nodeDriverRegistrar.repository`            | csi-node-driver-registrar docker image                     | mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar    |
 | `image.nodeDriverRegistrar.tag`                   | csi-node-driver-registrar docker image tag                 | v1.2.0                                                            |
 | `image.nodeDriverRegistrar.pullPolicy`            | csi-node-driver-registrar image pull policy                | IfNotPresent                                                      |
-| `serviceAccount.create`                           | whether create service account of csi-azurefile-controller | true                                                              |
-| `rbac.create`                                     | whether create rbac of csi-azurefile-controller            | true                                                              |
-| `controller.replicas`                             | the replicas of csi-azurefile-controller                   | 2                                                                 |
-| `node.metricsPort`                                | the metrics port of node                                   | 29605                                                             |
+| `serviceAccount.create`                           | whether create service account of csi-azurefile-controller  | true                                                              |
+| `rbac.create`                                     | whether create rbac of csi-azurefile-controller             | true                                                              |
+| `controller.replicas`                             | the replicas of csi-azurefile-controller                    | 2                                                                 |
 | `windows.enabled`                                 | whether enable windows feature                             | false                                                             |
 | `windows.image.livenessProbe.repository`          | windows liveness-probe docker image                        | mcr.microsoft.com/oss/kubernetes-csi/livenessprobe                |
 | `windows.image.livenessProbe.tag`                 | windows liveness-probe docker image tag                    | v2.0.1-alpha.1-windows-1809-amd64                                 |
