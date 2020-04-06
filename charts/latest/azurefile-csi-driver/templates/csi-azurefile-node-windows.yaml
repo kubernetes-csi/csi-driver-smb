@@ -36,8 +36,8 @@ spec:
           imagePullPolicy: {{ .Values.windows.image.livenessProbe.pullPolicy }}
           resources:
             limits:
-              cpu: 200m
-              memory: 200Mi
+              cpu: 2
+              memory: 2Gi
             requests:
               cpu: 10m
               memory: 20Mi
@@ -64,8 +64,8 @@ spec:
               mountPath: C:\registration
           resources:
             limits:
-              cpu: 200m
-              memory: 200Mi
+              cpu: 2
+              memory: 2Gi
             requests:
               cpu: 10m
               memory: 20Mi
@@ -113,8 +113,8 @@ spec:
               mountPath: \\.\pipe\csi-proxy-smb-v1alpha1
           resources:
             limits:
-              cpu: 200m
-              memory: 200Mi
+              cpu: 2
+              memory: 2Gi
             requests:
               cpu: 10m
               memory: 20Mi
