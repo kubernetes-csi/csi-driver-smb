@@ -15,10 +15,11 @@
 PKG = sigs.k8s.io/azurefile-csi-driver
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
+REGISTRY_NAME = $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
 IMAGE_NAME = azurefile-csi
 IMAGE_VERSION ?= v0.6.0
-# Use a custom version for E2E tests if we are in Prow
-ifdef AZURE_CREDENTIALS
+# Use a custom version for E2E tests if we are testing in CI
+ifdef CI
 override IMAGE_VERSION := e2e-$(GIT_COMMIT)
 endif
 IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
@@ -29,7 +30,8 @@ GINKGO_FLAGS = -ginkgo.noColor -ginkgo.v
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
 GOBIN ?= $(GOPATH)/bin
-export GOPATH GOBIN
+DOCKER_CLI_EXPERIMENTAL = enabled
+export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
 
 .EXPORT_ALL_VARIABLES:
 
@@ -63,12 +65,19 @@ e2e-test:
 
 .PHONY: e2e-bootstrap
 e2e-bootstrap: install-helm
-	# Only build and push the image if it does not exist in the registry
 	docker pull $(IMAGE_TAG) || make azurefile-container push
-	helm install azurefile-csi-driver charts/latest/azurefile-csi-driver --namespace kube-system --wait --timeout=15m \
-		--set image.azurefile.pullPolicy=IfNotPresent \
+ifdef TEST_WINDOWS
+	helm install azurefile-csi-driver charts/latest/azurefile-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
 		--set image.azurefile.repository=$(REGISTRY)/$(IMAGE_NAME) \
-		--set image.azurefile.tag=$(IMAGE_VERSION)
+		--set image.azurefile.tag=$(IMAGE_VERSION) \
+		--set controller.replicas=1 \
+		--set windows.enabled=true
+else
+	helm install azurefile-csi-driver charts/latest/azurefile-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
+		--set image.azurefile.repository=$(REGISTRY)/$(IMAGE_NAME) \
+		--set image.azurefile.tag=$(IMAGE_VERSION) \
+		--set snapshot.enabled=true
+endif
 
 .PHONY: install-helm
 install-helm:
@@ -86,21 +95,32 @@ azurefile:
 azurefile-windows:
 	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -o _output/azurefileplugin.exe ./pkg/azurefileplugin
 
-.PHONY: container
-container: azurefile
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
-
 .PHONY: azurefile-container
-azurefile-container: azurefile
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
-
-.PHONY: azurefile-container-windows
-azurefile-container-windows: azurefile-windows
+azurefile-container:
+ifdef CI
+	az acr login --name $(REGISTRY_NAME)
+	make azurefile azurefile-windows
+	az acr build --registry $(REGISTRY_NAME) -t $(IMAGE_TAG)-linux-amd64 -f ./pkg/azurefileplugin/Dockerfile --platform linux .
+	az acr build --registry $(REGISTRY_NAME) -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/azurefileplugin/Windows.Dockerfile --platform windows .
+	docker manifest create $(IMAGE_TAG) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-windows-1809-amd64
+	docker manifest inspect $(IMAGE_TAG)
+else
+ifdef TEST_WINDOWS
+	make azurefile-windows
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Windows.Dockerfile .
+else
+	make azurefile
+	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
+endif
+endif
 
 .PHONY: push
 push:
+ifdef CI
+	docker manifest push --purge $(IMAGE_TAG)
+else
 	docker push $(IMAGE_TAG)
+endif
 
 .PHONY: push-latest
 push-latest:

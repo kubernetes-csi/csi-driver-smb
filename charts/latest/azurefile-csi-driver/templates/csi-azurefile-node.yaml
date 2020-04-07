@@ -1,3 +1,4 @@
+{{- if eq .Values.windows.enabled false }}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
@@ -31,6 +32,7 @@ spec:
             - --connection-timeout=3s
             - --health-port=29613
             - --v=5
+          imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           resources:
             limits:
               cpu: 2
@@ -53,6 +55,7 @@ spec:
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
               value: /var/lib/kubelet/plugins/file.csi.azure.com/csi.sock
+          imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -93,7 +96,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.azurefile.pullPolicy }}
           securityContext:
             privileged: true
           volumeMounts:
@@ -140,3 +143,4 @@ spec:
             path: /dev
             type: Directory
           name: device-dir
+{{- end -}}

@@ -36,3 +36,15 @@ rbac:
 
 controller:
   replicas: 2
+
+windows:
+  enabled: false
+  image:
+    livenessProbe:
+      repository: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe
+      tag: v2.0.1-alpha.1-windows-1809-amd64
+      pullPolicy: IfNotPresent
+    nodeDriverRegistrar:
+      repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
+      tag: v1.2.1-alpha.1-windows-1809-amd64
+      pullPolicy: IfNotPresent

@@ -37,6 +37,11 @@ type PreProvisionedReadOnlyVolumeTest struct {
 
 func (t *PreProvisionedReadOnlyVolumeTest) Run(client clientset.Interface, namespace *v1.Namespace) {
 	for _, pod := range t.Pods {
+		expectedReadOnlyLog := "Read-only file system"
+		if pod.IsWindows {
+			expectedReadOnlyLog = "FileOpenFailure"
+		}
+
 		tpod, cleanup := pod.SetupWithPreProvisionedVolumes(client, namespace, t.CSIDriver)
 		// defer must be called here for resources not get removed before using them
 		for i := range cleanup {

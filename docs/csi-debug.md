@@ -22,5 +22,5 @@ csi-azurefile-node-dr4s4                        3/3     Running   0          7m4
 
  - get csi driver logs
 ```sh
-$ kubectl logs csi-azurefile-node-cvgbs -c azuredisk -n kube-system > csi-azurefile-node.log
+$ kubectl logs csi-azurefile-node-cvgbs -c azurefile -n kube-system > csi-azurefile-node.log
 ```
