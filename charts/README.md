@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the latest Azure File C
 | `serviceAccount.create`                           | whether create service account of csi-azurefile-controller  | true                                                              |
 | `rbac.create`                                     | whether create rbac of csi-azurefile-controller             | true                                                              |
 | `controller.replicas`                             | the replicas of csi-azurefile-controller                    | 2                                                                 |
+| `linux.enabled`                                   | whether enable linux feature                               | true                                                              |
 | `windows.enabled`                                 | whether enable windows feature                             | false                                                             |
 | `windows.image.livenessProbe.repository`          | windows liveness-probe docker image                        | mcr.microsoft.com/oss/kubernetes-csi/livenessprobe                |
 | `windows.image.livenessProbe.tag`                 | windows liveness-probe docker image tag                    | v2.0.1-alpha.1-windows-1809-amd64                                 |

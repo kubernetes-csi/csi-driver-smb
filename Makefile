@@ -70,8 +70,9 @@ ifdef TEST_WINDOWS
 	helm install azurefile-csi-driver charts/latest/azurefile-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
 		--set image.azurefile.repository=$(REGISTRY)/$(IMAGE_NAME) \
 		--set image.azurefile.tag=$(IMAGE_VERSION) \
-		--set controller.replicas=1 \
-		--set windows.enabled=true
+		--set windows.enabled=true \
+		--set linux.enabled=false \
+		--set controller.replicas=1
 else
 	helm install azurefile-csi-driver charts/latest/azurefile-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
 		--set image.azurefile.repository=$(REGISTRY)/$(IMAGE_NAME) \

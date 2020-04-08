@@ -37,6 +37,9 @@ rbac:
 controller:
   replicas: 2
 
+linux:
+  enabled: true
+
 windows:
   enabled: false
   image:
