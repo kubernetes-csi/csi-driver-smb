@@ -1,4 +1,4 @@
-{{- if eq .Values.windows.enabled false }}
+{{- if .Values.linux.enabled}}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
