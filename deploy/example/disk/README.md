@@ -1,7 +1,7 @@
 ## Azure File CSI Driver VHD disk feature
 Attach Azure disks in < 1 second. Attach as many as you want. VHD disk(based on azure file) feature could mount Azure disks as Linux **block device** directly on VMs without dependency on the host.
 
-### Feature Status: Alpha
+### Feature Status: Beta
 
  - Motivation:
 
@@ -33,7 +33,7 @@ metadata:
   name: pvc-azurefile
 spec:
   accessModes:
-    - ReadWriteOnce  # only support ReadWriteOnce now, will support ReadOnlyMany in the future
+    - ReadWriteOnce  # available values: ReadWriteOnce, ReadOnlyMany
   resources:
     requests:
       storage: 100Gi
