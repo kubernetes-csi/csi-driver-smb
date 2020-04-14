@@ -158,7 +158,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		if diskName == "" {
 			return nil, status.Errorf(codes.Internal, "diskname could not be empty, targetPath: %s", targetPath)
 		}
-		cifsMountFlags = []string{"dir_mode=0777,file_mode=0777,cache=strict,actimeo=30"}
+		cifsMountFlags = []string{"dir_mode=0777,file_mode=0777,cache=strict,actimeo=30", "nostrictsync"}
 		cifsMountPath = filepath.Join(filepath.Dir(targetPath), proxyMount)
 	}
 
@@ -206,7 +206,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		options := util.JoinMountOptions(mountFlags, []string{"loop"})
 		if strings.HasPrefix(fsType, "ext") {
 			// following mount options are only valid for ext2/ext3/ext4 file systems
-			options = util.JoinMountOptions(options, []string{"noatime", "barrier=0", "errors=remount-ro"})
+			options = util.JoinMountOptions(options, []string{"noatime", "barrier=1", "errors=remount-ro"})
 		}
 
 		klog.V(2).Infof("NodeStageVolume: formatting %s and mounting at %s with mount options(%s)", targetPath, diskPath, options)
