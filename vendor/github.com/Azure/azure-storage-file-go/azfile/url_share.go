@@ -116,6 +116,22 @@ func (s ShareURL) GetPermissions(ctx context.Context) (*SignedIdentifiers, error
 	return s.shareClient.GetAccessPolicy(ctx, nil)
 }
 
+// CreatePermission uploads a SDDL permission string, and returns a permission key to use in conjunction with a file or folder.
+// Note that this is only required for 9KB or larger permission strings.
+// Furthermore, note that SDDL strings should be converted to a portable format before being uploaded.
+// In order to make a SDDL portable, please replace well-known SIDs with their domain specific counterpart.
+// Well-known SIDs are listed here: https://docs.microsoft.com/en-us/windows/win32/secauthz/sid-strings
+// More info about SDDL strings can be located at: https://docs.microsoft.com/en-us/windows/win32/secauthz/security-descriptor-string-format
+func (s ShareURL) CreatePermission(ctx context.Context, permission string) (*ShareCreatePermissionResponse, error) {
+	perm := SharePermission{Permission: permission}
+	return s.shareClient.CreatePermission(ctx, perm, nil)
+}
+
+// GetPermission obtains a SDDL permission string from the service using a known permission key.
+func (s ShareURL) GetPermission(ctx context.Context, permissionKey string) (*SharePermission, error) {
+	return s.shareClient.GetPermission(ctx, permissionKey, nil)
+}
+
 // The AccessPolicyPermission type simplifies creating the permissions string for a share's access policy.
 // Initialize an instance of this type and then call its String method to set AccessPolicy's Permission field.
 type AccessPolicyPermission struct {

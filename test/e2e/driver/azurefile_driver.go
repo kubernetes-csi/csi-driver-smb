@@ -24,7 +24,6 @@ import (
 	"k8s.io/klog"
 	azurefile "sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
 
-	"github.com/kubernetes-csi/external-snapshotter/pkg/apis/volumesnapshot/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -62,12 +61,6 @@ func (d *AzureFileDriver) GetDynamicProvisionStorageClass(parameters map[string]
 	provisioner := d.driverName
 	generateName := fmt.Sprintf("%s-%s-dynamic-sc-", namespace, normalizeProvisioner(provisioner))
 	return getStorageClass(generateName, provisioner, parameters, mountOptions, reclaimPolicy, bindingMode, nil)
-}
-
-func (d *AzureFileDriver) GetVolumeSnapshotClass(namespace string) *v1alpha1.VolumeSnapshotClass {
-	provisioner := d.driverName
-	generateName := fmt.Sprintf("%s-%s-dynamic-sc-", namespace, normalizeProvisioner(provisioner))
-	return getVolumeSnapshotClass(generateName, provisioner)
 }
 
 func (d *AzureFileDriver) GetPersistentVolume(volumeID string, fsType string, size string, reclaimPolicy *v1.PersistentVolumeReclaimPolicy, namespace string) *v1.PersistentVolume {

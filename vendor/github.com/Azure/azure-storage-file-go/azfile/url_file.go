@@ -20,6 +20,17 @@ const (
 	FileMaxSizeInBytes int64 = 1 * 1024 * 1024 * 1024 * 1024 // 1TB
 )
 
+// For all intents and purposes, this is a constant.
+// But you can't take the address of a constant string, so it's a variable.
+// Inherit inherits permissions from the parent folder (default when creating files/folders)
+var defaultPermissionString = "inherit"
+// Sets creation/last write times to now
+var defaultCurrentTimeString = "now"
+// Preserves old permissions on the file/folder (default when updating properties)
+var defaultPreserveString = "preserve"
+// Defaults for file attributes
+var defaultFileAttributes = "None"
+
 // A FileURL represents a URL to an Azure Storage file.
 type FileURL struct {
 	fileClient fileClient
@@ -58,10 +69,17 @@ func (f FileURL) WithSnapshot(shareSnapshot string) FileURL {
 
 // Create creates a new file or replaces a file. Note that this method only initializes the file.
 // For more information, see https://docs.microsoft.com/en-us/rest/api/storageservices/create-file.
+// Pass default values for SMB properties (ex: "None" for file attributes).
 func (f FileURL) Create(ctx context.Context, size int64, h FileHTTPHeaders, metadata Metadata) (*FileCreateResponse, error) {
-	return f.fileClient.Create(ctx, size, nil,
+	permStr, permKey, fileAttr, fileCreateTime, FileLastWriteTime, err := h.selectSMBPropertyValues(false, defaultPermissionString, defaultFileAttributes, defaultCurrentTimeString)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return f.fileClient.Create(ctx, size, fileAttr, fileCreateTime, FileLastWriteTime, nil,
 		&h.ContentType, &h.ContentEncoding, &h.ContentLanguage, &h.CacheControl,
-		h.ContentMD5, &h.ContentDisposition, metadata)
+		h.ContentMD5, &h.ContentDisposition, metadata, permStr, permKey)
 }
 
 // StartCopy copies the data at the source URL to a file.
@@ -83,7 +101,7 @@ func (f FileURL) AbortCopy(ctx context.Context, copyID string) (*FileAbortCopyRe
 // If count is CountToEnd (0), then data is read from specified offset to the end.
 // rangeGetContentMD5 only works with partial data downloading.
 // For more information, see https://docs.microsoft.com/rest/api/storageservices/get-file.
-func (f FileURL) Download(ctx context.Context, offset int64, count int64, rangeGetContentMD5 bool) (*DownloadResponse, error) {
+func (f FileURL) Download(ctx context.Context, offset int64, count int64, rangeGetContentMD5 bool) (*RetryableDownloadResponse, error) {
 	var xRangeGetContentMD5 *bool
 	if rangeGetContentMD5 {
 		if offset == 0 && count == CountToEnd {
@@ -96,7 +114,7 @@ func (f FileURL) Download(ctx context.Context, offset int64, count int64, rangeG
 		return nil, err
 	}
 
-	return &DownloadResponse{
+	return &RetryableDownloadResponse{
 		f:    f,
 		dr:   dr,
 		ctx:  ctx,
@@ -106,7 +124,7 @@ func (f FileURL) Download(ctx context.Context, offset int64, count int64, rangeG
 
 // Body constructs a stream to read data from with a resilient reader option.
 // A zero-value option means to get a raw stream.
-func (dr *DownloadResponse) Body(o RetryReaderOptions) io.ReadCloser {
+func (dr *RetryableDownloadResponse) Body(o RetryReaderOptions) io.ReadCloser {
 	if o.MaxRetryRequests == 0 {
 		return dr.Response().Body
 	}
@@ -140,8 +158,15 @@ func (f FileURL) GetProperties(ctx context.Context) (*FileGetPropertiesResponse,
 // SetHTTPHeaders sets file's system properties.
 // For more information, see https://docs.microsoft.com/rest/api/storageservices/set-file-properties.
 func (f FileURL) SetHTTPHeaders(ctx context.Context, h FileHTTPHeaders) (*FileSetHTTPHeadersResponse, error) {
-	return f.fileClient.SetHTTPHeaders(ctx, nil,
-		nil, &h.ContentType, &h.ContentEncoding, &h.ContentLanguage, &h.CacheControl, h.ContentMD5, &h.ContentDisposition)
+	permStr, permKey, fileAttr, fileCreateTime, FileLastWriteTime, err := h.selectSMBPropertyValues(false, defaultPreserveString, defaultPreserveString, defaultPreserveString)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return f.fileClient.SetHTTPHeaders(ctx, fileAttr, fileCreateTime, FileLastWriteTime, nil,
+		nil, &h.ContentType, &h.ContentEncoding, &h.ContentLanguage, &h.CacheControl, h.ContentMD5,
+		&h.ContentDisposition, permStr, permKey)
 }
 
 // SetMetadata sets a file's metadata.
@@ -153,12 +178,13 @@ func (f FileURL) SetMetadata(ctx context.Context, metadata Metadata) (*FileSetMe
 // Resize resizes the file to the specified size.
 // For more information, see https://docs.microsoft.com/rest/api/storageservices/set-file-properties.
 func (f FileURL) Resize(ctx context.Context, length int64) (*FileSetHTTPHeadersResponse, error) {
-	return f.fileClient.SetHTTPHeaders(ctx, nil,
-		&length, nil, nil, nil, nil, nil, nil)
+	return f.fileClient.SetHTTPHeaders(ctx, "preserve", "preserve", "preserve", nil,
+		&length, nil, nil, nil, nil,
+		nil, nil, &defaultPreserveString, nil)
 }
 
 // UploadRange writes bytes to a file.
-// offset indiciates the offset at which to begin writing, in bytes.
+// offset indicates the offset at which to begin writing, in bytes.
 // For more information, see https://docs.microsoft.com/en-us/rest/api/storageservices/put-range.
 func (f FileURL) UploadRange(ctx context.Context, offset int64, body io.ReadSeeker, transactionalMD5 []byte) (*FileUploadRangeResponse, error) {
 	if body == nil {
@@ -172,6 +198,15 @@ func (f FileURL) UploadRange(ctx context.Context, offset int64, body io.ReadSeek
 
 	// TransactionalContentMD5 isn't supported currently.
 	return f.fileClient.UploadRange(ctx, *toRange(offset, count), FileRangeWriteUpdate, count, body, nil, transactionalMD5)
+}
+
+// Update range with bytes from a specific URL.
+// offset indicates the offset at which to begin writing, in bytes.
+func (f FileURL) UploadRangeFromURL(ctx context.Context, sourceURL url.URL, sourceOffset int64, destOffset int64,
+	count int64) (*FileUploadRangeFromURLResponse, error) {
+
+	return f.fileClient.UploadRangeFromURL(ctx, *toRange(destOffset, count), sourceURL.String(), 0, nil,
+		toRange(sourceOffset, count), nil, nil, nil)
 }
 
 // ClearRange clears the specified range and releases the space used in storage for that range.

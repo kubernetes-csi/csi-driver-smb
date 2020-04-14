@@ -35,9 +35,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/klog"
-	"k8s.io/kubernetes/pkg/util/mount"
 	"k8s.io/kubernetes/pkg/volume/util"
 	"k8s.io/legacy-cloud-providers/azure"
+	"k8s.io/utils/mount"
 	"sigs.k8s.io/azurefile-csi-driver/pkg/mounter"
 )
 

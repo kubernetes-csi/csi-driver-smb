@@ -5,10 +5,10 @@ package azfile
 
 // UserAgent returns the UserAgent string to use when sending http.Requests.
 func UserAgent() string {
-	return "Azure-SDK-For-Go/10.0.0 azfile/2018-03-28"
+	return "Azure-SDK-For-Go/0.0.0 azfile/2019-02-02"
 }
 
 // Version returns the semantic version (see http://semver.org) of the client.
 func Version() string {
-	return "10.0.0"
+	return "0.0.0"
 }

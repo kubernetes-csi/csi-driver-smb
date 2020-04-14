@@ -22,7 +22,7 @@ import (
 	"fmt"
 
 	"k8s.io/klog"
-	"k8s.io/kubernetes/pkg/util/mount"
+	"k8s.io/utils/mount"
 	"sigs.k8s.io/azurefile-csi-driver/pkg/mounter"
 )
 

@@ -80,7 +80,10 @@ func (client fileClient) abortCopyResponder(resp pipeline.Response) (pipeline.Re
 
 // Create creates a new file or replaces a file. Note it only initializes the file with no content.
 //
-// fileContentLength is specifies the maximum size for the file, up to 1 TB. timeout is the timeout parameter is
+// fileContentLength is specifies the maximum size for the file, up to 1 TB. fileAttributes is if specified, the
+// provided file attributes shall be set. Default value: ‘Archive’ for file and ‘Directory’ for directory. ‘None’ can
+// also be specified as default. fileCreationTime is creation time for the file/directory. Default value: Now.
+// fileLastWriteTime is last write time for the file/directory. Default value: Now. timeout is the timeout parameter is
 // expressed in seconds. For more information, see <a
 // href="https://docs.microsoft.com/en-us/rest/api/storageservices/Setting-Timeouts-for-File-Service-Operations?redirectedfrom=MSDN">Setting
 // Timeouts for File Service Operations.</a> fileContentType is sets the MIME content type of the file. The default
@@ -88,15 +91,20 @@ func (client fileClient) abortCopyResponder(resp pipeline.Response) (pipeline.Re
 // the file. fileContentLanguage is specifies the natural languages used by this resource. fileCacheControl is sets the
 // file's cache control. The File service stores this value but does not use or modify it. fileContentMD5 is sets the
 // file's MD5 hash. fileContentDisposition is sets the file's Content-Disposition header. metadata is a name-value pair
-// to associate with a file storage object.
-func (client fileClient) Create(ctx context.Context, fileContentLength int64, timeout *int32, fileContentType *string, fileContentEncoding *string, fileContentLanguage *string, fileCacheControl *string, fileContentMD5 []byte, fileContentDisposition *string, metadata map[string]string) (*FileCreateResponse, error) {
+// to associate with a file storage object. filePermission is if specified the permission (security descriptor) shall
+// be set for the directory/file. This header can be used if Permission size is <= 8KB, else x-ms-file-permission-key
+// header shall be used. Default value: Inherit. If SDDL is specified as input, it must have owner, group and dacl.
+// Note: Only one of the x-ms-file-permission or x-ms-file-permission-key should be specified. filePermissionKey is key
+// of the permission to be set for the directory/file. Note: Only one of the x-ms-file-permission or
+// x-ms-file-permission-key should be specified.
+func (client fileClient) Create(ctx context.Context, fileContentLength int64, fileAttributes string, fileCreationTime string, fileLastWriteTime string, timeout *int32, fileContentType *string, fileContentEncoding *string, fileContentLanguage *string, fileCacheControl *string, fileContentMD5 []byte, fileContentDisposition *string, metadata map[string]string, filePermission *string, filePermissionKey *string) (*FileCreateResponse, error) {
 	if err := validate([]validation{
 		{targetValue: timeout,
 			constraints: []constraint{{target: "timeout", name: null, rule: false,
 				chain: []constraint{{target: "timeout", name: inclusiveMinimum, rule: 0, chain: nil}}}}}}); err != nil {
 		return nil, err
 	}
-	req, err := client.createPreparer(fileContentLength, timeout, fileContentType, fileContentEncoding, fileContentLanguage, fileCacheControl, fileContentMD5, fileContentDisposition, metadata)
+	req, err := client.createPreparer(fileContentLength, fileAttributes, fileCreationTime, fileLastWriteTime, timeout, fileContentType, fileContentEncoding, fileContentLanguage, fileCacheControl, fileContentMD5, fileContentDisposition, metadata, filePermission, filePermissionKey)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +116,7 @@ func (client fileClient) Create(ctx context.Context, fileContentLength int64, ti
 }
 
 // createPreparer prepares the Create request.
-func (client fileClient) createPreparer(fileContentLength int64, timeout *int32, fileContentType *string, fileContentEncoding *string, fileContentLanguage *string, fileCacheControl *string, fileContentMD5 []byte, fileContentDisposition *string, metadata map[string]string) (pipeline.Request, error) {
+func (client fileClient) createPreparer(fileContentLength int64, fileAttributes string, fileCreationTime string, fileLastWriteTime string, timeout *int32, fileContentType *string, fileContentEncoding *string, fileContentLanguage *string, fileCacheControl *string, fileContentMD5 []byte, fileContentDisposition *string, metadata map[string]string, filePermission *string, filePermissionKey *string) (pipeline.Request, error) {
 	req, err := pipeline.NewRequest("PUT", client.url, nil)
 	if err != nil {
 		return req, pipeline.NewError(err, "failed to create request")
@@ -144,6 +152,15 @@ func (client fileClient) createPreparer(fileContentLength int64, timeout *int32,
 			req.Header.Set("x-ms-meta-"+k, v)
 		}
 	}
+	if filePermission != nil {
+		req.Header.Set("x-ms-file-permission", *filePermission)
+	}
+	if filePermissionKey != nil {
+		req.Header.Set("x-ms-file-permission-key", *filePermissionKey)
+	}
+	req.Header.Set("x-ms-file-attributes", fileAttributes)
+	req.Header.Set("x-ms-file-creation-time", fileCreationTime)
+	req.Header.Set("x-ms-file-last-write-time", fileLastWriteTime)
 	return req, nil
 }
 
@@ -214,7 +231,7 @@ func (client fileClient) deleteResponder(resp pipeline.Response) (pipeline.Respo
 // Timeouts for File Service Operations.</a> rangeParameter is return file data only from the specified byte range.
 // rangeGetContentMD5 is when this header is set to true and specified together with the Range header, the service
 // returns the MD5 hash for the range, as long as the range is less than or equal to 4 MB in size.
-func (client fileClient) Download(ctx context.Context, timeout *int32, rangeParameter *string, rangeGetContentMD5 *bool) (*downloadResponse, error) {
+func (client fileClient) Download(ctx context.Context, timeout *int32, rangeParameter *string, rangeGetContentMD5 *bool) (*DownloadResponse, error) {
 	if err := validate([]validation{
 		{targetValue: timeout,
 			constraints: []constraint{{target: "timeout", name: null, rule: false,
@@ -229,7 +246,7 @@ func (client fileClient) Download(ctx context.Context, timeout *int32, rangePara
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*downloadResponse), err
+	return resp.(*DownloadResponse), err
 }
 
 // downloadPreparer prepares the Download request.
@@ -259,7 +276,69 @@ func (client fileClient) downloadResponder(resp pipeline.Response) (pipeline.Res
 	if resp == nil {
 		return nil, err
 	}
-	return &downloadResponse{rawResponse: resp.Response()}, err
+	return &DownloadResponse{rawResponse: resp.Response()}, err
+}
+
+// ForceCloseHandles closes all handles open for given file
+//
+// handleID is specifies handle ID opened on the file or directory to be closed. Asterix (‘*’) is a wildcard that
+// specifies all handles. timeout is the timeout parameter is expressed in seconds. For more information, see <a
+// href="https://docs.microsoft.com/en-us/rest/api/storageservices/Setting-Timeouts-for-File-Service-Operations?redirectedfrom=MSDN">Setting
+// Timeouts for File Service Operations.</a> marker is a string value that identifies the portion of the list to be
+// returned with the next list operation. The operation returns a marker value within the response body if the list
+// returned was not complete. The marker value may then be used in a subsequent call to request the next set of list
+// items. The marker value is opaque to the client. sharesnapshot is the snapshot parameter is an opaque DateTime value
+// that, when present, specifies the share snapshot to query.
+func (client fileClient) ForceCloseHandles(ctx context.Context, handleID string, timeout *int32, marker *string, sharesnapshot *string) (*FileForceCloseHandlesResponse, error) {
+	if err := validate([]validation{
+		{targetValue: timeout,
+			constraints: []constraint{{target: "timeout", name: null, rule: false,
+				chain: []constraint{{target: "timeout", name: inclusiveMinimum, rule: 0, chain: nil}}}}}}); err != nil {
+		return nil, err
+	}
+	req, err := client.forceCloseHandlesPreparer(handleID, timeout, marker, sharesnapshot)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Pipeline().Do(ctx, responderPolicyFactory{responder: client.forceCloseHandlesResponder}, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*FileForceCloseHandlesResponse), err
+}
+
+// forceCloseHandlesPreparer prepares the ForceCloseHandles request.
+func (client fileClient) forceCloseHandlesPreparer(handleID string, timeout *int32, marker *string, sharesnapshot *string) (pipeline.Request, error) {
+	req, err := pipeline.NewRequest("PUT", client.url, nil)
+	if err != nil {
+		return req, pipeline.NewError(err, "failed to create request")
+	}
+	params := req.URL.Query()
+	if timeout != nil {
+		params.Set("timeout", strconv.FormatInt(int64(*timeout), 10))
+	}
+	if marker != nil && len(*marker) > 0 {
+		params.Set("marker", *marker)
+	}
+	if sharesnapshot != nil && len(*sharesnapshot) > 0 {
+		params.Set("sharesnapshot", *sharesnapshot)
+	}
+	params.Set("comp", "forceclosehandles")
+	req.URL.RawQuery = params.Encode()
+	req.Header.Set("x-ms-handle-id", handleID)
+	req.Header.Set("x-ms-version", ServiceVersion)
+	return req, nil
+}
+
+// forceCloseHandlesResponder handles the response to the ForceCloseHandles request.
+func (client fileClient) forceCloseHandlesResponder(resp pipeline.Response) (pipeline.Response, error) {
+	err := validateResponse(resp, http.StatusOK)
+	if resp == nil {
+		return nil, err
+	}
+	io.Copy(ioutil.Discard, resp.Response().Body)
+	resp.Response().Body.Close()
+	return &FileForceCloseHandlesResponse{rawResponse: resp.Response()}, err
 }
 
 // GetProperties returns all user-defined metadata, standard HTTP properties, and system properties for the file. It
@@ -388,8 +467,93 @@ func (client fileClient) getRangeListResponder(resp pipeline.Response) (pipeline
 	return result, nil
 }
 
+// ListHandles lists handles for file
+//
+// marker is a string value that identifies the portion of the list to be returned with the next list operation. The
+// operation returns a marker value within the response body if the list returned was not complete. The marker value
+// may then be used in a subsequent call to request the next set of list items. The marker value is opaque to the
+// client. maxresults is specifies the maximum number of entries to return. If the request does not specify maxresults,
+// or specifies a value greater than 5,000, the server will return up to 5,000 items. timeout is the timeout parameter
+// is expressed in seconds. For more information, see <a
+// href="https://docs.microsoft.com/en-us/rest/api/storageservices/Setting-Timeouts-for-File-Service-Operations?redirectedfrom=MSDN">Setting
+// Timeouts for File Service Operations.</a> sharesnapshot is the snapshot parameter is an opaque DateTime value that,
+// when present, specifies the share snapshot to query.
+func (client fileClient) ListHandles(ctx context.Context, marker *string, maxresults *int32, timeout *int32, sharesnapshot *string) (*ListHandlesResponse, error) {
+	if err := validate([]validation{
+		{targetValue: maxresults,
+			constraints: []constraint{{target: "maxresults", name: null, rule: false,
+				chain: []constraint{{target: "maxresults", name: inclusiveMinimum, rule: 1, chain: nil}}}}},
+		{targetValue: timeout,
+			constraints: []constraint{{target: "timeout", name: null, rule: false,
+				chain: []constraint{{target: "timeout", name: inclusiveMinimum, rule: 0, chain: nil}}}}}}); err != nil {
+		return nil, err
+	}
+	req, err := client.listHandlesPreparer(marker, maxresults, timeout, sharesnapshot)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Pipeline().Do(ctx, responderPolicyFactory{responder: client.listHandlesResponder}, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*ListHandlesResponse), err
+}
+
+// listHandlesPreparer prepares the ListHandles request.
+func (client fileClient) listHandlesPreparer(marker *string, maxresults *int32, timeout *int32, sharesnapshot *string) (pipeline.Request, error) {
+	req, err := pipeline.NewRequest("GET", client.url, nil)
+	if err != nil {
+		return req, pipeline.NewError(err, "failed to create request")
+	}
+	params := req.URL.Query()
+	if marker != nil && len(*marker) > 0 {
+		params.Set("marker", *marker)
+	}
+	if maxresults != nil {
+		params.Set("maxresults", strconv.FormatInt(int64(*maxresults), 10))
+	}
+	if timeout != nil {
+		params.Set("timeout", strconv.FormatInt(int64(*timeout), 10))
+	}
+	if sharesnapshot != nil && len(*sharesnapshot) > 0 {
+		params.Set("sharesnapshot", *sharesnapshot)
+	}
+	params.Set("comp", "listhandles")
+	req.URL.RawQuery = params.Encode()
+	req.Header.Set("x-ms-version", ServiceVersion)
+	return req, nil
+}
+
+// listHandlesResponder handles the response to the ListHandles request.
+func (client fileClient) listHandlesResponder(resp pipeline.Response) (pipeline.Response, error) {
+	err := validateResponse(resp, http.StatusOK)
+	if resp == nil {
+		return nil, err
+	}
+	result := &ListHandlesResponse{rawResponse: resp.Response()}
+	if err != nil {
+		return result, err
+	}
+	defer resp.Response().Body.Close()
+	b, err := ioutil.ReadAll(resp.Response().Body)
+	if err != nil {
+		return result, err
+	}
+	if len(b) > 0 {
+		b = removeBOM(b)
+		err = xml.Unmarshal(b, result)
+		if err != nil {
+			return result, NewResponseError(err, resp.Response(), "failed to unmarshal response body")
+		}
+	}
+	return result, nil
+}
+
 // SetHTTPHeaders sets HTTP headers on the file.
 //
+// fileAttributes is if specified, the provided file attributes shall be set. Default value: ‘Archive’ for file and
+// ‘Directory’ for directory. ‘None’ can also be specified as default. fileCreationTime is creation time for the
+// file/directory. Default value: Now. fileLastWriteTime is last write time for the file/directory. Default value: Now.
 // timeout is the timeout parameter is expressed in seconds. For more information, see <a
 // href="https://docs.microsoft.com/en-us/rest/api/storageservices/Setting-Timeouts-for-File-Service-Operations?redirectedfrom=MSDN">Setting
 // Timeouts for File Service Operations.</a> fileContentLength is resizes a file to the specified size. If the
@@ -398,15 +562,20 @@ func (client fileClient) getRangeListResponder(resp pipeline.Response) (pipeline
 // fileContentEncoding is specifies which content encodings have been applied to the file. fileContentLanguage is
 // specifies the natural languages used by this resource. fileCacheControl is sets the file's cache control. The File
 // service stores this value but does not use or modify it. fileContentMD5 is sets the file's MD5 hash.
-// fileContentDisposition is sets the file's Content-Disposition header.
-func (client fileClient) SetHTTPHeaders(ctx context.Context, timeout *int32, fileContentLength *int64, fileContentType *string, fileContentEncoding *string, fileContentLanguage *string, fileCacheControl *string, fileContentMD5 []byte, fileContentDisposition *string) (*FileSetHTTPHeadersResponse, error) {
+// fileContentDisposition is sets the file's Content-Disposition header. filePermission is if specified the permission
+// (security descriptor) shall be set for the directory/file. This header can be used if Permission size is <= 8KB,
+// else x-ms-file-permission-key header shall be used. Default value: Inherit. If SDDL is specified as input, it must
+// have owner, group and dacl. Note: Only one of the x-ms-file-permission or x-ms-file-permission-key should be
+// specified. filePermissionKey is key of the permission to be set for the directory/file. Note: Only one of the
+// x-ms-file-permission or x-ms-file-permission-key should be specified.
+func (client fileClient) SetHTTPHeaders(ctx context.Context, fileAttributes string, fileCreationTime string, fileLastWriteTime string, timeout *int32, fileContentLength *int64, fileContentType *string, fileContentEncoding *string, fileContentLanguage *string, fileCacheControl *string, fileContentMD5 []byte, fileContentDisposition *string, filePermission *string, filePermissionKey *string) (*FileSetHTTPHeadersResponse, error) {
 	if err := validate([]validation{
 		{targetValue: timeout,
 			constraints: []constraint{{target: "timeout", name: null, rule: false,
 				chain: []constraint{{target: "timeout", name: inclusiveMinimum, rule: 0, chain: nil}}}}}}); err != nil {
 		return nil, err
 	}
-	req, err := client.setHTTPHeadersPreparer(timeout, fileContentLength, fileContentType, fileContentEncoding, fileContentLanguage, fileCacheControl, fileContentMD5, fileContentDisposition)
+	req, err := client.setHTTPHeadersPreparer(fileAttributes, fileCreationTime, fileLastWriteTime, timeout, fileContentLength, fileContentType, fileContentEncoding, fileContentLanguage, fileCacheControl, fileContentMD5, fileContentDisposition, filePermission, filePermissionKey)
 	if err != nil {
 		return nil, err
 	}
@@ -418,7 +587,7 @@ func (client fileClient) SetHTTPHeaders(ctx context.Context, timeout *int32, fil
 }
 
 // setHTTPHeadersPreparer prepares the SetHTTPHeaders request.
-func (client fileClient) setHTTPHeadersPreparer(timeout *int32, fileContentLength *int64, fileContentType *string, fileContentEncoding *string, fileContentLanguage *string, fileCacheControl *string, fileContentMD5 []byte, fileContentDisposition *string) (pipeline.Request, error) {
+func (client fileClient) setHTTPHeadersPreparer(fileAttributes string, fileCreationTime string, fileLastWriteTime string, timeout *int32, fileContentLength *int64, fileContentType *string, fileContentEncoding *string, fileContentLanguage *string, fileCacheControl *string, fileContentMD5 []byte, fileContentDisposition *string, filePermission *string, filePermissionKey *string) (pipeline.Request, error) {
 	req, err := pipeline.NewRequest("PUT", client.url, nil)
 	if err != nil {
 		return req, pipeline.NewError(err, "failed to create request")
@@ -451,6 +620,15 @@ func (client fileClient) setHTTPHeadersPreparer(timeout *int32, fileContentLengt
 	if fileContentDisposition != nil {
 		req.Header.Set("x-ms-content-disposition", *fileContentDisposition)
 	}
+	if filePermission != nil {
+		req.Header.Set("x-ms-file-permission", *filePermission)
+	}
+	if filePermissionKey != nil {
+		req.Header.Set("x-ms-file-permission-key", *filePermissionKey)
+	}
+	req.Header.Set("x-ms-file-attributes", fileAttributes)
+	req.Header.Set("x-ms-file-creation-time", fileCreationTime)
+	req.Header.Set("x-ms-file-last-write-time", fileLastWriteTime)
 	return req, nil
 }
 
@@ -511,7 +689,7 @@ func (client fileClient) setMetadataPreparer(timeout *int32, metadata map[string
 
 // setMetadataResponder handles the response to the SetMetadata request.
 func (client fileClient) setMetadataResponder(resp pipeline.Response) (pipeline.Response, error) {
-	err := validateResponse(resp, http.StatusOK, http.StatusAccepted)
+	err := validateResponse(resp, http.StatusOK)
 	if resp == nil {
 		return nil, err
 	}
@@ -648,4 +826,81 @@ func (client fileClient) uploadRangeResponder(resp pipeline.Response) (pipeline.
 	io.Copy(ioutil.Discard, resp.Response().Body)
 	resp.Response().Body.Close()
 	return &FileUploadRangeResponse{rawResponse: resp.Response()}, err
+}
+
+// UploadRangeFromURL upload a range of bytes to a file where the contents are read from a URL.
+//
+// rangeParameter is writes data to the specified byte range in the file. copySource is specifies the URL of the source
+// file or blob, up to 2 KB in length. To copy a file to another file within the same storage account, you may use
+// Shared Key to authenticate the source file. If you are copying a file from another storage account, or if you are
+// copying a blob from the same storage account or another storage account, then you must authenticate the source file
+// or blob using a shared access signature. If the source is a public blob, no authentication is required to perform
+// the copy operation. A file in a share snapshot can also be specified as a copy source. contentLength is specifies
+// the number of bytes being transmitted in the request body. When the x-ms-write header is set to clear, the value of
+// this header must be set to zero. timeout is the timeout parameter is expressed in seconds. For more information, see
+// <a
+// href="https://docs.microsoft.com/en-us/rest/api/storageservices/Setting-Timeouts-for-File-Service-Operations?redirectedfrom=MSDN">Setting
+// Timeouts for File Service Operations.</a> sourceRange is bytes of source data in the specified range.
+// sourceContentCrc64 is specify the crc64 calculated for the range of bytes that must be read from the copy source.
+// sourceIfMatchCrc64 is specify the crc64 value to operate only on range with a matching crc64 checksum.
+// sourceIfNoneMatchCrc64 is specify the crc64 value to operate only on range without a matching crc64 checksum.
+func (client fileClient) UploadRangeFromURL(ctx context.Context, rangeParameter string, copySource string, contentLength int64, timeout *int32, sourceRange *string, sourceContentCrc64 []byte, sourceIfMatchCrc64 []byte, sourceIfNoneMatchCrc64 []byte) (*FileUploadRangeFromURLResponse, error) {
+	if err := validate([]validation{
+		{targetValue: timeout,
+			constraints: []constraint{{target: "timeout", name: null, rule: false,
+				chain: []constraint{{target: "timeout", name: inclusiveMinimum, rule: 0, chain: nil}}}}}}); err != nil {
+		return nil, err
+	}
+	req, err := client.uploadRangeFromURLPreparer(rangeParameter, copySource, contentLength, timeout, sourceRange, sourceContentCrc64, sourceIfMatchCrc64, sourceIfNoneMatchCrc64)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Pipeline().Do(ctx, responderPolicyFactory{responder: client.uploadRangeFromURLResponder}, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*FileUploadRangeFromURLResponse), err
+}
+
+// uploadRangeFromURLPreparer prepares the UploadRangeFromURL request.
+func (client fileClient) uploadRangeFromURLPreparer(rangeParameter string, copySource string, contentLength int64, timeout *int32, sourceRange *string, sourceContentCrc64 []byte, sourceIfMatchCrc64 []byte, sourceIfNoneMatchCrc64 []byte) (pipeline.Request, error) {
+	req, err := pipeline.NewRequest("PUT", client.url, nil)
+	if err != nil {
+		return req, pipeline.NewError(err, "failed to create request")
+	}
+	params := req.URL.Query()
+	if timeout != nil {
+		params.Set("timeout", strconv.FormatInt(int64(*timeout), 10))
+	}
+	params.Set("comp", "range")
+	req.URL.RawQuery = params.Encode()
+	req.Header.Set("x-ms-range", rangeParameter)
+	req.Header.Set("x-ms-copy-source", copySource)
+	if sourceRange != nil {
+		req.Header.Set("x-ms-source-range", *sourceRange)
+	}
+	req.Header.Set("x-ms-write", "update")
+	req.Header.Set("Content-Length", strconv.FormatInt(contentLength, 10))
+	if sourceContentCrc64 != nil {
+		req.Header.Set("x-ms-source-content-crc64", base64.StdEncoding.EncodeToString(sourceContentCrc64))
+	}
+	if sourceIfMatchCrc64 != nil {
+		req.Header.Set("x-ms-source-if-match-crc64", base64.StdEncoding.EncodeToString(sourceIfMatchCrc64))
+	}
+	if sourceIfNoneMatchCrc64 != nil {
+		req.Header.Set("x-ms-source-if-none-match-crc64", base64.StdEncoding.EncodeToString(sourceIfNoneMatchCrc64))
+	}
+	req.Header.Set("x-ms-version", ServiceVersion)
+	return req, nil
+}
+
+// uploadRangeFromURLResponder handles the response to the UploadRangeFromURL request.
+func (client fileClient) uploadRangeFromURLResponder(resp pipeline.Response) (pipeline.Response, error) {
+	err := validateResponse(resp, http.StatusOK, http.StatusCreated)
+	if resp == nil {
+		return nil, err
+	}
+	io.Copy(ioutil.Discard, resp.Response().Body)
+	resp.Response().Body.Close()
+	return &FileUploadRangeFromURLResponse{rawResponse: resp.Response()}, err
 }
