@@ -25,6 +25,3 @@ ${PKG_ROOT}/hack/verify-yamllint.sh
 ${PKG_ROOT}/hack/verify-boilerplate.sh
 ${PKG_ROOT}/hack/verify-helm-chart.sh
 ${PKG_ROOT}/hack/verify-spelling.sh
-${PKG_ROOT}/hack/update-dependencies.sh
-${PKG_ROOT}/hack/verify-update.sh
-

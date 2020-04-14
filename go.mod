@@ -11,7 +11,6 @@ require (
 	github.com/container-storage-interface/spec v1.2.0
 	github.com/golang/protobuf v1.3.5
 	github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200330215040-9eff16441b2a
-	github.com/kubernetes-csi/external-snapshotter v1.2.2
 	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.9.0
 	github.com/pborman/uuid v1.2.0
@@ -20,9 +19,9 @@ require (
 	github.com/rubiojr/go-vhd v0.0.0-20160810183302-0bfd3b39853c
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
-	google.golang.org/grpc v1.28.1
+	google.golang.org/grpc v1.27.0
 	k8s.io/api v0.18.1
-	k8s.io/apimachinery v0.18.1
+	k8s.io/apimachinery v0.18.2-beta.0
 	k8s.io/client-go v0.18.1
 	k8s.io/cloud-provider v0.18.1
 	k8s.io/klog v1.0.0
@@ -36,6 +35,8 @@ replace (
 	github.com/Azure/azure-sdk-for-go => github.com/Azure/azure-sdk-for-go v40.2.0+incompatible
 	github.com/container-storage-interface/spec => github.com/container-storage-interface/spec v1.1.0
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.0.0
+	go.etcd.io/etcd => go.etcd.io/etcd v0.0.0-20200410171415-59f5fb25a533
+	google.golang.org/grpc => google.golang.org/grpc v1.27.0
 	k8s.io/api => k8s.io/api v0.18.1
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.18.1
 	k8s.io/apimachinery => k8s.io/apimachinery v0.18.2-beta.0
@@ -54,7 +55,7 @@ replace (
 	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.18.1
 	k8s.io/kubectl => k8s.io/kubectl v0.18.1
 	k8s.io/kubelet => k8s.io/kubelet v0.18.1
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.0.0-20200410034634-4a75fa4bcfcb
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.0.0-20200413192026-36f88b5f5220
 	k8s.io/metrics => k8s.io/metrics v0.18.1
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.18.1
 	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.18.1

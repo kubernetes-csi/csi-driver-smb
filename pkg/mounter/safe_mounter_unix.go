@@ -18,11 +18,14 @@ limitations under the License.
 
 package mounter
 
-import "k8s.io/kubernetes/pkg/util/mount"
+import (
+	utilexec "k8s.io/utils/exec"
+	"k8s.io/utils/mount"
+)
 
 func NewSafeMounter() (*mount.SafeFormatAndMount, error) {
 	return &mount.SafeFormatAndMount{
 		Interface: mount.New(""),
-		Exec:      mount.NewOsExec(),
+		Exec:      utilexec.New(),
 	}, nil
 }

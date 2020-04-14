@@ -17,6 +17,7 @@ limitations under the License.
 package testsuites
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/onsi/ginkgo"
@@ -54,7 +55,7 @@ func (t *DynamicallyProvisionedResizeVolumeTest) Run(client clientset.Interface,
 		tpod.WaitForSuccess()
 
 		pvcName := tpod.pod.Spec.Volumes[0].VolumeSource.PersistentVolumeClaim.ClaimName
-		pvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Get(pvcName, metav1.GetOptions{})
+		pvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Get(context.TODO(), pvcName, metav1.GetOptions{})
 		if err != nil {
 			framework.ExpectNoError(err, fmt.Sprintf("fail to get original pvc(%s): %v", pvcName, err))
 		}
@@ -66,14 +67,14 @@ func (t *DynamicallyProvisionedResizeVolumeTest) Run(client clientset.Interface,
 		pvc.Spec.Resources.Requests["storage"] = originalSize
 
 		ginkgo.By("resizing the pvc")
-		updatedPvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Update(pvc)
+		updatedPvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Update(context.TODO(), pvc, metav1.UpdateOptions{})
 		if err != nil {
 			framework.ExpectNoError(err, fmt.Sprintf("fail to resize pvc(%s): %v", pvcName, err))
 		}
 		updatedSize := updatedPvc.Spec.Resources.Requests["storage"]
 
 		ginkgo.By("checking the resizing result")
-		newPvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Get(tpod.pod.Spec.Volumes[0].VolumeSource.PersistentVolumeClaim.ClaimName, metav1.GetOptions{})
+		newPvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Get(context.TODO(), tpod.pod.Spec.Volumes[0].VolumeSource.PersistentVolumeClaim.ClaimName, metav1.GetOptions{})
 		if err != nil {
 			framework.ExpectNoError(err, fmt.Sprintf("fail to get new pvc(%s): %v", pvcName, err))
 		}

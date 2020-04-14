@@ -18,6 +18,7 @@ package e2e
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -32,6 +33,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/pborman/uuid"
 	"k8s.io/kubernetes/test/e2e/framework"
+	"k8s.io/kubernetes/test/e2e/framework/config"
 	"sigs.k8s.io/azurefile-csi-driver/pkg/azurefile"
 	"sigs.k8s.io/azurefile-csi-driver/test/e2e/driver"
 	"sigs.k8s.io/azurefile-csi-driver/test/utils/azure"
@@ -67,7 +69,7 @@ var _ = ginkgo.BeforeSuite(func() {
 		kubeconfig := filepath.Join(os.Getenv("HOME"), ".kube", "config")
 		os.Setenv(kubeconfigEnvVar, kubeconfig)
 	}
-	framework.HandleFlags()
+	handleFlags()
 	framework.AfterReadingAllFlags(&framework.TestContext)
 
 	if !isUsingInTreeVolumePlugin && testutil.IsRunningInProw() {
@@ -195,4 +197,12 @@ func convertToPowershellCommandIfNecessary(command string) string {
 	}
 
 	return command
+}
+
+// handleFlags sets up all flags and parses the command line.
+func handleFlags() {
+	config.CopyFlags(config.Flags, flag.CommandLine)
+	framework.RegisterCommonFlags(flag.CommandLine)
+	framework.RegisterClusterFlags(flag.CommandLine)
+	flag.Parse()
 }

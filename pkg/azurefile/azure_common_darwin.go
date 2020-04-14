@@ -21,7 +21,7 @@ package azurefile
 import (
 	"os"
 
-	"k8s.io/kubernetes/pkg/util/mount"
+	"k8s.io/utils/mount"
 )
 
 func SMBMount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {

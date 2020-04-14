@@ -302,10 +302,20 @@ func (d *Driver) ensureMountPoint(target string) (bool, error) {
 		return !notMnt, err
 	}
 
-	if err := d.mounter.MakeDir(target); err != nil {
+	if err := makeDir(target); err != nil {
 		klog.Errorf("MakeDir failed on target: %s (%v)", target, err)
 		return !notMnt, err
 	}
 
 	return false, nil
+}
+
+func makeDir(pathname string) error {
+	err := os.MkdirAll(pathname, os.FileMode(0755))
+	if err != nil {
+		if !os.IsExist(err) {
+			return err
+		}
+	}
+	return nil
 }
