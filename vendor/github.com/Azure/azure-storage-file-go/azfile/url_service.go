@@ -78,7 +78,7 @@ func appendToURLPath(u url.URL, name string) url.URL {
 // https://docs.microsoft.com/en-us/rest/api/storageservices/list-shares.
 func (s ServiceURL) ListSharesSegment(ctx context.Context, marker Marker, o ListSharesOptions) (*ListSharesResponse, error) {
 	prefix, include, maxResults := o.pointers()
-	return s.client.ListSharesSegment(ctx, prefix, marker.val, maxResults, include, nil)
+	return s.client.ListSharesSegment(ctx, prefix, marker.Val, maxResults, include, nil)
 }
 
 // ListSharesOptions defines options available when calling ListSharesSegment.

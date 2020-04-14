@@ -6,6 +6,7 @@ package azfile
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"encoding/xml"
 	"github.com/Azure/azure-pipeline-go/pipeline"
 	"io"
@@ -86,6 +87,67 @@ func (client shareClient) createResponder(resp pipeline.Response) (pipeline.Resp
 	io.Copy(ioutil.Discard, resp.Response().Body)
 	resp.Response().Body.Close()
 	return &ShareCreateResponse{rawResponse: resp.Response()}, err
+}
+
+// CreatePermission create a permission (a security descriptor).
+//
+// sharePermission is a permission (a security descriptor) at the share level. timeout is the timeout parameter is
+// expressed in seconds. For more information, see <a
+// href="https://docs.microsoft.com/en-us/rest/api/storageservices/Setting-Timeouts-for-File-Service-Operations?redirectedfrom=MSDN">Setting
+// Timeouts for File Service Operations.</a>
+func (client shareClient) CreatePermission(ctx context.Context, sharePermission SharePermission, timeout *int32) (*ShareCreatePermissionResponse, error) {
+	if err := validate([]validation{
+		{targetValue: timeout,
+			constraints: []constraint{{target: "timeout", name: null, rule: false,
+				chain: []constraint{{target: "timeout", name: inclusiveMinimum, rule: 0, chain: nil}}}}}}); err != nil {
+		return nil, err
+	}
+	req, err := client.createPermissionPreparer(sharePermission, timeout)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Pipeline().Do(ctx, responderPolicyFactory{responder: client.createPermissionResponder}, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*ShareCreatePermissionResponse), err
+}
+
+// createPermissionPreparer prepares the CreatePermission request.
+func (client shareClient) createPermissionPreparer(sharePermission SharePermission, timeout *int32) (pipeline.Request, error) {
+	req, err := pipeline.NewRequest("PUT", client.url, nil)
+	if err != nil {
+		return req, pipeline.NewError(err, "failed to create request")
+	}
+	params := req.URL.Query()
+	if timeout != nil {
+		params.Set("timeout", strconv.FormatInt(int64(*timeout), 10))
+	}
+	params.Set("restype", "share")
+	params.Set("comp", "filepermission")
+	req.URL.RawQuery = params.Encode()
+	req.Header.Set("x-ms-version", ServiceVersion)
+	b, err := json.Marshal(sharePermission)
+	if err != nil {
+		return req, pipeline.NewError(err, "failed to marshal request body")
+	}
+	req.Header.Set("Content-Type", "application/xml")
+	err = req.SetBody(bytes.NewReader(b))
+	if err != nil {
+		return req, pipeline.NewError(err, "failed to set request body")
+	}
+	return req, nil
+}
+
+// createPermissionResponder handles the response to the CreatePermission request.
+func (client shareClient) createPermissionResponder(resp pipeline.Response) (pipeline.Response, error) {
+	err := validateResponse(resp, http.StatusOK, http.StatusCreated)
+	if resp == nil {
+		return nil, err
+	}
+	io.Copy(ioutil.Discard, resp.Response().Body)
+	resp.Response().Body.Close()
+	return &ShareCreatePermissionResponse{rawResponse: resp.Response()}, err
 }
 
 // CreateSnapshot creates a read-only snapshot of a share.
@@ -261,6 +323,73 @@ func (client shareClient) getAccessPolicyResponder(resp pipeline.Response) (pipe
 	if len(b) > 0 {
 		b = removeBOM(b)
 		err = xml.Unmarshal(b, result)
+		if err != nil {
+			return result, NewResponseError(err, resp.Response(), "failed to unmarshal response body")
+		}
+	}
+	return result, nil
+}
+
+// GetPermission returns the permission (security descriptor) for a given key
+//
+// filePermissionKey is key of the permission to be set for the directory/file. timeout is the timeout parameter is
+// expressed in seconds. For more information, see <a
+// href="https://docs.microsoft.com/en-us/rest/api/storageservices/Setting-Timeouts-for-File-Service-Operations?redirectedfrom=MSDN">Setting
+// Timeouts for File Service Operations.</a>
+func (client shareClient) GetPermission(ctx context.Context, filePermissionKey string, timeout *int32) (*SharePermission, error) {
+	if err := validate([]validation{
+		{targetValue: timeout,
+			constraints: []constraint{{target: "timeout", name: null, rule: false,
+				chain: []constraint{{target: "timeout", name: inclusiveMinimum, rule: 0, chain: nil}}}}}}); err != nil {
+		return nil, err
+	}
+	req, err := client.getPermissionPreparer(filePermissionKey, timeout)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Pipeline().Do(ctx, responderPolicyFactory{responder: client.getPermissionResponder}, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*SharePermission), err
+}
+
+// getPermissionPreparer prepares the GetPermission request.
+func (client shareClient) getPermissionPreparer(filePermissionKey string, timeout *int32) (pipeline.Request, error) {
+	req, err := pipeline.NewRequest("GET", client.url, nil)
+	if err != nil {
+		return req, pipeline.NewError(err, "failed to create request")
+	}
+	params := req.URL.Query()
+	if timeout != nil {
+		params.Set("timeout", strconv.FormatInt(int64(*timeout), 10))
+	}
+	params.Set("restype", "share")
+	params.Set("comp", "filepermission")
+	req.URL.RawQuery = params.Encode()
+	req.Header.Set("x-ms-file-permission-key", filePermissionKey)
+	req.Header.Set("x-ms-version", ServiceVersion)
+	return req, nil
+}
+
+// getPermissionResponder handles the response to the GetPermission request.
+func (client shareClient) getPermissionResponder(resp pipeline.Response) (pipeline.Response, error) {
+	err := validateResponse(resp, http.StatusOK)
+	if resp == nil {
+		return nil, err
+	}
+	result := &SharePermission{rawResponse: resp.Response()}
+	if err != nil {
+		return result, err
+	}
+	defer resp.Response().Body.Close()
+	b, err := ioutil.ReadAll(resp.Response().Body)
+	if err != nil {
+		return result, err
+	}
+	if len(b) > 0 {
+		b = removeBOM(b)
+		err = json.Unmarshal(b, result)
 		if err != nil {
 			return result, NewResponseError(err, resp.Response(), "failed to unmarshal response body")
 		}

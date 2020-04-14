@@ -55,7 +55,7 @@ func (md *Metadata) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 // Marker represents an opaque value used in paged responses.
 type Marker struct {
-	val *string
+	Val *string
 }
 
 // NotDone returns true if the list enumeration should be started or is not yet complete. Specifically, NotDone returns true
@@ -63,14 +63,14 @@ type Marker struct {
 // the service. NotDone also returns true whenever the service returns an interim result portion. NotDone returns false only
 // after the service has returned the final result portion.
 func (m Marker) NotDone() bool {
-	return m.val == nil || *m.val != ""
+	return m.Val == nil || *m.Val != ""
 }
 
 // UnmarshalXML implements the xml.Unmarshaler interface for Marker.
 func (m *Marker) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var out string
 	err := d.DecodeElement(&out, &start)
-	m.val = &out
+	m.Val = &out
 	return err
 }
 
@@ -163,6 +163,151 @@ func PossibleListSharesIncludeTypeValues() []ListSharesIncludeType {
 	return []ListSharesIncludeType{ListSharesIncludeMetadata, ListSharesIncludeNone, ListSharesIncludeSnapshots}
 }
 
+// StorageErrorCodeType enumerates the values for storage error code type.
+type StorageErrorCodeType string
+
+const (
+	// StorageErrorCodeAccountAlreadyExists ...
+	StorageErrorCodeAccountAlreadyExists StorageErrorCodeType = "AccountAlreadyExists"
+	// StorageErrorCodeAccountBeingCreated ...
+	StorageErrorCodeAccountBeingCreated StorageErrorCodeType = "AccountBeingCreated"
+	// StorageErrorCodeAccountIsDisabled ...
+	StorageErrorCodeAccountIsDisabled StorageErrorCodeType = "AccountIsDisabled"
+	// StorageErrorCodeAuthenticationFailed ...
+	StorageErrorCodeAuthenticationFailed StorageErrorCodeType = "AuthenticationFailed"
+	// StorageErrorCodeAuthorizationFailure ...
+	StorageErrorCodeAuthorizationFailure StorageErrorCodeType = "AuthorizationFailure"
+	// StorageErrorCodeAuthorizationPermissionMismatch ...
+	StorageErrorCodeAuthorizationPermissionMismatch StorageErrorCodeType = "AuthorizationPermissionMismatch"
+	// StorageErrorCodeAuthorizationProtocolMismatch ...
+	StorageErrorCodeAuthorizationProtocolMismatch StorageErrorCodeType = "AuthorizationProtocolMismatch"
+	// StorageErrorCodeAuthorizationResourceTypeMismatch ...
+	StorageErrorCodeAuthorizationResourceTypeMismatch StorageErrorCodeType = "AuthorizationResourceTypeMismatch"
+	// StorageErrorCodeAuthorizationServiceMismatch ...
+	StorageErrorCodeAuthorizationServiceMismatch StorageErrorCodeType = "AuthorizationServiceMismatch"
+	// StorageErrorCodeAuthorizationSourceIPMismatch ...
+	StorageErrorCodeAuthorizationSourceIPMismatch StorageErrorCodeType = "AuthorizationSourceIPMismatch"
+	// StorageErrorCodeCannotDeleteFileOrDirectory ...
+	StorageErrorCodeCannotDeleteFileOrDirectory StorageErrorCodeType = "CannotDeleteFileOrDirectory"
+	// StorageErrorCodeClientCacheFlushDelay ...
+	StorageErrorCodeClientCacheFlushDelay StorageErrorCodeType = "ClientCacheFlushDelay"
+	// StorageErrorCodeConditionHeadersNotSupported ...
+	StorageErrorCodeConditionHeadersNotSupported StorageErrorCodeType = "ConditionHeadersNotSupported"
+	// StorageErrorCodeConditionNotMet ...
+	StorageErrorCodeConditionNotMet StorageErrorCodeType = "ConditionNotMet"
+	// StorageErrorCodeContainerQuotaDowngradeNotAllowed ...
+	StorageErrorCodeContainerQuotaDowngradeNotAllowed StorageErrorCodeType = "ContainerQuotaDowngradeNotAllowed"
+	// StorageErrorCodeDeletePending ...
+	StorageErrorCodeDeletePending StorageErrorCodeType = "DeletePending"
+	// StorageErrorCodeDirectoryNotEmpty ...
+	StorageErrorCodeDirectoryNotEmpty StorageErrorCodeType = "DirectoryNotEmpty"
+	// StorageErrorCodeEmptyMetadataKey ...
+	StorageErrorCodeEmptyMetadataKey StorageErrorCodeType = "EmptyMetadataKey"
+	// StorageErrorCodeFeatureVersionMismatch ...
+	StorageErrorCodeFeatureVersionMismatch StorageErrorCodeType = "FeatureVersionMismatch"
+	// StorageErrorCodeFileLockConflict ...
+	StorageErrorCodeFileLockConflict StorageErrorCodeType = "FileLockConflict"
+	// StorageErrorCodeInsufficientAccountPermissions ...
+	StorageErrorCodeInsufficientAccountPermissions StorageErrorCodeType = "InsufficientAccountPermissions"
+	// StorageErrorCodeInternalError ...
+	StorageErrorCodeInternalError StorageErrorCodeType = "InternalError"
+	// StorageErrorCodeInvalidAuthenticationInfo ...
+	StorageErrorCodeInvalidAuthenticationInfo StorageErrorCodeType = "InvalidAuthenticationInfo"
+	// StorageErrorCodeInvalidFileOrDirectoryPathName ...
+	StorageErrorCodeInvalidFileOrDirectoryPathName StorageErrorCodeType = "InvalidFileOrDirectoryPathName"
+	// StorageErrorCodeInvalidHeaderValue ...
+	StorageErrorCodeInvalidHeaderValue StorageErrorCodeType = "InvalidHeaderValue"
+	// StorageErrorCodeInvalidHTTPVerb ...
+	StorageErrorCodeInvalidHTTPVerb StorageErrorCodeType = "InvalidHttpVerb"
+	// StorageErrorCodeInvalidInput ...
+	StorageErrorCodeInvalidInput StorageErrorCodeType = "InvalidInput"
+	// StorageErrorCodeInvalidMd5 ...
+	StorageErrorCodeInvalidMd5 StorageErrorCodeType = "InvalidMd5"
+	// StorageErrorCodeInvalidMetadata ...
+	StorageErrorCodeInvalidMetadata StorageErrorCodeType = "InvalidMetadata"
+	// StorageErrorCodeInvalidQueryParameterValue ...
+	StorageErrorCodeInvalidQueryParameterValue StorageErrorCodeType = "InvalidQueryParameterValue"
+	// StorageErrorCodeInvalidRange ...
+	StorageErrorCodeInvalidRange StorageErrorCodeType = "InvalidRange"
+	// StorageErrorCodeInvalidResourceName ...
+	StorageErrorCodeInvalidResourceName StorageErrorCodeType = "InvalidResourceName"
+	// StorageErrorCodeInvalidURI ...
+	StorageErrorCodeInvalidURI StorageErrorCodeType = "InvalidUri"
+	// StorageErrorCodeInvalidXMLDocument ...
+	StorageErrorCodeInvalidXMLDocument StorageErrorCodeType = "InvalidXmlDocument"
+	// StorageErrorCodeInvalidXMLNodeValue ...
+	StorageErrorCodeInvalidXMLNodeValue StorageErrorCodeType = "InvalidXmlNodeValue"
+	// StorageErrorCodeMd5Mismatch ...
+	StorageErrorCodeMd5Mismatch StorageErrorCodeType = "Md5Mismatch"
+	// StorageErrorCodeMetadataTooLarge ...
+	StorageErrorCodeMetadataTooLarge StorageErrorCodeType = "MetadataTooLarge"
+	// StorageErrorCodeMissingContentLengthHeader ...
+	StorageErrorCodeMissingContentLengthHeader StorageErrorCodeType = "MissingContentLengthHeader"
+	// StorageErrorCodeMissingRequiredHeader ...
+	StorageErrorCodeMissingRequiredHeader StorageErrorCodeType = "MissingRequiredHeader"
+	// StorageErrorCodeMissingRequiredQueryParameter ...
+	StorageErrorCodeMissingRequiredQueryParameter StorageErrorCodeType = "MissingRequiredQueryParameter"
+	// StorageErrorCodeMissingRequiredXMLNode ...
+	StorageErrorCodeMissingRequiredXMLNode StorageErrorCodeType = "MissingRequiredXmlNode"
+	// StorageErrorCodeMultipleConditionHeadersNotSupported ...
+	StorageErrorCodeMultipleConditionHeadersNotSupported StorageErrorCodeType = "MultipleConditionHeadersNotSupported"
+	// StorageErrorCodeNone represents an empty StorageErrorCodeType.
+	StorageErrorCodeNone StorageErrorCodeType = ""
+	// StorageErrorCodeOperationTimedOut ...
+	StorageErrorCodeOperationTimedOut StorageErrorCodeType = "OperationTimedOut"
+	// StorageErrorCodeOutOfRangeInput ...
+	StorageErrorCodeOutOfRangeInput StorageErrorCodeType = "OutOfRangeInput"
+	// StorageErrorCodeOutOfRangeQueryParameterValue ...
+	StorageErrorCodeOutOfRangeQueryParameterValue StorageErrorCodeType = "OutOfRangeQueryParameterValue"
+	// StorageErrorCodeParentNotFound ...
+	StorageErrorCodeParentNotFound StorageErrorCodeType = "ParentNotFound"
+	// StorageErrorCodeReadOnlyAttribute ...
+	StorageErrorCodeReadOnlyAttribute StorageErrorCodeType = "ReadOnlyAttribute"
+	// StorageErrorCodeRequestBodyTooLarge ...
+	StorageErrorCodeRequestBodyTooLarge StorageErrorCodeType = "RequestBodyTooLarge"
+	// StorageErrorCodeRequestURLFailedToParse ...
+	StorageErrorCodeRequestURLFailedToParse StorageErrorCodeType = "RequestUrlFailedToParse"
+	// StorageErrorCodeResourceAlreadyExists ...
+	StorageErrorCodeResourceAlreadyExists StorageErrorCodeType = "ResourceAlreadyExists"
+	// StorageErrorCodeResourceNotFound ...
+	StorageErrorCodeResourceNotFound StorageErrorCodeType = "ResourceNotFound"
+	// StorageErrorCodeResourceTypeMismatch ...
+	StorageErrorCodeResourceTypeMismatch StorageErrorCodeType = "ResourceTypeMismatch"
+	// StorageErrorCodeServerBusy ...
+	StorageErrorCodeServerBusy StorageErrorCodeType = "ServerBusy"
+	// StorageErrorCodeShareAlreadyExists ...
+	StorageErrorCodeShareAlreadyExists StorageErrorCodeType = "ShareAlreadyExists"
+	// StorageErrorCodeShareBeingDeleted ...
+	StorageErrorCodeShareBeingDeleted StorageErrorCodeType = "ShareBeingDeleted"
+	// StorageErrorCodeShareDisabled ...
+	StorageErrorCodeShareDisabled StorageErrorCodeType = "ShareDisabled"
+	// StorageErrorCodeShareHasSnapshots ...
+	StorageErrorCodeShareHasSnapshots StorageErrorCodeType = "ShareHasSnapshots"
+	// StorageErrorCodeShareNotFound ...
+	StorageErrorCodeShareNotFound StorageErrorCodeType = "ShareNotFound"
+	// StorageErrorCodeShareSnapshotCountExceeded ...
+	StorageErrorCodeShareSnapshotCountExceeded StorageErrorCodeType = "ShareSnapshotCountExceeded"
+	// StorageErrorCodeShareSnapshotInProgress ...
+	StorageErrorCodeShareSnapshotInProgress StorageErrorCodeType = "ShareSnapshotInProgress"
+	// StorageErrorCodeShareSnapshotOperationNotSupported ...
+	StorageErrorCodeShareSnapshotOperationNotSupported StorageErrorCodeType = "ShareSnapshotOperationNotSupported"
+	// StorageErrorCodeSharingViolation ...
+	StorageErrorCodeSharingViolation StorageErrorCodeType = "SharingViolation"
+	// StorageErrorCodeUnsupportedHeader ...
+	StorageErrorCodeUnsupportedHeader StorageErrorCodeType = "UnsupportedHeader"
+	// StorageErrorCodeUnsupportedHTTPVerb ...
+	StorageErrorCodeUnsupportedHTTPVerb StorageErrorCodeType = "UnsupportedHttpVerb"
+	// StorageErrorCodeUnsupportedQueryParameter ...
+	StorageErrorCodeUnsupportedQueryParameter StorageErrorCodeType = "UnsupportedQueryParameter"
+	// StorageErrorCodeUnsupportedXMLNode ...
+	StorageErrorCodeUnsupportedXMLNode StorageErrorCodeType = "UnsupportedXmlNode"
+)
+
+// PossibleStorageErrorCodeTypeValues returns an array of possible values for the StorageErrorCodeType const type.
+func PossibleStorageErrorCodeTypeValues() []StorageErrorCodeType {
+	return []StorageErrorCodeType{StorageErrorCodeAccountAlreadyExists, StorageErrorCodeAccountBeingCreated, StorageErrorCodeAccountIsDisabled, StorageErrorCodeAuthenticationFailed, StorageErrorCodeAuthorizationFailure, StorageErrorCodeAuthorizationPermissionMismatch, StorageErrorCodeAuthorizationProtocolMismatch, StorageErrorCodeAuthorizationResourceTypeMismatch, StorageErrorCodeAuthorizationServiceMismatch, StorageErrorCodeAuthorizationSourceIPMismatch, StorageErrorCodeCannotDeleteFileOrDirectory, StorageErrorCodeClientCacheFlushDelay, StorageErrorCodeConditionHeadersNotSupported, StorageErrorCodeConditionNotMet, StorageErrorCodeContainerQuotaDowngradeNotAllowed, StorageErrorCodeDeletePending, StorageErrorCodeDirectoryNotEmpty, StorageErrorCodeEmptyMetadataKey, StorageErrorCodeFeatureVersionMismatch, StorageErrorCodeFileLockConflict, StorageErrorCodeInsufficientAccountPermissions, StorageErrorCodeInternalError, StorageErrorCodeInvalidAuthenticationInfo, StorageErrorCodeInvalidFileOrDirectoryPathName, StorageErrorCodeInvalidHeaderValue, StorageErrorCodeInvalidHTTPVerb, StorageErrorCodeInvalidInput, StorageErrorCodeInvalidMd5, StorageErrorCodeInvalidMetadata, StorageErrorCodeInvalidQueryParameterValue, StorageErrorCodeInvalidRange, StorageErrorCodeInvalidResourceName, StorageErrorCodeInvalidURI, StorageErrorCodeInvalidXMLDocument, StorageErrorCodeInvalidXMLNodeValue, StorageErrorCodeMd5Mismatch, StorageErrorCodeMetadataTooLarge, StorageErrorCodeMissingContentLengthHeader, StorageErrorCodeMissingRequiredHeader, StorageErrorCodeMissingRequiredQueryParameter, StorageErrorCodeMissingRequiredXMLNode, StorageErrorCodeMultipleConditionHeadersNotSupported, StorageErrorCodeNone, StorageErrorCodeOperationTimedOut, StorageErrorCodeOutOfRangeInput, StorageErrorCodeOutOfRangeQueryParameterValue, StorageErrorCodeParentNotFound, StorageErrorCodeReadOnlyAttribute, StorageErrorCodeRequestBodyTooLarge, StorageErrorCodeRequestURLFailedToParse, StorageErrorCodeResourceAlreadyExists, StorageErrorCodeResourceNotFound, StorageErrorCodeResourceTypeMismatch, StorageErrorCodeServerBusy, StorageErrorCodeShareAlreadyExists, StorageErrorCodeShareBeingDeleted, StorageErrorCodeShareDisabled, StorageErrorCodeShareHasSnapshots, StorageErrorCodeShareNotFound, StorageErrorCodeShareSnapshotCountExceeded, StorageErrorCodeShareSnapshotInProgress, StorageErrorCodeShareSnapshotOperationNotSupported, StorageErrorCodeSharingViolation, StorageErrorCodeUnsupportedHeader, StorageErrorCodeUnsupportedHTTPVerb, StorageErrorCodeUnsupportedQueryParameter, StorageErrorCodeUnsupportedXMLNode}
+}
+
 // AccessPolicy - An Access policy.
 type AccessPolicy struct {
 	// Start - The date-time the policy is active.
@@ -245,6 +390,41 @@ func (dcr DirectoryCreateResponse) ETag() ETag {
 	return ETag(dcr.rawResponse.Header.Get("ETag"))
 }
 
+// FileAttributes returns the value for header x-ms-file-attributes.
+func (dcr DirectoryCreateResponse) FileAttributes() string {
+	return dcr.rawResponse.Header.Get("x-ms-file-attributes")
+}
+
+// FileChangeTime returns the value for header x-ms-file-change-time.
+func (dcr DirectoryCreateResponse) FileChangeTime() string {
+	return dcr.rawResponse.Header.Get("x-ms-file-change-time")
+}
+
+// FileCreationTime returns the value for header x-ms-file-creation-time.
+func (dcr DirectoryCreateResponse) FileCreationTime() string {
+	return dcr.rawResponse.Header.Get("x-ms-file-creation-time")
+}
+
+// FileID returns the value for header x-ms-file-id.
+func (dcr DirectoryCreateResponse) FileID() string {
+	return dcr.rawResponse.Header.Get("x-ms-file-id")
+}
+
+// FileLastWriteTime returns the value for header x-ms-file-last-write-time.
+func (dcr DirectoryCreateResponse) FileLastWriteTime() string {
+	return dcr.rawResponse.Header.Get("x-ms-file-last-write-time")
+}
+
+// FileParentID returns the value for header x-ms-file-parent-id.
+func (dcr DirectoryCreateResponse) FileParentID() string {
+	return dcr.rawResponse.Header.Get("x-ms-file-parent-id")
+}
+
+// FilePermissionKey returns the value for header x-ms-file-permission-key.
+func (dcr DirectoryCreateResponse) FilePermissionKey() string {
+	return dcr.rawResponse.Header.Get("x-ms-file-permission-key")
+}
+
 // IsServerEncrypted returns the value for header x-ms-request-server-encrypted.
 func (dcr DirectoryCreateResponse) IsServerEncrypted() string {
 	return dcr.rawResponse.Header.Get("x-ms-request-server-encrypted")
@@ -321,6 +501,72 @@ func (ddr DirectoryDeleteResponse) Version() string {
 	return ddr.rawResponse.Header.Get("x-ms-version")
 }
 
+// DirectoryForceCloseHandlesResponse ...
+type DirectoryForceCloseHandlesResponse struct {
+	rawResponse *http.Response
+}
+
+// Response returns the raw HTTP response object.
+func (dfchr DirectoryForceCloseHandlesResponse) Response() *http.Response {
+	return dfchr.rawResponse
+}
+
+// StatusCode returns the HTTP status code of the response, e.g. 200.
+func (dfchr DirectoryForceCloseHandlesResponse) StatusCode() int {
+	return dfchr.rawResponse.StatusCode
+}
+
+// Status returns the HTTP status message of the response, e.g. "200 OK".
+func (dfchr DirectoryForceCloseHandlesResponse) Status() string {
+	return dfchr.rawResponse.Status
+}
+
+// Date returns the value for header Date.
+func (dfchr DirectoryForceCloseHandlesResponse) Date() time.Time {
+	s := dfchr.rawResponse.Header.Get("Date")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// ErrorCode returns the value for header x-ms-error-code.
+func (dfchr DirectoryForceCloseHandlesResponse) ErrorCode() string {
+	return dfchr.rawResponse.Header.Get("x-ms-error-code")
+}
+
+// Marker returns the value for header x-ms-marker.
+func (dfchr DirectoryForceCloseHandlesResponse) Marker() string {
+	return dfchr.rawResponse.Header.Get("x-ms-marker")
+}
+
+// NumberOfHandlesClosed returns the value for header x-ms-number-of-handles-closed.
+func (dfchr DirectoryForceCloseHandlesResponse) NumberOfHandlesClosed() int32 {
+	s := dfchr.rawResponse.Header.Get("x-ms-number-of-handles-closed")
+	if s == "" {
+		return -1
+	}
+	i, err := strconv.ParseInt(s, 10, 32)
+	if err != nil {
+		i = 0
+	}
+	return int32(i)
+}
+
+// RequestID returns the value for header x-ms-request-id.
+func (dfchr DirectoryForceCloseHandlesResponse) RequestID() string {
+	return dfchr.rawResponse.Header.Get("x-ms-request-id")
+}
+
+// Version returns the value for header x-ms-version.
+func (dfchr DirectoryForceCloseHandlesResponse) Version() string {
+	return dfchr.rawResponse.Header.Get("x-ms-version")
+}
+
 // DirectoryGetPropertiesResponse ...
 type DirectoryGetPropertiesResponse struct {
 	rawResponse *http.Response
@@ -377,6 +623,41 @@ func (dgpr DirectoryGetPropertiesResponse) ETag() ETag {
 	return ETag(dgpr.rawResponse.Header.Get("ETag"))
 }
 
+// FileAttributes returns the value for header x-ms-file-attributes.
+func (dgpr DirectoryGetPropertiesResponse) FileAttributes() string {
+	return dgpr.rawResponse.Header.Get("x-ms-file-attributes")
+}
+
+// FileChangeTime returns the value for header x-ms-file-change-time.
+func (dgpr DirectoryGetPropertiesResponse) FileChangeTime() string {
+	return dgpr.rawResponse.Header.Get("x-ms-file-change-time")
+}
+
+// FileCreationTime returns the value for header x-ms-file-creation-time.
+func (dgpr DirectoryGetPropertiesResponse) FileCreationTime() string {
+	return dgpr.rawResponse.Header.Get("x-ms-file-creation-time")
+}
+
+// FileID returns the value for header x-ms-file-id.
+func (dgpr DirectoryGetPropertiesResponse) FileID() string {
+	return dgpr.rawResponse.Header.Get("x-ms-file-id")
+}
+
+// FileLastWriteTime returns the value for header x-ms-file-last-write-time.
+func (dgpr DirectoryGetPropertiesResponse) FileLastWriteTime() string {
+	return dgpr.rawResponse.Header.Get("x-ms-file-last-write-time")
+}
+
+// FileParentID returns the value for header x-ms-file-parent-id.
+func (dgpr DirectoryGetPropertiesResponse) FileParentID() string {
+	return dgpr.rawResponse.Header.Get("x-ms-file-parent-id")
+}
+
+// FilePermissionKey returns the value for header x-ms-file-permission-key.
+func (dgpr DirectoryGetPropertiesResponse) FilePermissionKey() string {
+	return dgpr.rawResponse.Header.Get("x-ms-file-permission-key")
+}
+
 // IsServerEncrypted returns the value for header x-ms-server-encrypted.
 func (dgpr DirectoryGetPropertiesResponse) IsServerEncrypted() string {
 	return dgpr.rawResponse.Header.Get("x-ms-server-encrypted")
@@ -404,6 +685,13 @@ func (dgpr DirectoryGetPropertiesResponse) RequestID() string {
 func (dgpr DirectoryGetPropertiesResponse) Version() string {
 	return dgpr.rawResponse.Header.Get("x-ms-version")
 }
+
+// DirectoryItem - A listed directory item.
+//type DirectoryItem struct {
+//	// XMLName is used for marshalling and is subject to removal in a future release.
+//	XMLName xml.Name `xml:"Directory"`
+//	Name    string   `xml:"Name"`
+//}
 
 // DirectorySetMetadataResponse ...
 type DirectorySetMetadataResponse struct {
@@ -463,13 +751,119 @@ func (dsmr DirectorySetMetadataResponse) Version() string {
 	return dsmr.rawResponse.Header.Get("x-ms-version")
 }
 
-// downloadResponse - Wraps the response from the fileClient.Download method.
-type downloadResponse struct {
+// DirectorySetPropertiesResponse ...
+type DirectorySetPropertiesResponse struct {
+	rawResponse *http.Response
+}
+
+// Response returns the raw HTTP response object.
+func (dspr DirectorySetPropertiesResponse) Response() *http.Response {
+	return dspr.rawResponse
+}
+
+// StatusCode returns the HTTP status code of the response, e.g. 200.
+func (dspr DirectorySetPropertiesResponse) StatusCode() int {
+	return dspr.rawResponse.StatusCode
+}
+
+// Status returns the HTTP status message of the response, e.g. "200 OK".
+func (dspr DirectorySetPropertiesResponse) Status() string {
+	return dspr.rawResponse.Status
+}
+
+// Date returns the value for header Date.
+func (dspr DirectorySetPropertiesResponse) Date() time.Time {
+	s := dspr.rawResponse.Header.Get("Date")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// ErrorCode returns the value for header x-ms-error-code.
+func (dspr DirectorySetPropertiesResponse) ErrorCode() string {
+	return dspr.rawResponse.Header.Get("x-ms-error-code")
+}
+
+// ETag returns the value for header ETag.
+func (dspr DirectorySetPropertiesResponse) ETag() ETag {
+	return ETag(dspr.rawResponse.Header.Get("ETag"))
+}
+
+// FileAttributes returns the value for header x-ms-file-attributes.
+func (dspr DirectorySetPropertiesResponse) FileAttributes() string {
+	return dspr.rawResponse.Header.Get("x-ms-file-attributes")
+}
+
+// FileChangeTime returns the value for header x-ms-file-change-time.
+func (dspr DirectorySetPropertiesResponse) FileChangeTime() string {
+	return dspr.rawResponse.Header.Get("x-ms-file-change-time")
+}
+
+// FileCreationTime returns the value for header x-ms-file-creation-time.
+func (dspr DirectorySetPropertiesResponse) FileCreationTime() string {
+	return dspr.rawResponse.Header.Get("x-ms-file-creation-time")
+}
+
+// FileID returns the value for header x-ms-file-id.
+func (dspr DirectorySetPropertiesResponse) FileID() string {
+	return dspr.rawResponse.Header.Get("x-ms-file-id")
+}
+
+// FileLastWriteTime returns the value for header x-ms-file-last-write-time.
+func (dspr DirectorySetPropertiesResponse) FileLastWriteTime() string {
+	return dspr.rawResponse.Header.Get("x-ms-file-last-write-time")
+}
+
+// FileParentID returns the value for header x-ms-file-parent-id.
+func (dspr DirectorySetPropertiesResponse) FileParentID() string {
+	return dspr.rawResponse.Header.Get("x-ms-file-parent-id")
+}
+
+// FilePermissionKey returns the value for header x-ms-file-permission-key.
+func (dspr DirectorySetPropertiesResponse) FilePermissionKey() string {
+	return dspr.rawResponse.Header.Get("x-ms-file-permission-key")
+}
+
+// IsServerEncrypted returns the value for header x-ms-request-server-encrypted.
+func (dspr DirectorySetPropertiesResponse) IsServerEncrypted() string {
+	return dspr.rawResponse.Header.Get("x-ms-request-server-encrypted")
+}
+
+// LastModified returns the value for header Last-Modified.
+func (dspr DirectorySetPropertiesResponse) LastModified() time.Time {
+	s := dspr.rawResponse.Header.Get("Last-Modified")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// RequestID returns the value for header x-ms-request-id.
+func (dspr DirectorySetPropertiesResponse) RequestID() string {
+	return dspr.rawResponse.Header.Get("x-ms-request-id")
+}
+
+// Version returns the value for header x-ms-version.
+func (dspr DirectorySetPropertiesResponse) Version() string {
+	return dspr.rawResponse.Header.Get("x-ms-version")
+}
+
+// DownloadResponse - Wraps the response from the fileClient.Download method.
+type DownloadResponse struct {
 	rawResponse *http.Response
 }
 
 // NewMetadata returns user-defined key/value pairs.
-func (dr downloadResponse) NewMetadata() Metadata {
+func (dr DownloadResponse) NewMetadata() Metadata {
 	md := Metadata{}
 	for k, v := range dr.rawResponse.Header {
 		if len(k) > mdPrefixLen {
@@ -482,52 +876,52 @@ func (dr downloadResponse) NewMetadata() Metadata {
 }
 
 // Response returns the raw HTTP response object.
-func (dr downloadResponse) Response() *http.Response {
+func (dr DownloadResponse) Response() *http.Response {
 	return dr.rawResponse
 }
 
 // StatusCode returns the HTTP status code of the response, e.g. 200.
-func (dr downloadResponse) StatusCode() int {
+func (dr DownloadResponse) StatusCode() int {
 	return dr.rawResponse.StatusCode
 }
 
 // Status returns the HTTP status message of the response, e.g. "200 OK".
-func (dr downloadResponse) Status() string {
+func (dr DownloadResponse) Status() string {
 	return dr.rawResponse.Status
 }
 
 // Body returns the raw HTTP response object's Body.
-func (dr downloadResponse) Body() io.ReadCloser {
+func (dr DownloadResponse) Body() io.ReadCloser {
 	return dr.rawResponse.Body
 }
 
 // AcceptRanges returns the value for header Accept-Ranges.
-func (dr downloadResponse) AcceptRanges() string {
+func (dr DownloadResponse) AcceptRanges() string {
 	return dr.rawResponse.Header.Get("Accept-Ranges")
 }
 
 // CacheControl returns the value for header Cache-Control.
-func (dr downloadResponse) CacheControl() string {
+func (dr DownloadResponse) CacheControl() string {
 	return dr.rawResponse.Header.Get("Cache-Control")
 }
 
 // ContentDisposition returns the value for header Content-Disposition.
-func (dr downloadResponse) ContentDisposition() string {
+func (dr DownloadResponse) ContentDisposition() string {
 	return dr.rawResponse.Header.Get("Content-Disposition")
 }
 
 // ContentEncoding returns the value for header Content-Encoding.
-func (dr downloadResponse) ContentEncoding() string {
+func (dr DownloadResponse) ContentEncoding() string {
 	return dr.rawResponse.Header.Get("Content-Encoding")
 }
 
 // ContentLanguage returns the value for header Content-Language.
-func (dr downloadResponse) ContentLanguage() string {
+func (dr DownloadResponse) ContentLanguage() string {
 	return dr.rawResponse.Header.Get("Content-Language")
 }
 
 // ContentLength returns the value for header Content-Length.
-func (dr downloadResponse) ContentLength() int64 {
+func (dr DownloadResponse) ContentLength() int64 {
 	s := dr.rawResponse.Header.Get("Content-Length")
 	if s == "" {
 		return -1
@@ -540,7 +934,7 @@ func (dr downloadResponse) ContentLength() int64 {
 }
 
 // ContentMD5 returns the value for header Content-MD5.
-func (dr downloadResponse) ContentMD5() []byte {
+func (dr DownloadResponse) ContentMD5() []byte {
 	s := dr.rawResponse.Header.Get("Content-MD5")
 	if s == "" {
 		return nil
@@ -553,17 +947,17 @@ func (dr downloadResponse) ContentMD5() []byte {
 }
 
 // ContentRange returns the value for header Content-Range.
-func (dr downloadResponse) ContentRange() string {
+func (dr DownloadResponse) ContentRange() string {
 	return dr.rawResponse.Header.Get("Content-Range")
 }
 
 // ContentType returns the value for header Content-Type.
-func (dr downloadResponse) ContentType() string {
+func (dr DownloadResponse) ContentType() string {
 	return dr.rawResponse.Header.Get("Content-Type")
 }
 
 // CopyCompletionTime returns the value for header x-ms-copy-completion-time.
-func (dr downloadResponse) CopyCompletionTime() time.Time {
+func (dr DownloadResponse) CopyCompletionTime() time.Time {
 	s := dr.rawResponse.Header.Get("x-ms-copy-completion-time")
 	if s == "" {
 		return time.Time{}
@@ -576,32 +970,32 @@ func (dr downloadResponse) CopyCompletionTime() time.Time {
 }
 
 // CopyID returns the value for header x-ms-copy-id.
-func (dr downloadResponse) CopyID() string {
+func (dr DownloadResponse) CopyID() string {
 	return dr.rawResponse.Header.Get("x-ms-copy-id")
 }
 
 // CopyProgress returns the value for header x-ms-copy-progress.
-func (dr downloadResponse) CopyProgress() string {
+func (dr DownloadResponse) CopyProgress() string {
 	return dr.rawResponse.Header.Get("x-ms-copy-progress")
 }
 
 // CopySource returns the value for header x-ms-copy-source.
-func (dr downloadResponse) CopySource() string {
+func (dr DownloadResponse) CopySource() string {
 	return dr.rawResponse.Header.Get("x-ms-copy-source")
 }
 
 // CopyStatus returns the value for header x-ms-copy-status.
-func (dr downloadResponse) CopyStatus() CopyStatusType {
+func (dr DownloadResponse) CopyStatus() CopyStatusType {
 	return CopyStatusType(dr.rawResponse.Header.Get("x-ms-copy-status"))
 }
 
 // CopyStatusDescription returns the value for header x-ms-copy-status-description.
-func (dr downloadResponse) CopyStatusDescription() string {
+func (dr DownloadResponse) CopyStatusDescription() string {
 	return dr.rawResponse.Header.Get("x-ms-copy-status-description")
 }
 
 // Date returns the value for header Date.
-func (dr downloadResponse) Date() time.Time {
+func (dr DownloadResponse) Date() time.Time {
 	s := dr.rawResponse.Header.Get("Date")
 	if s == "" {
 		return time.Time{}
@@ -614,17 +1008,27 @@ func (dr downloadResponse) Date() time.Time {
 }
 
 // ErrorCode returns the value for header x-ms-error-code.
-func (dr downloadResponse) ErrorCode() string {
+func (dr DownloadResponse) ErrorCode() string {
 	return dr.rawResponse.Header.Get("x-ms-error-code")
 }
 
 // ETag returns the value for header ETag.
-func (dr downloadResponse) ETag() ETag {
+func (dr DownloadResponse) ETag() ETag {
 	return ETag(dr.rawResponse.Header.Get("ETag"))
 }
 
+// FileAttributes returns the value for header x-ms-file-attributes.
+func (dr DownloadResponse) FileAttributes() string {
+	return dr.rawResponse.Header.Get("x-ms-file-attributes")
+}
+
+// FileChangeTime returns the value for header x-ms-file-change-time.
+func (dr DownloadResponse) FileChangeTime() string {
+	return dr.rawResponse.Header.Get("x-ms-file-change-time")
+}
+
 // FileContentMD5 returns the value for header x-ms-content-md5.
-func (dr downloadResponse) FileContentMD5() []byte {
+func (dr DownloadResponse) FileContentMD5() []byte {
 	s := dr.rawResponse.Header.Get("x-ms-content-md5")
 	if s == "" {
 		return nil
@@ -636,13 +1040,38 @@ func (dr downloadResponse) FileContentMD5() []byte {
 	return b
 }
 
+// FileCreationTime returns the value for header x-ms-file-creation-time.
+func (dr DownloadResponse) FileCreationTime() string {
+	return dr.rawResponse.Header.Get("x-ms-file-creation-time")
+}
+
+// FileID returns the value for header x-ms-file-id.
+func (dr DownloadResponse) FileID() string {
+	return dr.rawResponse.Header.Get("x-ms-file-id")
+}
+
+// FileLastWriteTime returns the value for header x-ms-file-last-write-time.
+func (dr DownloadResponse) FileLastWriteTime() string {
+	return dr.rawResponse.Header.Get("x-ms-file-last-write-time")
+}
+
+// FileParentID returns the value for header x-ms-file-parent-id.
+func (dr DownloadResponse) FileParentID() string {
+	return dr.rawResponse.Header.Get("x-ms-file-parent-id")
+}
+
+// FilePermissionKey returns the value for header x-ms-file-permission-key.
+func (dr DownloadResponse) FilePermissionKey() string {
+	return dr.rawResponse.Header.Get("x-ms-file-permission-key")
+}
+
 // IsServerEncrypted returns the value for header x-ms-server-encrypted.
-func (dr downloadResponse) IsServerEncrypted() string {
+func (dr DownloadResponse) IsServerEncrypted() string {
 	return dr.rawResponse.Header.Get("x-ms-server-encrypted")
 }
 
 // LastModified returns the value for header Last-Modified.
-func (dr downloadResponse) LastModified() time.Time {
+func (dr DownloadResponse) LastModified() time.Time {
 	s := dr.rawResponse.Header.Get("Last-Modified")
 	if s == "" {
 		return time.Time{}
@@ -655,12 +1084,12 @@ func (dr downloadResponse) LastModified() time.Time {
 }
 
 // RequestID returns the value for header x-ms-request-id.
-func (dr downloadResponse) RequestID() string {
+func (dr DownloadResponse) RequestID() string {
 	return dr.rawResponse.Header.Get("x-ms-request-id")
 }
 
 // Version returns the value for header x-ms-version.
-func (dr downloadResponse) Version() string {
+func (dr DownloadResponse) Version() string {
 	return dr.rawResponse.Header.Get("x-ms-version")
 }
 
@@ -755,6 +1184,41 @@ func (fcr FileCreateResponse) ETag() ETag {
 	return ETag(fcr.rawResponse.Header.Get("ETag"))
 }
 
+// FileAttributes returns the value for header x-ms-file-attributes.
+func (fcr FileCreateResponse) FileAttributes() string {
+	return fcr.rawResponse.Header.Get("x-ms-file-attributes")
+}
+
+// FileChangeTime returns the value for header x-ms-file-change-time.
+func (fcr FileCreateResponse) FileChangeTime() string {
+	return fcr.rawResponse.Header.Get("x-ms-file-change-time")
+}
+
+// FileCreationTime returns the value for header x-ms-file-creation-time.
+func (fcr FileCreateResponse) FileCreationTime() string {
+	return fcr.rawResponse.Header.Get("x-ms-file-creation-time")
+}
+
+// FileID returns the value for header x-ms-file-id.
+func (fcr FileCreateResponse) FileID() string {
+	return fcr.rawResponse.Header.Get("x-ms-file-id")
+}
+
+// FileLastWriteTime returns the value for header x-ms-file-last-write-time.
+func (fcr FileCreateResponse) FileLastWriteTime() string {
+	return fcr.rawResponse.Header.Get("x-ms-file-last-write-time")
+}
+
+// FileParentID returns the value for header x-ms-file-parent-id.
+func (fcr FileCreateResponse) FileParentID() string {
+	return fcr.rawResponse.Header.Get("x-ms-file-parent-id")
+}
+
+// FilePermissionKey returns the value for header x-ms-file-permission-key.
+func (fcr FileCreateResponse) FilePermissionKey() string {
+	return fcr.rawResponse.Header.Get("x-ms-file-permission-key")
+}
+
 // IsServerEncrypted returns the value for header x-ms-request-server-encrypted.
 func (fcr FileCreateResponse) IsServerEncrypted() string {
 	return fcr.rawResponse.Header.Get("x-ms-request-server-encrypted")
@@ -829,6 +1293,72 @@ func (fdr FileDeleteResponse) RequestID() string {
 // Version returns the value for header x-ms-version.
 func (fdr FileDeleteResponse) Version() string {
 	return fdr.rawResponse.Header.Get("x-ms-version")
+}
+
+// FileForceCloseHandlesResponse ...
+type FileForceCloseHandlesResponse struct {
+	rawResponse *http.Response
+}
+
+// Response returns the raw HTTP response object.
+func (ffchr FileForceCloseHandlesResponse) Response() *http.Response {
+	return ffchr.rawResponse
+}
+
+// StatusCode returns the HTTP status code of the response, e.g. 200.
+func (ffchr FileForceCloseHandlesResponse) StatusCode() int {
+	return ffchr.rawResponse.StatusCode
+}
+
+// Status returns the HTTP status message of the response, e.g. "200 OK".
+func (ffchr FileForceCloseHandlesResponse) Status() string {
+	return ffchr.rawResponse.Status
+}
+
+// Date returns the value for header Date.
+func (ffchr FileForceCloseHandlesResponse) Date() time.Time {
+	s := ffchr.rawResponse.Header.Get("Date")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// ErrorCode returns the value for header x-ms-error-code.
+func (ffchr FileForceCloseHandlesResponse) ErrorCode() string {
+	return ffchr.rawResponse.Header.Get("x-ms-error-code")
+}
+
+// Marker returns the value for header x-ms-marker.
+func (ffchr FileForceCloseHandlesResponse) Marker() string {
+	return ffchr.rawResponse.Header.Get("x-ms-marker")
+}
+
+// NumberOfHandlesClosed returns the value for header x-ms-number-of-handles-closed.
+func (ffchr FileForceCloseHandlesResponse) NumberOfHandlesClosed() int32 {
+	s := ffchr.rawResponse.Header.Get("x-ms-number-of-handles-closed")
+	if s == "" {
+		return -1
+	}
+	i, err := strconv.ParseInt(s, 10, 32)
+	if err != nil {
+		i = 0
+	}
+	return int32(i)
+}
+
+// RequestID returns the value for header x-ms-request-id.
+func (ffchr FileForceCloseHandlesResponse) RequestID() string {
+	return ffchr.rawResponse.Header.Get("x-ms-request-id")
+}
+
+// Version returns the value for header x-ms-version.
+func (ffchr FileForceCloseHandlesResponse) Version() string {
+	return ffchr.rawResponse.Header.Get("x-ms-version")
 }
 
 // FileGetPropertiesResponse ...
@@ -976,6 +1506,41 @@ func (fgpr FileGetPropertiesResponse) ETag() ETag {
 	return ETag(fgpr.rawResponse.Header.Get("ETag"))
 }
 
+// FileAttributes returns the value for header x-ms-file-attributes.
+func (fgpr FileGetPropertiesResponse) FileAttributes() string {
+	return fgpr.rawResponse.Header.Get("x-ms-file-attributes")
+}
+
+// FileChangeTime returns the value for header x-ms-file-change-time.
+func (fgpr FileGetPropertiesResponse) FileChangeTime() string {
+	return fgpr.rawResponse.Header.Get("x-ms-file-change-time")
+}
+
+// FileCreationTime returns the value for header x-ms-file-creation-time.
+func (fgpr FileGetPropertiesResponse) FileCreationTime() string {
+	return fgpr.rawResponse.Header.Get("x-ms-file-creation-time")
+}
+
+// FileID returns the value for header x-ms-file-id.
+func (fgpr FileGetPropertiesResponse) FileID() string {
+	return fgpr.rawResponse.Header.Get("x-ms-file-id")
+}
+
+// FileLastWriteTime returns the value for header x-ms-file-last-write-time.
+func (fgpr FileGetPropertiesResponse) FileLastWriteTime() string {
+	return fgpr.rawResponse.Header.Get("x-ms-file-last-write-time")
+}
+
+// FileParentID returns the value for header x-ms-file-parent-id.
+func (fgpr FileGetPropertiesResponse) FileParentID() string {
+	return fgpr.rawResponse.Header.Get("x-ms-file-parent-id")
+}
+
+// FilePermissionKey returns the value for header x-ms-file-permission-key.
+func (fgpr FileGetPropertiesResponse) FilePermissionKey() string {
+	return fgpr.rawResponse.Header.Get("x-ms-file-permission-key")
+}
+
 // FileType returns the value for header x-ms-type.
 func (fgpr FileGetPropertiesResponse) FileType() string {
 	return string(fgpr.rawResponse.Header.Get("x-ms-type"))
@@ -1009,10 +1574,26 @@ func (fgpr FileGetPropertiesResponse) Version() string {
 	return fgpr.rawResponse.Header.Get("x-ms-version")
 }
 
+// FileItem - A listed file item.
+//type FileItem struct {
+//	// XMLName is used for marshalling and is subject to removal in a future release.
+//	XMLName    xml.Name     `xml:"File"`
+//	Name       string       `xml:"Name"`
+//	Properties FileProperty `xml:"Properties"`
+//}
+
 // FileProperty - File properties.
 type FileProperty struct {
 	// ContentLength - Content length of the file. This value may not be up-to-date since an SMB client may have modified the file locally. The value of Content-Length may not reflect that fact until the handle is closed or the op-lock is broken. To retrieve current property values, call Get File Properties.
 	ContentLength int64 `xml:"Content-Length"`
+}
+
+// FilesAndDirectoriesListSegment - Abstract for entries that can be listed from Directory.
+type FilesAndDirectoriesListSegment struct {
+	// XMLName is used for marshalling and is subject to removal in a future release.
+	XMLName        xml.Name        `xml:"Entries"`
+	DirectoryItems []DirectoryItem `xml:"Directory"`
+	FileItems      []FileItem      `xml:"File"`
 }
 
 // FileSetHTTPHeadersResponse ...
@@ -1056,6 +1637,41 @@ func (fshhr FileSetHTTPHeadersResponse) ErrorCode() string {
 // ETag returns the value for header ETag.
 func (fshhr FileSetHTTPHeadersResponse) ETag() ETag {
 	return ETag(fshhr.rawResponse.Header.Get("ETag"))
+}
+
+// FileAttributes returns the value for header x-ms-file-attributes.
+func (fshhr FileSetHTTPHeadersResponse) FileAttributes() string {
+	return fshhr.rawResponse.Header.Get("x-ms-file-attributes")
+}
+
+// FileChangeTime returns the value for header x-ms-file-change-time.
+func (fshhr FileSetHTTPHeadersResponse) FileChangeTime() string {
+	return fshhr.rawResponse.Header.Get("x-ms-file-change-time")
+}
+
+// FileCreationTime returns the value for header x-ms-file-creation-time.
+func (fshhr FileSetHTTPHeadersResponse) FileCreationTime() string {
+	return fshhr.rawResponse.Header.Get("x-ms-file-creation-time")
+}
+
+// FileID returns the value for header x-ms-file-id.
+func (fshhr FileSetHTTPHeadersResponse) FileID() string {
+	return fshhr.rawResponse.Header.Get("x-ms-file-id")
+}
+
+// FileLastWriteTime returns the value for header x-ms-file-last-write-time.
+func (fshhr FileSetHTTPHeadersResponse) FileLastWriteTime() string {
+	return fshhr.rawResponse.Header.Get("x-ms-file-last-write-time")
+}
+
+// FileParentID returns the value for header x-ms-file-parent-id.
+func (fshhr FileSetHTTPHeadersResponse) FileParentID() string {
+	return fshhr.rawResponse.Header.Get("x-ms-file-parent-id")
+}
+
+// FilePermissionKey returns the value for header x-ms-file-permission-key.
+func (fshhr FileSetHTTPHeadersResponse) FilePermissionKey() string {
+	return fshhr.rawResponse.Header.Get("x-ms-file-permission-key")
 }
 
 // IsServerEncrypted returns the value for header x-ms-request-server-encrypted.
@@ -1220,6 +1836,90 @@ func (fscr FileStartCopyResponse) Version() string {
 	return fscr.rawResponse.Header.Get("x-ms-version")
 }
 
+// FileUploadRangeFromURLResponse ...
+type FileUploadRangeFromURLResponse struct {
+	rawResponse *http.Response
+}
+
+// Response returns the raw HTTP response object.
+func (furfur FileUploadRangeFromURLResponse) Response() *http.Response {
+	return furfur.rawResponse
+}
+
+// StatusCode returns the HTTP status code of the response, e.g. 200.
+func (furfur FileUploadRangeFromURLResponse) StatusCode() int {
+	return furfur.rawResponse.StatusCode
+}
+
+// Status returns the HTTP status message of the response, e.g. "200 OK".
+func (furfur FileUploadRangeFromURLResponse) Status() string {
+	return furfur.rawResponse.Status
+}
+
+// Date returns the value for header Date.
+func (furfur FileUploadRangeFromURLResponse) Date() time.Time {
+	s := furfur.rawResponse.Header.Get("Date")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// ErrorCode returns the value for header x-ms-error-code.
+func (furfur FileUploadRangeFromURLResponse) ErrorCode() string {
+	return furfur.rawResponse.Header.Get("x-ms-error-code")
+}
+
+// ETag returns the value for header ETag.
+func (furfur FileUploadRangeFromURLResponse) ETag() ETag {
+	return ETag(furfur.rawResponse.Header.Get("ETag"))
+}
+
+// IsServerEncrypted returns the value for header x-ms-request-server-encrypted.
+func (furfur FileUploadRangeFromURLResponse) IsServerEncrypted() string {
+	return furfur.rawResponse.Header.Get("x-ms-request-server-encrypted")
+}
+
+// LastModified returns the value for header Last-Modified.
+func (furfur FileUploadRangeFromURLResponse) LastModified() time.Time {
+	s := furfur.rawResponse.Header.Get("Last-Modified")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// RequestID returns the value for header x-ms-request-id.
+func (furfur FileUploadRangeFromURLResponse) RequestID() string {
+	return furfur.rawResponse.Header.Get("x-ms-request-id")
+}
+
+// Version returns the value for header x-ms-version.
+func (furfur FileUploadRangeFromURLResponse) Version() string {
+	return furfur.rawResponse.Header.Get("x-ms-version")
+}
+
+// XMsContentCrc64 returns the value for header x-ms-content-crc64.
+func (furfur FileUploadRangeFromURLResponse) XMsContentCrc64() []byte {
+	s := furfur.rawResponse.Header.Get("x-ms-content-crc64")
+	if s == "" {
+		return nil
+	}
+	b, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		b = nil
+	}
+	return b
+}
+
 // FileUploadRangeResponse ...
 type FileUploadRangeResponse struct {
 	rawResponse *http.Response
@@ -1302,6 +2002,161 @@ func (furr FileUploadRangeResponse) RequestID() string {
 // Version returns the value for header x-ms-version.
 func (furr FileUploadRangeResponse) Version() string {
 	return furr.rawResponse.Header.Get("x-ms-version")
+}
+
+// HandleItem - A listed Azure Storage handle item.
+type HandleItem struct {
+	// XMLName is used for marshalling and is subject to removal in a future release.
+	XMLName xml.Name `xml:"Handle"`
+	// HandleID - XSMB service handle ID
+	HandleID string `xml:"HandleId"`
+	// Path - File or directory name including full path starting from share root
+	Path string `xml:"Path"`
+	// FileID - FileId uniquely identifies the file or directory.
+	FileID string `xml:"FileId"`
+	// ParentID - ParentId uniquely identifies the parent directory of the object.
+	ParentID *string `xml:"ParentId"`
+	// SessionID - SMB session ID in context of which the file handle was opened
+	SessionID string `xml:"SessionId"`
+	// ClientIP - Client IP that opened the handle
+	ClientIP string `xml:"ClientIp"`
+	// OpenTime - Time when the session that previously opened the handle has last been reconnected. (UTC)
+	OpenTime time.Time `xml:"OpenTime"`
+	// LastReconnectTime - Time handle was last connected to (UTC)
+	LastReconnectTime *time.Time `xml:"LastReconnectTime"`
+}
+
+// MarshalXML implements the xml.Marshaler interface for HandleItem.
+func (hi HandleItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	hi2 := (*handleItem)(unsafe.Pointer(&hi))
+	return e.EncodeElement(*hi2, start)
+}
+
+// UnmarshalXML implements the xml.Unmarshaler interface for HandleItem.
+func (hi *HandleItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	hi2 := (*handleItem)(unsafe.Pointer(hi))
+	return d.DecodeElement(hi2, &start)
+}
+
+//// ListFilesAndDirectoriesSegmentResponse - An enumeration of directories and files.
+//type ListFilesAndDirectoriesSegmentResponse struct {
+//	rawResponse *http.Response
+//	// XMLName is used for marshalling and is subject to removal in a future release.
+//	XMLName         xml.Name                       `xml:"EnumerationResults"`
+//	ServiceEndpoint string                         `xml:"ServiceEndpoint,attr"`
+//	ShareName       string                         `xml:"ShareName,attr"`
+//	ShareSnapshot   *string                        `xml:"ShareSnapshot,attr"`
+//	DirectoryPath   string                         `xml:"DirectoryPath,attr"`
+//	Prefix          string                         `xml:"Prefix"`
+//	Marker          *string                        `xml:"Marker"`
+//	MaxResults      *int32                         `xml:"MaxResults"`
+//	Segment         FilesAndDirectoriesListSegment `xml:"Entries"`
+//	NextMarker      Marker                         `xml:"NextMarker"`
+//}
+//
+//// Response returns the raw HTTP response object.
+//func (lfadsr ListFilesAndDirectoriesSegmentResponse) Response() *http.Response {
+//	return lfadsr.rawResponse
+//}
+//
+//// StatusCode returns the HTTP status code of the response, e.g. 200.
+//func (lfadsr ListFilesAndDirectoriesSegmentResponse) StatusCode() int {
+//	return lfadsr.rawResponse.StatusCode
+//}
+//
+//// Status returns the HTTP status message of the response, e.g. "200 OK".
+//func (lfadsr ListFilesAndDirectoriesSegmentResponse) Status() string {
+//	return lfadsr.rawResponse.Status
+//}
+//
+//// ContentType returns the value for header Content-Type.
+//func (lfadsr ListFilesAndDirectoriesSegmentResponse) ContentType() string {
+//	return lfadsr.rawResponse.Header.Get("Content-Type")
+//}
+//
+//// Date returns the value for header Date.
+//func (lfadsr ListFilesAndDirectoriesSegmentResponse) Date() time.Time {
+//	s := lfadsr.rawResponse.Header.Get("Date")
+//	if s == "" {
+//		return time.Time{}
+//	}
+//	t, err := time.Parse(time.RFC1123, s)
+//	if err != nil {
+//		t = time.Time{}
+//	}
+//	return t
+//}
+//
+//// ErrorCode returns the value for header x-ms-error-code.
+//func (lfadsr ListFilesAndDirectoriesSegmentResponse) ErrorCode() string {
+//	return lfadsr.rawResponse.Header.Get("x-ms-error-code")
+//}
+//
+//// RequestID returns the value for header x-ms-request-id.
+//func (lfadsr ListFilesAndDirectoriesSegmentResponse) RequestID() string {
+//	return lfadsr.rawResponse.Header.Get("x-ms-request-id")
+//}
+//
+//// Version returns the value for header x-ms-version.
+//func (lfadsr ListFilesAndDirectoriesSegmentResponse) Version() string {
+//	return lfadsr.rawResponse.Header.Get("x-ms-version")
+//}
+
+// ListHandlesResponse - An enumeration of handles.
+type ListHandlesResponse struct {
+	rawResponse *http.Response
+	// XMLName is used for marshalling and is subject to removal in a future release.
+	XMLName    xml.Name     `xml:"EnumerationResults"`
+	HandleList []HandleItem `xml:"Entries>Handle"`
+	NextMarker string       `xml:"NextMarker"`
+}
+
+// Response returns the raw HTTP response object.
+func (lhr ListHandlesResponse) Response() *http.Response {
+	return lhr.rawResponse
+}
+
+// StatusCode returns the HTTP status code of the response, e.g. 200.
+func (lhr ListHandlesResponse) StatusCode() int {
+	return lhr.rawResponse.StatusCode
+}
+
+// Status returns the HTTP status message of the response, e.g. "200 OK".
+func (lhr ListHandlesResponse) Status() string {
+	return lhr.rawResponse.Status
+}
+
+// ContentType returns the value for header Content-Type.
+func (lhr ListHandlesResponse) ContentType() string {
+	return lhr.rawResponse.Header.Get("Content-Type")
+}
+
+// Date returns the value for header Date.
+func (lhr ListHandlesResponse) Date() time.Time {
+	s := lhr.rawResponse.Header.Get("Date")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// ErrorCode returns the value for header x-ms-error-code.
+func (lhr ListHandlesResponse) ErrorCode() string {
+	return lhr.rawResponse.Header.Get("x-ms-error-code")
+}
+
+// RequestID returns the value for header x-ms-request-id.
+func (lhr ListHandlesResponse) RequestID() string {
+	return lhr.rawResponse.Header.Get("x-ms-request-id")
+}
+
+// Version returns the value for header x-ms-version.
+func (lhr ListHandlesResponse) Version() string {
+	return lhr.rawResponse.Header.Get("x-ms-version")
 }
 
 // ListSharesResponse - An enumeration of shares.
@@ -1487,6 +2342,59 @@ func (sspr ServiceSetPropertiesResponse) RequestID() string {
 // Version returns the value for header x-ms-version.
 func (sspr ServiceSetPropertiesResponse) Version() string {
 	return sspr.rawResponse.Header.Get("x-ms-version")
+}
+
+// ShareCreatePermissionResponse ...
+type ShareCreatePermissionResponse struct {
+	rawResponse *http.Response
+}
+
+// Response returns the raw HTTP response object.
+func (scpr ShareCreatePermissionResponse) Response() *http.Response {
+	return scpr.rawResponse
+}
+
+// StatusCode returns the HTTP status code of the response, e.g. 200.
+func (scpr ShareCreatePermissionResponse) StatusCode() int {
+	return scpr.rawResponse.StatusCode
+}
+
+// Status returns the HTTP status message of the response, e.g. "200 OK".
+func (scpr ShareCreatePermissionResponse) Status() string {
+	return scpr.rawResponse.Status
+}
+
+// Date returns the value for header Date.
+func (scpr ShareCreatePermissionResponse) Date() time.Time {
+	s := scpr.rawResponse.Header.Get("Date")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// ErrorCode returns the value for header x-ms-error-code.
+func (scpr ShareCreatePermissionResponse) ErrorCode() string {
+	return scpr.rawResponse.Header.Get("x-ms-error-code")
+}
+
+// FilePermissionKey returns the value for header x-ms-file-permission-key.
+func (scpr ShareCreatePermissionResponse) FilePermissionKey() string {
+	return scpr.rawResponse.Header.Get("x-ms-file-permission-key")
+}
+
+// RequestID returns the value for header x-ms-request-id.
+func (scpr ShareCreatePermissionResponse) RequestID() string {
+	return scpr.rawResponse.Header.Get("x-ms-request-id")
+}
+
+// Version returns the value for header x-ms-version.
+func (scpr ShareCreatePermissionResponse) Version() string {
+	return scpr.rawResponse.Header.Get("x-ms-version")
 }
 
 // ShareCreateResponse ...
@@ -1776,6 +2684,56 @@ type ShareItem struct {
 	Metadata   Metadata        `xml:"Metadata"`
 }
 
+// SharePermission - A permission (a security descriptor) at the share level.
+type SharePermission struct {
+	rawResponse *http.Response
+	// Permission - The permission in the Security Descriptor Definition Language (SDDL).
+	Permission string
+}
+
+// Response returns the raw HTTP response object.
+func (sp SharePermission) Response() *http.Response {
+	return sp.rawResponse
+}
+
+// StatusCode returns the HTTP status code of the response, e.g. 200.
+func (sp SharePermission) StatusCode() int {
+	return sp.rawResponse.StatusCode
+}
+
+// Status returns the HTTP status message of the response, e.g. "200 OK".
+func (sp SharePermission) Status() string {
+	return sp.rawResponse.Status
+}
+
+// Date returns the value for header Date.
+func (sp SharePermission) Date() time.Time {
+	s := sp.rawResponse.Header.Get("Date")
+	if s == "" {
+		return time.Time{}
+	}
+	t, err := time.Parse(time.RFC1123, s)
+	if err != nil {
+		t = time.Time{}
+	}
+	return t
+}
+
+// ErrorCode returns the value for header x-ms-error-code.
+func (sp SharePermission) ErrorCode() string {
+	return sp.rawResponse.Header.Get("x-ms-error-code")
+}
+
+// RequestID returns the value for header x-ms-request-id.
+func (sp SharePermission) RequestID() string {
+	return sp.rawResponse.Header.Get("x-ms-request-id")
+}
+
+// Version returns the value for header x-ms-version.
+func (sp SharePermission) Version() string {
+	return sp.rawResponse.Header.Get("x-ms-version")
+}
+
 // ShareProperties - Properties of a share.
 type ShareProperties struct {
 	LastModified time.Time `xml:"Last-Modified"`
@@ -1996,8 +2954,8 @@ func (ssqr ShareSetQuotaResponse) Version() string {
 // ShareStats - Stats for the share.
 type ShareStats struct {
 	rawResponse *http.Response
-	// ShareUsage - The approximate size of the data stored on the share, rounded up to the nearest gigabyte. Note that this value may not include all recently created or recently resized files.
-	ShareUsage int32 `xml:"ShareUsage"`
+	// ShareUsageBytes - The approximate size of the data stored in bytes. Note that this value may not include all recently created or recently resized files.
+	ShareUsageBytes int32 `xml:"ShareUsageBytes"`
 }
 
 // Response returns the raw HTTP response object.
@@ -2186,6 +3144,9 @@ func init() {
 	if reflect.TypeOf((*AccessPolicy)(nil)).Elem().Size() != reflect.TypeOf((*accessPolicy)(nil)).Elem().Size() {
 		validateError(errors.New("size mismatch between AccessPolicy and accessPolicy"))
 	}
+	if reflect.TypeOf((*HandleItem)(nil)).Elem().Size() != reflect.TypeOf((*handleItem)(nil)).Elem().Size() {
+		validateError(errors.New("size mismatch between HandleItem and handleItem"))
+	}
 	if reflect.TypeOf((*ShareProperties)(nil)).Elem().Size() != reflect.TypeOf((*shareProperties)(nil)).Elem().Size() {
 		validateError(errors.New("size mismatch between ShareProperties and shareProperties"))
 	}
@@ -2235,6 +3196,20 @@ type accessPolicy struct {
 	Start      *timeRFC3339 `xml:"Start"`
 	Expiry     *timeRFC3339 `xml:"Expiry"`
 	Permission *string      `xml:"Permission"`
+}
+
+// internal type used for marshalling
+type handleItem struct {
+	// XMLName is used for marshalling and is subject to removal in a future release.
+	XMLName           xml.Name     `xml:"Handle"`
+	HandleID          string       `xml:"HandleId"`
+	Path              string       `xml:"Path"`
+	FileID            string       `xml:"FileId"`
+	ParentID          *string      `xml:"ParentId"`
+	SessionID         string       `xml:"SessionId"`
+	ClientIP          string       `xml:"ClientIp"`
+	OpenTime          timeRFC1123  `xml:"OpenTime"`
+	LastReconnectTime *timeRFC1123 `xml:"LastReconnectTime"`
 }
 
 // internal type used for marshalling

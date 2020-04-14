@@ -214,7 +214,7 @@ type VolumeSnapshotSource struct {
 	CSI *CSIVolumeSnapshotSource `json:"csiVolumeSnapshotSource,omitempty"`
 }
 
-// Represents the source from CSI volume snapshot
+// CSIVolumeSnapshotSource represents the source from CSI volume snapshot
 type CSIVolumeSnapshotSource struct {
 	// Driver is the name of the driver to use for this snapshot.
 	// This MUST be the same name returned by the CSI GetPluginName() call for
