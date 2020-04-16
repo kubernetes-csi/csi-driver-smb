@@ -20,26 +20,71 @@ import (
 	"fmt"
 	"os"
 
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/klog"
 	"k8s.io/legacy-cloud-providers/azure"
 )
 
+var (
+	DefaultAzureCredentialFileEnv = "AZURE_CREDENTIAL_FILE"
+	DefaultCredFilePath           = "/etc/kubernetes/azure.json"
+)
+
 // GetCloudProvider get Azure Cloud Provider
-func GetCloudProvider() (*azure.Cloud, error) {
-	credFile, ok := os.LookupEnv("AZURE_CREDENTIAL_FILE")
-	if ok {
-		klog.V(2).Infof("AZURE_CREDENTIAL_FILE env var set as %v", credFile)
+func GetCloudProvider(kubeconfig string) (*azure.Cloud, error) {
+	kubeClient, err := getKubeClient(kubeconfig)
+	if err != nil && !os.IsNotExist(err) && err != rest.ErrNotInCluster {
+		return nil, fmt.Errorf("failed to get KubeClient: %v", err)
+	}
+
+	az := &azure.Cloud{}
+	if kubeClient != nil {
+		klog.V(2).Infof("reading cloud config from secret")
+		az.KubeClient = kubeClient
+		az.InitializeCloudFromSecret()
+	}
+
+	if az.TenantID == "" || az.SubscriptionID == "" {
+		klog.V(2).Infof("could not read cloud config from secret")
+		credFile, ok := os.LookupEnv(DefaultAzureCredentialFileEnv)
+		if ok {
+			klog.V(2).Infof("%s env var set as %v", DefaultAzureCredentialFileEnv, credFile)
+		} else {
+			credFile = DefaultCredFilePath
+			klog.V(2).Infof("use default %s env var: %v", DefaultAzureCredentialFileEnv, credFile)
+		}
+
+		f, err := os.Open(credFile)
+		if err != nil {
+			klog.Errorf("Failed to load config from file: %s", credFile)
+			return nil, fmt.Errorf("Failed to load config from file: %s, cloud not get azure cloud provider", credFile)
+		}
+		defer f.Close()
+
+		klog.V(2).Infof("read cloud config from file: %s successfully", credFile)
+		return azure.NewCloudWithoutFeatureGates(f)
+	}
+
+	klog.V(2).Infof("read cloud config from secret successfully")
+	return az, nil
+}
+
+func getKubeClient(kubeconfig string) (*kubernetes.Clientset, error) {
+	var (
+		config *rest.Config
+		err    error
+	)
+	if kubeconfig != "" {
+		if config, err = clientcmd.BuildConfigFromFlags("", kubeconfig); err != nil {
+			return nil, err
+		}
 	} else {
-		credFile = "/etc/kubernetes/azure.json"
-		klog.V(2).Infof("use default AZURE_CREDENTIAL_FILE env var: %v", credFile)
+		if config, err = rest.InClusterConfig(); err != nil {
+			return nil, err
+		}
 	}
 
-	f, err := os.Open(credFile)
-	if err != nil {
-		klog.Errorf("Failed to load config from file: %s", credFile)
-		return nil, fmt.Errorf("Failed to load config from file: %s, cloud not get azure cloud provider", credFile)
-	}
-	defer f.Close()
-
-	return azure.NewCloudWithoutFeatureGates(f)
+	return kubernetes.NewForConfig(config)
 }
