@@ -90,10 +90,11 @@ var _ = ginkgo.BeforeSuite(func() {
 		execTestCmd([]testCmd{e2eBootstrap})
 
 		nodeid := os.Getenv("nodeid")
+		kubeconfig := os.Getenv(kubeconfigEnvVar)
 		azurefileDriver = azurefile.NewDriver(nodeid)
 		go func() {
 			os.Setenv("AZURE_CREDENTIAL_FILE", credentials.TempAzureCredentialFilePath)
-			azurefileDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()))
+			azurefileDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()), kubeconfig)
 		}()
 	}
 })

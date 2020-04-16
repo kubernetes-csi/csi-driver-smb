@@ -99,16 +99,16 @@ func NewDriver(nodeID string) *Driver {
 }
 
 // Run driver initialization
-func (d *Driver) Run(endpoint string) {
+func (d *Driver) Run(endpoint, kubeconfig string) {
 	versionMeta, err := GetVersionYAML()
 	if err != nil {
 		klog.Fatalf("%v", err)
 	}
 	klog.Infof("\nDRIVER INFORMATION:\n-------------------\n%s\n\nStreaming logs below:", versionMeta)
 
-	cloud, err := GetCloudProvider()
-	if err != nil {
-		klog.Fatalln("failed to get Azure Cloud Provider")
+	cloud, err := GetCloudProvider(kubeconfig)
+	if err != nil || cloud.TenantID == "" || cloud.SubscriptionID == "" {
+		klog.Fatalf("failed to get Azure Cloud Provider, error: %v", err)
 	}
 	d.cloud = cloud
 
