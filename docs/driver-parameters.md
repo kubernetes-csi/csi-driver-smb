@@ -14,6 +14,7 @@ shareName | specify azure file share name | existing or new azure file name | No
 --- | following parameters are only for [VHD disk feature](../deploy/example/disk) | --- | --- |
 fsType | File System Type | `ext4`, `ext3`, `ext2`, `xfs` | Yes | `ext4`
 diskName | existing VHD disk file name | `pvc-062196a6-6436-11ea-ab51-9efb888c0afb.vhd` | No |
+storeAccountKey | whether store account key to k8s secret | `true`,`false` | No |`true`
 
  - Static Provision(use existing azure file)
   > get a quick example [here](../deploy/example/pv-azurefile-csi.yaml)

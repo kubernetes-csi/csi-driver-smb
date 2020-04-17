@@ -64,7 +64,14 @@ func GetCloudProvider(kubeconfig string) (*azure.Cloud, error) {
 		defer f.Close()
 
 		klog.V(2).Infof("read cloud config from file: %s successfully", credFile)
-		return azure.NewCloudWithoutFeatureGates(f)
+		azCloud, err := azure.NewCloudWithoutFeatureGates(f)
+		if err != nil {
+			return nil, fmt.Errorf("failed to new cloud: %v", err)
+		}
+		if kubeClient != nil {
+			azCloud.KubeClient = kubeClient
+		}
+		return azCloud, nil
 	}
 
 	klog.V(2).Infof("read cloud config from secret successfully")
