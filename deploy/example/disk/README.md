@@ -7,11 +7,17 @@ Attach Azure disks in < 1 second. Attach as many as you want. VHD disk(based on 
 
 There are slow disk attach/detach issues on Azure managed disk(sometimes parallel disk attach/detach costs more than one minute), this feature aims to solve such slow disk attach/detach issues. With this feature, VHD disk file is created on Azure File, VHD disk file is mounted over SMB from agent node, and then vhd file is mounted as a loop block device. It could offer performance similar to a local direct-attached storage, while attach/detach disk would only costs < 1 second.
 
+ - Advantages over managed disk
+   - Attach/detach disk < 1s
+   - No data disk count limit on one agent node (e.g. while max data disk count is 8 on DS2_v2 VM for managed disk)
+ - Disadvantages/limitations over managed disk
+   - Cost (Premium File storage pricing is one time more expensive than Premium Disk)
+   - Not supported on Windows yet
+   - VHD disk is unmanaged disk stored in azure storage account, since there is [IOPS limit(20K) per storage account](https://docs.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account#scale-targets-for-standard-storage-accounts), user needs to control total quota according to VHD disk num.
+
  - Performance test have done
 
 Scheduling 20 pods with one vhd disk each on **one** node **in parallel** could be completed in 2min, while for azure managed disk driver, it's 30min.
-
-
 
  - How to use
  
