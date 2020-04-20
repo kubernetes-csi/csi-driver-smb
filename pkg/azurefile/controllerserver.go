@@ -62,7 +62,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	parameters := req.GetParameters()
-	var sku, resourceGroup, location, account, fileShareName, diskName, fsType string
+	var sku, resourceGroup, location, account, fileShareName, diskName, fsType, storeAccountKey, secretNamespace string
 
 	// Apply ProvisionerParameters (case-insensitive). We leave validation of
 	// the values to the cloud provider.
@@ -84,6 +84,10 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 			diskName = v
 		case fsTypeField:
 			fsType = v
+		case storeAccountKeyField:
+			storeAccountKey = v
+		case secretNamespaceField:
+			secretNamespace = v
 		default:
 			return nil, fmt.Errorf("invalid option %q", k)
 		}
@@ -165,6 +169,16 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		klog.V(2).Infof("create vhd file(%s) size(%d) on share(%s) on account(%s) type(%s) rg(%s) location(%s) successfully",
 			diskName, diskSizeBytes, validFileShareName, account, sku, resourceGroup, location)
 		parameters[diskNameField] = diskName
+	}
+
+	if storeAccountKey != "false" {
+		secretName, err := setAzureCredentials(d.cloud.KubeClient, retAccount, retAccountKey, secretNamespace)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to store storage account key: %v", err)
+		}
+		if secretName != "" {
+			klog.V(2).Infof("store account key to k8s secret(%v) in kube-system namespace", secretName)
+		}
 	}
 
 	volumeID := fmt.Sprintf(volumeIDTemplate, resourceGroup, retAccount, validFileShareName, diskName)

@@ -24,20 +24,23 @@ import (
 	"strings"
 	"time"
 
-	csicommon "sigs.k8s.io/azurefile-csi-driver/pkg/csi-common"
-
 	azs "github.com/Azure/azure-sdk-for-go/storage"
 	"github.com/Azure/azure-storage-file-go/azfile"
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/pborman/uuid"
 	"github.com/rubiojr/go-vhd/vhd"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog"
 	"k8s.io/kubernetes/pkg/volume/util"
 	"k8s.io/legacy-cloud-providers/azure"
 	"k8s.io/utils/mount"
+
+	csicommon "sigs.k8s.io/azurefile-csi-driver/pkg/csi-common"
 	"sigs.k8s.io/azurefile-csi-driver/pkg/mounter"
 )
 
@@ -45,6 +48,7 @@ const (
 	DriverName         = "file.csi.azure.com"
 	separator          = "#"
 	volumeIDTemplate   = "%s#%s#%s#%s"
+	secretNameTemplate = "azure-storage-account-%s-secret"
 	serviceURLTemplate = "https://%s.file.%s"
 	fileURLTemplate    = "https://%s.file.%s/%s/%s"
 	fileMode           = "file_mode"
@@ -66,12 +70,17 @@ const (
 	// key of snapshot name in metadata
 	snapshotNameKey = "initiator"
 
-	shareNameField = "sharename"
-	diskNameField  = "diskname"
-	fsTypeField    = "fstype"
-	proxyMount     = "proxy-mount"
-	cifs           = "cifs"
-	metaDataNode   = "node"
+	shareNameField           = "sharename"
+	diskNameField            = "diskname"
+	fsTypeField              = "fstype"
+	secretNamespaceField     = "secretnamespace"
+	storeAccountKeyField     = "storeaccountkey"
+	defaultSecretAccountName = "azurestorageaccountname"
+	defaultSecretAccountKey  = "azurestorageaccountkey"
+	defaultSecretNamespace   = "default"
+	proxyMount               = "proxy-mount"
+	cifs                     = "cifs"
+	metaDataNode             = "node"
 
 	accountNotProvisioned = "StorageAccountIsNotProvisioned"
 	tooManyRequests       = "TooManyRequests"
@@ -370,17 +379,32 @@ func IsCorruptedDir(dir string) bool {
 	return pathErr != nil && mount.IsCorruptedMnt(pathErr)
 }
 
-func (d *Driver) getAccountInfo(volumeID string, secrets, context map[string]string) (rgName, accountName, accountKey, fileShareName, diskName string, err error) {
+func (d *Driver) getAccountInfo(volumeID string, secrets, reqContext map[string]string) (rgName, accountName, accountKey, fileShareName, diskName string, err error) {
 	if len(secrets) == 0 {
 		rgName, accountName, fileShareName, diskName, err = getFileShareInfo(volumeID)
 		if err == nil {
 			if rgName == "" {
 				rgName = d.cloud.ResourceGroup
 			}
-			accountKey, err = d.cloud.GetStorageAccesskey(accountName, rgName)
+			if d.cloud.KubeClient != nil {
+				secretName := fmt.Sprintf(secretNameTemplate, accountName)
+				secretNamespace := reqContext[secretNamespaceField]
+				if secretNamespace == "" {
+					secretNamespace = defaultSecretNamespace
+				}
+				secret, err := d.cloud.KubeClient.CoreV1().Secrets(secretNamespace).Get(context.TODO(), secretName, metav1.GetOptions{})
+				if err != nil {
+					klog.V(4).Infof("could not get secret(%v): %v", secretName, err)
+				} else {
+					accountKey = string(secret.Data[defaultSecretAccountKey][:])
+				}
+			}
+			if accountKey == "" {
+				accountKey, err = d.cloud.GetStorageAccesskey(accountName, rgName)
+			}
 		}
 	} else {
-		for k, v := range context {
+		for k, v := range reqContext {
 			switch strings.ToLower(k) {
 			case shareNameField:
 				fileShareName = v
@@ -391,7 +415,7 @@ func (d *Driver) getAccountInfo(volumeID string, secrets, context map[string]str
 		if fileShareName != "" {
 			accountName, accountKey, err = getStorageAccount(secrets)
 		} else {
-			err = fmt.Errorf("could not find sharename from context(%v)", context)
+			err = fmt.Errorf("could not find sharename from context(%v)", reqContext)
 		}
 	}
 
