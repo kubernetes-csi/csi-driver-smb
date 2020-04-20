@@ -112,12 +112,13 @@ func TestSetAzureCredentials(t *testing.T) {
 	cache.WaitForCacheSync(ctx.Done(), secretInformer.HasSynced)
 
 	tests := []struct {
-		desc         string
-		kubeClient   kubernetes.Interface
-		accountName  string
-		accountKey   string
-		expectedName string
-		expectedErr  error
+		desc            string
+		kubeClient      kubernetes.Interface
+		accountName     string
+		accountKey      string
+		secretNamespace string
+		expectedName    string
+		expectedErr     error
 	}{
 		{
 			desc:        "[failure] accountName is nil",
@@ -155,7 +156,7 @@ func TestSetAzureCredentials(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result, err := setAzureCredentials(test.kubeClient, test.accountName, test.accountKey)
+		result, err := setAzureCredentials(test.kubeClient, test.accountName, test.accountKey, test.secretNamespace)
 		if result != test.expectedName || !reflect.DeepEqual(err, test.expectedErr) {
 			t.Errorf("desc: %s,\n input: kubeClient(%v), accountName(%v), accountKey(%v),\n setAzureCredentials result: %v, expectedName: %v err: %v, expectedErr: %v",
 				test.desc, test.kubeClient, test.accountName, test.accountKey, result, test.expectedName, err, test.expectedErr)

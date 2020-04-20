@@ -73,10 +73,11 @@ const (
 	shareNameField           = "sharename"
 	diskNameField            = "diskname"
 	fsTypeField              = "fstype"
+	secretNamespaceField     = "secretnamespace"
 	storeAccountKeyField     = "storeaccountkey"
 	defaultSecretAccountName = "azurestorageaccountname"
 	defaultSecretAccountKey  = "azurestorageaccountkey"
-	defaultSecretNamespace   = "kube-system"
+	defaultSecretNamespace   = "default"
 	proxyMount               = "proxy-mount"
 	cifs                     = "cifs"
 	metaDataNode             = "node"
@@ -387,7 +388,11 @@ func (d *Driver) getAccountInfo(volumeID string, secrets, reqContext map[string]
 			}
 			if d.cloud.KubeClient != nil {
 				secretName := fmt.Sprintf(secretNameTemplate, accountName)
-				secret, err := d.cloud.KubeClient.CoreV1().Secrets(defaultSecretNamespace).Get(context.TODO(), secretName, metav1.GetOptions{})
+				secretNamespace := reqContext[secretNamespaceField]
+				if secretNamespace == "" {
+					secretNamespace = defaultSecretNamespace
+				}
+				secret, err := d.cloud.KubeClient.CoreV1().Secrets(secretNamespace).Get(context.TODO(), secretName, metav1.GetOptions{})
 				if err != nil {
 					klog.V(4).Infof("could not get secret(%v): %v", secretName, err)
 				} else {

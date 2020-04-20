@@ -62,7 +62,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	parameters := req.GetParameters()
-	var sku, resourceGroup, location, account, fileShareName, diskName, fsType, storeAccountKey string
+	var sku, resourceGroup, location, account, fileShareName, diskName, fsType, storeAccountKey, secretNamespace string
 
 	// Apply ProvisionerParameters (case-insensitive). We leave validation of
 	// the values to the cloud provider.
@@ -86,6 +86,8 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 			fsType = v
 		case storeAccountKeyField:
 			storeAccountKey = v
+		case secretNamespaceField:
+			secretNamespace = v
 		default:
 			return nil, fmt.Errorf("invalid option %q", k)
 		}
@@ -170,7 +172,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	if storeAccountKey != "false" {
-		secretName, err := setAzureCredentials(d.cloud.KubeClient, retAccount, retAccountKey)
+		secretName, err := setAzureCredentials(d.cloud.KubeClient, retAccount, retAccountKey, secretNamespace)
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to store storage account key: %v", err)
 		}
