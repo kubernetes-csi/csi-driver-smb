@@ -1,5 +1,8 @@
 # Read cloud config from Kubernetes secrets
-Since `v1.15.0`, Azure cloud provider supports [reading the cloud config from Kubernetes secrets](https://github.com/kubernetes-sigs/cloud-provider-azure/blob/master/docs/cloud-provider-config.md#setting-azure-cloud-provider-from-kubernetes-secrets). The secret is a serialized version of `azure.json` file with key cloud-config. The secret should be put in `kube-system` namespace and its name should be `azure-cloud-provider`.
+
+- Available driver version: `v0.7.0` or above
+
+This driver also supports [reading the cloud config from Kubernetes secrets](https://github.com/kubernetes-sigs/cloud-provider-azure/blob/master/docs/cloud-provider-config.md#setting-azure-cloud-provider-from-kubernetes-secrets). The secret is a serialized version of `azure.json` file with key cloud-config. The secret should be put in `kube-system` namespace and its name should be `azure-cloud-provider`.
 
 ### How to convert cloud config to a Kubernetes secret 
 1.  create `azure.json` file and fill in all necessary fields, refer to [Cloud provider config](https://github.com/kubernetes-sigs/cloud-provider-azure/blob/master/docs/cloud-provider-config.md), and here is an [example](https://github.com/andyzhangx/demo/blob/master/aks-engine/deployment/etc/kubernetes/azure.json)
