@@ -235,7 +235,7 @@ func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.Valida
 		return nil, status.Error(codes.InvalidArgument, "Volume capabilities not provided")
 	}
 
-	resourceGroupName, accountName, _, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
+	resourceGroupName, accountName, _, fileShareName, diskName, err := d.GetAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "error getting volume(%s) info: %v", volumeID, err)
 	}
@@ -304,14 +304,14 @@ func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.Controlle
 		return nil, status.Error(codes.Internal, fmt.Sprintf("get azure instance id for node %q failed with %v", nodeName, err))
 	}
 
-	_, accountName, accountKey, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
+	_, accountName, accountKey, fileShareName, diskName, err := d.GetAccountInfo(volumeID, req.GetSecrets(), req.GetVolumeContext())
 	// always check diskName first since if it's not vhd disk attach, ControllerPublishVolume is not necessary
 	if diskName == "" {
 		klog.V(2).Infof("skip ControllerPublishVolume(%s) since it's not vhd disk attach", volumeID)
 		return &csi.ControllerPublishVolumeResponse{}, nil
 	}
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("GetAccountInfo(%s) failed with error: %v", volumeID, err))
 	}
 
 	accessMode := volCap.GetAccessMode()
@@ -369,14 +369,14 @@ func (d *Driver) ControllerUnpublishVolume(ctx context.Context, req *csi.Control
 		return nil, status.Error(codes.InvalidArgument, "Node ID not provided")
 	}
 
-	_, accountName, accountKey, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), map[string]string{})
+	_, accountName, accountKey, fileShareName, diskName, err := d.GetAccountInfo(volumeID, req.GetSecrets(), map[string]string{})
 	// always check diskName first since if it's not vhd disk detach, ControllerUnpublishVolume is not necessary
 	if diskName == "" {
 		klog.V(2).Infof("skip ControllerUnpublishVolume(%s) since it's not vhd disk detach", volumeID)
 		return &csi.ControllerUnpublishVolumeResponse{}, nil
 	}
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("GetAccountInfo(%s) failed with error: %v", volumeID, err))
 	}
 
 	storageEndpointSuffix := d.cloud.Environment.StorageEndpointSuffix
@@ -525,9 +525,9 @@ func (d *Driver) ControllerExpandVolume(ctx context.Context, req *csi.Controller
 		return nil, status.Errorf(codes.InvalidArgument, "invalid expand volume request: %v", req)
 	}
 
-	_, _, _, _, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), map[string]string{})
+	_, _, _, _, diskName, err := d.GetAccountInfo(volumeID, req.GetSecrets(), map[string]string{})
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("GetAccountInfo(%s) failed with error: %v", volumeID, err))
 	}
 	if diskName != "" {
 		// todo: figure out how to support vhd disk resize
@@ -566,7 +566,7 @@ func (d *Driver) getShareURL(sourceVolumeID string, secrets map[string]string) (
 }
 
 func (d *Driver) getServiceURL(sourceVolumeID string, secrets map[string]string) (azfile.ServiceURL, string, error) {
-	_, accountName, accountKey, fileShareName, _, err := d.getAccountInfo(sourceVolumeID, secrets, map[string]string{})
+	_, accountName, accountKey, fileShareName, _, err := d.GetAccountInfo(sourceVolumeID, secrets, map[string]string{})
 	if err != nil {
 		return azfile.ServiceURL{}, "", err
 	}
