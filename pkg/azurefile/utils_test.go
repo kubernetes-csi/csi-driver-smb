@@ -17,17 +17,13 @@ limitations under the License.
 package azurefile
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 	"testing"
 	"time"
 
-	v1 "k8s.io/api/core/v1"
-	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
-	"k8s.io/client-go/tools/cache"
 )
 
 func TestSimpleLockEntry(t *testing.T) {
@@ -92,24 +88,7 @@ func ensureNoCallback(t *testing.T, callbackChan <-chan interface{}) bool {
 }
 
 func TestSetAzureCredentials(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	fakeClient := fake.NewSimpleClientset()
-
-	secrets := make(chan *v1.Secret, 1)
-	informers := informers.NewSharedInformerFactory(fakeClient, 0)
-	secretInformer := informers.Core().V1().Secrets().Informer()
-	secretInformer.AddEventHandler(&cache.ResourceEventHandlerFuncs{
-		AddFunc: func(obj interface{}) {
-			secret := obj.(*v1.Secret)
-			t.Logf("secret added: %s/%s", secret.Namespace, secret.Name)
-			secrets <- secret
-		},
-	})
-
-	informers.Start(ctx.Done())
-	cache.WaitForCacheSync(ctx.Done(), secretInformer.HasSynced)
 
 	tests := []struct {
 		desc            string
