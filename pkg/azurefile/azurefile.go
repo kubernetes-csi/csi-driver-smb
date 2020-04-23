@@ -379,7 +379,7 @@ func IsCorruptedDir(dir string) bool {
 	return pathErr != nil && mount.IsCorruptedMnt(pathErr)
 }
 
-func (d *Driver) getAccountInfo(volumeID string, secrets, reqContext map[string]string) (rgName, accountName, accountKey, fileShareName, diskName string, err error) {
+func (d *Driver) GetAccountInfo(volumeID string, secrets, reqContext map[string]string) (rgName, accountName, accountKey, fileShareName, diskName string, err error) {
 	if len(secrets) == 0 {
 		rgName, accountName, fileShareName, diskName, err = getFileShareInfo(volumeID)
 		if err == nil {

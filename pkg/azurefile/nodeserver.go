@@ -131,9 +131,9 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	context := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 
-	_, accountName, accountKey, fileShareName, diskName, err := d.getAccountInfo(volumeID, req.GetSecrets(), context)
+	_, accountName, accountKey, fileShareName, diskName, err := d.GetAccountInfo(volumeID, req.GetSecrets(), context)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("getAccountInfo(%s) failed with error: %v", volumeID, err))
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("GetAccountInfo(%s) failed with error: %v", volumeID, err))
 	}
 	// don't respect fsType from req.GetVolumeCapability().GetMount().GetFsType()
 	// since it's ext4 by default on Linux
