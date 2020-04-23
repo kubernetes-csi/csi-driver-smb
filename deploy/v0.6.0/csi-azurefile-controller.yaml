@@ -29,9 +29,7 @@ spec:
           image: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner:v1.4.0
           args:
             - "-v=5"
-            - "--provisioner=file.csi.azure.com"
             - "--csi-address=$(ADDRESS)"
-            - "--connection-timeout=15s"
             - "--enable-leader-election"
             - "--leader-election-type=leases"
           env:
