@@ -350,9 +350,9 @@ func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, 
 		testDeployment.deployment.Spec.Template.Spec.NodeSelector = map[string]string{
 			"kubernetes.io/os": "windows",
 		}
-		testDeployment.deployment.Spec.Template.Spec.Containers[0].Image = "mcr.microsoft.com/dotnet/framework/samples:aspnetapp"
+		testDeployment.deployment.Spec.Template.Spec.Containers[0].Image = "e2eteam/busybox:1.29"
 		testDeployment.deployment.Spec.Template.Spec.Containers[0].Command = []string{"powershell.exe"}
-		testDeployment.deployment.Spec.Template.Spec.Containers[0].Args = []string{command}
+		testDeployment.deployment.Spec.Template.Spec.Containers[0].Args = []string{"-Command", command}
 	}
 
 	return testDeployment
@@ -452,9 +452,9 @@ func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string, isWindo
 		testPod.pod.Spec.NodeSelector = map[string]string{
 			"kubernetes.io/os": "windows",
 		}
-		testPod.pod.Spec.Containers[0].Image = "mcr.microsoft.com/dotnet/framework/samples:aspnetapp"
+		testPod.pod.Spec.Containers[0].Image = "e2eteam/busybox:1.29"
 		testPod.pod.Spec.Containers[0].Command = []string{"powershell.exe"}
-		testPod.pod.Spec.Containers[0].Args = []string{command}
+		testPod.pod.Spec.Containers[0].Args = []string{"-Command", command}
 	}
 
 	return testPod
