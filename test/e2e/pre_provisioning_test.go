@@ -142,6 +142,9 @@ var _ = ginkgo.Describe("Pre-Provisioned", func() {
 	})
 
 	ginkgo.It("should use existing credentials in k8s cluster [file.csi.azure.com] [Windows]", func() {
+		// Az tests are not yet working for in tree driver
+		skipIfUsingInTreeVolumePlugin()
+
 		req := makeCreateVolumeReq("pre-provisioned-existing-credentials")
 		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
 		if err != nil {
@@ -182,6 +185,9 @@ var _ = ginkgo.Describe("Pre-Provisioned", func() {
 	})
 
 	ginkgo.It("should use provided credentials [file.csi.azure.com] [Windows]", func() {
+		// Az tests are not yet working for in tree driver
+		skipIfUsingInTreeVolumePlugin()
+
 		req := makeCreateVolumeReq("pre-provisioned-provided-credentials")
 		resp, err := azurefileDriver.CreateVolume(context.Background(), req)
 		if err != nil {
