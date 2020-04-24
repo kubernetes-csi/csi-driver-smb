@@ -555,6 +555,38 @@ func (t *TestPod) Logs() ([]byte, error) {
 	return podLogs(t.client, t.pod.Name, t.namespace.Name)
 }
 
+type TestSecret struct {
+	client    clientset.Interface
+	secret    *v1.Secret
+	namespace *v1.Namespace
+}
+
+func NewTestSecret(c clientset.Interface, ns *v1.Namespace, name string, data map[string]string) *TestSecret {
+	return &TestSecret{
+		client:    c,
+		namespace: ns,
+		secret: &v1.Secret{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: name,
+			},
+			StringData: data,
+			Type:       v1.SecretTypeOpaque,
+		},
+	}
+}
+
+func (t *TestSecret) Create() {
+	var err error
+	t.secret, err = t.client.CoreV1().Secrets(t.namespace.Name).Create(context.TODO(), t.secret, metav1.CreateOptions{})
+	framework.ExpectNoError(err)
+}
+
+func (t *TestSecret) Cleanup() {
+	e2elog.Logf("deleting Secret %s", t.secret.Name)
+	err := t.client.CoreV1().Secrets(t.namespace.Name).Delete(context.TODO(), t.secret.Name, metav1.DeleteOptions{})
+	framework.ExpectNoError(err)
+}
+
 func cleanupPodOrFail(client clientset.Interface, name, namespace string) {
 	e2elog.Logf("deleting Pod %q/%q", namespace, name)
 	body, err := podLogs(client, name, namespace)

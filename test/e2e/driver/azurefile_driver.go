@@ -69,13 +69,20 @@ func (d *AzureFileDriver) GetPreProvisionStorageClass(parameters map[string]stri
 	return getStorageClass(generateName, provisioner, parameters, mountOptions, reclaimPolicy, bindingMode, nil)
 }
 
-func (d *AzureFileDriver) GetPersistentVolume(volumeID string, fsType string, size string, reclaimPolicy *v1.PersistentVolumeReclaimPolicy, namespace string) *v1.PersistentVolume {
+func (d *AzureFileDriver) GetPersistentVolume(volumeID string, fsType string, size string, reclaimPolicy *v1.PersistentVolumeReclaimPolicy, namespace string, attrib map[string]string, nodeStageSecretRef string) *v1.PersistentVolume {
 	provisioner := d.driverName
 	generateName := fmt.Sprintf("%s-%s-preprovsioned-pv-", namespace, normalizeProvisioner(provisioner))
 	// Default to Retain ReclaimPolicy for pre-provisioned volumes
 	pvReclaimPolicy := v1.PersistentVolumeReclaimRetain
 	if reclaimPolicy != nil {
 		pvReclaimPolicy = *reclaimPolicy
+	}
+	stageSecretRef := &v1.SecretReference{}
+	if nodeStageSecretRef != "" {
+		stageSecretRef.Name = nodeStageSecretRef
+		stageSecretRef.Namespace = namespace
+	} else {
+		stageSecretRef = nil
 	}
 	return &v1.PersistentVolume{
 		ObjectMeta: metav1.ObjectMeta{
@@ -94,9 +101,11 @@ func (d *AzureFileDriver) GetPersistentVolume(volumeID string, fsType string, si
 			PersistentVolumeReclaimPolicy: pvReclaimPolicy,
 			PersistentVolumeSource: v1.PersistentVolumeSource{
 				CSI: &v1.CSIPersistentVolumeSource{
-					Driver:       provisioner,
-					VolumeHandle: volumeID,
-					FSType:       fsType,
+					Driver:             provisioner,
+					VolumeHandle:       volumeID,
+					FSType:             fsType,
+					VolumeAttributes:   attrib,
+					NodeStageSecretRef: stageSecretRef,
 				},
 			},
 		},
