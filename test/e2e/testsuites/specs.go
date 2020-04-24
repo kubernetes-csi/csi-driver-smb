@@ -48,7 +48,9 @@ type VolumeDetails struct {
 	// Optional, used with pre-provisioned volumes
 	VolumeID string
 	// Optional, used with PVCs created from snapshots
-	DataSource *DataSource
+	DataSource         *DataSource
+	ShareName          string
+	NodeStageSecretRef string
 }
 
 type VolumeMode int
@@ -156,7 +158,12 @@ func (volume *VolumeDetails) SetupDynamicPersistentVolumeClaim(client clientset.
 func (volume *VolumeDetails) SetupPreProvisionedPersistentVolumeClaim(client clientset.Interface, namespace *v1.Namespace, csiDriver driver.PreProvisionedVolumeTestDriver) (*TestPersistentVolumeClaim, []func()) {
 	cleanupFuncs := make([]func(), 0)
 	ginkgo.By("setting up the PV")
-	pv := csiDriver.GetPersistentVolume(volume.VolumeID, volume.FSType, volume.ClaimSize, volume.ReclaimPolicy, namespace.Name)
+	attrib := make(map[string]string)
+	if volume.ShareName != "" {
+		attrib["shareName"] = volume.ShareName
+	}
+	nodeStageSecretRef := volume.NodeStageSecretRef
+	pv := csiDriver.GetPersistentVolume(volume.VolumeID, volume.FSType, volume.ClaimSize, volume.ReclaimPolicy, namespace.Name, attrib, nodeStageSecretRef)
 	tpv := NewTestPreProvisionedPersistentVolume(client, pv)
 	tpv.Create()
 	ginkgo.By("setting up the PVC")

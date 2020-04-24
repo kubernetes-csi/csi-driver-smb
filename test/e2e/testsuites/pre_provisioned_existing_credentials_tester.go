@@ -29,9 +29,8 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 )
 
-// DynamicallyProvisionedCmdVolumeTest will provision required StorageClass(es), PVC(s) and Pod(s)
-// Waiting for the PV provisioner to create a new PV
-// Testing if the Pod(s) Cmd is run with a 0 exit code
+// PreProvisionedExistingCredentialsTest will provision required StorageClass(es), PVC(s) and Pod(s)
+// Testing that the Pod(s) can be created successfully with existing credentials in k8s cluster
 type PreProvisionedExistingCredentialsTest struct {
 	CSIDriver driver.PreProvisionedVolumeTestDriver
 	Pods      []PodDetails
