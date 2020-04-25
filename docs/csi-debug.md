@@ -10,6 +10,7 @@ csi-azurefile-controller-56bfddd689-dh5tk       5/5     Running   0          35s
 ```sh
 $ kubectl logs `kubectl get po -n kube-system | grep csi-azurefile-controller | cut -d ' ' -f1` -c azurefile -n kube-system > csi-azurefile-controller.log
 ```
+> note: there could be multiple controller pods, if there are no useful logs, try to get logs from other controller pods
 
 ### Condition#2: volume mount/unmount failed
  - locate csi driver pod and make sure which pod do tha actual volume mount/unmount
