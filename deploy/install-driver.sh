@@ -37,7 +37,6 @@ echo "Installing Azure File CSI driver, version: $ver ..."
 kubectl apply -f $repo/crd-csi-node-info.yaml
 kubectl apply -f $repo/rbac-csi-azurefile-controller.yaml
 kubectl apply -f $repo/rbac-csi-azurefile-node.yaml
-kubectl apply -f $repo/rbac-csi-azurefile-secret.yaml
 kubectl apply -f $repo/csi-azurefile-controller.yaml
 kubectl apply -f $repo/csi-azurefile-driver.yaml
 kubectl apply -f $repo/csi-azurefile-node.yaml
