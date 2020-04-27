@@ -121,6 +121,13 @@ func (d *Driver) Run(endpoint, kubeconfig string) {
 	}
 	d.cloud = cloud
 
+	if d.NodeID == "" {
+		// Disable UseInstanceMetadata for controller to mitigate a timeout issue using IMDS
+		// https://github.com/kubernetes-sigs/azuredisk-csi-driver/issues/168
+		klog.Infoln("disable UseInstanceMetadata for controller")
+		d.cloud.Config.UseInstanceMetadata = false
+	}
+
 	d.mounter, err = mounter.NewSafeMounter()
 	if err != nil {
 		klog.Fatalf("Failed to get safe mounter. Error: %v", err)
