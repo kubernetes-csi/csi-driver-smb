@@ -54,8 +54,8 @@ func main() {
 		os.Exit(0)
 	}
 	if *nodeID == "" {
-		klog.Error("--nodeid is a required parameter")
-		os.Exit(1)
+		// nodeid is not needed in controller component
+		klog.Warning("nodeid is empty")
 	}
 	exportMetrics()
 	handle()
