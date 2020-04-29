@@ -2,7 +2,7 @@
 
 ### Install by kubectl
 ```console
-curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/install-driver.sh | bash -s v0.6.0 --
+curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/v0.6.0/deploy/install-driver.sh | bash -s v0.6.0 --
 ```
 
  - check pods status:
@@ -22,5 +22,5 @@ csi-azurefile-node-dr4s4                        3/3     Running   0          7m4
 
 ### clean up Azure File CSI driver
 ```console
-curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/uninstall-driver.sh | bash -s --
+curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/v0.6.0/deploy/uninstall-driver.sh | bash -s --
 ```
