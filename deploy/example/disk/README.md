@@ -17,7 +17,7 @@ There are slow disk attach/detach issues on Azure managed disk(sometimes paralle
 
  - Performance test have done
 
-Scheduling 20 pods with one vhd disk each on **one** node **in parallel** could be completed in 2min, while for azure managed disk driver, it's 30min.
+Scheduling 20 pods with one vhd disk each on **one** node **in parallel** could be completed in 30s, while for azure managed disk driver, it's 30min. (not including the disk create/format and image pulling time)
 
  - How to use
  
