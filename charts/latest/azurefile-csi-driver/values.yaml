@@ -9,7 +9,7 @@ image:
     pullPolicy: IfNotPresent
   csiAttacher:
     repository: mcr.microsoft.com/oss/kubernetes-csi/csi-attacher
-    tag: v1.2.0
+    tag: v2.2.0
     pullPolicy: IfNotPresent
   csiSnapshotter:
     repository: mcr.microsoft.com/oss/kubernetes-csi/csi-snapshotter
