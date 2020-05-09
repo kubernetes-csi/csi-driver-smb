@@ -2,11 +2,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: aspnet-azurefile
+  name: aspnet-smb
   labels:
     app: aspnet
 spec:
-  serviceName: aspnet-azurefile
+  serviceName: aspnet-smb
   replicas: 1
   template:
     metadata:
@@ -16,11 +16,11 @@ spec:
       nodeSelector:
         "kubernetes.io/os": windows
       containers:
-        - name: aspnet-azurefile
+        - name: aspnet-smb
           image: mcr.microsoft.com/dotnet/framework/samples:aspnetapp
           volumeMounts:
             - name: persistent-storage
-              mountPath: /mnt/azurefile
+              mountPath: /mnt/smb
   updateStrategy:
     type: RollingUpdate
   selector:

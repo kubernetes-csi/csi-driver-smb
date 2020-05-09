@@ -17,8 +17,8 @@
 set -eo pipefail
 
 function cleanup {
-  echo 'pkill -f azurefileplugin'
-  pkill -f azurefileplugin
+  echo 'pkill -f smbplugin'
+  pkill -f smbplugin
   echo 'Deleting CSI sanity test binary'
   rm -rf csi-test
 }
@@ -31,7 +31,7 @@ if [[ "$#" -gt 0 ]] && [[ -n "$1" ]]; then
   nodeid="$1"
 fi
 
-_output/azurefileplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+_output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 
 echo 'Begin to run sanity test...'
 readonly CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'

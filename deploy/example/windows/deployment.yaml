@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-azurefile
+  name: pvc-smb
 spec:
   accessModes:
     - ReadWriteMany
@@ -14,7 +14,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aspnet-azurefile
+  name: aspnet-smb
   labels:
     app: aspnet
 spec:
@@ -31,12 +31,12 @@ spec:
         - name: aspnet
           image: mcr.microsoft.com/dotnet/framework/samples:aspnetapp
           volumeMounts:
-            - name: azurefile
-              mountPath: "/mnt/azurefile"
+            - name: smb
+              mountPath: "/mnt/smb"
       volumes:
-        - name: azurefile
+        - name: smb
           persistentVolumeClaim:
-            claimName: pvc-azurefile
+            claimName: pvc-smb
   selector:
     matchLabels:
       app: aspnet

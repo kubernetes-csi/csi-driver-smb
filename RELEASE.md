@@ -6,4 +6,4 @@ The AzureFile CSI Driver is released on an as-needed basis. The process is as fo
 1. All [OWNERS](OWNERS) must LGTM this release
 1. An OWNER runs `git tag -s $VERSION` and inserts the changelog and pushes the tag with `git push $VERSION`
 1. The release issue is closed
-1. An announcement email is sent to `kubernetes-dev@googlegroups.com` with the subject `[ANNOUNCE] azurefile-csi-driver $VERSION is released`
+1. An announcement email is sent to `kubernetes-dev@googlegroups.com` with the subject `[ANNOUNCE] csi-driver-smb $VERSION is released`

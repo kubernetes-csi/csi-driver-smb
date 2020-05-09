@@ -17,8 +17,8 @@
 set -eo pipefail
 
 function cleanup {
-  echo 'pkill -f azurefileplugin'
-  pkill -f azurefileplugin
+  echo 'pkill -f smbplugin'
+  pkill -f smbplugin
 }
 
 readonly CSC_BIN="$GOBIN/csc"
@@ -51,7 +51,7 @@ fi
 echo "Begin to run integration test on $cloud..."
 
 # Run CSI driver as a background service
-_output/azurefileplugin --endpoint "$endpoint" --nodeid CSINode -v=5 &
+_output/smbplugin --endpoint "$endpoint" --nodeid CSINode -v=5 &
 trap cleanup EXIT
 
 if [[ "$cloud" == 'AzureChinaCloud' ]]; then
@@ -71,7 +71,7 @@ echo "Got volume id: $volumeid"
 "$CSC_BIN" controller validate-volume-capabilities --endpoint "$endpoint" --cap 1,block "$volumeid"
 
 if [[ "$cloud" != 'AzureChinaCloud' ]]; then
-  # azure file mount/unmount on travis VM does not work against AzureChinaCloud
+  # smb mount/unmount on travis VM does not work against AzureChinaCloud
   echo "stage volume test:"
   "$CSC_BIN" node stage --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" "$volumeid"
   sleep 2

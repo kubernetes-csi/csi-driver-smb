@@ -24,7 +24,7 @@ if [[ "$#" -gt 0 ]]; then
 fi
 
 apt update && apt install cifs-utils procps -y
-# test azure file
+# test smb
 test/integration/run-test.sh 'tcp://127.0.0.1:10000' "/tmp/stagingtargetpath" "/tmp/targetpath" "skuname=Standard_LRS" "$cloud"
 
 # test vhd disk feature

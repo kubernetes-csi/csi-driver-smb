@@ -23,7 +23,7 @@ import (
 	"log"
 	"os"
 
-	"sigs.k8s.io/azurefile-csi-driver/test/utils/testutil"
+	"github.com/csi-driver/csi-driver-smb/test/utils/testutil"
 
 	"github.com/pborman/uuid"
 	"github.com/pelletier/go-toml"
@@ -32,7 +32,7 @@ import (
 const (
 	AzurePublicCloud            = "AzurePublicCloud"
 	AzureChinaCloud             = "AzureChinaCloud"
-	ResourceGroupPrefix         = "azurefile-csi-driver-test-"
+	ResourceGroupPrefix         = "csi-driver-smb-test-"
 	TempAzureCredentialFilePath = "/tmp/azure.json"
 
 	azureCredentialFileTemplate = `{

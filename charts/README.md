@@ -1,6 +1,6 @@
 # Installation with Helm 3
 
-Quick start instructions for the setup and configuration of azurefile CSI driver using Helm.
+Quick start instructions for the setup and configuration of smb CSI driver using Helm.
 
 ## Prerequisites
 
@@ -9,15 +9,15 @@ Quick start instructions for the setup and configuration of azurefile CSI driver
 ## Install AzureFile via `helm install`
 
 ```console
-$ cd $GOPATH/src/sigs.k8s.io/azurefile-csi-driver/charts/latest
-$ helm package azurefile-csi-driver
-$ helm install azurefile-csi-driver azurefile-csi-driver-latest.tgz --namespace kube-system
+$ cd $GOPATH/src/github.com/csi-driver/csi-driver-smb/charts/latest
+$ helm package csi-driver-smb
+$ helm install csi-driver-smb csi-driver-smb-latest.tgz --namespace kube-system
 ```
 
 ## Uninstall
 
 ```console
-$ helm uninstall azurefile-csi-driver -n kube-system
+$ helm uninstall csi-driver-smb -n kube-system
 ```
 
 ## The Latest Helm Chart Configuration
@@ -26,9 +26,9 @@ The following table lists the configurable parameters of the latest Azure File C
 
 | Parameter                                         | Description                                                | Default                                                           |
 |---------------------------------------------------|------------------------------------------------------------|-------------------------------------------------------------------|
-| `image.azurefile.repository`                       | azurefile-csi-driver docker image                           | mcr.microsoft.com/k8s/csi/azurefile-csi                            |
-| `image.azurefile.tag`                              | azurefile-csi-driver docker image tag                       | latest                                                            |
-| `image.azurefile.pullPolicy`                       | azurefile-csi-driver image pull policy                      | IfNotPresent                                                      |
+| `image.smb.repository`                       | csi-driver-smb docker image                           | mcr.microsoft.com/k8s/csi/smb-csi                            |
+| `image.smb.tag`                              | csi-driver-smb docker image tag                       | latest                                                            |
+| `image.smb.pullPolicy`                       | csi-driver-smb image pull policy                      | IfNotPresent                                                      |
 | `image.csiProvisioner.repository`                 | csi-provisioner docker image                               | mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner              |
 | `image.csiProvisioner.tag`                        | csi-provisioner docker image tag                           | v1.4.0                                                            |
 | `image.csiProvisioner.pullPolicy`                 | csi-provisioner image pull policy                          | IfNotPresent                                                      |
@@ -47,9 +47,9 @@ The following table lists the configurable parameters of the latest Azure File C
 | `image.nodeDriverRegistrar.repository`            | csi-node-driver-registrar docker image                     | mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar    |
 | `image.nodeDriverRegistrar.tag`                   | csi-node-driver-registrar docker image tag                 | v1.2.0                                                            |
 | `image.nodeDriverRegistrar.pullPolicy`            | csi-node-driver-registrar image pull policy                | IfNotPresent                                                      |
-| `serviceAccount.create`                           | whether create service account of csi-azurefile-controller  | true                                                              |
-| `rbac.create`                                     | whether create rbac of csi-azurefile-controller             | true                                                              |
-| `controller.replicas`                             | the replicas of csi-azurefile-controller                    | 2                                                                 |
+| `serviceAccount.create`                           | whether create service account of csi-smb-controller  | true                                                              |
+| `rbac.create`                                     | whether create rbac of csi-smb-controller             | true                                                              |
+| `controller.replicas`                             | the replicas of csi-smb-controller                    | 2                                                                 |
 | `linux.enabled`                                   | whether enable linux feature                               | true                                                              |
 | `windows.enabled`                                 | whether enable windows feature                             | false                                                             |
 | `windows.image.livenessProbe.repository`          | windows liveness-probe docker image                        | mcr.microsoft.com/oss/kubernetes-csi/livenessprobe                |

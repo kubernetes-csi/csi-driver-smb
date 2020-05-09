@@ -2,11 +2,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: statefulset-azurefile
+  name: statefulset-smb
   labels:
     app: nginx
 spec:
-  serviceName: statefulset-azurefile
+  serviceName: statefulset-smb
   replicas: 1
   template:
     metadata:
@@ -14,15 +14,15 @@ spec:
         app: nginx
     spec:
       containers:
-        - name: statefulset-azurefile
+        - name: statefulset-smb
           image: nginx
           command:
             - "/bin/sh"
             - "-c"
-            - while true; do echo $(date) >> /mnt/azurefile/outfile; sleep 1; done
+            - while true; do echo $(date) >> /mnt/smb/outfile; sleep 1; done
           volumeMounts:
             - name: persistent-storage
-              mountPath: /mnt/azurefile
+              mountPath: /mnt/smb
   updateStrategy:
     type: RollingUpdate
   selector:

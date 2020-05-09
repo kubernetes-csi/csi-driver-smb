@@ -19,7 +19,7 @@ if [[ -z "$(command -v yamllint)" ]]; then
 fi
 
 LOG=/tmp/yamllint.log
-helmPath=charts/latest/azurefile-csi-driver/templates
+helmPath=charts/latest/csi-driver-smb/templates
 
 for path in "deploy/*.yaml" "deploy/example/*.yaml" "deploy/example/snapshot/*.yaml" "deploy/example/disk/*.yaml" "deploy/example/windows/*.yaml"
 do

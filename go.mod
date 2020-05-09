@@ -1,4 +1,4 @@
-module sigs.k8s.io/azurefile-csi-driver
+module github.com/csi-driver/csi-driver-smb
 
 go 1.13
 

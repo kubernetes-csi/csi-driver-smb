@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-azurefile
+  name: pvc-smb
 spec:
   accessModes:
     - ReadWriteOnce
@@ -16,7 +16,7 @@ kind: Deployment
 metadata:
   labels:
     app: nginx
-  name: deployment-azurefile
+  name: deployment-smb
 spec:
   replicas: 1
   selector:
@@ -26,23 +26,23 @@ spec:
     metadata:
       labels:
         app: nginx
-      name: deployment-azurefile
+      name: deployment-smb
     spec:
       containers:
-        - name: deployment-azurefile
+        - name: deployment-smb
           image: nginx
           command:
             - "/bin/sh"
             - "-c"
-            - while true; do echo $(date) >> /mnt/azurefile/outfile; sleep 1; done
+            - while true; do echo $(date) >> /mnt/smb/outfile; sleep 1; done
           volumeMounts:
-            - name: azurefile
-              mountPath: "/mnt/azurefile"
+            - name: smb
+              mountPath: "/mnt/smb"
               readOnly: false
       volumes:
-        - name: azurefile
+        - name: smb
           persistentVolumeClaim:
-            claimName: pvc-azurefile
+            claimName: pvc-smb
   strategy:
     rollingUpdate:
       maxSurge: 0

@@ -21,7 +21,7 @@ if [[ "$#" -gt 0 ]]; then
   ver="$1"
 fi
 
-repo="https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy"
+repo="https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy"
 if [[ "$#" -gt 1 ]]; then
   if [[ "$2" == *"local"* ]]; then
     echo "use local deploy"
@@ -35,16 +35,16 @@ fi
 
 echo "Installing Azure File CSI driver, version: $ver ..."
 kubectl apply -f $repo/crd-csi-node-info.yaml
-kubectl apply -f $repo/rbac-csi-azurefile-controller.yaml
-kubectl apply -f $repo/rbac-csi-azurefile-node.yaml
-kubectl apply -f $repo/csi-azurefile-controller.yaml
-kubectl apply -f $repo/csi-azurefile-driver.yaml
-kubectl apply -f $repo/csi-azurefile-node.yaml
+kubectl apply -f $repo/rbac-csi-smb-controller.yaml
+kubectl apply -f $repo/rbac-csi-smb-node.yaml
+kubectl apply -f $repo/csi-smb-controller.yaml
+kubectl apply -f $repo/csi-smb-driver.yaml
+kubectl apply -f $repo/csi-smb-node.yaml
 
 if [[ "$#" -gt 1 ]]; then
   if [[ "$2" == *"windows"* ]]; then
     echo "install Windows driver ..."
-    kubectl apply -f $repo/csi-azurefile-node-windows.yaml
+    kubectl apply -f $repo/csi-smb-node-windows.yaml
   fi
 fi
 echo 'Azure File CSI driver installed successfully.'

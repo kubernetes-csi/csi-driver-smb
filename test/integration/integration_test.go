@@ -24,9 +24,9 @@ import (
 	"strings"
 	"testing"
 
-	"sigs.k8s.io/azurefile-csi-driver/test/utils/azure"
-	"sigs.k8s.io/azurefile-csi-driver/test/utils/credentials"
-	"sigs.k8s.io/azurefile-csi-driver/test/utils/testutil"
+	"github.com/csi-driver/csi-driver-smb/test/utils/azure"
+	"github.com/csi-driver/csi-driver-smb/test/utils/credentials"
+	"github.com/csi-driver/csi-driver-smb/test/utils/testutil"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -95,7 +95,7 @@ func testIntegration(t *testing.T, creds *credentials.Credentials) {
 
 	cwd, err := os.Getwd()
 	assert.NoError(t, err)
-	assert.True(t, strings.HasSuffix(cwd, "azurefile-csi-driver"))
+	assert.True(t, strings.HasSuffix(cwd, "csi-driver-smb"))
 
 	cmd := exec.Command("./test/integration/run-tests-all-clouds.sh", creds.Cloud)
 	cmd.Dir = cwd

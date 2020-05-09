@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-PKG = sigs.k8s.io/azurefile-csi-driver
+PKG = github.com/csi-driver/csi-driver-smb
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
 REGISTRY_NAME = $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
-IMAGE_NAME = azurefile-csi
-IMAGE_VERSION ?= v0.7.0
+IMAGE_NAME = smb-csi
+IMAGE_VERSION ?= v0.1.0
 # Use a custom version for E2E tests if we are testing in CI
 ifdef CI
 override IMAGE_VERSION := e2e-$(GIT_COMMIT)
@@ -25,7 +25,7 @@ endif
 IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
 IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
 BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-LDFLAGS ?= "-X ${PKG}/pkg/azurefile.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/azurefile.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/azurefile.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
+LDFLAGS ?= "-X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
 GINKGO_FLAGS = -ginkgo.noColor -ginkgo.v
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
@@ -36,7 +36,7 @@ export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
 .EXPORT_ALL_VARIABLES:
 
 .PHONY: all
-all: azurefile
+all: smb
 
 .PHONY: update
 update:
@@ -52,11 +52,11 @@ unit-test:
 	go test -v -race ./pkg/... ./test/utils/credentials
 
 .PHONY: sanity-test
-sanity-test: azurefile
+sanity-test: smb
 	go test -v -timeout=10m ./test/sanity
 
 .PHONY: integration-test
-integration-test: azurefile
+integration-test: smb
 	go test -v -timeout=10m ./test/integration
 
 .PHONY: e2e-test
@@ -65,18 +65,18 @@ e2e-test:
 
 .PHONY: e2e-bootstrap
 e2e-bootstrap: install-helm
-	docker pull $(IMAGE_TAG) || make azurefile-container push
+	docker pull $(IMAGE_TAG) || make smb-container push
 ifdef TEST_WINDOWS
-	helm install azurefile-csi-driver charts/latest/azurefile-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
-		--set image.azurefile.repository=$(REGISTRY)/$(IMAGE_NAME) \
-		--set image.azurefile.tag=$(IMAGE_VERSION) \
+	helm install smb-csi-driver charts/latest/smb-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
+		--set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) \
+		--set image.smb.tag=$(IMAGE_VERSION) \
 		--set windows.enabled=true \
 		--set linux.enabled=false \
 		--set controller.replicas=1
 else
-	helm install azurefile-csi-driver charts/latest/azurefile-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
-		--set image.azurefile.repository=$(REGISTRY)/$(IMAGE_NAME) \
-		--set image.azurefile.tag=$(IMAGE_VERSION) \
+	helm install smb-csi-driver charts/latest/smb-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
+		--set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) \
+		--set image.smb.tag=$(IMAGE_VERSION) \
 		--set snapshot.enabled=true
 endif
 
@@ -86,36 +86,36 @@ install-helm:
 
 .PHONY: e2e-teardown
 e2e-teardown:
-	helm delete azurefile-csi-driver --namespace kube-system
+	helm delete smb-csi-driver --namespace kube-system
 
-.PHONY: azurefile
-azurefile:
-	CGO_ENABLED=0 GOOS=linux go build -a -ldflags ${LDFLAGS} -o _output/azurefileplugin ./pkg/azurefileplugin
+.PHONY: smb
+smb:
+	CGO_ENABLED=0 GOOS=linux go build -a -ldflags ${LDFLAGS} -o _output/smbplugin ./pkg/smbplugin
 
-.PHONY: azurefile-windows
-azurefile-windows:
-	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -o _output/azurefileplugin.exe ./pkg/azurefileplugin
+.PHONY: smb-windows
+smb-windows:
+	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -o _output/smbplugin.exe ./pkg/smbplugin
 
 .PHONY: container	
-container: azurefile	
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
+container: smb	
+	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/Dockerfile .
 
-.PHONY: azurefile-container
-azurefile-container:
+.PHONY: smb-container
+smb-container:
 ifdef CI
 	az acr login --name $(REGISTRY_NAME)
-	make azurefile azurefile-windows
-	az acr build --registry $(REGISTRY_NAME) -t $(IMAGE_TAG)-linux-amd64 -f ./pkg/azurefileplugin/Dockerfile --platform linux .
-	az acr build --registry $(REGISTRY_NAME) -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/azurefileplugin/Windows.Dockerfile --platform windows .
+	make smb smb-windows
+	az acr build --registry $(REGISTRY_NAME) -t $(IMAGE_TAG)-linux-amd64 -f ./pkg/smbplugin/Dockerfile --platform linux .
+	az acr build --registry $(REGISTRY_NAME) -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/smbplugin/Windows.Dockerfile --platform windows .
 	docker manifest create $(IMAGE_TAG) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-windows-1809-amd64
 	docker manifest inspect $(IMAGE_TAG)
 else
 ifdef TEST_WINDOWS
-	make azurefile-windows
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Windows.Dockerfile .
+	make smb-windows
+	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/Windows.Dockerfile .
 else
-	make azurefile
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/azurefileplugin/Dockerfile .
+	make smb
+	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/Dockerfile .
 endif
 endif
 
@@ -133,7 +133,7 @@ push-latest:
 	docker push $(IMAGE_TAG_LATEST)
 
 .PHONY: build-push
-build-push: azurefile-container
+build-push: smb-container
 	docker tag $(IMAGE_TAG) $(IMAGE_TAG_LATEST)
 	docker push $(IMAGE_TAG_LATEST)
 

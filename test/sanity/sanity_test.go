@@ -24,8 +24,8 @@ import (
 	"strings"
 	"testing"
 
-	"sigs.k8s.io/azurefile-csi-driver/test/utils/azure"
-	"sigs.k8s.io/azurefile-csi-driver/test/utils/credentials"
+	"github.com/csi-driver/csi-driver-smb/test/utils/azure"
+	"github.com/csi-driver/csi-driver-smb/test/utils/credentials"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -78,7 +78,7 @@ func TestSanity(t *testing.T) {
 
 	projectRoot, err := os.Getwd()
 	assert.NoError(t, err)
-	assert.True(t, strings.HasSuffix(projectRoot, "azurefile-csi-driver"))
+	assert.True(t, strings.HasSuffix(projectRoot, "csi-driver-smb"))
 
 	cmd := exec.Command("./test/sanity/run-tests-all-clouds.sh")
 	cmd.Dir = projectRoot

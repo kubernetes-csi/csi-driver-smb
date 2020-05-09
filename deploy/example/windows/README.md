@@ -10,7 +10,7 @@ CSI on Windows support is an alpha feature since Kubernetes v1.18, refer to [Win
 
 ## Install CSI Driver
 ```console
-curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/install-driver.sh | bash -s master,windows --
+curl -skSL https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/install-driver.sh | bash -s master,windows --
 ```
 
 ## Deploy a Windows pod with PVC mount
@@ -18,31 +18,31 @@ curl -skSL https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-drive
 ### Create StorageClass
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/storageclass-azurefile-csi.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/storageclass-smb-csi.yaml
 ```
 
 ### Create Windows pod
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/windows/statefulset.yaml
+kubectl apply -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/windows/statefulset.yaml
 ```
 
 ### Enter pod container to do validation
 
 ```
-$ kubectl exec -it aspnet-azurefile-0 -- cmd
+$ kubectl exec -it aspnet-smb-0 -- cmd
 Microsoft Windows [Version 10.0.17763.1098]
 (c) 2018 Microsoft Corporation. All rights reserved.
 
-C:\inetpub\wwwroot>cd c:\mnt\azurefile
+C:\inetpub\wwwroot>cd c:\mnt\smb
 
-c:\mnt\azurefile>echo hello > 20200328
+c:\mnt\smb>echo hello > 20200328
 
-c:\mnt\azurefile>dir
+c:\mnt\smb>dir
  Volume in drive C has no label.
  Volume Serial Number is DE36-B78A
 
- Directory of c:\mnt\azurefile
+ Directory of c:\mnt\smb
 
 03/28/2020  05:48 AM    <DIR>          .
 03/28/2020  05:48 AM    <DIR>          ..
@@ -51,4 +51,4 @@ c:\mnt\azurefile>dir
                2 Dir(s)  107,374,116,864 bytes free
 ```
 
-In the above example, there is a `c:\mnt\azurefile` directory mounted as NTFS filesystem.
+In the above example, there is a `c:\mnt\smb` directory mounted as NTFS filesystem.
