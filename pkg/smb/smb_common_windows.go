@@ -26,20 +26,20 @@ import (
 	"sigs.k8s.io/azurefile-csi-driver/pkg/mounter"
 )
 
-func SMBMount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
+func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
 	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
 	if !ok {
 		return fmt.Errorf("could not cast to csi proxy class")
 	}
-	return proxy.SMBMount(source, target, fsType, options)
+	return proxy.Mount(source, target, fsType, options)
 }
 
-func SMBUnmount(m *mount.SafeFormatAndMount, target string) error {
+func Unmount(m *mount.SafeFormatAndMount, target string) error {
 	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
 	if !ok {
 		return fmt.Errorf("could not cast to csi proxy class")
 	}
-	return proxy.SMBUnmount(target)
+	return proxy.Unmount(target)
 }
 
 func RemoveStageTarget(m *mount.SafeFormatAndMount, target string) error {
@@ -54,7 +54,7 @@ func RemoveStageTarget(m *mount.SafeFormatAndMount, target string) error {
 // The clean up mount point point calls is supposed for fix the corrupted directories as well.
 // For alpha CSI proxy integration, we only do an unmount.
 func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
-	return SMBUnmount(m, target)
+	return Unmount(m, target)
 }
 
 func CleanupMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
