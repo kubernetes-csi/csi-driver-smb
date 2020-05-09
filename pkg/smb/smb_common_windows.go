@@ -21,9 +21,9 @@ package smb
 import (
 	"fmt"
 
-	"github.com/csi-driver/csi-driver-smb/pkg/mounter"
 	"k8s.io/klog"
 	"k8s.io/utils/mount"
+	"sigs.k8s.io/azurefile-csi-driver/pkg/mounter"
 )
 
 func SMBMount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {

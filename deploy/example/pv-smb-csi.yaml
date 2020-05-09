@@ -5,16 +5,17 @@ metadata:
   name: pv-smb
 spec:
   capacity:
-    storage: 10Gi
+    storage: 100Gi
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain  # if set as "Delete" file share would be removed in pvc deletion
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions: "vers=3.0,dir_mode=0777,file_mode=0777"
   csi:
-    driver: file.csi.azure.com
+    driver: smb.csi.k8s.io
     readOnly: false
     volumeHandle: arbitrary-volumeid  # make sure it's a uniqe id
     volumeAttributes:
-      shareName: EXISTING_FILE_SHARE_NAME  # only file share name, don't use full path
+      source: "//STORAGE-ACCOUNT.file.core.windows.net/SHARE-NAME"
     nodeStageSecretRef:
-      name: azure-secret
+      name: smbcreds
       namespace: default
