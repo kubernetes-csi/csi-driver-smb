@@ -23,5 +23,4 @@ ${PKG_ROOT}/hack/verify-govet.sh
 ${PKG_ROOT}/hack/verify-golint.sh
 ${PKG_ROOT}/hack/verify-yamllint.sh
 ${PKG_ROOT}/hack/verify-boilerplate.sh
-#${PKG_ROOT}/hack/verify-helm-chart.sh
 ${PKG_ROOT}/hack/verify-spelling.sh

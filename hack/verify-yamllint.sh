@@ -19,9 +19,8 @@ if [[ -z "$(command -v yamllint)" ]]; then
 fi
 
 LOG=/tmp/yamllint.log
-helmPath=charts/latest/csi-driver-smb/templates
 
-for path in "deploy/*.yaml" "deploy/example/*.yaml" "deploy/example/snapshot/*.yaml" "deploy/example/disk/*.yaml" "deploy/example/windows/*.yaml"
+for path in "deploy/*.yaml" "deploy/example/*.yaml" "deploy/example/windows/*.yaml"
 do
     echo "checking yamllint under path: $path ..."
     yamllint -f parsable $path | grep -v "line too long" > $LOG
@@ -33,14 +32,5 @@ do
         exit 1
     fi
 done
-
-echo "checking yamllint under path: $helmPath ..."
-yamllint -f parsable $helmPath/*.yaml | grep -v "line too long" | grep -v "too many spaces inside braces" | grep -v "missing document start" | grep -v "syntax error" > $LOG
-linecount=`cat $LOG | wc -l`
-if [ $linecount -gt 0 ]; then
-	echo "yaml files under $helmPath/ are not linted, failed with: "
-	cat $LOG
-	exit 1
-fi
 
 echo "Congratulations! All Yaml files have been linted."
