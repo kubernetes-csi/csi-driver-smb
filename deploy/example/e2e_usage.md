@@ -1,24 +1,9 @@
 ## CSI driver E2E usage example
 #### 1. create a pod with smb share mount
-##### Option#1: Dynamic Provisioning
- - Create an smb CSI storage class and PVC
+##### Static Provisioning(use an existing smb share)
+ - Use `kubectl create secret` to create `smbcreds` with SMB username and password
 ```console
-kubectl create -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/storageclass-smb-csi.yaml
-kubectl create -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/pvc-smb-csi.yaml
-```
-
-##### Option#2: Static Provisioning(use an existing smb share)
-> make sure credential in cluster could access that file share
- - Create an smb CSI storage class and PVC
-```console
-kubectl create -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/storageclass-smb-existing-share.yaml
-kubectl create -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/pvc-smb-csi.yaml
-```
-
-##### Option#3: Static Provisioning(use an existing smb share)
- - Use `kubectl create secret` to create `azure-secret` with existing storage account name and key
-```console
-kubectl create secret generic azure-secret --from-literal accountname=NAME --from-literal accountkey="KEY" --type=Opaque
+kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
 
  - Create an smb CSI PV, download `pv-smb-csi.yaml` file and edit `shareName` in `volumeAttributes`

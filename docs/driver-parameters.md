@@ -1,5 +1,5 @@
-## `file.csi.azure.com` driver parameters
- > storage class `file.csi.azure.com` parameters are compatible with built-in [smb](https://kubernetes.io/docs/concepts/storage/volumes/#smb) plugin
+## `smb.csi.k8s.io` driver parameters
+ > storage class `smb.csi.k8s.io` parameters are compatible with built-in [smb](https://kubernetes.io/docs/concepts/storage/volumes/#smb) plugin
 
  - Dynamic Provision
   > get a quick example [here](../deploy/example/storageclass-smb-csi.yaml)

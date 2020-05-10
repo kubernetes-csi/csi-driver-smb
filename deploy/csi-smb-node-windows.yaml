@@ -43,7 +43,7 @@ spec:
           args:
             - --v=5
             - --csi-address=$(CSI_ENDPOINT)
-            - --kubelet-registration-path=C:\\var\\lib\\kubelet\\plugins\\file.csi.azure.com\\csi.sock
+            - --kubelet-registration-path=C:\\var\\lib\\kubelet\\plugins\\smb.csi.k8s.io\\csi.sock
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
@@ -135,7 +135,7 @@ spec:
             type: Directory
         - name: plugin-dir
           hostPath:
-            path: C:\var\lib\kubelet\plugins\file.csi.azure.com\
+            path: C:\var\lib\kubelet\plugins\smb.csi.k8s.io\
             type: DirectoryOrCreate
         - name: azure-config
           hostPath:

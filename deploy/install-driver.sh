@@ -33,11 +33,9 @@ if [ $ver != "master" ]; then
 	repo="$repo/$ver"
 fi
 
-echo "Installing Azure File CSI driver, version: $ver ..."
+echo "Installing SMB CSI driver, version: $ver ..."
 kubectl apply -f $repo/crd-csi-node-info.yaml
-kubectl apply -f $repo/rbac-csi-smb-controller.yaml
 kubectl apply -f $repo/rbac-csi-smb-node.yaml
-kubectl apply -f $repo/csi-smb-controller.yaml
 kubectl apply -f $repo/csi-smb-driver.yaml
 kubectl apply -f $repo/csi-smb-node.yaml
 
@@ -47,4 +45,4 @@ if [[ "$#" -gt 1 ]]; then
     kubectl apply -f $repo/csi-smb-node-windows.yaml
   fi
 fi
-echo 'Azure File CSI driver installed successfully.'
+echo 'SMB CSI driver installed successfully.'

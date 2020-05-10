@@ -47,12 +47,12 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/bin/sh", "-c", "rm -rf /registration/file.csi.azure.com-reg.sock /csi/csi.sock"]
+                command: ["/bin/sh", "-c", "rm -rf /registration/smb.csi.k8s.io-reg.sock /csi/csi.sock"]
           env:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: /var/lib/kubelet/plugins/file.csi.azure.com/csi.sock
+              value: /var/lib/kubelet/plugins/smb.csi.k8s.io/csi.sock
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -66,7 +66,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: mcr.microsoft.com/k8s/csi/smb-csi:latest
+          image: andyzhangx/smb-csi:latest
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -117,7 +117,7 @@ spec:
               memory: 20Mi
       volumes:
         - hostPath:
-            path: /var/lib/kubelet/plugins/file.csi.azure.com
+            path: /var/lib/kubelet/plugins/smb.csi.k8s.io
             type: DirectoryOrCreate
           name: socket-dir
         - hostPath:

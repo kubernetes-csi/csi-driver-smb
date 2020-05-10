@@ -20,7 +20,7 @@ csi-smb-node-cvgbs                        3/3     Running   0          7m4s    1
 csi-smb-node-dr4s4                        3/3     Running   0          7m4s    10.240.0.4     k8s-agentpool-22533604-0
 ```
 
-### clean up Azure File CSI driver
+### clean up SMB CSI driver
 ```console
 curl -skSL https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/uninstall-driver.sh | bash -s --
 ```

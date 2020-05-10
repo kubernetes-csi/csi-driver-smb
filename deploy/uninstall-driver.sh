@@ -33,7 +33,7 @@ if [ $ver != "master" ]; then
 	repo="$repo/$ver"
 fi
 
-echo "Uninstalling Azure File CSI driver, version: $ver ..."
+echo "Uninstalling SMB CSI driver, version: $ver ..."
 kubectl delete -f $repo/csi-smb-controller.yaml --ignore-not-found
 kubectl delete -f $repo/csi-smb-driver.yaml --ignore-not-found
 kubectl delete -f $repo/csi-smb-node.yaml --ignore-not-found
@@ -41,4 +41,4 @@ kubectl delete -f $repo/csi-smb-node-windows.yaml --ignore-not-found
 kubectl delete -f $repo/crd-csi-node-info.yaml --ignore-not-found
 kubectl delete -f $repo/rbac-csi-smb-controller.yaml --ignore-not-found
 kubectl delete -f $repo/rbac-csi-smb-node.yaml --ignore-not-found
-echo 'Uninstalled Azure File CSI driver successfully.'
+echo 'Uninstalled SMB CSI driver successfully.'

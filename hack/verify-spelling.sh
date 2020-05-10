@@ -34,11 +34,14 @@ exitHandler() (
 )
 trap exitHandler EXIT
 
-# perform go get in a temp dir as we are not tracking this version in a go module
-# if we do the go get in the repo, it will create / update a go.mod and go.sum
-cd "${TMP_DIR}"
-GO111MODULE=on GOBIN="${TMP_DIR}" go get "github.com/client9/misspell/cmd/misspell@${TOOL_VERSION}"
-export PATH="${TMP_DIR}:${PATH}"
+if [[ -z "$(command -v misspell)" ]]; then
+  echo "Cannot find misspell. Installing misspell..."
+  # perform go get in a temp dir as we are not tracking this version in a go module
+  # if we do the go get in the repo, it will create / update a go.mod and go.sum
+  cd "${TMP_DIR}"
+  GO111MODULE=on GOBIN="${TMP_DIR}" go get "github.com/client9/misspell/cmd/misspell@${TOOL_VERSION}"
+  export PATH="${TMP_DIR}:${PATH}"
+fi
 cd "${ROOT}"
 
 # check spelling
