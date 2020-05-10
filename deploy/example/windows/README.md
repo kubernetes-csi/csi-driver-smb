@@ -15,12 +15,6 @@ curl -skSL https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/de
 
 ## Deploy a Windows pod with PVC mount
 
-### Create StorageClass
-
-```
-kubectl apply -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/storageclass-smb-csi.yaml
-```
-
 ### Create Windows pod
 
 ```

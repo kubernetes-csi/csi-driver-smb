@@ -1,19 +1,44 @@
 ## CSI driver E2E usage example
 #### 1. create a pod with smb share mount
 ##### Static Provisioning(use an existing smb share)
- - Use `kubectl create secret` to create `smbcreds` with SMB username and password
+ - Use `kubectl create secret` to create `smbcreds` with SMB username, password
 ```console
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
+> add `--from-literal domain=DOMAINNAME` for domain support
 
- - Create an smb CSI PV, download `pv-smb-csi.yaml` file and edit `shareName` in `volumeAttributes`
+ - Create an smb CSI PV, download [`pv-smb-csi.yaml`](https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/pv-smb-csi.yaml) file and edit `source` in `volumeAttributes`
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-smb
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - vers=3.0
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: arbitrary-volumeid  # make sure it's a unique id
+    volumeAttributes:
+      source: "//IP/smb-server/directory"
+    nodeStageSecretRef:
+      name: smbcreds
+      namespace: default
+```
+
 ```console
-wget https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/pv-smb-csi.yaml
-vi pv-smb-csi.yaml
 kubectl create -f pv-smb-csi.yaml
 ```
 
- - Create an smb CSI PVC which would be bound to the above PV
+ - Create a PVC
 ```console
 kubectl create -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/pvc-smb-csi-static.yaml
 ```
