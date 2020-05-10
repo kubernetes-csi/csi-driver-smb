@@ -19,9 +19,6 @@ Please refer to [install smb csi driver](https://github.com/csi-driver/csi-drive
 
 ### Examples
  - [Basic usage](./deploy/example/e2e_usage.md)
- - [Snapshot](./deploy/example/snapshot)
- - [VHD disk](./deploy/example/disk)
- - [Windows](./deploy/example/windows)
  
 ### Troubleshooting
  - [CSI driver troubleshooting guide](./docs/csi-debug.md) 
