@@ -14,8 +14,7 @@ kubectl -n kube-system get pod -o wide --watch -l app=csi-smb-node
 example output:
 
 ```
-NAME                                            READY   STATUS    RESTARTS   AGE     IP             NODE
-csi-smb-controller-56bfddd689-dh5tk       6/6     Running   0          35s     10.240.0.19    k8s-agentpool-22533604-0
+NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE
 csi-smb-node-cvgbs                        3/3     Running   0          7m4s    10.240.0.35    k8s-agentpool-22533604-1
 csi-smb-node-dr4s4                        3/3     Running   0          7m4s    10.240.0.4     k8s-agentpool-22533604-0
 ```

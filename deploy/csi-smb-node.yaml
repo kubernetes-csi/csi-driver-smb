@@ -82,8 +82,6 @@ spec:
             timeoutSeconds: 10
             periodSeconds: 30
           env:
-            - name: AZURE_CREDENTIAL_FILE
-              value: "/etc/kubernetes/azure.json"
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
             - name: KUBE_NODE_NAME
@@ -99,13 +97,6 @@ spec:
             - mountPath: /var/lib/kubelet/
               mountPropagation: Bidirectional
               name: mountpoint-dir
-            - mountPath: /etc/kubernetes/
-              name: azure-cred
-            - mountPath: /var/lib/waagent/ManagedIdentity-Settings
-              readOnly: true
-              name: msi
-            - mountPath: /dev
-              name: device-dir
           resources:
             limits:
               cpu: 1
@@ -126,15 +117,4 @@ spec:
             path: /var/lib/kubelet/plugins_registry/
             type: DirectoryOrCreate
           name: registration-dir
-        - hostPath:
-            path: /etc/kubernetes/
-            type: Directory
-          name: azure-cred
-        - hostPath:
-            path: /var/lib/waagent/ManagedIdentity-Settings
-          name: msi
-        - hostPath:
-            path: /dev
-            type: Directory
-          name: device-dir
 ---
