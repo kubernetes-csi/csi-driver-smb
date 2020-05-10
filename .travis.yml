@@ -10,4 +10,5 @@ before_install:
 
 script:
   - make verify
+  - make smb-windows  
   - make container
