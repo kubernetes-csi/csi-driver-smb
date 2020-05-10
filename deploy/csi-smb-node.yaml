@@ -13,8 +13,6 @@ spec:
       labels:
         app: csi-smb-node
     spec:
-      hostNetwork: true
-      serviceAccountName: csi-smb-node-sa
       nodeSelector:
         kubernetes.io/os: linux
       priorityClassName: system-node-critical
@@ -29,7 +27,7 @@ spec:
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
-            - --health-port=29613
+            - --health-port=39613
             - --v=5
           resources:
             limits:
@@ -72,7 +70,7 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
           ports:
-            - containerPort: 29613
+            - containerPort: 39613
               name: healthz
               protocol: TCP
           livenessProbe:

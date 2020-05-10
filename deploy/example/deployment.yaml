@@ -1,16 +1,4 @@
 ---
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: pvc-smb
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Gi
-  storageClassName: smb.csi.k8s.io
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
