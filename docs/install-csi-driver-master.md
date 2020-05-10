@@ -1,4 +1,4 @@
-## Install smb CSI driver development version on a Kubernetes cluster
+## Install SMB CSI driver development version on a Kubernetes cluster
 
 ### Install by kubectl
 ```console
