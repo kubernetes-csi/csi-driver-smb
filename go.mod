@@ -4,29 +4,24 @@ go 1.13
 
 require (
 	github.com/Azure/azure-sdk-for-go v40.2.0+incompatible
-	github.com/Azure/azure-storage-file-go v0.7.0
+	github.com/Azure/azure-storage-file-go v0.7.0 // indirect
 	github.com/Azure/go-autorest/autorest v0.10.0
 	github.com/Azure/go-autorest/autorest/adal v0.8.3
 	github.com/Azure/go-autorest/autorest/to v0.3.0
 	github.com/container-storage-interface/spec v1.2.0
 	github.com/golang/protobuf v1.3.5
 	github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200330215040-9eff16441b2a
-	github.com/onsi/ginkgo v1.12.0
-	github.com/onsi/gomega v1.9.0
+	github.com/onsi/ginkgo v1.12.0 // indirect
+	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/pborman/uuid v1.2.0
 	github.com/pelletier/go-toml v1.7.0
 	github.com/prometheus/client_golang v1.5.1
-	github.com/rubiojr/go-vhd v0.0.0-20160810183302-0bfd3b39853c
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	google.golang.org/grpc v1.27.0
-	k8s.io/api v0.18.1
 	k8s.io/apimachinery v0.18.2-beta.0
-	k8s.io/client-go v0.18.1
-	k8s.io/cloud-provider v0.18.1
 	k8s.io/klog v1.0.0
 	k8s.io/kubernetes v1.18.1
-	k8s.io/legacy-cloud-providers v0.0.0
 	k8s.io/utils v0.0.0-20200411171748-3d5a2fe318e4
 	sigs.k8s.io/yaml v1.2.0
 )

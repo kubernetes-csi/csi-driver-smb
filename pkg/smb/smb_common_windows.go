@@ -23,7 +23,6 @@ import (
 
 	"k8s.io/klog"
 	"k8s.io/utils/mount"
-	"sigs.k8s.io/azurefile-csi-driver/pkg/mounter"
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
