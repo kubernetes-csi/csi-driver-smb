@@ -6,6 +6,8 @@
 ### About
 This driver allows Kubernetes to use [SMB](https://wiki.wireshark.org/SMB) CSI volume, csi plugin name: `smb.csi.k8s.io`
 
+### Project status: alpha
+
 ### Container Images & Kubernetes Compatibility:
 |SMB CSI Driver Version  | Image                                | 1.14+  |
 |-------------------------------|-------------------------------|--------|
@@ -19,7 +21,8 @@ Please refer to [install smb csi driver](./docs/install-csi-driver-master.md)
 
 ### Examples
  - [Basic usage](./deploy/example/e2e_usage.md)
- 
+ - [Windows](./deploy/example/windows)
+
 ### Troubleshooting
  - [CSI driver troubleshooting guide](./docs/csi-debug.md) 
 
