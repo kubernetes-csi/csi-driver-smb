@@ -23,6 +23,8 @@ import (
 
 	"k8s.io/klog"
 	"k8s.io/utils/mount"
+
+	"github.com/csi-driver/csi-driver-smb/pkg/mounter"
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
