@@ -7,7 +7,7 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 ```
 > add `--from-literal domain=DOMAINNAME` for domain support
 
- - Create an smb CSI PV, download [`pv-smb-csi.yaml`](https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/pv-smb-csi.yaml) file and edit `source` in `volumeAttributes`
+ - Create an smb CSI PV, download [`pv-smb-csi.yaml`](https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pv-smb-csi.yaml) file and edit `source` in `volumeAttributes`
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
@@ -40,7 +40,7 @@ kubectl create -f pv-smb-csi.yaml
 
  - Create a PVC
 ```console
-kubectl create -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/pvc-smb-csi-static.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-csi-static.yaml
 ```
 
 #### 2. validate PVC status and create an nginx pod
@@ -51,7 +51,7 @@ watch kubectl describe pvc pvc-smb
 
  - create a pod with smb CSI PVC
 ```console
-kubectl create -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/nginx-pod-smb.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/nginx-pod-smb.yaml
 ```
 
 #### 3. enter the pod container to do validation

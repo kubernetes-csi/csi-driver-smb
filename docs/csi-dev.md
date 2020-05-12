@@ -4,12 +4,12 @@
  - Clone repo
 ```console
 $ mkdir -p $GOPATH/src/sigs.k8s.io/
-$ git clone https://github.com/csi-driver/csi-driver-smb $GOPATH/src/github.com/csi-driver/csi-driver-smb
+$ git clone https://github.com/kubernetes-csi/csi-driver-smb $GOPATH/src/github.com/kubernetes-csi/csi-driver-smb
 ```
 
  - Build CSI driver
 ```console
-$ cd $GOPATH/src/github.com/csi-driver/csi-driver-smb
+$ cd $GOPATH/src/github.com/kubernetes-csi/csi-driver-smb
 $ make
 ```
 
@@ -31,7 +31,7 @@ $ make build
 
 #### Start CSI driver locally
 ```console
-$ cd $GOPATH/src/github.com/csi-driver/csi-driver-smb
+$ cd $GOPATH/src/github.com/kubernetes-csi/csi-driver-smb
 $ ./_output/smbplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5 &
 ```
 
@@ -83,9 +83,9 @@ make container
 make push-latest
 ```
 
- - Replace `andyzhangx/smb-csi:latest` in [`csi-smb-controller.yaml`](https://github.com/csi-driver/csi-driver-smb/blob/master/deploy/csi-smb-controller.yaml) and [`csi-smb-node.yaml`](https://github.com/csi-driver/csi-driver-smb/blob/master/deploy/csi-smb-node.yaml) with above dockerhub image urls and then follow [install CSI driver master version](https://github.com/csi-driver/csi-driver-smb/blob/master/docs/install-csi-driver-master.md)
+ - Replace `andyzhangx/smb-csi:latest` in [`csi-smb-controller.yaml`](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/csi-smb-controller.yaml) and [`csi-smb-node.yaml`](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/csi-smb-node.yaml) with above dockerhub image urls and then follow [install CSI driver master version](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/docs/install-csi-driver-master.md)
  ```console
-wget -O csi-smb-node.yaml https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/csi-smb-node.yaml
+wget -O csi-smb-node.yaml https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/csi-smb-node.yaml
 # edit csi-smb-node.yaml
 kubectl apply -f csi-smb-node.yaml
  ```

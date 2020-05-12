@@ -23,7 +23,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/csi-driver/csi-driver-smb/test/utils/testutil"
+	"github.com/kubernetes-csi/csi-driver-smb/test/utils/testutil"
 
 	"github.com/pborman/uuid"
 	"github.com/pelletier/go-toml"

@@ -25,7 +25,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/csi-driver/csi-driver-smb/pkg/smb"
+	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"k8s.io/klog"

@@ -24,8 +24,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/csi-driver/csi-driver-smb/test/utils/azure"
-	"github.com/csi-driver/csi-driver-smb/test/utils/credentials"
+	"github.com/kubernetes-csi/csi-driver-smb/test/utils/azure"
+	"github.com/kubernetes-csi/csi-driver-smb/test/utils/credentials"
 
 	"github.com/stretchr/testify/assert"
 )
