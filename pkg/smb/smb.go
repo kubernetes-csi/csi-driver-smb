@@ -24,8 +24,8 @@ import (
 	"k8s.io/klog"
 	"k8s.io/utils/mount"
 
-	csicommon "github.com/csi-driver/csi-driver-smb/pkg/csi-common"
-	"github.com/csi-driver/csi-driver-smb/pkg/mounter"
+	csicommon "github.com/kubernetes-csi/csi-driver-smb/pkg/csi-common"
+	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
 )
 
 const (

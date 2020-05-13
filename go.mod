@@ -1,4 +1,4 @@
-module github.com/csi-driver/csi-driver-smb
+module github.com/kubernetes-csi/csi-driver-smb
 
 go 1.13
 

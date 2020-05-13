@@ -10,7 +10,7 @@ CSI on Windows support is an alpha feature since Kubernetes v1.18, refer to [Win
 
 ## Install CSI Driver
 ```console
-curl -skSL https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/install-driver.sh | bash -s master,windows --
+curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/install-driver.sh | bash -s master,windows --
 ```
 
 ## Deploy a Windows pod with PVC mount
@@ -18,7 +18,7 @@ curl -skSL https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/de
 ### Create Windows pod
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/csi-driver/csi-driver-smb/master/deploy/example/windows/statefulset.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/windows/statefulset.yaml
 ```
 
 ### Enter pod container to do validation
