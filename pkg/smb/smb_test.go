@@ -17,13 +17,29 @@ limitations under the License.
 package smb
 
 import (
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
+
+const (
+	fakeNodeID = "fakeNodeID"
+)
+
+func NewFakeDriver() *Driver {
+
+	driver := NewDriver(fakeNodeID)
+
+	return driver
+}
+
+func TestNewFakeDriver(t *testing.T) {
+	// Test New fake driver.
+	d := NewDriver(fakeNodeID)
+	assert.NotNil(t, d)
+}
 
 func TestIsCorruptedDir(t *testing.T) {
 	existingMountPath, err := ioutil.TempDir(os.TempDir(), "csi-mount-test")
