@@ -31,6 +31,6 @@ Please refer to [development guide](./docs/csi-dev.md)
 
 ### Links
  - [SMB FlexVolume driver](https://github.com/Azure/kubernetes-volume-drivers/tree/master/flexvolume/smb)
- - [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/Home.html)
+ - [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/)
  - [CSI Drivers](https://github.com/kubernetes-csi/drivers)
  - [Container Storage Interface (CSI) Specification](https://github.com/container-storage-interface/spec)
