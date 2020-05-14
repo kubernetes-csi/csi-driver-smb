@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"runtime"
 	"strings"
 	"time"
@@ -117,7 +118,11 @@ func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublish
 
 // NodeStageVolume mount the volume to a staging path
 func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
-	klog.V(2).Infof("NodeStageVolume called with request %v", *req)
+	// regex to mask username and password in log messages
+	var reqSecretsRegex, _ = regexp.Compile("map\\[password:.*? ")
+	s := fmt.Sprintf("NodeStageVolume called with request %v", *req)
+	klog.V(5).Info(reqSecretsRegex.ReplaceAllString(s, "map[password:**** "))
+
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
