@@ -1,5 +1,5 @@
 /*
-Copyright 2017 The Kubernetes Authors.
+Copyright 2020 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -143,5 +143,113 @@ func TestLogGRPC(t *testing.T) {
 			// CLEANUP
 			buf.Reset()
 		})
+	}
+}
+
+func TestNewDefaultNodeServer(t *testing.T) {
+	d := NewFakeDriver()
+	resp := NewDefaultNodeServer(d)
+	assert.NotNil(t, resp)
+	assert.Equal(t, resp.Driver.Name, fakeDriverName)
+	assert.Equal(t, resp.Driver.NodeID, fakeNodeID)
+	assert.Equal(t, resp.Driver.Version, vendorVersion)
+}
+
+func TestNewDefaultIdentityServer(t *testing.T) {
+	d := NewFakeDriver()
+	resp := NewDefaultIdentityServer(d)
+	assert.NotNil(t, resp)
+	assert.Equal(t, resp.Driver.Name, fakeDriverName)
+	assert.Equal(t, resp.Driver.NodeID, fakeNodeID)
+	assert.Equal(t, resp.Driver.Version, vendorVersion)
+}
+
+func TestNewDefaultControllerServer(t *testing.T) {
+	d := NewFakeDriver()
+	resp := NewDefaultControllerServer(d)
+	assert.NotNil(t, resp)
+	assert.Equal(t, resp.Driver.Name, fakeDriverName)
+	assert.Equal(t, resp.Driver.NodeID, fakeNodeID)
+	assert.Equal(t, resp.Driver.Version, vendorVersion)
+}
+
+func TestNewVolumeCapabilityAccessMode(t *testing.T) {
+	tests := []struct {
+		mode csi.VolumeCapability_AccessMode_Mode
+	}{
+		{
+			mode: csi.VolumeCapability_AccessMode_UNKNOWN,
+		},
+		{
+			mode: csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER,
+		},
+		{
+			mode: csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY,
+		},
+		{
+			mode: csi.VolumeCapability_AccessMode_MULTI_NODE_READER_ONLY,
+		},
+		{
+			mode: csi.VolumeCapability_AccessMode_MULTI_NODE_SINGLE_WRITER,
+		},
+		{
+			mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER,
+		},
+	}
+	for _, test := range tests {
+		resp := NewVolumeCapabilityAccessMode(test.mode)
+		assert.NotNil(t, resp)
+		assert.Equal(t, resp.Mode, test.mode)
+	}
+}
+
+func TestNewControllerServiceCapability(t *testing.T) {
+	tests := []struct {
+		cap csi.ControllerServiceCapability_RPC_Type
+	}{
+		{
+			cap: csi.ControllerServiceCapability_RPC_UNKNOWN,
+		},
+		{
+			cap: csi.ControllerServiceCapability_RPC_CREATE_DELETE_VOLUME,
+		},
+		{
+			cap: csi.ControllerServiceCapability_RPC_PUBLISH_UNPUBLISH_VOLUME,
+		},
+		{
+			cap: csi.ControllerServiceCapability_RPC_LIST_VOLUMES,
+		},
+		{
+			cap: csi.ControllerServiceCapability_RPC_GET_CAPACITY,
+		},
+	}
+	for _, test := range tests {
+		resp := NewControllerServiceCapability(test.cap)
+		assert.NotNil(t, resp)
+		assert.Equal(t, resp.XXX_sizecache, int32(0))
+	}
+}
+
+func TestNewNodeServiceCapability(t *testing.T) {
+	tests := []struct {
+		cap csi.NodeServiceCapability_RPC_Type
+	}{
+		{
+			cap: csi.NodeServiceCapability_RPC_UNKNOWN,
+		},
+		{
+			cap: csi.NodeServiceCapability_RPC_STAGE_UNSTAGE_VOLUME,
+		},
+		{
+			cap: csi.NodeServiceCapability_RPC_GET_VOLUME_STATS,
+		},
+		{
+			cap: csi.NodeServiceCapability_RPC_EXPAND_VOLUME,
+		},
+	}
+	for _, test := range tests {
+		resp := NewNodeServiceCapability(test.cap)
+		assert.NotNil(t, resp)
+		assert.Equal(t, resp.XXX_sizecache, int32(0))
 	}
 }
