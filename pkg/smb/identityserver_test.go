@@ -14,17 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package csicommon
+package smb
 
 import (
 	"context"
+	"github.com/container-storage-interface/spec/lib/go/csi"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"reflect"
 	"testing"
-
-	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGetPluginInfo(t *testing.T) {
@@ -35,7 +34,7 @@ func TestGetPluginInfo(t *testing.T) {
 	emptyVersionDriver.Version = ""
 	tests := []struct {
 		desc        string
-		driver      *CSIDriver
+		driver      *Driver
 		expectedErr error
 	}{
 		{
@@ -56,8 +55,7 @@ func TestGetPluginInfo(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		ids := NewDefaultIdentityServer(test.driver)
-		_, err := ids.GetPluginInfo(context.Background(), &req)
+		_, err := test.driver.GetPluginInfo(context.Background(), &req)
 		if !reflect.DeepEqual(err, test.expectedErr) {
 			t.Errorf("Unexpecter error: %v", err)
 		}
@@ -66,12 +64,12 @@ func TestGetPluginInfo(t *testing.T) {
 
 func TestProbe(t *testing.T) {
 	d := NewFakeDriver()
-	ids := NewDefaultIdentityServer(d)
 	req := csi.ProbeRequest{}
-	resp, err := ids.Probe(context.Background(), &req)
+	resp, err := d.Probe(context.Background(), &req)
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.XXX_sizecache, int32(0))
+	assert.Equal(t, resp.Ready.Value, true)
 }
 
 func TestGetPluginCapabilities(t *testing.T) {
@@ -86,8 +84,7 @@ func TestGetPluginCapabilities(t *testing.T) {
 	}
 	d := NewFakeDriver()
 	req := csi.GetPluginCapabilitiesRequest{}
-	ids := NewDefaultIdentityServer(d)
-	resp, err := ids.GetPluginCapabilities(context.Background(), &req)
+	resp, err := d.GetPluginCapabilities(context.Background(), &req)
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.XXX_sizecache, int32(0))
