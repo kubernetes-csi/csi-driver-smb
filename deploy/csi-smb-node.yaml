@@ -64,7 +64,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: andyzhangx/smb-csi:latest
+          image: mcr.microsoft.com/k8s/csi/smb-csi:latest
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"
