@@ -16,7 +16,7 @@ spec:
   csi:
     driver: smb.csi.k8s.io
     readOnly: false
-    volumeHandle: arbitrary-volumeid  # make sure it's a unique id
+    volumeHandle: unique-volumeid  # make sure it's a unique id in the cluster
     volumeAttributes:
       source: "//STORAGE-ACCOUNT.file.core.windows.net/SHARE-NAME"
     nodeStageSecretRef:
