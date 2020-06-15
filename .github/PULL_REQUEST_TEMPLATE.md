@@ -32,6 +32,25 @@ _If PR is about `failing-tests or flakes`, please post the related issues/tests 
 -->
 Fixes #
 
+**Requirements**:
+- [ ] uses [conventional commit messages](https://www.conventionalcommits.org/)
+  <!-- Common commit types:
+        build: Build 🏭
+        chore: Maintenance 🔧
+        ci: Continuous Integration 💜
+        docs: Documentation 📘
+        feat: Features 🌈
+        fix: Bug Fixes 🐞
+        perf: Performance Improvements 🚀
+        refactor: Code Refactoring 💎
+        revert: Revert Change ◀️
+        style: Code Style 🎶
+        security: Security Fix 🛡️
+        test: Testing 💚 -->
+- [ ] includes documentation
+- [ ] adds unit tests
+- [ ] tested upgrade from previous version
+
 **Special notes for your reviewer**:
 
 
