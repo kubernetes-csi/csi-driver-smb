@@ -26,13 +26,14 @@ spec:
   csi:
     driver: smb.csi.k8s.io
     readOnly: false
-    volumeHandle: arbitrary-volumeid  # make sure it's a unique id
+    volumeHandle: unique-volumeid  # make sure it's a unique id in the cluster
     volumeAttributes:
       source: "//IP/smb-server/directory"
     nodeStageSecretRef:
       name: smbcreds
       namespace: default
 ```
+> For [Azure File](https://docs.microsoft.com/en-us/azure/storage/files/), format of `source`: `//accountname.file.core.windows.net/sharename`
 
 ```console
 kubectl create -f pv-smb-csi.yaml
@@ -42,20 +43,16 @@ kubectl create -f pv-smb-csi.yaml
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-csi-static.yaml
 ```
-
-#### 2. validate PVC status and create an nginx pod
  - make sure pvc is created and in `Bound` status finally
 ```console
 watch kubectl describe pvc pvc-smb
 ```
 
- - create a pod with smb CSI PVC
+#### 2.1 Create an deployment on Linux
 ```console
-kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/nginx-pod-smb.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/deployment.yaml
 ```
-
-#### 3. enter the pod container to do validation
- - watch the status of pod until its Status changed from `Pending` to `Running` and then enter the pod container
+ - enter the pod container to verify
 ```console
 $ watch kubectl describe po nginx-smb
 $ kubectl exec -it nginx-smb -- bash
@@ -68,3 +65,8 @@ tmpfs                                                                     3.5G  
 ...
 ```
 In the above example, there is a `/mnt/smb` directory mounted as cifs filesystem.
+
+### 2.2 Create a deployment on Windows
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/windows/deployment.yaml
+```

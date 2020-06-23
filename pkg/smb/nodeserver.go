@@ -38,7 +38,8 @@ import (
 )
 
 const (
-	sourceField = "source"
+	sourceField       = "source"
+	azureFileUserName = "AZURE"
 )
 
 // NodePublishVolume mount the volume from staging to target path
@@ -159,7 +160,15 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 
 	var mountOptions []string
 	if runtime.GOOS == "windows" {
-		mountOptions = []string{username, password}
+		if strings.Contains(source, ".file.core.") && !strings.HasPrefix(strings.ToUpper(username), azureFileUserName) {
+			// if mount source is Azure File Server, e.g.
+			//    accountname.file.core.windows.net
+			//    accountname.file.core.chinacloudapi.cn
+			//  Add "AZURE\\" before username
+			mountOptions = []string{fmt.Sprintf("%s\\%s", azureFileUserName, username), password}
+		} else {
+			mountOptions = []string{username, password}
+		}
 	} else {
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
@@ -185,7 +194,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 		mountComplete := false
 		err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
-			err := SMBMount(d.mounter, source, targetPath, "cifs", mountOptions)
+			err := Mount(d.mounter, source, targetPath, "cifs", mountOptions)
 			mountComplete = true
 			return true, err
 		})
