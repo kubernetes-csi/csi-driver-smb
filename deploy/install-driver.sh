@@ -36,11 +36,5 @@ fi
 echo "Installing SMB CSI driver, version: $ver ..."
 kubectl apply -f $repo/csi-smb-driver.yaml
 kubectl apply -f $repo/csi-smb-node.yaml
-
-if [[ "$#" -gt 1 ]]; then
-  if [[ "$2" == *"windows"* ]]; then
-    echo "install Windows driver ..."
-    kubectl apply -f $repo/csi-smb-node-windows.yaml
-  fi
-fi
+kubectl apply -f $repo/csi-smb-node-windows.yaml
 echo 'SMB CSI driver installed successfully.'
