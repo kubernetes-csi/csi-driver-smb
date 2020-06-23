@@ -21,26 +21,25 @@ package smb
 import (
 	"fmt"
 
+	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
 	"k8s.io/klog"
 	"k8s.io/utils/mount"
-
-	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
 )
 
-func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
+func SMBMount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
 	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
 	if !ok {
 		return fmt.Errorf("could not cast to csi proxy class")
 	}
-	return proxy.Mount(source, target, fsType, options)
+	return proxy.SMBMount(source, target, fsType, options)
 }
 
-func Unmount(m *mount.SafeFormatAndMount, target string) error {
+func SMBUnmount(m *mount.SafeFormatAndMount, target string) error {
 	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
 	if !ok {
 		return fmt.Errorf("could not cast to csi proxy class")
 	}
-	return proxy.Unmount(target)
+	return proxy.SMBUnmount(target)
 }
 
 func RemoveStageTarget(m *mount.SafeFormatAndMount, target string) error {
@@ -55,7 +54,7 @@ func RemoveStageTarget(m *mount.SafeFormatAndMount, target string) error {
 // The clean up mount point point calls is supposed for fix the corrupted directories as well.
 // For alpha CSI proxy integration, we only do an unmount.
 func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
-	return Unmount(m, target)
+	return SMBUnmount(m, target)
 }
 
 func CleanupMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {

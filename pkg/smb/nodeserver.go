@@ -185,7 +185,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 		mountComplete := false
 		err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
-			err := Mount(d.mounter, source, targetPath, "cifs", mountOptions)
+			err := SMBMount(d.mounter, source, targetPath, "cifs", mountOptions)
 			mountComplete = true
 			return true, err
 		})
