@@ -24,11 +24,11 @@ import (
 	"k8s.io/utils/mount"
 )
 
-func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
+func SMBMount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
 	return m.Mount(source, target, fsType, options)
 }
 
-func Unmount(m *mount.SafeFormatAndMount, target string) error {
+func SMBUnmount(m *mount.SafeFormatAndMount, target string) error {
 	return m.Unmount(target)
 }
 
