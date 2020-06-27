@@ -29,7 +29,6 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/klog"
-	"k8s.io/kubernetes/pkg/volume/util"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -158,7 +157,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 	}
 
-	var mountOptions []string
+	var mountOptions, sensitiveMountOptions []string
 	if runtime.GOOS == "windows" {
 		if strings.Contains(source, ".file.core.") && !strings.HasPrefix(strings.ToUpper(username), azureFileUserName) {
 			// if mount source is Azure File Server, e.g.
@@ -173,8 +172,8 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
-		options := []string{fmt.Sprintf("username=%s,password=%s", username, password)}
-		mountOptions = util.JoinMountOptions(mountFlags, options)
+		sensitiveMountOptions = []string{fmt.Sprintf("username=%s,password=%s", username, password)}
+		mountOptions = mountFlags
 	}
 	if domain != "" {
 		mountOptions = append(mountOptions, domain)
@@ -194,7 +193,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 		mountComplete := false
 		err = wait.Poll(5*time.Second, 10*time.Minute, func() (bool, error) {
-			err := Mount(d.mounter, source, targetPath, "cifs", mountOptions)
+			err := Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions)
 			mountComplete = true
 			return true, err
 		})
