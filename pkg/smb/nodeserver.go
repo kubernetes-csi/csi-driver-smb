@@ -37,7 +37,10 @@ import (
 )
 
 const (
+	usernameField     = "username"
+	passwordField     = "password"
 	sourceField       = "source"
+	domainField       = "domain"
 	azureFileUserName = "AZURE"
 )
 
@@ -148,12 +151,12 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	var username, password, domain string
 	for k, v := range secrets {
 		switch strings.ToLower(k) {
-		case "username":
-			username = v
-		case "password":
-			password = v
-		case "domain":
-			domain = v
+		case usernameField:
+			username = strings.TrimSpace(v)
+		case passwordField:
+			password = strings.TrimSpace(v)
+		case domainField:
+			domain = strings.TrimSpace(v)
 		}
 	}
 
@@ -172,11 +175,11 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
-		sensitiveMountOptions = []string{fmt.Sprintf("username=%s,password=%s", username, password)}
+		sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
 		mountOptions = mountFlags
 	}
 	if domain != "" {
-		mountOptions = append(mountOptions, domain)
+		mountOptions = append(mountOptions, fmt.Sprintf("%s=%s", domainField, domain))
 	}
 
 	klog.V(2).Infof("targetPath(%v) volumeID(%v) context(%v) mountflags(%v) mountOptions(%v)",
