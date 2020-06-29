@@ -16,14 +16,16 @@
 
 set -eo pipefail
 
-GO111MODULE=off go get github.com/rexray/gocsi/csc
+if [[ -z "$(command -v csc)" ]]; then
+  GO111MODULE=off go get github.com/rexray/gocsi/csc
+fi
 
 apt update && apt install cifs-utils procps -y
 readonly dirname="/tmp/$(date +%s)"
 
 mkdir "$dirname"
-chmod 777 "$dirname"
-docker run -it --name samba  -p 445:445 -v "$dirname":/mount -d dperson/samba -u "username;test"  -s "share;/mount/;yes;no;no;all;user"
+export PERMISSIONS=0777
+docker run -it --name samba -p 445:445 -v "$dirname":/mount -d dperson/samba -u "username;test" -s "share;/mount/;yes;no;yes;all;none" -p
 function cleanup {
   echo 'stop and delete samba container'
   docker stop samba
@@ -40,14 +42,13 @@ endpoint='tcp://127.0.0.1:10000'
 staging_target_path='/tmp/stagingtargetpath'
 target_path='/tmp/targetpath'
 
-
 echo "Begin to run integration test ..."
 
 # Run CSI driver as a background service
 _output/smbplugin --endpoint "$endpoint" --nodeid CSINode -v=5 &
 trap cleanup EXIT
 
-sleep 10
+sleep 5
 # set secret for csc node stage
 export X_CSI_SECRETS=username=username,"password=test"
 
@@ -55,6 +56,9 @@ export X_CSI_SECRETS=username=username,"password=test"
 echo "stage volume test:"
 "$CSC_BIN" node stage --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" --vol-context=source="//0.0.0.0/share" "$volumeid"
 sleep 2
+
+# check cifs mount
+mount | grep cifs
 
 echo 'Mount volume test:'
 "$CSC_BIN" node publish --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" --target-path "$target_path" "$volumeid"
@@ -67,7 +71,6 @@ sleep 2
 echo "unstage volume test:"
 "$CSC_BIN" node unstage --endpoint "$endpoint" --staging-target-path "$staging_target_path" "$volumeid"
 sleep 2
-
 
 "$CSC_BIN" identity plugin-info --endpoint "$endpoint"
 "$CSC_BIN" node get-info --endpoint "$endpoint"

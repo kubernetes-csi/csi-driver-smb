@@ -16,4 +16,4 @@ script:
   - make verify
   - make smb-windows  
   - make container
-  - sudo -E env "PATH=$PATH" make integration-test
+  - make integration-test
