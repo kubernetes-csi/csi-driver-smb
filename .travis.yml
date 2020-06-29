@@ -8,12 +8,20 @@ go:
   - "1.13.9"
 
 before_install:
-  - GO111MODULE=off go get github.com/mattn/goveralls
 
-script:
-  #- go test -covermode=count -coverprofile=profile.cov ./pkg/...
-  #- $GOPATH/bin/goveralls -coverprofile=profile.cov -service=travis-ci
-  - make verify
-  - make smb-windows  
-  - make container
-  - make integration-test
+jobs:
+  include:
+    - stage: test
+      name: "build test"
+      script:
+        - make verify
+        - make smb-windows
+        - make container
+    - stage: test
+      name: "integration test"
+      install:
+        - GO111MODULE=off go get github.com/rexray/gocsi/csc
+        - sudo apt update && sudo apt install cifs-utils procps -y
+      script:
+        - make
+        - make integration-test
