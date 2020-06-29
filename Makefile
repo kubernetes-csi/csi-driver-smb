@@ -53,7 +53,7 @@ unit-test:
 
 .PHONY: sanity-test
 sanity-test: smb
-	go test -v -timeout=10m ./test/sanity
+	test/sanity/run-test.sh
 
 .PHONY: integration-test
 integration-test: smb
