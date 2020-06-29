@@ -20,7 +20,6 @@ if [[ -z "$(command -v csc)" ]]; then
   GO111MODULE=off go get github.com/rexray/gocsi/csc
 fi
 
-apt update && apt install cifs-utils procps -y
 readonly dirname="/tmp/$(date +%s)"
 
 mkdir "$dirname"
