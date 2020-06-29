@@ -25,3 +25,10 @@ jobs:
       script:
         - make
         - make integration-test
+    - stage: test
+      name: "sanity test"
+      install:
+        - sudo apt update && sudo apt install cifs-utils procps -y
+      script:
+        - make
+        - make sanity-test
