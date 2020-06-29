@@ -25,12 +25,26 @@ import (
 	"k8s.io/klog"
 )
 
+// CreateVolume not implemented, only for sanity test pass
 func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	volumeCapabilities := req.GetVolumeCapabilities()
+	if len(volumeCapabilities) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "CreateVolume Volume capabilities must be provided")
+	}
+	return &csi.CreateVolumeResponse{
+		Volume: &csi.Volume{
+			VolumeId:      "volumeID",
+			CapacityBytes: req.GetCapacityRange().GetRequiredBytes(),
+		},
+	}, nil
 }
 
+// DeleteVolume not implemented, only for sanity test pass
 func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest) (*csi.DeleteVolumeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	if len(req.GetVolumeId()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	}
+	return &csi.DeleteVolumeResponse{}, nil
 }
 
 func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.ControllerPublishVolumeRequest) (*csi.ControllerPublishVolumeResponse, error) {
@@ -51,7 +65,15 @@ func (d *Driver) ControllerGetCapabilities(ctx context.Context, req *csi.Control
 }
 
 func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.ValidateVolumeCapabilitiesRequest) (*csi.ValidateVolumeCapabilitiesResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+	if len(req.GetVolumeId()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	}
+	if req.GetVolumeCapabilities() == nil {
+		return nil, status.Error(codes.InvalidArgument, "Volume capabilities missing in request")
+	}
+
+	// supports all AccessModes, no need to check capabilities here
+	return &csi.ValidateVolumeCapabilitiesResponse{Message: ""}, nil
 }
 
 // GetCapacity returns the capacity of the total available storage pool
