@@ -1,0 +1,57 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: smb-server
+  labels:
+    app: smb-server
+spec:
+  type: LoadBalancer
+  selector:
+    app: smb-server
+  ports:
+    - port: 445
+      name: smb-server
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: smb-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smb-server
+  template:
+    metadata:
+      name: smb-server
+      labels:
+        app: smb-server
+    spec:
+      containers:
+        - name: smb-server
+          image: dperson/samba
+          env:
+            - name: PERMISSIONS
+              value: "0777"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: smb-server-creds
+                  key: username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smb-server-creds
+                  key: password
+          args: ["-u", "$(USERNAME);$(PASSWORD)", "-s", "share;/smbshare/;yes;no;no;all;none", "-p"]
+          volumeMounts:
+            - mountPath: /smbshare
+              name: data-volume
+          ports:
+            - containerPort: 445
+      volumes:
+        - name: data-volume
+          hostPath:
+            path: /smbshare
+            type: DirectoryOrCreate
