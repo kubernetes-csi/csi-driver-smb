@@ -78,27 +78,27 @@ func NewNodeServiceCapability(cap csi.NodeServiceCapability_RPC_Type) *csi.NodeS
 	}
 }
 
-func RunNodePublishServer(endpoint string, d *CSIDriver, ns csi.NodeServer) {
+func RunNodePublishServer(endpoint string, d *CSIDriver, ns csi.NodeServer, testMode bool) {
 	ids := NewDefaultIdentityServer(d)
 
 	s := NewNonBlockingGRPCServer()
-	s.Start(endpoint, ids, nil, ns)
+	s.Start(endpoint, ids, nil, ns, testMode)
 	s.Wait()
 }
 
-func RunControllerPublishServer(endpoint string, d *CSIDriver, cs csi.ControllerServer) {
+func RunControllerPublishServer(endpoint string, d *CSIDriver, cs csi.ControllerServer, testMode bool) {
 	ids := NewDefaultIdentityServer(d)
 
 	s := NewNonBlockingGRPCServer()
-	s.Start(endpoint, ids, cs, nil)
+	s.Start(endpoint, ids, cs, nil, testMode)
 	s.Wait()
 }
 
-func RunControllerandNodePublishServer(endpoint string, d *CSIDriver, cs csi.ControllerServer, ns csi.NodeServer) {
+func RunControllerandNodePublishServer(endpoint string, d *CSIDriver, cs csi.ControllerServer, ns csi.NodeServer, testMode bool) {
 	ids := NewDefaultIdentityServer(d)
 
 	s := NewNonBlockingGRPCServer()
-	s.Start(endpoint, ids, cs, ns)
+	s.Start(endpoint, ids, cs, ns, testMode)
 	s.Wait()
 }
 
