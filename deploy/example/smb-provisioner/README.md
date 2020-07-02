@@ -7,7 +7,7 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 ```
 
  - Create a SMB server deployment
-> modify `/smbshare-volume` in deployment to specify another path to store smb share data
+> modify `/smbshare-volume` in deployment to specify different path for smb share data store
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server.yaml
 ```
