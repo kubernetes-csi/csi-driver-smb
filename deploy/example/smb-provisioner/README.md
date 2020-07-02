@@ -1,5 +1,7 @@
-## Set up a SMB server deployment on a Kubernetes cluster
-This page will show you how to set up a SMB server deployment on a Kubernetes cluster, the file share data is stored on local disk.
+## Set up a SMB server and a deployment to access SMB server on a Kubernetes cluster
+This page will show you 
+ - 1. set up a SMB server deployment on a Kubernetes cluster, the file share data is stored on local disk.
+ - 2. set up a deployment to access SMB server on a Kubernetes cluster
 
  - Use `kubectl create secret` to create `smbcreds` with SMB username, password
 ```console
