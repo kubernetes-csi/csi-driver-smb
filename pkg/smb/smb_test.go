@@ -17,11 +17,12 @@ limitations under the License.
 package smb
 
 import (
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -73,5 +74,32 @@ func TestIsCorruptedDir(t *testing.T) {
 	for i, test := range tests {
 		isCorruptedDir := IsCorruptedDir(test.dir)
 		assert.Equal(t, test.expectedResult, isCorruptedDir, "TestCase[%d]: %s", i, test.desc)
+	}
+}
+
+func TestRun(t *testing.T) {
+	testCases := []struct {
+		name     string
+		testFunc func(t *testing.T)
+	}{
+		{
+			name: "Successful run",
+			testFunc: func(t *testing.T) {
+				d := NewFakeDriver()
+				d.Run("tcp://127.0.0.1:0", "", true)
+			},
+		},
+		{
+			name: "Successful run with node ID missing",
+			testFunc: func(t *testing.T) {
+				d := NewFakeDriver()
+				d.NodeID = ""
+				d.Run("tcp://127.0.0.1:0", "", true)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, tc.testFunc)
 	}
 }

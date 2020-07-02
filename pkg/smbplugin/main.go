@@ -67,7 +67,7 @@ func handle() {
 	if driver == nil {
 		klog.Fatalln("Failed to initialize smb CSI Driver")
 	}
-	driver.Run(*endpoint, *kubeconfig)
+	driver.Run(*endpoint, *kubeconfig, false)
 }
 
 func exportMetrics() {

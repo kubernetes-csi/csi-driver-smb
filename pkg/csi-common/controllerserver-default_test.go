@@ -18,9 +18,13 @@ package csicommon
 
 import (
 	"context"
+	"reflect"
+	"testing"
+
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/stretchr/testify/assert"
-	"testing"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestValidateVolumeCapabilities(t *testing.T) {
@@ -64,4 +68,114 @@ func TestControllerGetCapabilities(t *testing.T) {
 	resp, err := ns.ControllerGetCapabilities(context.Background(), &req)
 	assert.NoError(t, err)
 	assert.Equal(t, resp.XXX_sizecache, int32(0))
+}
+
+func TestCreateVolume(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.CreateVolumeRequest{}
+	resp, err := ns.CreateVolume(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestDeleteVolume(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.DeleteVolumeRequest{}
+	resp, err := ns.DeleteVolume(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestControllerPublishVolume(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.ControllerPublishVolumeRequest{}
+	resp, err := ns.ControllerPublishVolume(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestControllerUnpublishVolume(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.ControllerUnpublishVolumeRequest{}
+	resp, err := ns.ControllerUnpublishVolume(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestGetCapacity(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.GetCapacityRequest{}
+	resp, err := ns.GetCapacity(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestListVolumes(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.ListVolumesRequest{}
+	resp, err := ns.ListVolumes(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestCreateSnapshot(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.CreateSnapshotRequest{}
+	resp, err := ns.CreateSnapshot(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestDeleteSnapshot(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.DeleteSnapshotRequest{}
+	resp, err := ns.DeleteSnapshot(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestListSnapshots(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.ListSnapshotsRequest{}
+	resp, err := ns.ListSnapshots(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestControllerExpandVolume(t *testing.T) {
+	d := NewFakeDriver()
+	ns := NewDefaultControllerServer(d)
+	req := csi.ControllerExpandVolumeRequest{}
+	resp, err := ns.ControllerExpandVolume(context.Background(), &req)
+	assert.Nil(t, resp)
+	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
+		t.Errorf("Unexpected error: %v", err)
+	}
 }
