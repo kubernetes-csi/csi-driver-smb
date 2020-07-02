@@ -12,20 +12,22 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server.yaml
 ```
 
-After deployment, a new service `smb-server` will be together with a load balancer(has one Public IP Address)
+After deployment, a new service `smb-server` is created, file share path is `//smb-server.default.svc.cluster.local/share`
 
- - Get public ip address of service `smb-server`
+ - Create a deployment to access above SMB server
 ```console
-# kubectl get service smb-server --watch
-NAME         TYPE           CLUSTER-IP   EXTERNAL-IP    PORT(S)         AGE
-smb-server   LoadBalancer   10.0.23.79   20.43.192.64   445:30612/TCP   89s
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/pv-smb-csi.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-csi-static.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/deployment.yaml
 ```
 
-In above example, the new SMB file share is `//20.43.192.64/share`
-
-- Test SMB share mount on local machine
+ - Verification
 ```console
-mount -t cifs //20.43.192.64/share local-directory -o vers=3.0,username=username,password=test,dir_mode=0777,file_mode=0777,cache=strict,actimeo=30
+# kubectl exec -it  deployment-smb-646c5d579c-5sc6n bash
+root@deployment-smb-646c5d579c-5sc6n:/# df -h
+Filesystem                                    Size  Used Avail Use% Mounted on
+...
+//smb-server.default.svc.cluster.local/share   97G   21G   76G  22% /mnt/smb
+/dev/sda1                                      97G   21G   76G  22% /etc/hosts
+...
 ```
-
-- [CSI driver basic usage on SMB file share](../e2e_usage.md)

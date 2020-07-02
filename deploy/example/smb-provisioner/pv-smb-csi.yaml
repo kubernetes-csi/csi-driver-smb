@@ -18,7 +18,7 @@ spec:
     readOnly: false
     volumeHandle: unique-volumeid  # make sure it's a unique id in the cluster
     volumeAttributes:
-      source: "//smb-server-address/sharename"
+      source: "//smb-server.default.svc.cluster.local/share"
     nodeStageSecretRef:
       name: smbcreds
       namespace: default
