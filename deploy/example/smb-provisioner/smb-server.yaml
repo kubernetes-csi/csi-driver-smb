@@ -37,12 +37,12 @@ spec:
             - name: USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: smb-server-creds
+                  name: smbcreds
                   key: username
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: smb-server-creds
+                  name: smbcreds
                   key: password
           args: ["-u", "$(USERNAME);$(PASSWORD)", "-s", "share;/smbshare/;yes;no;no;all;none", "-p"]
           volumeMounts:
@@ -53,5 +53,5 @@ spec:
       volumes:
         - name: data-volume
           hostPath:
-            path: /smbshare
+            path: /smbshare-volume  # modify this to specify another path to store smb share data
             type: DirectoryOrCreate
