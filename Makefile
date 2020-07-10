@@ -100,7 +100,7 @@ smb-windows:
 
 .PHONY: container	
 container: smb	
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/Dockerfile .
+	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/dev.Dockerfile .
 
 .PHONY: smb-container
 smb-container:
