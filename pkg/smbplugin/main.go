@@ -28,7 +28,7 @@ import (
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"k8s.io/klog"
+	"k8s.io/klog/v2"
 )
 
 func init() {

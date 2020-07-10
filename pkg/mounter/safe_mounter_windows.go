@@ -31,7 +31,7 @@ import (
 	smbv1alpha1 "github.com/kubernetes-csi/csi-proxy/client/api/smb/v1alpha1"
 	smbclientv1alpha1 "github.com/kubernetes-csi/csi-proxy/client/groups/smb/v1alpha1"
 
-	"k8s.io/klog"
+	"k8s.io/klog/v2"
 	utilexec "k8s.io/utils/exec"
 	"k8s.io/utils/mount"
 )
