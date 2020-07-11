@@ -1,9 +1,8 @@
-## Set up a Samba Server and a deployment to access Samba Server on a Kubernetes cluster
+## Set up a Samba Server on a Kubernetes cluster
 This page will show you how to set up a Samba Server deployment on a Kubernetes cluster.
  > file share data is stored on local disk.
 
-### Set up a Samba Server
- - Use `kubectl create secret` to create `smbcreds` secret to store Samba Server username, password
+ - Use `kubectl create secret` to create `smbcreds` secret storing Samba Server username, password
 ```console
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
