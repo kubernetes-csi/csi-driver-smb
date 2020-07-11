@@ -63,6 +63,7 @@ spec:
               memory: 20Mi
         - name: smb
           image: mcr.microsoft.com/k8s/csi/smb-csi:latest
+          imagePullPolicy: IfNotPresent
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"

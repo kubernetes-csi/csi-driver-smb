@@ -1,7 +1,7 @@
-## Set up a SMB server and a deployment to access SMB server on a Kubernetes cluster
+## Set up a Samba Server and a deployment to access Samba Server on a Kubernetes cluster
 This page will show you how to:
- - set up a SMB server deployment on a Kubernetes cluster, the file share data is stored on local disk.
- - set up a deployment to access SMB server on a Kubernetes cluster
+ - set up a Samba Server deployment on a Kubernetes cluster, the file share data is stored on local disk.
+ - set up a deployment to access Samba Server on a Kubernetes cluster
 
 ### Stey-by-step
  - Use `kubectl create secret` to create `smbcreds` with SMB username, password
@@ -9,7 +9,7 @@ This page will show you how to:
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
 
- - Create a SMB server deployment
+ - Create a Samba Server deployment
 > modify `/smbshare-volume` in deployment to specify different path for smb share data store
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server.yaml
@@ -17,10 +17,10 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-sm
 
 After deployment, a new service `smb-server` is created, file share path is `//smb-server.default.svc.cluster.local/share`
 
- - Create a deployment to access above SMB server
+ - Create a deployment to access above Samba Server
 ```console
-kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/pv-smb-csi.yaml
-kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-csi-static.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/pv-smb.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-static.yaml
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/deployment.yaml
 ```
 

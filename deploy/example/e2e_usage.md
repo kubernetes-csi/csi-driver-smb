@@ -1,6 +1,6 @@
 ## CSI driver E2E usage example
 ### Prerequisite
- - [Set up a SMB server on a Kubernetes cluster](./smb-provisioner/)
+ - [Set up a Samba Server on a Kubernetes cluster](./smb-provisioner/)
 
 #### 1. Create PV/PVC bound with SMB share
  - Use `kubectl create secret` to create `smbcreds` with SMB username, password
@@ -9,7 +9,7 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 ```
 > add `--from-literal domain=DOMAIN-NAME` for domain support
 
- - Create a smb CSI PV, download [`pv-smb-csi.yaml`](https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pv-smb-csi.yaml) file and edit `source` in `volumeAttributes`
+ - Create a smb CSI PV, download [`pv-smb.yaml`](https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pv-smb.yaml) file and edit `source` in `volumeAttributes`
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
@@ -38,12 +38,12 @@ spec:
 > For [Azure File](https://docs.microsoft.com/en-us/azure/storage/files/), format of `source`: `//accountname.file.core.windows.net/sharename`
 
 ```console
-kubectl create -f pv-smb-csi.yaml
+kubectl create -f pv-smb.yaml
 ```
 
  - Create a PVC
 ```console
-kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-csi-static.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-static.yaml
 ```
  - make sure pvc is created and in `Bound` status finally
 ```console

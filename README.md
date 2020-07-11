@@ -21,7 +21,7 @@ Please refer to [`smb.csi.k8s.io` driver parameters](./docs/driver-parameters.md
 Please refer to [install SMB CSI driver](./docs/install-csi-driver-master.md)
 
 ### Examples
- - [Set up a SMB server deployment on a Kubernetes cluster](./deploy/example/smb-provisioner/)
+ - [Set up a Samba Server deployment on a Kubernetes cluster](./deploy/example/smb-provisioner/)
  - [Basic usage](./deploy/example/e2e_usage.md)
  - [Windows](./deploy/example/windows)
 
