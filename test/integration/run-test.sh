@@ -36,7 +36,7 @@ function cleanup {
 }
 
 readonly CSC_BIN="$GOBIN/csc"
-volumeid="volumetest"
+readonly volname="citest-$(date +%s)"
 endpoint='tcp://127.0.0.1:10000'
 staging_target_path='/tmp/stagingtargetpath'
 target_path='/tmp/targetpath'
@@ -50,10 +50,17 @@ trap cleanup EXIT
 sleep 5
 # set secret for csc node stage
 export X_CSI_SECRETS=username=username,"password=test"
-
+params='source="//0.0.0.0/share",createSubDir="true"'
 # Begin to run CSI functions one by one
+echo 'Create volume test:'
+readonly value=$("$CSC_BIN" controller new --endpoint "$endpoint" --cap 1,block "$volname" --req-bytes 2147483648 --params "$params")
+sleep 2
+
+readonly volumeid=$(echo "$value" | awk '{print $1}' | sed 's/"//g')
+echo "Got volume id: $volumeid"
+
 echo "stage volume test:"
-"$CSC_BIN" node stage --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" --vol-context=source="//0.0.0.0/share" "$volumeid"
+"$CSC_BIN" node stage --endpoint "$endpoint" --cap 1,block  --vol-context=source="//0.0.0.0/share" --staging-target-path "$staging_target_path" "$volumeid"
 sleep 2
 
 # check cifs mount
@@ -69,6 +76,10 @@ sleep 2
 
 echo "unstage volume test:"
 "$CSC_BIN" node unstage --endpoint "$endpoint" --staging-target-path "$staging_target_path" "$volumeid"
+sleep 2
+
+echo 'Delete volume test:'
+"$CSC_BIN" controller del --endpoint "$endpoint" "$volumeid"
 sleep 2
 
 "$CSC_BIN" identity plugin-info --endpoint "$endpoint"

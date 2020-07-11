@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"regexp"
 	"runtime"
 	"strings"
@@ -80,6 +81,23 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 
 	if err = preparePublishPath(target, d.mounter); err != nil {
 		return nil, fmt.Errorf("prepare publish failed for %s with error: %v", target, err)
+	}
+
+	context := req.GetVolumeContext()
+	var createSubDir string
+	for k, v := range context {
+		switch strings.ToLower(k) {
+		case createSubDirField:
+			createSubDir = v
+		}
+	}
+
+	if strings.EqualFold(createSubDir, "true") {
+		source = filepath.Join(source, req.GetVolumeId())
+		klog.V(2).Infof("NodePublishVolume: createSubDir(%s) MkdirAll(%s)", createSubDir, source)
+		if err := os.MkdirAll(source, 0750); err != nil {
+			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", source, err))
+		}
 	}
 
 	klog.V(2).Infof("NodePublishVolume: mounting %s at %s with mountOptions: %v", source, target, mountOptions)

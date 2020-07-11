@@ -1,14 +1,57 @@
 ## CSI driver E2E usage example
 ### Prerequisite
  - [Set up a Samba Server on a Kubernetes cluster](./smb-provisioner/)
-
-#### 1. Create PV/PVC bound with SMB share
- - Use `kubectl create secret` to create `smbcreds` with SMB username, password
+ > this example will create a new Samba Server(`//smb-server.default.svc.cluster.local/share`) with credential stored in secret `smbcreds`
+ - Use `kubectl create secret` to create `smbcreds` with Samba Server username, password
+ > skip this if already done
 ```console
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
 > add `--from-literal domain=DOMAIN-NAME` for domain support
 
+### Option#1: Storage Class Usage
+#### 1. Create a storage class
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: smb
+provisioner: smb.csi.k8s.io
+parameters:
+  source: "//smb-server.default.svc.cluster.local/share"
+  csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
+  csi.storage.k8s.io/node-stage-secret-namespace: "default"
+  createSubDir: "true"  # optional: create a sub dir for new volume
+reclaimPolicy: Retain  # only retain is supported
+volumeBindingMode: Immediate
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=1001
+  - gid=1001
+```
+ - Run below command to create a storage class
+```console
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
+```
+
+#### 2. Create a statefulset pod
+```console
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/statefulset.yaml
+```
+ - enter the pod container to verify
+```console
+# k exec -it statefulset-smb2-0 bash
+root@statefulset-smb2-0:/# df -h
+Filesystem                                    Size  Used Avail Use% Mounted on
+...
+//smb-server.default.svc.cluster.local/share  124G   15G  110G  12% /mnt/smb
+/dev/sda1                                     124G   15G  110G  12% /etc/hosts
+...
+```
+
+### Option#2: PV/PVC Usage
+#### 1. Create PV/PVC bound with SMB share
  - Create a smb CSI PV, download [`pv-smb.yaml`](https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pv-smb.yaml) file and edit `source` in `volumeAttributes`
 ```yaml
 apiVersion: v1
@@ -68,6 +111,6 @@ Filesystem            Size  Used Avail Use% Mounted on
 In the above example, there is a `/mnt/smb` directory mounted as cifs filesystem.
 
 ### 2.2 Create a deployment on Windows
-```
+```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/windows/deployment.yaml
 ```

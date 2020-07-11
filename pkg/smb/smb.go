@@ -29,7 +29,8 @@ import (
 )
 
 const (
-	DriverName = "smb.csi.k8s.io"
+	DriverName        = "smb.csi.k8s.io"
+	createSubDirField = "createsubdir"
 )
 
 // Driver implements all interfaces of CSI drivers
