@@ -24,7 +24,7 @@ readonly dirname="/tmp/$(date +%s)"
 
 mkdir "$dirname"
 export PERMISSIONS=0777
-docker run -it --name samba -p 445:445 -v "$dirname":/mount -d dperson/samba -u "username;test" -s "share;/mount/;yes;no;yes;all;none" -p
+docker run -it --name samba -p 445:445 -v "$dirname":/mount -e ACCOUNT_USERNAME='test' -e SAMBA_VOLUME_CONFIG_username='[share]; path=/mount/; guest ok = yes; read only = no; browseable = yes' -d servercontainers/samba
 function cleanup {
   echo 'stop and delete samba container'
   docker stop samba
