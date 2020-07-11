@@ -1,0 +1,68 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: smb-server
+  labels:
+    app: smb-server
+spec:
+  type: ClusterIP  # use "LoadBalancer" to get a public ip
+  selector:
+    app: smb-server
+  ports:
+    - port: 445
+      name: smb-server
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-azuredisk-smbshare
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: default
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: smb-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smb-server
+  template:
+    metadata:
+      name: smb-server
+      labels:
+        app: smb-server
+    spec:
+      containers:
+        - name: smb-server
+          image: dperson/samba
+          env:
+            - name: PERMISSIONS
+              value: "0777"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: smbcreds
+                  key: username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smbcreds
+                  key: password
+          args: ["-u", "$(USERNAME);$(PASSWORD)", "-s", "share;/smbshare/;yes;no;no;all;none", "-p"]
+          volumeMounts:
+            - mountPath: /smbshare
+              name: data-volume
+          ports:
+            - containerPort: 445
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: pvc-azuredisk-smbshare
