@@ -21,7 +21,7 @@ if [[ "$#" -gt 0 ]]; then
   ver="$1"
 fi
 
-repo="https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy"
+repo="https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/$ver/deploy"
 if [[ "$#" -gt 1 ]]; then
   if [[ "$2" == *"local"* ]]; then
     echo "use local deploy"
@@ -34,7 +34,9 @@ if [ $ver != "master" ]; then
 fi
 
 echo "Uninstalling SMB CSI driver, version: $ver ..."
-kubectl delete -f $repo/csi-smb-driver.yaml --ignore-not-found
+kubectl delete -f $repo/csi-smb-controller.yaml --ignore-not-found
 kubectl delete -f $repo/csi-smb-node.yaml --ignore-not-found
 kubectl delete -f $repo/csi-smb-node-windows.yaml --ignore-not-found
+kubectl delete -f $repo/csi-smb-driver.yaml --ignore-not-found
+kubectl delete -f $repo/rbac-csi-smb-controller.yaml --ignore-not-found
 echo 'Uninstalled SMB CSI driver successfully.'

@@ -25,22 +25,25 @@ import (
 	"k8s.io/klog/v2"
 )
 
-// CreateVolume not implemented, only for sanity test pass
+// CreateVolume only supports static provisioning, no create volume action
 func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
+	klog.V(2).Infof("CreateVolume called with request %+v", *req)
 	volumeCapabilities := req.GetVolumeCapabilities()
 	if len(volumeCapabilities) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "CreateVolume Volume capabilities must be provided")
 	}
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
-			VolumeId:      "volumeID",
+			VolumeId:      req.GetName(),
 			CapacityBytes: req.GetCapacityRange().GetRequiredBytes(),
+			VolumeContext: req.GetParameters(),
 		},
 	}, nil
 }
 
-// DeleteVolume not implemented, only for sanity test pass
+// DeleteVolume only supports static provisioning, no delete volume action
 func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest) (*csi.DeleteVolumeResponse, error) {
+	klog.V(2).Infof("DeleteVolume called with request %v", *req)
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
