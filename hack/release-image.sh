@@ -30,8 +30,8 @@ make smb-container
 make push
 make push-latest
 
-echo "sleep 10s ..."
-sleep 10
+echo "sleep 20s ..."
+sleep 20
 image="mcr.microsoft.com/k8s/csi/smb-csi:latest"
 docker pull $image
 docker inspect $image | grep Created

@@ -2,8 +2,7 @@
 ### Prerequisite
  - [Set up a Samba Server on a Kubernetes cluster](./smb-provisioner/)
  > this example will create a new Samba Server(`//smb-server.default.svc.cluster.local/share`) with credential stored in secret `smbcreds`
- - Use `kubectl create secret` to create `smbcreds` with Samba Server username, password
- > skip this if already done
+ - Use `kubectl create secret` to create `smbcreds` secret to store Samba Server username, password
 ```console
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
