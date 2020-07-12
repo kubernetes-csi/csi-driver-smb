@@ -7,15 +7,18 @@ curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/v0.2.
 
  - check pods status:
 ```console
+kubectl -n kube-system get pod -o wide --watch -l app=csi-smb-controller
 kubectl -n kube-system get pod -o wide --watch -l app=csi-smb-node
 ```
 
 example output:
 
 ```
-NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE
-csi-smb-node-cvgbs                        3/3     Running   0          7m4s    10.240.0.35    k8s-agentpool-22533604-1
-csi-smb-node-dr4s4                        3/3     Running   0          7m4s    10.240.0.4     k8s-agentpool-22533604-0
+NAME                                        READY   STATUS    RESTARTS   AGE     IP            NODE                                NOMINATED NODE   READINESS GATES
+csi-smb-controller-788486959d-5qmn7         3/3     Running   0          23s     10.244.0.45   aks-agentpool-60632172-vmss000006   <none>           <none>
+csi-smb-controller-788486959d-g4hpm         3/3     Running   0          32s     10.244.1.33   aks-agentpool-60632172-vmss000007   <none>           <none>
+csi-smb-node-4gwzl                          3/3     Running   0          15s     10.244.1.34   aks-agentpool-60632172-vmss000007   <none>           <none>
+csi-smb-node-hg76w                          3/3     Running   0          27s     10.244.0.44   aks-agentpool-60632172-vmss000006   <none>           <none>
 ```
 
 ### clean up SMB CSI driver
