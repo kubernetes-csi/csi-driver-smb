@@ -12,6 +12,7 @@ This driver allows Kubernetes to use [SMB](https://wiki.wireshark.org/SMB) CSI v
 |SMB CSI Driver Version  | Image                                        | 1.14+  |
 |------------------------|----------------------------------------------|--------|
 |master branch           |mcr.microsoft.com/k8s/csi/smb-csi:latest      | yes    |
+|v0.2.0                  |mcr.microsoft.com/k8s/csi/smb-csi:v0.2.0      | yes    |
 |v0.1.0                  |mcr.microsoft.com/k8s/csi/smb-csi:v0.1.0      | yes    |
 
 ### Driver parameters
