@@ -7,19 +7,23 @@ require (
 	github.com/Azure/go-autorest/autorest v0.10.0
 	github.com/Azure/go-autorest/autorest/adal v0.8.3
 	github.com/Azure/go-autorest/autorest/to v0.3.0
-	github.com/Azure/go-autorest/autorest/validation v0.1.0 // indirect
 	github.com/container-storage-interface/spec v1.3.0
 	github.com/golang/protobuf v1.3.5
 	github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200330215040-9eff16441b2a
+	github.com/kubernetes-csi/external-snapshotter/v2 v2.0.0-20200617021606-4800ca72d403
+	github.com/onsi/ginkgo v1.11.0
+	github.com/onsi/gomega v1.7.1
 	github.com/pborman/uuid v1.2.0
 	github.com/pelletier/go-toml v1.7.0
 	github.com/prometheus/client_golang v1.5.1
-	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
-	google.golang.org/grpc v1.27.0
+	google.golang.org/grpc v1.28.0
+	k8s.io/api v0.18.1
 	k8s.io/apimachinery v0.18.2-beta.0
+	k8s.io/client-go v0.18.1
 	k8s.io/klog/v2 v2.2.0
+	k8s.io/kubernetes v1.18.0
 	k8s.io/utils v0.0.0-20200411171748-3d5a2fe318e4
 	sigs.k8s.io/yaml v1.2.0
 )
