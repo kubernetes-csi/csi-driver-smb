@@ -7,8 +7,6 @@ services:
 go:
   - "1.13.9"
 
-before_install:
-
 jobs:
   include:
     - stage: test
@@ -32,3 +30,11 @@ jobs:
       script:
         - make
         - make sanity-test
+    - stage: test
+      name: "e2e test"
+      before_install:
+        - sudo apt-get -qq -y install conntrack
+      script:
+        - source test/utils/deploy-minikube.sh
+        - make
+        - make e2e-test
