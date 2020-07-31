@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2018 The Kubernetes Authors.
+# Copyright 2020 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,13 +16,16 @@
 
 set -euo pipefail
 
-readonly PKG_ROOT="$(git rev-parse --show-toplevel)"
-
-${PKG_ROOT}/hack/verify-gofmt.sh
-${PKG_ROOT}/hack/verify-govet.sh
-${PKG_ROOT}/hack/verify-golint.sh
-${PKG_ROOT}/hack/verify-yamllint.sh
-${PKG_ROOT}/hack/verify-boilerplate.sh
-${PKG_ROOT}/hack/verify-spelling.sh
-${PKG_ROOT}/hack/verify-helm-chart.sh
-${PKG_ROOT}/hack/verify-gomod.sh
+export GO111MODULE=on
+echo "go mod tidy"
+go mod tidy
+echo "go mod vendor"
+go mod vendor
+diff=`git diff`
+if [[ -n "${diff}" ]]; then
+  echo "${diff}"
+  echo
+  echo "error"
+  exit 1
+fi
+echo "Done"
