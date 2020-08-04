@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# No individual commands at the moment, just packages.
+CMDS=
+all: build
+
+# include release tools for building binary and testing targets
+include release-tools/build.make
+
 PKG = github.com/kubernetes-csi/csi-driver-smb
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
