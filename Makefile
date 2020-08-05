@@ -98,30 +98,30 @@ smb:
 smb-windows:
 	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -o _output/smbplugin.exe ./pkg/smbplugin
 
-.PHONY: container	
-container: smb	
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/dev.Dockerfile .
+.PHONY: container
+container: smb
+	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS}  -t $(IMAGE_TAG) -f ./pkg/smbplugin/dev.Dockerfile .
 
 .PHONY: smb-container
 smb-container:
+	docker buildx rm container-builder || true
+	docker buildx create --use --name=container-builder
 ifdef CI
-	az acr login --name $(REGISTRY_NAME)
 	make smb smb-windows
-	az acr build --registry $(REGISTRY_NAME) -t $(IMAGE_TAG)-linux-amd64 -f ./pkg/smbplugin/Dockerfile --platform linux .
-	az acr build --registry $(REGISTRY_NAME) -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/smbplugin/Windows.Dockerfile --platform windows .
+	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-linux-amd64 -f ./pkg/smbplugin/Dockerfile --platform="linux/amd64" --push .
+	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/smbplugin/Windows.Dockerfile --platform="windows/amd64" --push .
 	docker manifest create $(IMAGE_TAG) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-windows-1809-amd64
 	docker manifest inspect $(IMAGE_TAG)
 ifdef PUBLISH
 	docker manifest create $(IMAGE_TAG_LATEST) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-windows-1809-amd64
 	docker manifest inspect $(IMAGE_TAG_LATEST)
-endif	
+endif
 else
 ifdef TEST_WINDOWS
 	make smb-windows
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/Windows.Dockerfile .
+	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/smbplugin/Windows.Dockerfile --platform="windows/amd64" --output "type=image" .
 else
-	make smb
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/Dockerfile .
+	make container
 endif
 endif
 
