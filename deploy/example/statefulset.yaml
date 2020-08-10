@@ -13,6 +13,8 @@ spec:
       labels:
         app: nginx
     spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
       containers:
         - name: statefulset-smb
           image: nginx
