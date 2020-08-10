@@ -38,11 +38,11 @@ import (
 )
 
 const (
-	usernameField     = "username"
-	passwordField     = "password"
-	sourceField       = "source"
-	domainField       = "domain"
-	azureFileUserName = "AZURE"
+	usernameField      = "username"
+	passwordField      = "password"
+	sourceField        = "source"
+	domainField        = "domain"
+	defaultNetworkName = "AZURE"
 )
 
 // NodePublishVolume mount the volume from staging to target path
@@ -96,7 +96,7 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		source = filepath.Join(source, req.GetVolumeId())
 		klog.V(2).Infof("NodePublishVolume: createSubDir(%s) MkdirAll(%s)", createSubDir, source)
 		if err := os.MkdirAll(source, 0750); err != nil {
-			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", source, err))
+			klog.Warningf("MkdirAll %s failed with error: %v", source, err)
 		}
 	}
 
@@ -177,30 +177,28 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 	}
 
-	var mountOptions, sensitiveMountOptions []string
+	var mountOptions, sensitiveMountOptions, loggingMountOptions []string
 	if runtime.GOOS == "windows" {
-		if strings.Contains(source, ".file.core.") && !strings.HasPrefix(strings.ToUpper(username), azureFileUserName) {
-			// if mount source is Azure File Server, e.g.
-			//    accountname.file.core.windows.net
-			//    accountname.file.core.chinacloudapi.cn
-			//  Add "AZURE\\" before username
-			mountOptions = []string{fmt.Sprintf("%s\\%s", azureFileUserName, username), password}
-		} else {
-			mountOptions = []string{username, password}
+		if !strings.Contains(source, "\\") {
+			username = fmt.Sprintf("%s\\%s", defaultNetworkName, username)
 		}
+		mountOptions = []string{username, password}
+		loggingMountOptions = []string{username}
 	} else {
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
 		sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
 		mountOptions = mountFlags
+		loggingMountOptions = mountOptions
 	}
 	if domain != "" {
 		mountOptions = append(mountOptions, fmt.Sprintf("%s=%s", domainField, domain))
+		loggingMountOptions = mountOptions
 	}
 
 	klog.V(2).Infof("targetPath(%v) volumeID(%v) context(%v) mountflags(%v) mountOptions(%v)",
-		targetPath, volumeID, context, mountFlags, mountOptions)
+		targetPath, volumeID, context, mountFlags, loggingMountOptions)
 
 	isDirMounted, err := d.ensureMountPoint(targetPath)
 	if err != nil {
