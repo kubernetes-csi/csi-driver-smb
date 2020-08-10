@@ -95,8 +95,12 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if strings.EqualFold(createSubDir, "true") {
 		source = filepath.Join(source, req.GetVolumeId())
 		klog.V(2).Infof("NodePublishVolume: createSubDir(%s) MkdirAll(%s)", createSubDir, source)
-		if err := os.MkdirAll(source, 0750); err != nil {
-			klog.Warningf("MkdirAll %s failed with error: %v", source, err)
+		if err := os.Mkdir(source, 0750); err != nil {
+			if os.IsExist(err) {
+				klog.Warningf("MkdirAll %s failed with error: %v", source, err)
+			} else {
+				return nil, status.Errorf(codes.Internal, "MkdirAll %s failed with error: %v", source, err)
+			}
 		}
 	}
 
