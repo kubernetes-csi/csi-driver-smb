@@ -100,7 +100,7 @@ smb-windows:
 
 .PHONY: container
 container: smb
-	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS}  -t $(IMAGE_TAG) -f ./pkg/smbplugin/dev.Dockerfile .
+	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/dev.Dockerfile .
 
 .PHONY: smb-container
 smb-container:
