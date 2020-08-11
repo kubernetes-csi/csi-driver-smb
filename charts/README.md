@@ -29,7 +29,7 @@ $ helm search repo -l csi-driver-smb/
 ### Install a specific version of Helm chart
 Specify the version of the chart to be installed using the `--version` parameter. 
 ```console
-helm install --name csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v0.6.0
+helm install --name csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v0.2.0
 ```
 
 ## Uninstall
@@ -74,5 +74,5 @@ If there are some errors when using helm to install, follow the steps to debug:
 
 1. Add `--wait -v=5 --debug` in `helm install` command.
 2. Then the error pods  can be located.
-3. Use `kubectl describe ` to acquire more info.
+3. Use `kubectl describe` to acquire more info.
 4. Check the related resource of the pod, such as serviceaacount, rbac, etc.

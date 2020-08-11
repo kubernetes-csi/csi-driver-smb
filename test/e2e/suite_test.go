@@ -67,6 +67,13 @@ var _ = ginkgo.BeforeSuite(func() {
 	framework.AfterReadingAllFlags(&framework.TestContext)
 
 	if testutil.IsRunningInProw() {
+		// Install SMB provisioner on cluster
+		installSMBProvisioner := testCmd{
+			command:  "make",
+			args:     []string{"install-smb-provisioner"},
+			startLog: "Installing SMB provisioner...",
+			endLog:   "SMB provisioner installed",
+		}
 		// Install SMB CSI Driver on cluster from project root
 		e2eBootstrap := testCmd{
 			command:  "make",
@@ -74,7 +81,8 @@ var _ = ginkgo.BeforeSuite(func() {
 			startLog: "Installing SMB CSI Driver...",
 			endLog:   "SMB CSI Driver installed",
 		}
-		execTestCmd([]testCmd{e2eBootstrap})
+
+		execTestCmd([]testCmd{installSMBProvisioner, e2eBootstrap})
 
 		nodeid := os.Getenv("nodeid")
 		kubeconfig := os.Getenv(kubeconfigEnvVar)
