@@ -40,6 +40,8 @@ spec:
       labels:
         app: smb-server
     spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
       containers:
         - name: smb-server
           image: dperson/samba
