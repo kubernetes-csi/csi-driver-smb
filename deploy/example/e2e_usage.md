@@ -20,7 +20,7 @@ parameters:
   source: "//smb-server.default.svc.cluster.local/share"
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
   csi.storage.k8s.io/node-stage-secret-namespace: "default"
-  createSubDir: "true"  # optional: create a sub dir for new volume
+  createSubDir: "false"  # optional: create a sub dir for new volume
 reclaimPolicy: Retain  # only retain is supported
 volumeBindingMode: Immediate
 mountOptions:
