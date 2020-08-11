@@ -16,6 +16,8 @@ spec:
         app: nginx
       name: deployment-smb
     spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
       containers:
         - name: deployment-smb
           image: nginx
