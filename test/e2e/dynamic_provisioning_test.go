@@ -18,6 +18,7 @@ package e2e
 
 import (
 	"fmt"
+
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/testsuites"
 
@@ -60,7 +61,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	})
 
 	testDriver = driver.InitSMBDriver()
-	ginkgo.It("should create a volume on demand with mount options [kubernetes.io/smb-csi] [smb.csi.k8s.io] [Windows]", func() {
+	ginkgo.It("should create a volume on demand with mount options [smb.csi.k8s.io] [Windows]", func() {
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
@@ -85,10 +86,11 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test := testsuites.DynamicallyProvisionedCmdVolumeTest{
 			CSIDriver: testDriver,
 			Pods:      pods,
-			StorageClassParameters: map[string]string{"source": "//smb-server.default.svc.cluster.local/share",
+			StorageClassParameters: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
 				"csi.storage.k8s.io/node-stage-secret-name":      "smbcreds",
 				"csi.storage.k8s.io/node-stage-secret-namespace": "default",
-				"createSubDir": "true"},
+				"createSubDir": "false"},
 		}
 
 		test.Run(cs, ns)
