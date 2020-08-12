@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
@@ -301,6 +302,10 @@ func (t *TestPersistentVolumeClaim) DeleteBackingVolume(smb *smb.Driver) {
 // Related issue: https://github.com/kubernetes/kubernetes/issues/69697
 func (t *TestPersistentVolumeClaim) removeFinalizers() {
 	pv, err := t.client.CoreV1().PersistentVolumes().Get(context.TODO(), t.persistentVolume.Name, metav1.GetOptions{})
+	// Because the pv might be deleted successfully, if so, ignore the error.
+	if err != nil && strings.Contains(err.Error(), "not found") {
+		return
+	}
 	framework.ExpectNoError(err)
 
 	pvClone := pv.DeepCopy()
@@ -317,6 +322,10 @@ func (t *TestPersistentVolumeClaim) removeFinalizers() {
 	framework.ExpectNoError(err)
 
 	_, err = t.client.CoreV1().PersistentVolumes().Patch(context.TODO(), pvClone.Name, types.StrategicMergePatchType, patchBytes, metav1.PatchOptions{})
+	// Because the pv might be deleted successfully before patched, if so, ignore the error.
+	if err != nil && strings.Contains(err.Error(), "not found") {
+		return
+	}
 	framework.ExpectNoError(err)
 }
 
