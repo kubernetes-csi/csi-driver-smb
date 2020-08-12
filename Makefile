@@ -69,17 +69,16 @@ e2e-test:
 e2e-bootstrap: install-helm
 	docker pull $(IMAGE_TAG) || make smb-container push
 ifdef TEST_WINDOWS
-	helm install smb-csi-driver charts/latest/smb-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
+	helm install csi-driver-smb charts/latest/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug \
 		--set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) \
 		--set image.smb.tag=$(IMAGE_VERSION) \
 		--set windows.enabled=true \
 		--set linux.enabled=false \
 		--set controller.replicas=1
 else
-	helm install smb-csi-driver charts/latest/smb-csi-driver --namespace kube-system --wait --timeout=15m -v=5 --debug \
+	helm install csi-driver-smb charts/latest/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug \
 		--set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) \
-		--set image.smb.tag=$(IMAGE_VERSION) \
-		--set snapshot.enabled=true
+		--set image.smb.tag=$(IMAGE_VERSION)
 endif
 
 .PHONY: install-helm
@@ -88,7 +87,7 @@ install-helm:
 
 .PHONY: e2e-teardown
 e2e-teardown:
-	helm delete smb-csi-driver --namespace kube-system
+	helm delete csi-driver-smb --namespace kube-system
 
 .PHONY: smb
 smb:
@@ -150,3 +149,8 @@ build-push: smb-container
 clean:
 	go clean -r -x
 	-rm -rf _output
+
+.PHONY: install-smb-provisioner
+install-smb-provisioner:
+	kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
+	kubectl create -f deploy/example/smb-provisioner/smb-server.yaml

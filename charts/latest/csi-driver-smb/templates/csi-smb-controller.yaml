@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
 {{ include "smb.labels" . | indent 6 }}
-      app: csi-smb-controller
+        app: csi-smb-controller
     spec:
       serviceAccountName: csi-smb-controller-sa
       nodeSelector:
