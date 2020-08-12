@@ -89,3 +89,9 @@ wget -O csi-smb-node.yaml https://raw.githubusercontent.com/kubernetes-csi/csi-d
 # edit csi-smb-node.yaml
 kubectl apply -f csi-smb-node.yaml
  ```
+
+### How to update chart index
+
+```console
+helm repo index charts --url=https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+```
