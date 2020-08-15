@@ -32,6 +32,15 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 )
 
+var (
+	defaultStorageClassParameters = map[string]string{
+		"source": "//smb-server.default.svc.cluster.local/share",
+		"csi.storage.k8s.io/node-stage-secret-name":      "smbcreds",
+		"csi.storage.k8s.io/node-stage-secret-namespace": "default",
+		"createSubDir": "false",
+	}
+)
+
 var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	f := framework.NewDefaultFramework("smb")
 
@@ -73,6 +82,9 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 							"file_mode=0777",
 							"uid=0",
 							"gid=0",
+							"mfsymlinks",
+							"cache=strict",
+							"nosharesock",
 						},
 						VolumeMount: testsuites.VolumeMountDetails{
 							NameGenerate:      "test-volume-",
@@ -84,15 +96,49 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			},
 		}
 		test := testsuites.DynamicallyProvisionedCmdVolumeTest{
-			CSIDriver: testDriver,
-			Pods:      pods,
-			StorageClassParameters: map[string]string{
-				"source": "//smb-server.default.svc.cluster.local/share",
-				"csi.storage.k8s.io/node-stage-secret-name":      "smbcreds",
-				"csi.storage.k8s.io/node-stage-secret-namespace": "default",
-				"createSubDir": "false"},
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: defaultStorageClassParameters,
 		}
 
+		test.Run(cs, ns)
+	})
+
+	ginkgo.It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [kubernetes.io/azure-file] [file.csi.azure.com] [Windows]", func() {
+		pods := []testsuites.PodDetails{
+			{
+				Cmd: convertToPowershellCommandIfNecessary("while true; do echo $(date -u) >> /mnt/test-1/data; sleep 100; done"),
+				Volumes: []testsuites.VolumeDetails{
+					{
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+				IsWindows: isWindowsCluster,
+			},
+			{
+				Cmd: convertToPowershellCommandIfNecessary("while true; do echo $(date -u) >> /mnt/test-1/data; sleep 100; done"),
+				Volumes: []testsuites.VolumeDetails{
+					{
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+				IsWindows: isWindowsCluster,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedCollocatedPodTest{
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			ColocatePods:           true,
+			StorageClassParameters: defaultStorageClassParameters,
+		}
 		test.Run(cs, ns)
 	})
 })
