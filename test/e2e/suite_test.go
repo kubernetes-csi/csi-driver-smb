@@ -45,8 +45,14 @@ const (
 )
 
 var (
-	smbDriver        *smb.Driver
-	isWindowsCluster = os.Getenv(testWindowsEnvVar) != ""
+	smbDriver                     *smb.Driver
+	isWindowsCluster              = os.Getenv(testWindowsEnvVar) != ""
+	defaultStorageClassParameters = map[string]string{
+		"source": "//smb-server.default.svc.cluster.local/share",
+		"csi.storage.k8s.io/node-stage-secret-name":      "smbcreds",
+		"csi.storage.k8s.io/node-stage-secret-namespace": "default",
+		"createSubDir": "false",
+	}
 )
 
 type testCmd struct {
@@ -90,6 +96,29 @@ var _ = ginkgo.BeforeSuite(func() {
 		go func() {
 			smbDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()), kubeconfig, false)
 		}()
+	}
+
+	if isWindowsCluster {
+		err := os.Chdir("../..")
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		defer func() {
+			err := os.Chdir("test/e2e")
+			gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		}()
+
+		getSMBPublicIPScript := "test/utils/get_smb_svc_public_ip.sh"
+		log.Printf("run script: %s\n", getSMBPublicIPScript)
+
+		cmd := exec.Command("bash", getSMBPublicIPScript)
+		output, err := cmd.CombinedOutput()
+		log.Printf("got output: %v, error: %v\n", string(output), err)
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+
+		smbPublicIP := strings.TrimSuffix(string(output), "\n")
+		source := `\\` + smbPublicIP + `\share`
+
+		log.Printf("use source on Windows: %v\n", source)
+		defaultStorageClassParameters["source"] = source
 	}
 })
 

@@ -32,15 +32,6 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 )
 
-var (
-	defaultStorageClassParameters = map[string]string{
-		"source": "//smb-server.default.svc.cluster.local/share",
-		"csi.storage.k8s.io/node-stage-secret-name":      "smbcreds",
-		"csi.storage.k8s.io/node-stage-secret-namespace": "default",
-		"createSubDir": "false",
-	}
-)
-
 var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	f := framework.NewDefaultFramework("smb")
 

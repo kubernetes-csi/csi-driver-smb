@@ -30,16 +30,16 @@ kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl describe po {} -n${NS}
 
-echo "print out csi-smb-controller logs ..."
+echo "print out csi-smb-node logs ..."
 echo "======================================================================================"
-LABEL='app=csi-smb-controller'
+LABEL='app=csi-smb-node'
 kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
 
-echo "print out csi-smb-node logs ..."
+echo "print out csi-smb-node-win logs ..."
 echo "======================================================================================"
-LABEL='app=csi-smb-node'
+LABEL='app=csi-smb-node-win'
 kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
