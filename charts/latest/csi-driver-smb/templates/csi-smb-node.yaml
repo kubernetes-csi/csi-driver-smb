@@ -28,7 +28,7 @@ spec:
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
-            - --health-port=39613
+            - --health-port=29643
             - --v=5
           imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           resources:
@@ -74,10 +74,10 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
           ports:
-            - containerPort: 39613
+            - containerPort: 29643
               name: healthz
               protocol: TCP
-            - containerPort: 39615
+            - containerPort: 29645
               name: metrics
               protocol: TCP
           livenessProbe:
