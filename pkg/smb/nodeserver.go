@@ -183,7 +183,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 
 	var mountOptions, sensitiveMountOptions, loggingMountOptions []string
 	if runtime.GOOS == "windows" {
-		if !strings.Contains(source, "\\") {
+		if !strings.Contains(username, "\\") {
 			username = fmt.Sprintf("%s\\%s", defaultNetworkName, username)
 		}
 		mountOptions = []string{username, password}
