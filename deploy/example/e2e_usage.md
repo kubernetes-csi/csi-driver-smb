@@ -9,6 +9,7 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 > add `--from-literal domain=DOMAIN-NAME` for domain support
 
 ### Option#1: Storage Class Usage
+ - Access by Linux node
 #### 1. Create a storage class
 ```yaml
 apiVersion: storage.k8s.io/v1
@@ -32,6 +33,26 @@ mountOptions:
  - Run below command to create a storage class
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
+```
+
+ - Access by Windows node
+> Since `smb-server.default.svc.cluster.local` could not be recognized by CSI proxy on Windows node, should configure public IP address or domain name for `source` in storage class:
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: smb
+provisioner: smb.csi.k8s.io
+parameters:
+  source: \\52.146.58.223\share
+  csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
+  csi.storage.k8s.io/node-stage-secret-namespace: "default"
+  createSubDir: "false"  # optional: create a sub dir for new volume
+reclaimPolicy: Retain  # only retain is supported
+volumeBindingMode: Immediate
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
 ```
 
 #### 2. Create a statefulset pod
