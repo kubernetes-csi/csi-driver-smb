@@ -197,6 +197,12 @@ func convertToPowershellCommandIfNecessary(command string) string {
 	switch command {
 	case "echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data":
 		return "echo 'hello world' | Out-File -FilePath C:\\mnt\\test-1\\data.txt; Get-Content C:\\mnt\\test-1\\data.txt | findstr 'hello world'"
+	case "touch /mnt/test-1/data":
+		return "echo $null >> C:\\mnt\\test-1\\data"
+	case "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 100; done":
+		return "while (1) { Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt $(Get-Date -Format u); sleep 1 }"
+	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 100; done":
+		return "Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
 	}
 
 	return command
@@ -208,4 +214,10 @@ func handleFlags() {
 	framework.RegisterCommonFlags(flag.CommandLine)
 	framework.RegisterClusterFlags(flag.CommandLine)
 	flag.Parse()
+}
+
+func skipIfTestingInWindowsCluster() {
+	if isWindowsCluster {
+		ginkgo.Skip("test case not supported by Windows clusters")
+	}
 }

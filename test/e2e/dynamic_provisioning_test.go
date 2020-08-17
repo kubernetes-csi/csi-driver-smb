@@ -134,7 +134,9 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	})
 
 	// Track issue https://github.com/kubernetes/kubernetes/issues/70505
-	ginkgo.It("should create a volume on demand and mount it as readOnly in a pod [smb.csi.k8s.io] [Windows]", func() {
+	ginkgo.It("should create a volume on demand and mount it as readOnly in a pod [smb.csi.k8s.io]", func() {
+		// Windows volume does not support readOnly
+		skipIfTestingInWindowsCluster()
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: convertToPowershellCommandIfNecessary("touch /mnt/test-1/data"),
