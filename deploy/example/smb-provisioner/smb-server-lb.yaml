@@ -6,7 +6,7 @@ metadata:
   labels:
     app: smb-server
 spec:
-  type: ClusterIP  # use "LoadBalancer" to get a public ip
+  type: LoadBalancer
   selector:
     app: smb-server
   ports:
