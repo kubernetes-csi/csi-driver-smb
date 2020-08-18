@@ -198,6 +198,39 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		}
 		test.Run(cs, ns)
 	})
+
+	ginkgo.It("should create a deployment object, write and read to it, delete the pod and write and read to it again [smb.csi.k8s.io] [Windows]", func() {
+		pod := testsuites.PodDetails{
+			Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' >> /mnt/test-1/data && while true; do sleep 100; done"),
+			Volumes: []testsuites.VolumeDetails{
+				{
+					ClaimSize: "10Gi",
+					VolumeMount: testsuites.VolumeMountDetails{
+						NameGenerate:      "test-volume-",
+						MountPathGenerate: "/mnt/test-",
+					},
+				},
+			},
+			IsWindows: isWindowsCluster,
+		}
+
+		podCheckCmd := []string{"cat", "/mnt/test-1/data"}
+		expectedString := "hello world\n"
+		if isWindowsCluster {
+			podCheckCmd = []string{"powershell.exe", "-Command", "Get-Content C:\\mnt\\test-1\\data.txt"}
+			expectedString = "hello world\r\n"
+		}
+		test := testsuites.DynamicallyProvisionedDeletePodTest{
+			CSIDriver: testDriver,
+			Pod:       pod,
+			PodCheck: &testsuites.PodExecCheck{
+				Cmd:            podCheckCmd,
+				ExpectedString: expectedString, // pod will be restarted so expect to see 2 instances of string
+			},
+			StorageClassParameters: storageClassCreateSubDir,
+		}
+		test.Run(cs, ns)
+	})
 })
 
 func restClient(group string, version string) (restclientset.Interface, error) {
