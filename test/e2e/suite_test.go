@@ -53,6 +53,12 @@ var (
 		"csi.storage.k8s.io/node-stage-secret-namespace": "default",
 		"createSubDir": "false",
 	}
+	storageClassCreateSubDir = map[string]string{
+		"source": "//smb-server.default.svc.cluster.local/share",
+		"csi.storage.k8s.io/node-stage-secret-name":      "smbcreds",
+		"csi.storage.k8s.io/node-stage-secret-namespace": "default",
+		"createSubDir": "true",
+	}
 )
 
 type testCmd struct {
@@ -119,6 +125,7 @@ var _ = ginkgo.BeforeSuite(func() {
 
 		log.Printf("use source on Windows: %v\n", source)
 		defaultStorageClassParameters["source"] = source
+		storageClassCreateSubDir["source"] = source
 	}
 })
 
