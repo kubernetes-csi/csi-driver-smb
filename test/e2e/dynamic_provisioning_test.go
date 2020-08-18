@@ -231,6 +231,67 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		}
 		test.Run(cs, ns)
 	})
+
+	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimDelete), func() {
+		reclaimPolicy := v1.PersistentVolumeReclaimDelete
+		volumes := []testsuites.VolumeDetails{
+			{
+				ClaimSize:     "10Gi",
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
+			CSIDriver:              testDriver,
+			Volumes:                volumes,
+			StorageClassParameters: defaultStorageClassParameters,
+		}
+		test.Run(cs, ns)
+	})
+
+	ginkgo.It(fmt.Sprintf("should retain PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimRetain), func() {
+		reclaimPolicy := v1.PersistentVolumeReclaimRetain
+		volumes := []testsuites.VolumeDetails{
+			{
+				ClaimSize:     "10Gi",
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
+			CSIDriver:              testDriver,
+			Volumes:                volumes,
+			Driver:                 smbDriver,
+			StorageClassParameters: defaultStorageClassParameters,
+		}
+		test.Run(cs, ns)
+	})
+
+	ginkgo.It("should create a pod with multiple volumes [smb.csi.k8s.io] [Windows]", func() {
+		volumes := []testsuites.VolumeDetails{}
+		for i := 1; i <= 6; i++ {
+			volume := testsuites.VolumeDetails{
+				ClaimSize: "100Gi",
+				VolumeMount: testsuites.VolumeMountDetails{
+					NameGenerate:      "test-volume-",
+					MountPathGenerate: "/mnt/test-",
+				},
+			}
+			volumes = append(volumes, volume)
+		}
+
+		pods := []testsuites.PodDetails{
+			{
+				Cmd:       convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
+				Volumes:   volumes,
+				IsWindows: isWindowsCluster,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedPodWithMultiplePVsTest{
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: storageClassCreateSubDir,
+		}
+		test.Run(cs, ns)
+	})
 })
 
 func restClient(group string, version string) (restclientset.Interface, error) {
