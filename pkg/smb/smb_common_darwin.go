@@ -51,3 +51,7 @@ func preparePublishPath(path string, m *mount.SafeFormatAndMount) error {
 func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
 	return nil
 }
+
+func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
+	return nil
+}

@@ -95,7 +95,7 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if strings.EqualFold(createSubDir, "true") {
 		source = filepath.Join(source, req.GetVolumeId())
 		klog.V(2).Infof("NodePublishVolume: createSubDir(%s) MkdirAll(%s)", createSubDir, source)
-		if err := os.Mkdir(source, 0750); err != nil {
+		if err := Mkdir(d.mounter, source, 0750); err != nil {
 			if os.IsExist(err) {
 				klog.Warningf("Mkdir(%s) failed with error: %v", source, err)
 			} else {

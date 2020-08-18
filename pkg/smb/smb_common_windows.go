@@ -20,6 +20,7 @@ package smb
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
 	"k8s.io/klog/v2"
@@ -95,4 +96,12 @@ func preparePublishPath(path string, m *mount.SafeFormatAndMount) error {
 
 func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
 	return removeDir(path, m)
+}
+
+func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
+	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
+	if !ok {
+		return fmt.Errorf("could not cast to csi proxy class")
+	}
+	return proxy.MakeDir(name)
 }
