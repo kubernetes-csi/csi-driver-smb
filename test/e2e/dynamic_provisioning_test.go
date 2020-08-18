@@ -231,6 +231,39 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		}
 		test.Run(cs, ns)
 	})
+
+	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimDelete), func() {
+		reclaimPolicy := v1.PersistentVolumeReclaimDelete
+		volumes := []testsuites.VolumeDetails{
+			{
+				ClaimSize:     "10Gi",
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
+			CSIDriver:              testDriver,
+			Volumes:                volumes,
+			StorageClassParameters: defaultStorageClassParameters,
+		}
+		test.Run(cs, ns)
+	})
+
+	ginkgo.It(fmt.Sprintf("should retain PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimRetain), func() {
+		reclaimPolicy := v1.PersistentVolumeReclaimRetain
+		volumes := []testsuites.VolumeDetails{
+			{
+				ClaimSize:     "10Gi",
+				ReclaimPolicy: &reclaimPolicy,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedReclaimPolicyTest{
+			CSIDriver:              testDriver,
+			Volumes:                volumes,
+			Driver:                 smbDriver,
+			StorageClassParameters: defaultStorageClassParameters,
+		}
+		test.Run(cs, ns)
+	})
 })
 
 func restClient(group string, version string) (restclientset.Interface, error) {
