@@ -3,15 +3,16 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: csi-smb-controller
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.controller.replicas }}
   selector:
     matchLabels:
       app: csi-smb-controller
   template:
     metadata:
-      labels:
+{{ include "smb.labels" . | indent 6 }}
         app: csi-smb-controller
     spec:
       serviceAccountName: csi-smb-controller-sa
@@ -25,7 +26,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: csi-provisioner
-          image: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner:v1.4.0
+          image: "{{ .Values.image.csiProvisioner.repository }}:{{ .Values.image.csiProvisioner.tag }}"
           args:
             - "-v=5"
             - "--csi-address=$(ADDRESS)"
@@ -34,6 +35,7 @@ spec:
           env:
             - name: ADDRESS
               value: /csi/csi.sock
+          imagePullPolicy: {{ .Values.image.csiProvisioner.pullPolicy }}
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
@@ -45,12 +47,13 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: liveness-probe
-          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v1.1.0
+          image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
           args:
             - --csi-address=/csi/csi.sock
             - --connection-timeout=3s
             - --health-port=29642
             - --v=5
+          imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -62,8 +65,8 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: mcr.microsoft.com/k8s/csi/smb-csi:v0.3.0
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"

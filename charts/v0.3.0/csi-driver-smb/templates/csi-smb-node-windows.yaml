@@ -1,16 +1,17 @@
----
+{{- if .Values.windows.enabled}}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: csi-smb-node-win
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
 spec:
   selector:
     matchLabels:
       app: csi-smb-node-win
   template:
     metadata:
-      labels:
+{{ include "smb.labels" . | indent 6 }}
         app: csi-smb-node-win
     spec:
       nodeSelector:
@@ -21,7 +22,7 @@ spec:
           volumeMounts:
             - mountPath: C:\csi
               name: plugin-dir
-          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.0.1-alpha.1-windows-1809-amd64
+          image: "{{ .Values.windows.image.livenessProbe.repository }}:{{ .Values.windows.image.livenessProbe.tag }}"
           args:
             - --csi-address=$(CSI_ENDPOINT)
             - --probe-timeout=3s
@@ -30,6 +31,7 @@ spec:
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
+          imagePullPolicy: {{ .Values.windows.image.livenessProbe.pullPolicy }}
           resources:
             limits:
               cpu: 200m
@@ -38,7 +40,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: node-driver-registrar
-          image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v1.2.1-alpha.1-windows-1809-amd64
+          image: "{{ .Values.windows.image.nodeDriverRegistrar.repository }}:{{ .Values.windows.image.nodeDriverRegistrar.tag }}"
           args:
             - --v=5
             - --csi-address=$(CSI_ENDPOINT)
@@ -50,6 +52,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+          imagePullPolicy: {{ .Values.windows.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: kubelet-dir
               mountPath: "C:\\var\\lib\\kubelet"
@@ -65,8 +68,8 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: mcr.microsoft.com/k8s/csi/smb-csi:v0.3.0
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           args:
             - --v=5
             - --endpoint=$(CSI_ENDPOINT)
@@ -133,3 +136,4 @@ spec:
           hostPath:
             path: C:\var\lib\kubelet\plugins\smb.csi.k8s.io\
             type: DirectoryOrCreate
+{{- end -}}
