@@ -65,7 +65,7 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-sm
 root@statefulset-smb2-0:/# df -h
 Filesystem                                    Size  Used Avail Use% Mounted on
 ...
-//smb-server.default.svc.cluster.local/share  124G   15G  110G  12% /mnt/smb
+//smb-server.default.svc.cluster.local/share  124G   23G  102G  19% /mnt/smb
 /dev/sda1                                     124G   15G  110G  12% /etc/hosts
 ...
 ```
