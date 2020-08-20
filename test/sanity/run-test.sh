@@ -44,4 +44,4 @@ _output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 
 echo 'Begin to run sanity test...'
 readonly CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'
-"$CSI_SANITY_BIN" --ginkgo.v --ginkgo.noColor --csi.endpoint="$endpoint" --ginkgo.skip='ValidateVolumeCapabilities|ControllerGetCapabilities|should work|create a volume with already existing name and different capacity'
+"$CSI_SANITY_BIN" --ginkgo.v --ginkgo.noColor --csi.endpoint="$endpoint" --ginkgo.skip='should fail when the requested volume does not exist|should work|create a volume with already existing name and different capacity'
