@@ -10,17 +10,22 @@ https://git.k8s.io/community/contributors/devel/release.md#issue-kind-label
 -->
 
 **What type of PR is this?**
-> Uncomment only one ` /kind <>` line, hit enter to put that in a new line, and remove leading whitespaces from that line:
->
-> /kind api-change
-> /kind bug
-> /kind cleanup
-> /kind design
-> /kind documentation
-> /kind test
-> /kind failing-test
-> /kind feature
-> /kind flake
+
+<!--
+Add one of the following kinds:
+/kind bug
+/kind cleanup
+/kind documentation
+/kind feature
+/kind design
+
+Optionally add one or more of the following kinds if applicable:
+/kind api-change
+/kind deprecation
+/kind failing-test
+/kind flake
+/kind regression
+-->
 
 **What this PR does / why we need it**:
 
