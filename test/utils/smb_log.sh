@@ -28,7 +28,7 @@ echo "==========================================================================
 LABEL='app=csi-smb-controller'
 kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
-    | xargs -I {} kubectl describe po {} -n${NS}
+    | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
 
 echo "print out csi-smb-node logs ..."
 echo "======================================================================================"
