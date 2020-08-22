@@ -18,12 +18,13 @@ package csicommon
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/container-storage-interface/spec/lib/go/csi"
+	"github.com/kubernetes-csi/csi-lib-utils/protosanitizer"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"k8s.io/klog/v2"
-	"regexp"
-	"strings"
 )
 
 func ParseEndpoint(ep string) (string, string, error) {
@@ -102,20 +103,14 @@ func RunControllerandNodePublishServer(endpoint string, d *CSIDriver, cs csi.Con
 	s.Wait()
 }
 
-// regex to mask secrets in log messages
-var reqSecretsRegex, _ = regexp.Compile("secrets\\s*:\\s*<key:\"(.*?)\"\\s*value:\".*?\"")
-
 func logGRPC(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-
-	s := fmt.Sprintf("GRPC request: %+v", req)
 	klog.V(3).Infof("GRPC call: %s", info.FullMethod)
-	klog.V(5).Info(reqSecretsRegex.ReplaceAllString(s, "secrets:<key:\"$1\" value:\"****\""))
-
+	klog.V(5).Infof("GRPC request: %s", protosanitizer.StripSecrets(req))
 	resp, err := handler(ctx, req)
 	if err != nil {
 		klog.Errorf("GRPC error: %v", err)
 	} else {
-		klog.V(5).Infof("GRPC response: %+v", resp)
+		klog.V(5).Infof("GRPC response: %s", protosanitizer.StripSecrets(resp))
 	}
 	return resp, err
 }
