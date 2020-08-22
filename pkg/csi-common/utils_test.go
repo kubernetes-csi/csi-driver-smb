@@ -20,9 +20,10 @@ import (
 	"bytes"
 	"context"
 	"flag"
+	"testing"
+
 	"google.golang.org/grpc"
 	"k8s.io/klog/v2"
-	"testing"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/stretchr/testify/assert"
@@ -118,14 +119,14 @@ func TestLogGRPC(t *testing.T) {
 				},
 				XXX_sizecache: 100,
 			},
-			`GRPC request: volume_id:"vol_1" secrets:<key:"account_key" value:"****" > secrets:<key:"account_name" value:"****" >`,
+			`GRPC request: {"secrets":"***stripped***","volume_id":"vol_1"}`,
 		},
 		{
 			"without secrets",
 			&csi.ListSnapshotsRequest{
 				StartingToken: "testtoken",
 			},
-			`GRPC request: starting_token:"testtoken"`,
+			`GRPC request: {"starting_token":"testtoken"}`,
 		},
 	}
 
@@ -138,7 +139,7 @@ func TestLogGRPC(t *testing.T) {
 			// ASSERT
 			assert.Contains(t, buf.String(), "GRPC call: fake")
 			assert.Contains(t, buf.String(), test.expStr)
-			assert.Contains(t, buf.String(), "GRPC response: <nil>")
+			assert.Contains(t, buf.String(), "GRPC response: null")
 
 			// CLEANUP
 			buf.Reset()
