@@ -174,28 +174,26 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 	}
 
-	var mountOptions, sensitiveMountOptions, loggingMountOptions []string
+	var mountOptions, sensitiveMountOptions []string
 	if runtime.GOOS == "windows" {
 		if !strings.Contains(username, "\\") {
 			username = fmt.Sprintf("%s\\%s", defaultNetworkName, username)
 		}
-		mountOptions = []string{username, password}
-		loggingMountOptions = []string{username}
+		mountOptions = []string{username}
+		sensitiveMountOptions = []string{password}
 	} else {
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
 		sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
 		mountOptions = mountFlags
-		loggingMountOptions = mountOptions
 	}
 	if domain != "" {
 		mountOptions = append(mountOptions, fmt.Sprintf("%s=%s", domainField, domain))
-		loggingMountOptions = mountOptions
 	}
 
 	klog.V(2).Infof("targetPath(%v) volumeID(%v) context(%v) mountflags(%v) mountOptions(%v)",
-		targetPath, volumeID, context, mountFlags, loggingMountOptions)
+		targetPath, volumeID, context, mountFlags, mountOptions)
 
 	isDirMounted, err := d.ensureMountPoint(targetPath)
 	if err != nil {
