@@ -51,8 +51,12 @@ func normalizeWindowsPath(path string) string {
 	return normalizedPath
 }
 
-func (mounter *CSIProxyMounter) SMBMount(source, target, fsType string, options []string) error {
+func (mounter *CSIProxyMounter) SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {
 	klog.V(4).Infof("SMBMount: remote path: %s. local path: %s", source, target)
+
+	if len(mountOptions) == 0 || len(sensitiveMountOptions) == 0 {
+		return fmt.Errorf("empty mountOptions(len: %d) or sensitiveMountOptions(len: %d) is not allowed", len(mountOptions), len(sensitiveMountOptions))
+	}
 
 	parentDir := filepath.Dir(target)
 	parentExists, err := mounter.ExistsPath(parentDir)
@@ -71,8 +75,8 @@ func (mounter *CSIProxyMounter) SMBMount(source, target, fsType string, options 
 	smbMountRequest := &smbv1alpha1.NewSmbGlobalMappingRequest{
 		LocalPath:  normalizeWindowsPath(target),
 		RemotePath: source,
-		Username:   options[0],
-		Password:   options[1],
+		Username:   mountOptions[0],
+		Password:   sensitiveMountOptions[0],
 	}
 	_, err = mounter.SMBClient.NewSmbGlobalMapping(context.Background(), smbMountRequest)
 	if err != nil {

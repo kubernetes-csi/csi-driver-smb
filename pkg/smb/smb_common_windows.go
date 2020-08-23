@@ -27,12 +27,12 @@ import (
 	"k8s.io/utils/mount"
 )
 
-func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options, sensitiveMountOptions []string) error {
+func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {
 	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
 	if !ok {
 		return fmt.Errorf("could not cast to csi proxy class")
 	}
-	return proxy.SMBMount(source, target, fsType, options)
+	return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions)
 }
 
 func Unmount(m *mount.SafeFormatAndMount, target string) error {
