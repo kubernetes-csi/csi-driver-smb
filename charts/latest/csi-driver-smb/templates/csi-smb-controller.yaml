@@ -24,6 +24,7 @@ spec:
           operator: "Equal"
           value: "true"
           effect: "NoSchedule"
+      {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: csi-provisioner
           image: "{{ .Values.image.csiProvisioner.repository }}:{{ .Values.image.csiProvisioner.tag }}"

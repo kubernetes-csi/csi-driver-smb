@@ -19,6 +19,7 @@ spec:
       priorityClassName: system-node-critical
       tolerations:
         - operator: "Exists"
+      {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: liveness-probe
           volumeMounts:
