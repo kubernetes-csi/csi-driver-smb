@@ -17,6 +17,7 @@ spec:
       nodeSelector:
         kubernetes.io/os: windows
       priorityClassName: system-node-critical
+      {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: liveness-probe
           volumeMounts:
