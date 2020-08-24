@@ -14,6 +14,7 @@ https://git.k8s.io/community/contributors/devel/release.md#issue-kind-label
 <!--
 Add one of the following kinds:
 /kind bug
+/kind test
 /kind cleanup
 /kind documentation
 /kind feature
