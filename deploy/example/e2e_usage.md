@@ -1,4 +1,6 @@
-## CSI driver E2E usage example
+## CSI driver example
+> refer to [driver parameters](../../docs/driver-parameters.md) for more detailed usage
+
 ### Prerequisite
  - [Set up a Samba Server on a Kubernetes cluster](./smb-provisioner/)
  > this example will create a new Samba Server(`//smb-server.default.svc.cluster.local/share`) with credential stored in secret `smbcreds`
@@ -30,7 +32,8 @@ mountOptions:
   - uid=1001
   - gid=1001
 ```
- - Run below command to create a storage class
+
+ - Create storage class
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
 ```
@@ -55,14 +58,14 @@ mountOptions:
   - file_mode=0777
 ```
 
-#### 2. Create a statefulset pod
+#### 2. Create a statefulset with SMB volume mount
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/statefulset.yaml
 ```
- - enter the pod container to verify
+ - Execute `df -h` command in the container
 ```console
-# k exec -it statefulset-smb2-0 bash
-root@statefulset-smb2-0:/# df -h
+# k exec -it statefulset-smb2-0 sh
+# df -h
 Filesystem                                    Size  Used Avail Use% Mounted on
 ...
 //smb-server.default.svc.cluster.local/share  124G   23G  102G  19% /mnt/smb
@@ -108,19 +111,20 @@ kubectl create -f pv-smb.yaml
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-static.yaml
 ```
- - make sure pvc is created and in `Bound` status finally
+
+ - make sure pvc is created and in `Bound` status after a while
 ```console
 watch kubectl describe pvc pvc-smb
 ```
 
-#### 2.1 Create an deployment on Linux
+#### 2.1 Create a deployment on Linux
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/deployment.yaml
 ```
- - enter the pod container to verify
+
+ - Execute `df -h` command in the container
 ```console
-$ watch kubectl describe po nginx-smb
-$ kubectl exec -it nginx-smb -- bash
+$ kubectl exec -it nginx-smb -- sh
 # df -h
 Filesystem            Size  Used Avail Use% Mounted on
 ...
