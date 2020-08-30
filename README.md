@@ -32,6 +32,9 @@ Please refer to [install SMB CSI driver](./docs/install-smb-csi-driver.md)
 ## Kubernetes Development
 Please refer to [development guide](./docs/csi-dev.md)
 
+### View CI Results
+Check testgrid [sig-storage-csi-smb](https://testgrid.k8s.io/sig-storage-csi-other) dashboard.
+
 ### Links
  - [SMB FlexVolume driver](https://github.com/Azure/kubernetes-volume-drivers/tree/master/flexvolume/smb)
  - [Kubernetes CSI Documentation](https://kubernetes-csi.github.io/docs/)
