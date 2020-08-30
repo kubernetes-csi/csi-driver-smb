@@ -70,6 +70,7 @@ spec:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
+            - "--metrics-address=0.0.0.0:29645"
           ports:
             - containerPort: 29643
               name: healthz

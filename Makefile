@@ -158,3 +158,7 @@ ifdef TEST_WINDOWS
 else
 	kubectl create -f deploy/example/smb-provisioner/smb-server.yaml
 endif
+
+.PHONY: create-metrics-svc
+create-metrics-svc:
+	kubectl create -f deploy/example/metrics/csi-smb-controller-svc.yaml

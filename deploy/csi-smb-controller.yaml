@@ -67,6 +67,7 @@ spec:
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"
+            - "--metrics-address=0.0.0.0:29644"
           ports:
             - containerPort: 29642
               name: healthz

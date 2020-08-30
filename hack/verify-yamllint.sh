@@ -20,7 +20,7 @@ fi
 
 LOG=/tmp/yamllint.log
 
-for path in "deploy/*.yaml" "deploy/example/*.yaml" "deploy/example/windows/*.yaml" "deploy/example/smb-provisioner/*.yaml"
+for path in "deploy/*.yaml" "deploy/example/*.yaml" "deploy/example/windows/*.yaml" "deploy/example/smb-provisioner/*.yaml" "deploy/example/metrics/*.yaml"
 do
     echo "checking yamllint under path: $path ..."
     yamllint -f parsable $path | grep -v "line too long" > $LOG
