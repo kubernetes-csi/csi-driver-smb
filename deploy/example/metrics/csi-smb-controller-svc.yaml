@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: csi-smb-controller
+  namespace: kube-system
+spec:
+  selector:
+    app: csi-smb-controller
+  ports:
+    - port: 29644
+      targetPort: 29644
+  type: LoadBalancer

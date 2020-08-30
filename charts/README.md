@@ -59,7 +59,9 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `imagePullSecrets`                                | Specify docker-registry secret names as an array           | [] (does not add image pull secrets to deployed pods)             |
 | `serviceAccount.create`                           | whether create service account of csi-smb-controller       | true                                                              |
 | `rbac.create`                                     | whether create rbac of csi-smb-controller                  | true                                                              |
-| `controller.replicas`                             | the replicas of csi-smb-controller                         | 2                                                                 |
+| `controller.replicas`                             | the replicas of csi-smb-controller                                  | 2                                                   |
+| `controller.metricsPort`                          | metrics port of csi-smb-controller                   |29644                                               |
+| `node.metricsPort`                                | metrics port of csi-smb-node                         |29645
 | `linux.enabled`                                   | whether enable linux feature                               | true                                                              |
 | `windows.enabled`                                 | whether enable windows feature                             | false                                                             |
 | `windows.image.livenessProbe.repository`          | windows liveness-probe docker image                        | mcr.microsoft.com/oss/kubernetes-csi/livenessprobe                |

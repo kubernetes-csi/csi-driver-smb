@@ -75,11 +75,12 @@ spec:
             - --v=5
             - --endpoint=$(CSI_ENDPOINT)
             - --nodeid=$(KUBE_NODE_NAME)
+            - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
           ports:
             - containerPort: 29643
               name: healthz
               protocol: TCP
-            - containerPort: 29645
+            - containerPort: {{ .Values.node.metricsPort }}
               name: metrics
               protocol: TCP
           livenessProbe:

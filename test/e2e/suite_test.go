@@ -94,7 +94,14 @@ var _ = ginkgo.BeforeSuite(func() {
 			endLog:   "SMB CSI Driver installed",
 		}
 
-		execTestCmd([]testCmd{installSMBProvisioner, e2eBootstrap})
+		createMetricsSVC := testCmd{
+			command:  "make",
+			args:     []string{"create-metrics-svc"},
+			startLog: "create metrics service ...",
+			endLog:   "metrics service created",
+		}
+
+		execTestCmd([]testCmd{installSMBProvisioner, e2eBootstrap, createMetricsSVC})
 
 		nodeid := os.Getenv("nodeid")
 		kubeconfig := os.Getenv(kubeconfigEnvVar)
