@@ -18,7 +18,7 @@ ADD . .
 ARG LDFLAGS
 RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags "${LDFLAGS:--X sigs.k8s.io/csi-driver-smb/pkg/smb.driverVersion=latest}" -o _output/smbplugin ./pkg/smbplugin
 
-FROM us.gcr.io/k8s-artifacts-prod/build-image/debian-base-amd64:v2.1.0
+FROM k8s.gcr.io/build-image/debian-base-amd64:v2.1.3
 COPY --from=builder /go/src/sigs.k8s.io/csi-driver-smb/_output/smbplugin /smbplugin
 RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
 
