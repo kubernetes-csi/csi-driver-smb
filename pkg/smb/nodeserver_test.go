@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"runtime"
 	"syscall"
 	"testing"
 
@@ -37,7 +38,16 @@ const (
 	targetTest = "./target_test"
 )
 
+// checks if the underlying OS is Windows
+func isWindows() bool {
+	return runtime.GOOS == "windows"
+}
+
 func TestNodeStageVolume(t *testing.T) {
+	if isWindows() {
+		t.Skip("Skipping tests on Windows")
+	}
+
 	stdVolCap := csi.VolumeCapability{
 		AccessType: &csi.VolumeCapability_Mount{
 			Mount: &csi.VolumeCapability_MountVolume{},
@@ -180,6 +190,10 @@ func TestNodeExpandVolume(t *testing.T) {
 }
 
 func TestNodePublishVolume(t *testing.T) {
+	if isWindows() {
+		t.Skip("Skipping tests on Windows")
+	}
+
 	volumeCap := csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER}
 	errorMountSource := "./error_mount_source"
 	alreadyMountedTarget := "./false_is_likely_exist_target"
@@ -283,6 +297,10 @@ func TestNodePublishVolume(t *testing.T) {
 }
 
 func TestNodeUnpublishVolume(t *testing.T) {
+	if isWindows() {
+		t.Skip("Skipping tests on Windows")
+	}
+
 	errorTarget := "./error_is_likely_target"
 	targetFile := "./abc.go"
 
@@ -334,6 +352,10 @@ func TestNodeUnpublishVolume(t *testing.T) {
 }
 
 func TestNodeUnstageVolume(t *testing.T) {
+	if isWindows() {
+		t.Skip("Skipping tests on Windows")
+	}
+
 	errorTarget := "./error_is_likely_target"
 	targetFile := "./abc.go"
 
