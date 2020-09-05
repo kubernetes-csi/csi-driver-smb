@@ -43,10 +43,7 @@ func TestNewFakeDriver(t *testing.T) {
 }
 
 func TestIsCorruptedDir(t *testing.T) {
-	if isWindows() {
-		t.Skip("Skipping tests on windows")
-	}
-
+	skipTestIfWindows(t)
 	existingMountPath, err := ioutil.TempDir(os.TempDir(), "csi-mount-test")
 	if err != nil {
 		t.Fatalf("failed to create tmp dir: %v", err)
