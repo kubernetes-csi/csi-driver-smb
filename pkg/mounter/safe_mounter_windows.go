@@ -65,7 +65,7 @@ func (mounter *CSIProxyMounter) SMBMount(source, target, fsType string, mountOpt
 	}
 
 	if !parentExists {
-		klog.Infof("Parent directory %s does not exists. Creating the directory")
+		klog.Infof("Parent directory %s does not exists. Creating the directory", parentDir)
 		err := mounter.MakeDir(parentDir)
 		if err != nil {
 			return fmt.Errorf("create of parent dir: %s dailed with error: %v", parentDir, err)
