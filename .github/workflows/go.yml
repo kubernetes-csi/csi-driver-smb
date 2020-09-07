@@ -22,9 +22,31 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
-    - name: Test
-      run: go test -covermode=count -coverprofile=profile.cov ./pkg/...
-        
+    - name: Install packages
+      run: |
+        sudo apt update
+        sudo apt install cifs-utils procps conntrack -y
+        GO111MODULE=off go get github.com/rexray/gocsi/csc
+
+    - name: Build Test
+      run: |
+        export PATH=$PATH:$HOME/.local/bin
+        make verify
+        go test -covermode=count -coverprofile=profile.cov ./pkg/...
+        export DOCKER_CLI_EXPERIMENTAL=enabled && make container
+
+    - name: Integration Testing
+      run: |
+        export PATH=$PATH:$HOME/.local/bin
+        make
+        make integration-test
+
+    - name: Sanity test
+      run: |
+        export PATH=$PATH:$HOME/.local/bin
+        make
+        make sanity-test
+
     - name: Send coverage
       env:
         COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
