@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"runtime"
 	"syscall"
 	"testing"
 
@@ -37,17 +38,33 @@ const (
 	targetTest = "./target_test"
 )
 
-func TestNodeStageVolume(t *testing.T) {
-	skipIfTestingOnWindows(t)
+func isWindows() bool {
+	return runtime.GOOS == "windows"
+}
 
+func getTempDirPath(dir string, t *testing.T) string {
+	path, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("failed to get working directory: %s", err)
+	}
+	var sep string
+	if isWindows() {
+		sep = "\\"
+	} else {
+		sep = "/"
+	}
+	return fmt.Sprintf("%s%s%s", path, sep, dir)
+}
+
+func TestNodeStageVolume(t *testing.T) {
 	stdVolCap := csi.VolumeCapability{
 		AccessType: &csi.VolumeCapability_Mount{
 			Mount: &csi.VolumeCapability_MountVolume{},
 		},
 	}
 
-	errorMountSensSource := "./error_mount_sens_source"
-	smbFile := "./smb.go"
+	errorMountSensSource := getTempDirPath("error_mount_sens_source", t)
+	smbFile := getTempDirPath("smb.go", t)
 
 	volContext := map[string]string{
 		sourceField: "test_source",
@@ -90,7 +107,7 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			expectedErr: status.Error(codes.Internal, "MkdirAll ./smb.go failed with error: mkdir ./smb.go: not a directory"),
+			expectedErr: status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: mkdir %s: not a directory", smbFile, smbFile)),
 		},
 		{
 			desc: "[Error] Failed SMB mount mocked by MountSensitive",
@@ -98,7 +115,7 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			expectedErr: status.Errorf(codes.Internal, "volume(vol_1##) mount \"test_source\" on \"./error_mount_sens_source\" failed with fake MountSensitive: target error"),
+			expectedErr: status.Errorf(codes.Internal, fmt.Sprintf("volume(vol_1##) mount \"test_source\" on \"%s\" failed with fake MountSensitive: target error", errorMountSensSource)),
 		},
 		{
 			desc: "[Success] Valid request",
