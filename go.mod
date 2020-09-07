@@ -8,9 +8,9 @@ require (
 	github.com/Azure/go-autorest/autorest/adal v0.9.0
 	github.com/Azure/go-autorest/autorest/to v0.3.0
 	github.com/container-storage-interface/spec v1.3.0
-	github.com/golang/protobuf v1.3.5
+	github.com/golang/protobuf v1.4.1
 	github.com/kubernetes-csi/csi-lib-utils v0.7.0
-	github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200330215040-9eff16441b2a
+	github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200907051941-1c32ab57cb4f
 	github.com/kubernetes-csi/external-snapshotter/v2 v2.0.0-20200617021606-4800ca72d403
 	github.com/onsi/ginkgo v1.11.0
 	github.com/onsi/gomega v1.7.1
@@ -236,7 +236,7 @@ replace (
 	github.com/kr/pretty => github.com/kr/pretty v0.1.0
 	github.com/kr/pty => github.com/kr/pty v1.1.5
 	github.com/kr/text => github.com/kr/text v0.1.0
-	github.com/kubernetes-csi/csi-proxy/client => github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200330215040-9eff16441b2a
+	github.com/kubernetes-csi/csi-proxy/client => github.com/kubernetes-csi/csi-proxy/client v0.0.0-20200907051941-1c32ab57cb4f
 	github.com/kylelemons/godebug => github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348
 	github.com/libopenstorage/openstorage => github.com/libopenstorage/openstorage v1.0.0
 	github.com/liggitt/tabwriter => github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
