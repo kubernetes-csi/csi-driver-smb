@@ -26,8 +26,3 @@ jobs:
         make smb-darwin
     - name: Run unit tests on MacOS
       run: go test -v -race ./pkg/...
-    - name: Sanity test
-      run: |
-        export PATH=$PATH:$HOME/.local/bin
-        make smb-darwin
-        make sanity-test
