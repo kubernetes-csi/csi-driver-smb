@@ -97,6 +97,10 @@ smb:
 smb-windows:
 	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -o _output/smbplugin.exe ./pkg/smbplugin
 
+.PHONY: smb-darwin
+smb-windows:
+	CGO_ENABLED=0 GOOS=darwin go build -a -ldflags ${LDFLAGS} -o _output/smbplugin ./pkg/smbplugin
+
 .PHONY: container
 container: smb
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/dev.Dockerfile .

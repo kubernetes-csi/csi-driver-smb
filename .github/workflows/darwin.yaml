@@ -1,5 +1,4 @@
-name: Go
-
+name: MacOS Unit Tests
 on:
   push:
     branches: [ master ]
@@ -24,13 +23,11 @@ jobs:
 
     - name: Build Test
       run: |
-        export PATH=$PATH:$HOME/.local/bin
-        make verify
-        go test -covermode=count -coverprofile=profile.cov ./pkg/...
-        export DOCKER_CLI_EXPERIMENTAL=enabled && make container
-
+        make smb-darwin
+    - name: Run unit tests on MacOS
+      run: go test -v -race ./pkg/...
     - name: Sanity test
       run: |
         export PATH=$PATH:$HOME/.local/bin
-        make
+        make smb-darwin
         make sanity-test
