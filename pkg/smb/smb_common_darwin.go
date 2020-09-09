@@ -24,12 +24,12 @@ import (
 	"k8s.io/utils/mount"
 )
 
-func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string) error {
-	return nil
+func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string, sensitiveMountOptions []string) error {
+	return m.MountSensitive(source, target, fsType, options, sensitiveMountOptions)
 }
 
 func Unmount(m *mount.SafeFormatAndMount, target string) error {
-	return nil
+	return m.Unmount(target)
 }
 
 func RemoveStageTarget(m *mount.SafeFormatAndMount, target string) error {
@@ -37,11 +37,11 @@ func RemoveStageTarget(m *mount.SafeFormatAndMount, target string) error {
 }
 
 func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
-	return nil
+	return mount.CleanupMountPoint(target, m, extensiveMountCheck)
 }
 
 func CleanupMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
-	return nil
+	return mount.CleanupMountPoint(target, m, extensiveMountCheck)
 }
 
 func preparePublishPath(path string, m *mount.SafeFormatAndMount) error {
@@ -53,5 +53,5 @@ func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
 }
 
 func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
-	return nil
+	return os.Mkdir(name, perm)
 }

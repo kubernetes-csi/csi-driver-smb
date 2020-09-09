@@ -1,5 +1,4 @@
-name: Go
-
+name: Windows Unit Tests
 on:
   push:
     branches: [ master ]
@@ -19,8 +18,8 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build
+        uses: actions/checkout@v2 
+      - name: Build Test
         run: |
           make smb-windows
       - name: Run Windows Unit Tests

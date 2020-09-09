@@ -1,5 +1,4 @@
-name: Go
-
+name: Linux Unit tests
 on:
   push:
     branches: [ master ]
