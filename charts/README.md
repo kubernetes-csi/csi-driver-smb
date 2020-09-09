@@ -27,7 +27,7 @@ $ helm search repo -l csi-driver-smb/
 ```
 
 ### Install a specific version of Helm chart
-Specify the version of the chart to be installed using the `--version` parameter. 
+Specify the version of the chart to be installed using the `--version` parameter.
 ```console
 helm install --name csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v0.3.0
 ```
@@ -70,6 +70,8 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `windows.image.nodeDriverRegistrar.repository`    | windows csi-node-driver-registrar docker image             | mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar    |
 | `windows.image.nodeDriverRegistrar.tag`           | windows csi-node-driver-registrar docker image tag         | v1.2.1-alpha.1-windows-1809-amd64                                 |
 | `windows.image.nodeDriverRegistrar.pullPolicy`    | windows csi-node-driver-registrar image pull policy        | IfNotPresent                                                      |
+| `kubelet.linuxPath`                               | configure the kubelet path for Linux node                  | `/var/lib/kubelet`                                                |
+| `kubelet.windowsPath`                             | configure the kubelet path for Windows node                | `'C:\var\lib\kubelet'`                                            |
 
 ## Troubleshooting
 

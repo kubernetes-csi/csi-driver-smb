@@ -128,14 +128,14 @@ spec:
             type: ""
         - name: registration-dir
           hostPath:
-            path: C:\var\lib\kubelet\plugins_registry\
+            path: {{ .Values.kubelet.windowsPath }}\plugins_registry\
             type: Directory
         - name: kubelet-dir
           hostPath:
-            path: C:\var\lib\kubelet\
+            path: {{ .Values.kubelet.windowsPath }}\
             type: Directory
         - name: plugin-dir
           hostPath:
-            path: C:\var\lib\kubelet\plugins\smb.csi.k8s.io\
+            path: {{ .Values.kubelet.windowsPath }}\plugins\smb.csi.k8s.io\
             type: DirectoryOrCreate
 {{- end -}}
