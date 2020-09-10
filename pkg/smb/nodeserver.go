@@ -197,7 +197,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 
 	isDirMounted, err := d.ensureMountPoint(targetPath)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", targetPath, err)
+		return nil, status.Errorf(codes.Internal, "Could not mount target %s: %v", targetPath, err)
 	}
 
 	if !isDirMounted {
