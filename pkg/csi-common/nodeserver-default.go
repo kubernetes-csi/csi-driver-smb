@@ -17,8 +17,8 @@ limitations under the License.
 package csicommon
 
 import (
+	"context"
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"golang.org/x/net/context"
 	"k8s.io/klog/v2"
 )
 
