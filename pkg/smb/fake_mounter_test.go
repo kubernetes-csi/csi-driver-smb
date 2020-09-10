@@ -25,6 +25,9 @@ import (
 )
 
 func TestMount(t *testing.T) {
+	targetTest := "./target_test"
+	sourceTest := "./source_test"
+
 	tests := []struct {
 		desc        string
 		source      string
@@ -65,6 +68,9 @@ func TestMount(t *testing.T) {
 }
 
 func TestMountSensitive(t *testing.T) {
+	targetTest := "./target_test"
+	sourceTest := "./source_test"
+
 	tests := []struct {
 		desc        string
 		source      string
@@ -105,6 +111,7 @@ func TestMountSensitive(t *testing.T) {
 }
 
 func TestIsLikelyNotMountPoint(t *testing.T) {
+	targetTest := "./target_test"
 	tests := []struct {
 		desc        string
 		file        string

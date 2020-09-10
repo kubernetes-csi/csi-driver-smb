@@ -25,6 +25,8 @@ import (
 	"syscall"
 	"testing"
 
+	"github.com/kubernetes-csi/csi-driver-smb/test/utils/testutil"
+
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -32,22 +34,16 @@ import (
 	"k8s.io/utils/mount"
 )
 
-const (
-	sourceTest = "./source_test"
-	targetTest = "./target_test"
-)
-
 func TestNodeStageVolume(t *testing.T) {
-	skipIfTestingOnWindows(t)
-
 	stdVolCap := csi.VolumeCapability{
 		AccessType: &csi.VolumeCapability_Mount{
 			Mount: &csi.VolumeCapability_MountVolume{},
 		},
 	}
 
-	errorMountSensSource := "./error_mount_sens_source"
-	smbFile := "./smb.go"
+	errorMountSensSource := testutil.GetWorkDirPath("error_mount_sens_source", t)
+	smbFile := testutil.GetWorkDirPath("smb.go", t)
+	sourceTest := testutil.GetWorkDirPath("source_test", t)
 
 	volContext := map[string]string{
 		sourceField: "test_source",
@@ -61,28 +57,36 @@ func TestNodeStageVolume(t *testing.T) {
 	tests := []struct {
 		desc        string
 		req         csi.NodeStageVolumeRequest
-		expectedErr error
+		expectedErr testutil.TestError
 	}{
 		{
-			desc:        "[Error] Volume ID missing",
-			req:         csi.NodeStageVolumeRequest{},
-			expectedErr: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
+			desc: "[Error] Volume ID missing",
+			req:  csi.NodeStageVolumeRequest{},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
+			},
 		},
 		{
-			desc:        "[Error] Volume capabilities missing",
-			req:         csi.NodeStageVolumeRequest{VolumeId: "vol_1"},
-			expectedErr: status.Error(codes.InvalidArgument, "Volume capability not provided"),
+			desc: "[Error] Volume capabilities missing",
+			req:  csi.NodeStageVolumeRequest{VolumeId: "vol_1"},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Volume capability not provided"),
+			},
 		},
 		{
-			desc:        "[Error] Stage target path missing",
-			req:         csi.NodeStageVolumeRequest{VolumeId: "vol_1", VolumeCapability: &stdVolCap},
-			expectedErr: status.Error(codes.InvalidArgument, "Staging target not provided"),
+			desc: "[Error] Stage target path missing",
+			req:  csi.NodeStageVolumeRequest{VolumeId: "vol_1", VolumeCapability: &stdVolCap},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Staging target not provided"),
+			},
 		},
 		{
 			desc: "[Error] Source field is missing in context",
 			req: csi.NodeStageVolumeRequest{VolumeId: "vol_1", StagingTargetPath: sourceTest,
 				VolumeCapability: &stdVolCap},
-			expectedErr: status.Error(codes.InvalidArgument, "source field is missing, current context: map[]"),
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "source field is missing, current context: map[]"),
+			},
 		},
 		{
 			desc: "[Error] Not a Directory",
@@ -90,7 +94,10 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			expectedErr: status.Error(codes.Internal, "MkdirAll ./smb.go failed with error: mkdir ./smb.go: not a directory"),
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: mkdir %s: not a directory", smbFile, smbFile)),
+				WindowsError: status.Error(codes.Internal, fmt.Sprintf("Could not mount target %s: mkdir %s: The system cannot find the path specified.", smbFile, smbFile)),
+			},
 		},
 		{
 			desc: "[Error] Failed SMB mount mocked by MountSensitive",
@@ -98,7 +105,13 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			expectedErr: status.Errorf(codes.Internal, "volume(vol_1##) mount \"test_source\" on \"./error_mount_sens_source\" failed with fake MountSensitive: target error"),
+			expectedErr: testutil.TestError{
+				DefaultError: status.Errorf(codes.Internal,
+					fmt.Sprintf("volume(vol_1##) mount \"test_source\" on \"%s\" failed with fake MountSensitive: target error",
+						errorMountSensSource)),
+				// todo: Not a desired error. This will need a better fix
+				WindowsError: fmt.Errorf("prepare stage path failed for %s with error: could not cast to csi proxy class", errorMountSensSource),
+			},
 		},
 		{
 			desc: "[Success] Valid request",
@@ -106,7 +119,10 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			expectedErr: nil,
+			expectedErr: testutil.TestError{
+				// todo: Not a desired error. This will need a better fix
+				WindowsError: fmt.Errorf("prepare stage path failed for %s with error: could not cast to csi proxy class", sourceTest),
+			},
 		},
 	}
 
@@ -120,8 +136,8 @@ func TestNodeStageVolume(t *testing.T) {
 		}
 
 		_, err := d.NodeStageVolume(context.Background(), &test.req)
-		if !reflect.DeepEqual(err, test.expectedErr) {
-			t.Errorf("test case: %s, Unexpected error: %v", test.desc, err)
+		if !testutil.AssertError(&test.expectedErr, err) {
+			t.Errorf("test case: %s, \nUnexpected error: %v\n Expected: %v", test.desc, err, test.expectedErr.GetExpectedError())
 		}
 	}
 
@@ -187,6 +203,8 @@ func TestNodePublishVolume(t *testing.T) {
 	errorMountSource := "./error_mount_source"
 	alreadyMountedTarget := "./false_is_likely_exist_target"
 	smbFile := "./smb.go"
+	sourceTest := "./source_test"
+	targetTest := "./target_test"
 
 	tests := []struct {
 		desc        string
@@ -289,6 +307,7 @@ func TestNodeUnpublishVolume(t *testing.T) {
 	skipIfTestingOnWindows(t)
 	errorTarget := "./error_is_likely_target"
 	targetFile := "./abc.go"
+	targetTest := "./target_test"
 
 	tests := []struct {
 		desc        string
@@ -341,6 +360,7 @@ func TestNodeUnstageVolume(t *testing.T) {
 	skipIfTestingOnWindows(t)
 	errorTarget := "./error_is_likely_target"
 	targetFile := "./abc.go"
+	targetTest := "./target_test"
 
 	tests := []struct {
 		desc        string
@@ -394,6 +414,7 @@ func TestEnsureMountPoint(t *testing.T) {
 	alreadyExistTarget := "./false_is_likely_exist_target"
 	falseTarget := "./false_is_likely_target"
 	smbFile := "./smb.go"
+	targetTest := "./target_test"
 
 	tests := []struct {
 		desc        string
@@ -450,6 +471,8 @@ func TestEnsureMountPoint(t *testing.T) {
 }
 
 func TestMakeDir(t *testing.T) {
+	targetTest := "./target_test"
+
 	//Successfully create directory
 	err := makeDir(targetTest)
 	assert.NoError(t, err)
