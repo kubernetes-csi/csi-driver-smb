@@ -26,6 +26,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 	"github.com/kubernetes-csi/csi-driver-smb/test/utils/testutil"
@@ -138,6 +139,16 @@ var _ = ginkgo.BeforeSuite(func() {
 
 var _ = ginkgo.AfterSuite(func() {
 	if testutil.IsRunningInProw() {
+		createExampleDeployment := testCmd{
+			command:  "make",
+			args:     []string{"create-example-deployment"},
+			startLog: "create example deployments",
+			endLog:   "example deployments created",
+		}
+		execTestCmd([]testCmd{createExampleDeployment})
+		// sleep 120s waiting for deployment running complete
+		time.Sleep(120 * time.Second)
+
 		smbLog := testCmd{
 			command:  "bash",
 			args:     []string{"test/utils/smb_log.sh"},

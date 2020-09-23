@@ -20,7 +20,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
         - name: deployment-smb
-          image: nginx
+          image: mcr.microsoft.com/oss/nginx/nginx:1.17.3-alpine
           command:
             - "/bin/sh"
             - "-c"

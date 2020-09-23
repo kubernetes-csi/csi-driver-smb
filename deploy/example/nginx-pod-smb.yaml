@@ -5,7 +5,7 @@ metadata:
   name: nginx-smb
 spec:
   containers:
-    - image: nginx
+    - image: mcr.microsoft.com/oss/nginx/nginx:1.17.3-alpine
       name: nginx-smb
       command:
         - "/bin/sh"
