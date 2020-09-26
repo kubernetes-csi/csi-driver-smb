@@ -32,10 +32,10 @@ type TestError struct {
 
 // GetExpectedError returns the expected error depending on OS
 func (t TestError) GetExpectedError() error {
-	if isWindows() {
-		return t.WindowsError
+	if t.WindowsError == nil || !isWindows() {
+		return t.DefaultError
 	}
-	return t.DefaultError
+	return t.WindowsError
 }
 
 // AssertError matches the actual and expected errors

@@ -22,6 +22,8 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"runtime"
+	"strings"
 	"syscall"
 	"testing"
 
@@ -33,6 +35,17 @@ import (
 	"google.golang.org/grpc/status"
 	"k8s.io/utils/mount"
 )
+
+func matchFlakyWindowsError(mainError error, substr string) bool {
+	var errorMessage string
+	if mainError == nil {
+		errorMessage = ""
+	} else {
+		errorMessage = mainError.Error()
+	}
+
+	return strings.Contains(errorMessage, substr)
+}
 
 func TestNodeStageVolume(t *testing.T) {
 	stdVolCap := csi.VolumeCapability{
@@ -58,6 +71,14 @@ func TestNodeStageVolume(t *testing.T) {
 		desc        string
 		req         csi.NodeStageVolumeRequest
 		expectedErr testutil.TestError
+
+		// use this field only when Windows
+		// gives flaky error messages due
+		// to CSI proxy
+		// This field holds the base error message
+		// that is common amongst all other flaky
+		// error messages
+		flakyWindowsErrorMessage string
 	}{
 		{
 			desc: "[Error] Volume ID missing",
@@ -105,12 +126,14 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
+			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"test_source\" on %#v failed "+
+				"with smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
+				errorMountSensSource),
 			expectedErr: testutil.TestError{
 				DefaultError: status.Errorf(codes.Internal,
-					fmt.Sprintf("volume(vol_1##) mount \"test_source\" on \"%s\" failed with fake MountSensitive: target error",
+					fmt.Sprintf("volume(vol_1##) mount \"test_source\" on \"%s\" failed with fake "+
+						"MountSensitive: target error",
 						errorMountSensSource)),
-				// todo: Not a desired error. This will need a better fix
-				WindowsError: fmt.Errorf("prepare stage path failed for %s with error: could not cast to csi proxy class", errorMountSensSource),
 			},
 		},
 		{
@@ -119,10 +142,10 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			expectedErr: testutil.TestError{
-				// todo: Not a desired error. This will need a better fix
-				WindowsError: fmt.Errorf("prepare stage path failed for %s with error: could not cast to csi proxy class", sourceTest),
-			},
+			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"test_source\" on %#v failed with "+
+				"smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
+				sourceTest),
+			expectedErr: testutil.TestError{},
 		},
 	}
 
@@ -130,14 +153,23 @@ func TestNodeStageVolume(t *testing.T) {
 	d := NewFakeDriver()
 
 	for _, test := range tests {
-		fakeMounter := &fakeMounter{}
-		d.mounter = &mount.SafeFormatAndMount{
-			Interface: fakeMounter,
+		mounter, err := NewFakeMounter()
+		if err != nil {
+			t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
 		}
+		d.mounter = mounter
 
-		_, err := d.NodeStageVolume(context.Background(), &test.req)
-		if !testutil.AssertError(&test.expectedErr, err) {
-			t.Errorf("test case: %s, \nUnexpected error: %v\n Expected: %v", test.desc, err, test.expectedErr.GetExpectedError())
+		_, err = d.NodeStageVolume(context.Background(), &test.req)
+
+		// separate assertion for flaky error messages
+		if test.flakyWindowsErrorMessage != "" && runtime.GOOS == "windows" {
+			if !matchFlakyWindowsError(err, test.flakyWindowsErrorMessage) {
+				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.flakyWindowsErrorMessage)
+			}
+		} else {
+			if !testutil.AssertError(&test.expectedErr, err) {
+				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.expectedErr.GetExpectedError())
+			}
 		}
 	}
 
@@ -146,6 +178,7 @@ func TestNodeStageVolume(t *testing.T) {
 	assert.NoError(t, err)
 	err = os.RemoveAll(errorMountSensSource)
 	assert.NoError(t, err)
+
 }
 
 func TestNodeGetInfo(t *testing.T) {
@@ -198,41 +231,49 @@ func TestNodeExpandVolume(t *testing.T) {
 }
 
 func TestNodePublishVolume(t *testing.T) {
-	skipIfTestingOnWindows(t)
 	volumeCap := csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER}
-	errorMountSource := "./error_mount_source"
-	alreadyMountedTarget := "./false_is_likely_exist_target"
-	smbFile := "./smb.go"
-	sourceTest := "./source_test"
-	targetTest := "./target_test"
+	errorMountSource := testutil.GetWorkDirPath("error_mount_source", t)
+	alreadyMountedTarget := testutil.GetWorkDirPath("false_is_likely_exist_target", t)
+	smbFile := testutil.GetWorkDirPath("smb.go", t)
+	sourceTest := testutil.GetWorkDirPath("source_test", t)
+	targetTest := testutil.GetWorkDirPath("target_test", t)
 
 	tests := []struct {
-		desc        string
-		req         csi.NodePublishVolumeRequest
-		expectedErr error
+		desc          string
+		req           csi.NodePublishVolumeRequest
+		skipOnWindows bool
+		expectedErr   testutil.TestError
 	}{
 		{
-			desc:        "[Error] Volume capabilities missing",
-			req:         csi.NodePublishVolumeRequest{},
-			expectedErr: status.Error(codes.InvalidArgument, "Volume capability missing in request"),
+			desc: "[Error] Volume capabilities missing",
+			req:  csi.NodePublishVolumeRequest{},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Volume capability missing in request"),
+			},
 		},
 		{
-			desc:        "[Error] Volume ID missing",
-			req:         csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap}},
-			expectedErr: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
+			desc: "[Error] Volume ID missing",
+			req:  csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap}},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
+			},
 		},
 		{
 			desc: "[Error] Target path missing",
 			req: csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId: "vol_1"},
-			expectedErr: status.Error(codes.InvalidArgument, "Target path not provided"),
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Target path not provided"),
+			},
 		},
 		{
 			desc: "[Error] Stage target path missing",
 			req: csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:   "vol_1",
 				TargetPath: targetTest},
-			expectedErr: status.Error(codes.InvalidArgument, "Staging target not provided"),
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Staging target not provided"),
+			},
 		},
 		{
 			desc: "[Error] Not a directory",
@@ -241,7 +282,11 @@ func TestNodePublishVolume(t *testing.T) {
 				TargetPath:        smbFile,
 				StagingTargetPath: sourceTest,
 				Readonly:          true},
-			expectedErr: status.Errorf(codes.Internal, "Could not mount target \"./smb.go\": mkdir ./smb.go: not a directory"),
+
+			expectedErr: testutil.TestError{
+				DefaultError: status.Errorf(codes.Internal, "Could not mount target \"%s\": mkdir %s: not a directory", smbFile, smbFile),
+				WindowsError: status.Errorf(codes.Internal, "Could not mount target %#v: mkdir %s: The system cannot find the path specified.", smbFile, smbFile),
+			},
 		},
 		{
 			desc: "[Error] Mount error mocked by Mount",
@@ -250,7 +295,12 @@ func TestNodePublishVolume(t *testing.T) {
 				TargetPath:        targetTest,
 				StagingTargetPath: errorMountSource,
 				Readonly:          true},
-			expectedErr: status.Errorf(codes.Internal, "Could not mount \"./error_mount_source\" at \"./target_test\": fake Mount: source error"),
+			// todo: This test does not return any error on windows
+			// Once the issue is figured out, we'll remove this field
+			skipOnWindows: true,
+			expectedErr: testutil.TestError{
+				DefaultError: status.Errorf(codes.Internal, fmt.Sprintf("Could not mount \"%s\" at \"%s\": fake Mount: source error", errorMountSource, targetTest)),
+			},
 		},
 		{
 			desc: "[Success] Valid request read only",
@@ -259,7 +309,7 @@ func TestNodePublishVolume(t *testing.T) {
 				TargetPath:        targetTest,
 				StagingTargetPath: sourceTest,
 				Readonly:          true},
-			expectedErr: nil,
+			expectedErr: testutil.TestError{},
 		},
 		{
 			desc: "[Success] Valid request already mounted",
@@ -268,7 +318,7 @@ func TestNodePublishVolume(t *testing.T) {
 				TargetPath:        alreadyMountedTarget,
 				StagingTargetPath: sourceTest,
 				Readonly:          true},
-			expectedErr: nil,
+			expectedErr: testutil.TestError{},
 		},
 		{
 			desc: "[Success] Valid request",
@@ -277,135 +327,161 @@ func TestNodePublishVolume(t *testing.T) {
 				TargetPath:        targetTest,
 				StagingTargetPath: sourceTest,
 				Readonly:          true},
-			expectedErr: nil,
+			expectedErr: testutil.TestError{},
 		},
 	}
 
 	// Setup
 	_ = makeDir(alreadyMountedTarget)
 	d := NewFakeDriver()
-	fakeMounter := &fakeMounter{}
-	d.mounter = &mount.SafeFormatAndMount{
-		Interface: fakeMounter,
+	mounter, err := NewFakeMounter()
+	if err != nil {
+		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
 	}
+	d.mounter = mounter
 
 	for _, test := range tests {
-		_, err := d.NodePublishVolume(context.Background(), &test.req)
-		if !reflect.DeepEqual(err, test.expectedErr) {
-			t.Errorf("test case: %s, Unexpected error: %v", test.desc, err)
+		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+			_, err := d.NodePublishVolume(context.Background(), &test.req)
+			if !testutil.AssertError(&test.expectedErr, err) {
+				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.expectedErr.GetExpectedError())
+			}
 		}
 	}
 
 	// Clean up
-	err := os.RemoveAll(targetTest)
+	err = os.RemoveAll(targetTest)
 	assert.NoError(t, err)
 	err = os.RemoveAll(alreadyMountedTarget)
 	assert.NoError(t, err)
 }
 
 func TestNodeUnpublishVolume(t *testing.T) {
-	skipIfTestingOnWindows(t)
-	errorTarget := "./error_is_likely_target"
-	targetFile := "./abc.go"
-	targetTest := "./target_test"
+	errorTarget := testutil.GetWorkDirPath("error_is_likely_target", t)
+	targetFile := testutil.GetWorkDirPath("abc.go", t)
+	targetTest := testutil.GetWorkDirPath("target_test", t)
 
 	tests := []struct {
-		desc        string
-		req         csi.NodeUnpublishVolumeRequest
-		expectedErr error
+		desc          string
+		req           csi.NodeUnpublishVolumeRequest
+		expectedErr   testutil.TestError
+		skipOnWindows bool
 	}{
 		{
-			desc:        "[Error] Volume ID missing",
-			req:         csi.NodeUnpublishVolumeRequest{TargetPath: targetTest},
-			expectedErr: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
+			desc: "[Error] Volume ID missing",
+			req:  csi.NodeUnpublishVolumeRequest{TargetPath: targetTest},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
+			},
 		},
 		{
-			desc:        "[Error] Target missing",
-			req:         csi.NodeUnpublishVolumeRequest{VolumeId: "vol_1"},
-			expectedErr: status.Error(codes.InvalidArgument, "Target path missing in request"),
+			desc: "[Error] Target missing",
+			req:  csi.NodeUnpublishVolumeRequest{VolumeId: "vol_1"},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Target path missing in request"),
+			},
 		},
 		{
-			desc:        "[Error] Unmount error mocked by IsLikelyNotMountPoint",
-			req:         csi.NodeUnpublishVolumeRequest{TargetPath: errorTarget, VolumeId: "vol_1"},
-			expectedErr: status.Error(codes.Internal, "failed to unmount target \"./error_is_likely_target\": fake IsLikelyNotMountPoint: fake error"),
+			desc: "[Error] Unmount error mocked by IsLikelyNotMountPoint",
+			req:  csi.NodeUnpublishVolumeRequest{TargetPath: errorTarget, VolumeId: "vol_1"},
+			// todo: This test does not return any error on windows
+			// Once the issue is figured out, we'll remove this field
+			skipOnWindows: true,
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.Internal, fmt.Sprintf("failed to unmount target \"%s\": fake IsLikelyNotMountPoint: fake error", errorTarget)),
+			},
 		},
 		{
 			desc:        "[Success] Valid request",
 			req:         csi.NodeUnpublishVolumeRequest{TargetPath: targetFile, VolumeId: "vol_1"},
-			expectedErr: nil,
+			expectedErr: testutil.TestError{},
 		},
 	}
 
 	// Setup
 	_ = makeDir(errorTarget)
 	d := NewFakeDriver()
-	fakeMounter := &fakeMounter{}
-	d.mounter = &mount.SafeFormatAndMount{
-		Interface: fakeMounter,
+	mounter, err := NewFakeMounter()
+	if err != nil {
+		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
 	}
+	d.mounter = mounter
 
 	for _, test := range tests {
-		_, err := d.NodeUnpublishVolume(context.Background(), &test.req)
-		if !reflect.DeepEqual(err, test.expectedErr) {
-			t.Errorf("test case: %s, Unexpected error: %v", test.desc, err)
+		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+			_, err := d.NodeUnpublishVolume(context.Background(), &test.req)
+			if !testutil.AssertError(&test.expectedErr, err) {
+				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.expectedErr.GetExpectedError())
+			}
 		}
 	}
 
 	// Clean up
-	err := os.RemoveAll(errorTarget)
+	err = os.RemoveAll(errorTarget)
 	assert.NoError(t, err)
 }
 
 func TestNodeUnstageVolume(t *testing.T) {
-	skipIfTestingOnWindows(t)
-	errorTarget := "./error_is_likely_target"
-	targetFile := "./abc.go"
-	targetTest := "./target_test"
+	errorTarget := testutil.GetWorkDirPath("error_is_likely_target", t)
+	targetFile := testutil.GetWorkDirPath("abc.go", t)
+	targetTest := testutil.GetWorkDirPath("target_test", t)
 
 	tests := []struct {
-		desc        string
-		req         csi.NodeUnstageVolumeRequest
-		expectedErr error
+		desc          string
+		req           csi.NodeUnstageVolumeRequest
+		skipOnWindows bool
+		expectedErr   testutil.TestError
 	}{
 		{
-			desc:        "[Error] Volume ID missing",
-			req:         csi.NodeUnstageVolumeRequest{StagingTargetPath: targetTest},
-			expectedErr: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
+			desc: "[Error] Volume ID missing",
+			req:  csi.NodeUnstageVolumeRequest{StagingTargetPath: targetTest},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
+			},
 		},
 		{
-			desc:        "[Error] Target missing",
-			req:         csi.NodeUnstageVolumeRequest{VolumeId: "vol_1"},
-			expectedErr: status.Error(codes.InvalidArgument, "Staging target not provided"),
+			desc: "[Error] Target missing",
+			req:  csi.NodeUnstageVolumeRequest{VolumeId: "vol_1"},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "Staging target not provided"),
+			},
 		},
 		{
-			desc:        "[Error] CleanupMountPoint error mocked by IsLikelyNotMountPoint",
-			req:         csi.NodeUnstageVolumeRequest{StagingTargetPath: errorTarget, VolumeId: "vol_1"},
-			expectedErr: status.Error(codes.Internal, "failed to unmount staging target \"./error_is_likely_target\": fake IsLikelyNotMountPoint: fake error"),
+			desc:          "[Error] CleanupMountPoint error mocked by IsLikelyNotMountPoint",
+			req:           csi.NodeUnstageVolumeRequest{StagingTargetPath: errorTarget, VolumeId: "vol_1"},
+			skipOnWindows: true,
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.Internal, fmt.Sprintf("failed to unmount staging target %#v: fake IsLikelyNotMountPoint: fake error", errorTarget)),
+			},
 		},
 		{
 			desc:        "[Success] Valid request",
 			req:         csi.NodeUnstageVolumeRequest{StagingTargetPath: targetFile, VolumeId: "vol_1"},
-			expectedErr: nil,
+			expectedErr: testutil.TestError{},
 		},
 	}
 
 	// Setup
 	_ = makeDir(errorTarget)
 	d := NewFakeDriver()
-	fakeMounter := &fakeMounter{}
-	d.mounter = &mount.SafeFormatAndMount{
-		Interface: fakeMounter,
+	mounter, err := NewFakeMounter()
+	if err != nil {
+		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
 	}
+	d.mounter = mounter
 
 	for _, test := range tests {
-		_, err := d.NodeUnstageVolume(context.Background(), &test.req)
-		if !reflect.DeepEqual(err, test.expectedErr) {
-			t.Errorf("test case: %s, Unexpected error: %v", test.desc, err)
+		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+			_, err := d.NodeUnstageVolume(context.Background(), &test.req)
+			if !testutil.AssertError(&test.expectedErr, err) {
+				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.expectedErr.GetExpectedError())
+			}
 		}
+
 	}
 
 	// Clean up
-	err := os.RemoveAll(errorTarget)
+	err = os.RemoveAll(errorTarget)
 	assert.NoError(t, err)
 }
 
