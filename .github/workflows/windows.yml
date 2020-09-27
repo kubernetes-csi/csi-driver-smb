@@ -18,10 +18,25 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - name: Checkout code
-        uses: actions/checkout@v2 
+        uses: actions/checkout@v2
       - name: Build Test
         run: |
           make smb-windows
       - name: Run Windows Unit Tests
         run: |
+          # start the CSI Proxy before running tests on windows
+          Start-Job -Name CSIProx -ScriptBlock {
+            Invoke-WebRequest https://kubernetesartifacts.azureedge.net/csi-proxy/v0.2.1/binaries/csi-proxy.tar.gz -OutFile csi-proxy.tar.gz;
+            tar -xvf csi-proxy.tar.gz
+            .\bin\csi-proxy.exe --kubelet-csi-plugins-path $pwd --kubelet-pod-path $pwd
+          };
+
+          # Wait for the CSI Proxy to come up
+          Start-Sleep -Seconds 30;
+
+          # Print all the named pipes to make sure that CSI-Proxy's named-pipes are created.
+          Write-Output "Getting named pipes"
+          [System.IO.Directory]::GetFiles("\\.\\pipe\\")
+
+          # Start the tests
           go test -v -race ./pkg/...
