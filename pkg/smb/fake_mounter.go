@@ -18,6 +18,8 @@ package smb
 
 import (
 	"fmt"
+	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
+	"runtime"
 	"strings"
 
 	"k8s.io/utils/mount"
@@ -58,4 +60,13 @@ func (f *fakeMounter) IsLikelyNotMountPoint(file string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func NewFakeMounter() (*mount.SafeFormatAndMount, error) {
+	if runtime.GOOS == "windows" {
+		return mounter.NewSafeMounter()
+	}
+	return &mount.SafeFormatAndMount{
+		Interface: &fakeMounter{},
+	}, nil
 }

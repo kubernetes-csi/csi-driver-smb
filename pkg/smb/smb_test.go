@@ -20,7 +20,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -40,15 +39,7 @@ func TestNewFakeDriver(t *testing.T) {
 	assert.NotNil(t, d)
 }
 
-// skip test if running on windows
-func skipIfTestingOnWindows(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("Skipping test on Windows")
-	}
-}
-
 func TestIsCorruptedDir(t *testing.T) {
-	skipIfTestingOnWindows(t)
 	existingMountPath, err := ioutil.TempDir(os.TempDir(), "csi-mount-test")
 	if err != nil {
 		t.Fatalf("failed to create tmp dir: %v", err)
