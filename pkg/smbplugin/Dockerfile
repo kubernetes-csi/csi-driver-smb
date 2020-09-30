@@ -25,5 +25,9 @@ RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfs
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
 
+# Create a nonroot user
+RUN useradd -u 10001 nonroot
+USER nonroot
+
 COPY ./_output/smbplugin /smbplugin
 ENTRYPOINT ["/smbplugin"]
