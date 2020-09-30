@@ -1,4 +1,4 @@
-name: MacOS Unit Tests
+name: MacOS Build & Unit Test
 on:
   push:
     branches: [ master ]
