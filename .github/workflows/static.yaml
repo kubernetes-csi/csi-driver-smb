@@ -13,4 +13,4 @@ jobs:
               uses: golangci/golangci-lint-action@v1
               with:
                   version: v1.29
-                  args: -E=gofmt --timeout=30m0s
+                  args: -E=gofmt,golint,misspell --timeout=30m0s
