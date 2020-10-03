@@ -90,8 +90,6 @@ spec:
           env:
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
-          securityContext:
-            runAsUser: 0
           volumeMounts:
             - mountPath: /csi
               name: socket-dir

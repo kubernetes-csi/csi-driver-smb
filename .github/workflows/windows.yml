@@ -1,4 +1,4 @@
-name: Windows Build & Unit Test
+name: Windows Unit Tests
 on:
   push:
     branches: [ master ]

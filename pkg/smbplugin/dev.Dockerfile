@@ -17,9 +17,5 @@ RUN apt-get update && apt-get install -y ca-certificates cifs-utils util-linux e
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
 
-# Create a nonroot user
-RUN useradd -u 10001 nonroot
-USER nonroot
-
 COPY ./_output/smbplugin /smbplugin
 ENTRYPOINT ["/smbplugin"]

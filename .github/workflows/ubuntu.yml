@@ -1,4 +1,4 @@
-name: Ubuntu Test
+name: Linux Unit tests
 on:
   push:
     branches: [ master ]
