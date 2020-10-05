@@ -61,6 +61,10 @@ sanity-test: smb
 integration-test: smb
 	sudo -E env "PATH=$$PATH" bash test/integration/run-test.sh
 
+.PHONY: deploy-kind
+deploy-kind:
+	test/utils/deploy-kind.sh
+
 .PHONY: e2e-test
 e2e-test:
 	go test -v -timeout=0 ./test/e2e ${GINKGO_FLAGS}
