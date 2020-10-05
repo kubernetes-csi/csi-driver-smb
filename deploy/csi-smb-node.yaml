@@ -13,6 +13,8 @@ spec:
       labels:
         app: csi-smb-node
     spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
         kubernetes.io/os: linux
       priorityClassName: system-node-critical
