@@ -24,6 +24,8 @@ spec:
       {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: liveness-probe
+          securityContext:
+            privileged: true
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
@@ -42,6 +44,11 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: node-driver-registrar
+          # This is necessary only for systems with SELinux, where
+          # non-privileged sidecar containers cannot access unix domain socket
+          # created by privileged CSI driver container.
+          securityContext:
+            privileged: true
           image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
           args:
             - --csi-address=$(ADDRESS)
