@@ -48,19 +48,19 @@ const (
 	defaultAzureChinaCloudLocation  = "chinaeast2"
 
 	// Env vars
-	tenantIDEnvVar        = "TENANT_ID"
-	subscriptionIDEnvVar  = "SUBSCRIPTION_ID"
-	aadClientIDEnvVar     = "AAD_CLIENT_ID"
-	aadClientSecretEnvVar = "AAD_CLIENT_SECRET"
-	resourceGroupEnvVar   = "RESOURCE_GROUP"
-	locationEnvVar        = "LOCATION"
+	tenantIDEnvVar        = "AZURE_TENANT_ID"
+	subscriptionIDEnvVar  = "AZURE_SUBSCRIPTION_ID"
+	aadClientIDEnvVar     = "AZURE_CLIENT_ID"
+	aadClientSecretEnvVar = "AZURE_CLIENT_SECRET"
+	resourceGroupEnvVar   = "AZURE_RESOURCE_GROUP"
+	locationEnvVar        = "AZURE_LOCATION"
 
-	tenantIDChinaEnvVar        = "TENANT_ID_CHINA"
-	subscriptionIDChinaEnvVar  = "SUBSCRIPTION_ID_CHINA"
-	aadClientIDChinaEnvVar     = "AAD_CLIENT_ID_CHINA"
-	aadClientSecretChinaEnvVar = "AAD_CLIENT_SECRET_CHINA"
-	resourceGroupChinaEnvVar   = "RESOURCE_GROUP_CHINA"
-	locationChinaEnvVar        = "LOCATION_CHINA"
+	tenantIDChinaEnvVar        = "AZURE_TENANT_ID_CHINA"
+	subscriptionIDChinaEnvVar  = "AZURE_SUBSCRIPTION_ID_CHINA"
+	aadClientIDChinaEnvVar     = "AZURE_CLIENT_ID_CHINA"
+	aadClientSecretChinaEnvVar = "AZURE_CLIENT_SECRET_CHINA"
+	resourceGroupChinaEnvVar   = "AZURE_RESOURCE_GROUP_CHINA"
+	locationChinaEnvVar        = "AZURE_LOCATION_CHINA"
 )
 
 // Config is used in Prow to store Azure credentials
