@@ -105,6 +105,10 @@ smb-windows:
 smb-darwin:
 	CGO_ENABLED=0 GOOS=darwin go build -a -ldflags ${LDFLAGS} -o _output/smbplugin ./pkg/smbplugin
 
+.PHONY: smb-arm64
+smb-arm64:
+	CGO_ENABLED=0 GOARCH=arm64 go build -a -ldflags ${LDFLAGS} -o _output/smbplugin ./pkg/smbplugin
+
 .PHONY: container
 container: smb
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/dev.Dockerfile .
@@ -114,14 +118,17 @@ smb-container:
 	docker buildx rm container-builder || true
 	docker buildx create --use --name=container-builder
 ifdef CI
-	make smb smb-windows
+	make smb 
 	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-linux-amd64 -f ./pkg/smbplugin/Dockerfile --platform="linux/amd64" --push .
+	make smb-arm64
+	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-linux-arm64 -f ./pkg/smbplugin/Dockerfile --platform="linux/arm64" --push .
+	make smb-windows
 	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/smbplugin/Windows.Dockerfile --platform="windows/amd64" --push .
-	docker manifest create $(IMAGE_TAG) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-windows-1809-amd64
+	docker manifest create $(IMAGE_TAG) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-linux-arm64 $(IMAGE_TAG)-windows-1809-amd64
 	docker manifest inspect $(IMAGE_TAG)
 ifdef PUBLISH
-	docker manifest create $(IMAGE_TAG_LATEST) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-windows-1809-amd64
+	docker manifest create $(IMAGE_TAG_LATEST) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-linux-arm64 $(IMAGE_TAG)-windows-1809-amd64
 	docker manifest inspect $(IMAGE_TAG_LATEST)
 endif
 else
