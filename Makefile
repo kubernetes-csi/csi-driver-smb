@@ -35,6 +35,23 @@ GOBIN ?= $(GOPATH)/bin
 DOCKER_CLI_EXPERIMENTAL = enabled
 export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
 
+# Generate all combination of all OS, ARCH, and OSVERSIONS for iteration
+ALL_OS = linux windows
+ALL_ARCH.linux = amd64
+ALL_OS_ARCH.linux = $(foreach arch, ${ALL_ARCH.linux}, linux-$(arch))
+ALL_ARCH.windows = amd64
+ALL_OSVERSIONS.windows := 1809 1903 1909 2004
+ALL_OS_ARCH.windows = $(foreach arch, $(ALL_ARCH.windows), $(foreach osversion, ${ALL_OSVERSIONS.windows}, windows-${osversion}-${arch}))
+ALL_OS_ARCH = $(foreach os, $(ALL_OS), ${ALL_OS_ARCH.${os}})
+
+# The current context of image building
+# The architecture of the image
+ARCH ?= amd64
+# OS Version for the Windows images: 1809, 1903, 1909, 2004
+OSVERSION ?= 1809
+# Output type of docker buildx build
+OUTPUT_TYPE ?= registry
+
 .EXPORT_ALL_VARIABLES:
 
 .PHONY: all
@@ -71,7 +88,7 @@ e2e-test:
 
 .PHONY: e2e-bootstrap
 e2e-bootstrap: install-helm
-	docker pull $(IMAGE_TAG) || make smb-container push
+	docker pull $(IMAGE_TAG) || make container-all push-manifest
 ifdef TEST_WINDOWS
 	helm install csi-driver-smb charts/latest/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug \
 		--set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) \
@@ -109,35 +126,43 @@ smb-darwin:
 container: smb
 	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/dev.Dockerfile .
 
-.PHONY: smb-container
-smb-container:
+.PHONY: container-linux
+container-linux:
+	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="linux/$(ARCH)" \
+		-t $(IMAGE_TAG)-linux-$(ARCH) -f ./pkg/smbplugin/Dockerfile .
+
+.PHONY: container-windows
+container-windows:
+	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="windows/$(ARCH)" \
+		 -t $(IMAGE_TAG)-windows-$(OSVERSION)-$(ARCH) --build-arg OSVERSION=$(OSVERSION) -f ./pkg/smbplugin/Windows.Dockerfile .
+
+.PHONY: container-all
+container-all: smb smb-windows
 	docker buildx rm container-builder || true
 	docker buildx create --use --name=container-builder
-ifdef CI
-	make smb smb-windows
-	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-linux-amd64 -f ./pkg/smbplugin/Dockerfile --platform="linux/amd64" --push .
-	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/smbplugin/Windows.Dockerfile --platform="windows/amd64" --push .
-	docker manifest create $(IMAGE_TAG) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-windows-1809-amd64
-	docker manifest inspect $(IMAGE_TAG)
-ifdef PUBLISH
-	docker manifest create $(IMAGE_TAG_LATEST) $(IMAGE_TAG)-linux-amd64 $(IMAGE_TAG)-windows-1809-amd64
-	docker manifest inspect $(IMAGE_TAG_LATEST)
-endif
-else
-ifdef TEST_WINDOWS
-	make smb-windows
-	docker buildx build --no-cache --build-arg LDFLAGS=${LDFLAGS} -t $(IMAGE_TAG)-windows-1809-amd64 -f ./pkg/smbplugin/Windows.Dockerfile --platform="windows/amd64" --output "type=image" .
-else
-	make container
-endif
-endif
+	$(MAKE) container-linux
+	for osversion in $(ALL_OSVERSIONS.windows); do \
+		OSVERSION=$${osversion} $(MAKE) container-windows; \
+	done
 
-.PHONY: push
-push:
-ifdef CI
+.PHONY: push-manifest
+push-manifest:
+	docker manifest create --amend $(IMAGE_TAG) $(foreach osarch, $(ALL_OS_ARCH), $(IMAGE_TAG)-${osarch})
+	# add "os.version" field to windows images (based on https://github.com/kubernetes/kubernetes/blob/master/build/pause/Makefile)
+	set -x; \
+	registry_prefix=$(shell (echo ${REGISTRY} | grep -Eq ".*\/.*") && echo "docker.io/" || echo ""); \
+	manifest_image_folder=`echo "$${registry_prefix}${IMAGE_TAG}" | sed "s|/|_|g" | sed "s/:/-/"`; \
+	for arch in $(ALL_ARCH.windows); do \
+		for osversion in $(ALL_OSVERSIONS.windows); do \
+			BASEIMAGE=mcr.microsoft.com/windows/nanoserver:$${osversion}; \
+			full_version=`docker manifest inspect $${BASEIMAGE} | jq -r '.manifests[0].platform["os.version"]'`; \
+			sed -i -r "s/(\"os\"\:\"windows\")/\0,\"os.version\":\"$${full_version}\"/" "${HOME}/.docker/manifests/$${manifest_image_folder}/$${manifest_image_folder}-windows-$${osversion}-$${arch}"; \
+		done; \
+	done
 	docker manifest push --purge $(IMAGE_TAG)
-else
-	docker push $(IMAGE_TAG)
+ifdef PUBLISH
+	docker manifest create $(IMAGE_TAG_LATEST) $(foreach osarch, $(ALL_OS_ARCH), $(IMAGE_TAG)-${osarch})
+	docker manifest inspect $(IMAGE_TAG_LATEST)
 endif
 
 .PHONY: push-latest
@@ -147,11 +172,6 @@ ifdef CI
 else
 	docker push $(IMAGE_TAG_LATEST)
 endif
-
-.PHONY: build-push
-build-push: smb-container
-	docker tag $(IMAGE_TAG) $(IMAGE_TAG_LATEST)
-	docker push $(IMAGE_TAG_LATEST)
 
 .PHONY: clean
 clean:

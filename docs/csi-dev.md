@@ -79,8 +79,11 @@ CSINode
 ```console
 # run `docker login` first
 export REGISTRY=<dockerhub-alias>
-make container
-make push-latest
+export IMAGE_VERSION=latest
+# build linux, windows 1809, 1903, 1909, and 2004 images
+make container-all
+# create a manifest list for the images above
+make push-manifest
 ```
 
  - Replace `mcr.microsoft.com/k8s/csi/smb-csi:latest` in [`csi-smb-controller.yaml`](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/csi-smb-controller.yaml) and [`csi-smb-node.yaml`](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/csi-smb-node.yaml) with above dockerhub image urls and then follow [install CSI driver master version](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/docs/install-csi-driver-master.md)
