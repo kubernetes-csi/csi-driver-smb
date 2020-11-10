@@ -25,10 +25,10 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v1.1.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.0.0
           args:
             - --csi-address=/csi/csi.sock
-            - --connection-timeout=3s
+            - --probe-timeout=3s
             - --health-port=29643
             - --v=5
           resources:
