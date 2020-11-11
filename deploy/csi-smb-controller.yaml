@@ -25,11 +25,11 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: csi-provisioner
-          image: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner:v1.4.0
+          image: k8s.gcr.io/sig-storage/csi-provisioner:v2.0.4
           args:
             - "-v=5"
             - "--csi-address=$(ADDRESS)"
-            - "--enable-leader-election"
+            - "--leader-election"
             - "--leader-election-type=leases"
           env:
             - name: ADDRESS
@@ -45,10 +45,9 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: liveness-probe
-          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v1.1.0
+          image: k8s.gcr.io/sig-storage/livenessprobe:v2.1.0
           args:
             - --csi-address=/csi/csi.sock
-            - --connection-timeout=3s
             - --health-port=29642
             - --v=5
           volumeMounts:

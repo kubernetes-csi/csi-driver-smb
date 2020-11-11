@@ -31,8 +31,7 @@ spec:
           args:
             - "-v=5"
             - "--csi-address=$(ADDRESS)"
-            - "--enable-leader-election"
-            - "--leader-election-type=leases"
+            - "--leader-election"
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -51,7 +50,6 @@ spec:
           image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
           args:
             - --csi-address=/csi/csi.sock
-            - --connection-timeout=3s
             - --health-port=29642
             - --v=5
           imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
