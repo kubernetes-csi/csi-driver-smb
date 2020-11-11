@@ -11,6 +11,11 @@ kubectl -n kube-system get pod -o wide --watch -l app=csi-smb-controller
 kubectl -n kube-system get pod -o wide --watch -l app=csi-smb-node
 ```
 
+if running windows nodes, also check for those pods 
+
+```
+kubectl -n kube-system get pod -o wide --watch -l app=csi-smb-node-win
+```
 example output:
 
 ```
