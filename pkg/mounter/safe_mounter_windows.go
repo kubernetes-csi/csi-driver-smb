@@ -207,6 +207,9 @@ func (mounter *CSIProxyMounter) ExistsPath(path string) (bool, error) {
 		&fsv1alpha1.PathExistsRequest{
 			Path: normalizeWindowsPath(path),
 		})
+	if err != nil {
+		return false, err
+	}
 	return isExistsResponse.Exists, err
 }
 
