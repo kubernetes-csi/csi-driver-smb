@@ -66,7 +66,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: mcr.microsoft.com/k8s/csi/smb-csi:v0.5.0
+          image: mcr.microsoft.com/k8s/csi/smb-csi:latest
           imagePullPolicy: IfNotPresent
           args:
             - "--v=5"
