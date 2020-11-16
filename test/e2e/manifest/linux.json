@@ -6,6 +6,7 @@
             "orchestratorType": "Kubernetes",
             "orchestratorRelease": "1.17",
             "kubernetesConfig": {
+                "useManagedIdentity": true,
                 "useCloudControllerManager": true,
                 "networkPlugin": "azure",
                 "containerRuntime": "containerd",
