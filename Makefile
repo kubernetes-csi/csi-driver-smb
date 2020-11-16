@@ -129,7 +129,7 @@ container: smb
 .PHONY: container-linux
 container-linux:
 	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="linux/$(ARCH)" \
-		-t $(IMAGE_TAG)-linux-$(ARCH) -f ./pkg/smbplugin/Dockerfile .
+		-t $(IMAGE_TAG)-linux-$(ARCH) -f ./pkg/smbplugin/$(ARCH).Dockerfile .
 
 .PHONY: container-windows
 container-windows:
