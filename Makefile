@@ -28,7 +28,7 @@ IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
 IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
 BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 LDFLAGS ?= "-X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
-GINKGO_FLAGS = -ginkgo.noColor -ginkgo.v
+GINKGO_FLAGS = -ginkgo.v
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
 GOBIN ?= $(GOPATH)/bin
@@ -140,17 +140,15 @@ container-windows:
 container-all: smb-windows
 	docker buildx rm container-builder || true
 	docker buildx create --use --name=container-builder
-	for osversion in $(ALL_OSVERSIONS.windows); do \
-		OSVERSION=$${osversion} $(MAKE) container-windows; \
-	done
-
 	# enable qemu for arm64 build
 	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 	for arch in $(ALL_ARCH.linux); do \
 		ARCH=$${arch} $(MAKE) smb; \
 		ARCH=$${arch} $(MAKE) container-linux; \
 	done
-	
+	for osversion in $(ALL_OSVERSIONS.windows); do \
+		OSVERSION=$${osversion} $(MAKE) container-windows; \
+	done
 
 .PHONY: push-manifest
 push-manifest:
