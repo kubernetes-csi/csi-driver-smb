@@ -12,13 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ARG LDFLAGS
+ARG ARCH
+
 FROM golang:1.13.10-alpine3.10 as builder
 WORKDIR /go/src/sigs.k8s.io/csi-driver-smb
 ADD . .
-ARG LDFLAGS
-RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags "${LDFLAGS:--X sigs.k8s.io/csi-driver-smb/pkg/smb.driverVersion=latest}" -o _output/smbplugin ./pkg/smbplugin
 
-FROM k8s.gcr.io/build-image/debian-base-amd64:v2.1.3
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go build -a -ldflags "${LDFLAGS:--X sigs.k8s.io/csi-driver-smb/pkg/smb.driverVersion=latest}" -o _output/smbplugin ./pkg/smbplugin
+
+FROM k8s.gcr.io/build-image/debian-base-${ARCH}:v2.1.3
 COPY --from=builder /go/src/sigs.k8s.io/csi-driver-smb/_output/smbplugin /smbplugin
 RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
 
