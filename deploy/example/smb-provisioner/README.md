@@ -7,6 +7,8 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 ```
 
 #### Option#1. Create a Samba Server deployment on local disk
+> Note: This example is for development purpose only. Since samba server is sticky to the node it is scheduled on, data would be lost if the pod is rescheduled on another node.
+
 > modify `/smbshare-volume` in deployment to specify different path for smb share data store
  - Access by Linux node
 ```console
