@@ -6,8 +6,9 @@ on:
     branches: [ master ]
 
 jobs:
-
   build:
+    # Disable this job
+    if: false
     name: Build
     runs-on: ubuntu-latest
     steps:
