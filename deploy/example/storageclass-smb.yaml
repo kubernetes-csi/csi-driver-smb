@@ -5,6 +5,10 @@ metadata:
   name: smb
 provisioner: smb.csi.k8s.io
 parameters:
+  # server address format for agent nodes with different OS:
+  #   Linux: "//server-address/share"
+  #   Windows: "\\server-address\share"
+  #     On Windows, "*.default.svc.cluster.local" could not be recognized by csi-proxy
   source: "//smb-server.default.svc.cluster.local/share"
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
   csi.storage.k8s.io/node-stage-secret-namespace: "default"
