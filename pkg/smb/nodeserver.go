@@ -37,11 +37,11 @@ import (
 )
 
 const (
-	usernameField      = "username"
-	passwordField      = "password"
-	sourceField        = "source"
-	domainField        = "domain"
-	defaultNetworkName = "AZURE"
+	usernameField     = "username"
+	passwordField     = "password"
+	sourceField       = "source"
+	domainField       = "domain"
+	defaultDomainName = "AZURE"
 )
 
 // NodePublishVolume mount the volume from staging to target path
@@ -176,8 +176,11 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 
 	var mountOptions, sensitiveMountOptions []string
 	if runtime.GOOS == "windows" {
+		if domain == "" {
+			domain = defaultDomainName
+		}
 		if !strings.Contains(username, "\\") {
-			username = fmt.Sprintf("%s\\%s", defaultNetworkName, username)
+			username = fmt.Sprintf("%s\\%s", domain, username)
 		}
 		mountOptions = []string{username}
 		sensitiveMountOptions = []string{password}
@@ -187,9 +190,9 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 		sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
 		mountOptions = mountFlags
-	}
-	if domain != "" {
-		mountOptions = append(mountOptions, fmt.Sprintf("%s=%s", domainField, domain))
+		if domain != "" {
+			mountOptions = append(mountOptions, fmt.Sprintf("%s=%s", domainField, domain))
+		}
 	}
 
 	klog.V(2).Infof("targetPath(%v) volumeID(%v) context(%v) mountflags(%v) mountOptions(%v)",
