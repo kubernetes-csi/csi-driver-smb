@@ -55,7 +55,7 @@ spec:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: /var/lib/kubelet/plugins/smb.csi.k8s.io/csi.sock
+              value: {{ .Values.kubelet.linuxPath }}/plugins/smb.csi.k8s.io/csi.sock
           imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: socket-dir
