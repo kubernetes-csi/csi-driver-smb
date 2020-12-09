@@ -138,10 +138,15 @@ container-windows:
 
 .PHONY: container-all
 container-all: smb-windows
-	docker buildx rm container-builder || true
-	docker buildx create --use --name=container-builder
 	# enable qemu for arm64 build
 	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	docker buildx rm container-builder || true
+	docker buildx create --use --name=container-builder
+	# only moby/buildkit:foreign-mediatype works on building Windows image now
+	# https://github.com/moby/buildkit/pull/1879
+	docker run --rm --privileged --name buildx_buildkit_container-builder0 -d andyzhangx/buildkit:v0.8.0-foreign-mediatype
+	# sleep 5s waiting for container-builder running complete
+	sleep 5
 	for arch in $(ALL_ARCH.linux); do \
 		ARCH=$${arch} $(MAKE) smb; \
 		ARCH=$${arch} $(MAKE) container-linux; \
