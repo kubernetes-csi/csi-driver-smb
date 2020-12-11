@@ -21,7 +21,7 @@ Please refer to [`smb.csi.k8s.io` driver parameters](./docs/driver-parameters.md
 
 ### Install driver on a Kubernetes cluster
  - install by [kubectl](./docs/install-smb-csi-driver.md)
- - install by [helm](./charts)
+ - install by [helm charts](./charts)
  
 ### Examples
  - [Set up a Samba Server on a Kubernetes cluster](./deploy/example/smb-provisioner/)
