@@ -19,7 +19,7 @@ This driver allows Kubernetes to use [SMB](https://wiki.wireshark.org/SMB) CSI v
 ### Driver parameters
 Please refer to [`smb.csi.k8s.io` driver parameters](./docs/driver-parameters.md)
 
-### Install SMB CSI driver on a kubernetes cluster
+### Install driver on a Kubernetes cluster
  - install by [kubectl](./docs/install-smb-csi-driver.md)
  - install by [helm](./charts)
  
