@@ -17,11 +17,11 @@ spec:
         "kubernetes.io/os": linux
       containers:
         - name: statefulset-smb
-          image: mcr.microsoft.com/oss/nginx/nginx:1.17.3-alpine
+          image: mcr.microsoft.com/oss/nginx/nginx:1.19.5
           command:
             - "/bin/sh"
             - "-c"
-            - while true; do echo $(date) >> /mnt/smb/outfile; sleep 1; done
+            - set -euo pipefail; while true; do echo $(date) >> /mnt/smb/outfile; sleep 1; done
           volumeMounts:
             - name: persistent-storage
               mountPath: /mnt/smb
