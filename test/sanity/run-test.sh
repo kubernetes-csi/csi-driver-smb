@@ -26,13 +26,19 @@ trap cleanup EXIT
 
 function install_csi_sanity_bin {
   echo 'Installing CSI sanity test binary...'
+  mkdir -p $GOPATH/src/github.com/kubernetes-csi
+  pushd $GOPATH/src/github.com/kubernetes-csi
+  export GO111MODULE=off
   git clone https://github.com/kubernetes-csi/csi-test.git -b v2.2.0
   pushd csi-test/cmd/csi-sanity
-  make
+  make install
+  popd
   popd
 }
 
-install_csi_sanity_bin
+if [[ -z "$(command -v csi-sanity)" ]]; then
+	install_csi_sanity_bin
+fi
 
 readonly endpoint='unix:///tmp/csi.sock'
 nodeid='CSINode'
@@ -43,5 +49,5 @@ fi
 _output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 
 echo 'Begin to run sanity test...'
-readonly CSI_SANITY_BIN='csi-test/cmd/csi-sanity/csi-sanity'
+readonly CSI_SANITY_BIN='csi-sanity'
 "$CSI_SANITY_BIN" --ginkgo.v --ginkgo.noColor --csi.endpoint="$endpoint" --ginkgo.skip='should fail when the requested volume does not exist|should work|create a volume with already existing name and different capacity'
