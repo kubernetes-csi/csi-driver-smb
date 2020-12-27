@@ -1,5 +1,4 @@
 # SMB CSI Driver for Kubernetes
-[![Travis](https://travis-ci.org/kubernetes-csi/csi-driver-smb.svg)](https://travis-ci.org/kubernetes-csi/csi-driver-smb)
 [![Coverage Status](https://coveralls.io/repos/github/kubernetes-csi/csi-driver-smb/badge.svg?branch=master)](https://coveralls.io/github/kubernetes-csi/csi-driver-smb?branch=master)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkubernetes-csi%2Fcsi-driver-smb.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkubernetes-csi%2Fcsi-driver-smb?ref=badge_shield)
 
