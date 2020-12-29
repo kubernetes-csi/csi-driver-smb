@@ -49,7 +49,8 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if req.GetVolumeCapability() == nil {
 		return nil, status.Error(codes.InvalidArgument, "Volume capability missing in request")
 	}
-	if len(req.GetVolumeId()) == 0 {
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
 
@@ -92,7 +93,7 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 
 	if strings.EqualFold(createSubDir, "true") {
 		source = filepath.Join(source, req.GetVolumeId())
-		klog.V(2).Infof("NodePublishVolume: createSubDir(%s) MkdirAll(%s)", createSubDir, source)
+		klog.V(2).Infof("NodePublishVolume: createSubDir(%s) MkdirAll(%s) volumeID(%s)", createSubDir, source, volumeID)
 		if err := Mkdir(d.mounter, source, 0750); err != nil {
 			if os.IsExist(err) {
 				klog.Warningf("Mkdir(%s) failed with error: %v", source, err)
@@ -102,29 +103,27 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		}
 	}
 
-	klog.V(2).Infof("NodePublishVolume: mounting %s at %s with mountOptions: %v", source, target, mountOptions)
+	klog.V(2).Infof("NodePublishVolume: mounting %s at %s with mountOptions: %v volumeID(%s)", source, target, mountOptions, volumeID)
 	if err := d.mounter.Mount(source, target, "", mountOptions); err != nil {
 		if removeErr := os.Remove(target); removeErr != nil {
 			return nil, status.Errorf(codes.Internal, "Could not remove mount target %q: %v", target, removeErr)
 		}
 		return nil, status.Errorf(codes.Internal, "Could not mount %q at %q: %v", source, target, err)
 	}
-	klog.V(2).Infof("NodePublishVolume: mount %s at %s successfully", source, target)
-
+	klog.V(2).Infof("NodePublishVolume: mount %s at %s volumeID(%s) successfully", source, target, volumeID)
 	return &csi.NodePublishVolumeResponse{}, nil
 }
 
 // NodeUnpublishVolume unmount the volume from the target path
 func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
-	klog.V(2).Infof("NodeUnPublishVolume: called with args %+v", *req)
-	if len(req.GetVolumeId()) == 0 {
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
-	if len(req.GetTargetPath()) == 0 {
+	targetPath := req.GetTargetPath()
+	if len(targetPath) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Target path missing in request")
 	}
-	targetPath := req.GetTargetPath()
-	volumeID := req.GetVolumeId()
 
 	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s on %s", volumeID, targetPath)
 	err := CleanupMountPoint(d.mounter, targetPath, false)
@@ -132,13 +131,13 @@ func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublish
 		return nil, status.Errorf(codes.Internal, "failed to unmount target %q: %v", targetPath, err)
 	}
 	klog.V(2).Infof("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
-
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }
 
 // NodeStageVolume mount the volume to a staging path
 func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
-	if len(req.GetVolumeId()) == 0 {
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
 
@@ -152,7 +151,6 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
 	}
 
-	volumeID := req.GetVolumeId()
 	context := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 	secrets := req.GetSecrets()
@@ -195,15 +193,16 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 	}
 
-	klog.V(2).Infof("targetPath(%v) volumeID(%v) context(%v) mountflags(%v) mountOptions(%v)",
+	klog.V(2).Infof("NodeStageVolume: targetPath(%v) volumeID(%v) context(%v) mountflags(%v) mountOptions(%v)",
 		targetPath, volumeID, context, mountFlags, mountOptions)
 
 	isDirMounted, err := d.ensureMountPoint(targetPath)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not mount target %s: %v", targetPath, err)
 	}
-
-	if !isDirMounted {
+	if isDirMounted {
+		klog.V(2).Infof("NodeStageVolume: already mounted volume %s on target %s", volumeID, targetPath)
+	} else {
 		if err = prepareStagePath(targetPath, d.mounter); err != nil {
 			return nil, fmt.Errorf("prepare stage path failed for %s with error: %v", targetPath, err)
 		}
@@ -227,8 +226,8 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 
 // NodeUnstageVolume unmount the volume from the staging path
 func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolumeRequest) (*csi.NodeUnstageVolumeResponse, error) {
-	klog.V(2).Infof("NodeUnstageVolume: called with args %+v", *req)
-	if len(req.GetVolumeId()) == 0 {
+	volumeID := req.GetVolumeId()
+	if len(volumeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
 	stagingTargetPath := req.GetStagingTargetPath()
@@ -236,13 +235,12 @@ func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
 	}
 
-	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint %s", stagingTargetPath)
+	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint on %s with volume %s", stagingTargetPath, volumeID)
 	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, false); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
 	}
 
-	klog.V(2).Infof("NodeUnstageVolume: unmount %s successfully", stagingTargetPath)
-
+	klog.V(2).Infof("NodeUnstageVolume: unmount volume %s on %s successfully", volumeID, stagingTargetPath)
 	return &csi.NodeUnstageVolumeResponse{}, nil
 }
 
