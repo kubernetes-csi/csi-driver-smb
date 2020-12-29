@@ -14,11 +14,10 @@ $ helm package csi-driver-smb
 $ helm install csi-driver-smb csi-driver-smb-latest.tgz --namespace kube-system
 ```
 
-## Install CSI Driver released version using Helm repository
-
+### Install a specific version of Helm chart
+Specify the version of the chart to be installed using the `--version` parameter.
 ```console
-$ helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
-$ helm install --name csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system
+helm install --name csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v0.5.0
 ```
 
 ### Search for different versions of charts available
@@ -26,14 +25,7 @@ $ helm install --name csi-driver-smb csi-driver-smb/csi-driver-smb --namespace k
 $ helm search repo -l csi-driver-smb/
 ```
 
-### Install a specific version of Helm chart
-Specify the version of the chart to be installed using the `--version` parameter.
-```console
-helm install --name csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v0.5.0
-```
-
 ## Uninstall
-
 ```console
 $ helm uninstall csi-driver-smb -n kube-system
 ```
