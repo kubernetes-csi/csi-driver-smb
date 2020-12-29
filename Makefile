@@ -139,9 +139,9 @@ container-windows:
 .PHONY: container-all
 container-all: smb-windows
 	docker buildx rm container-builder || true
-	docker buildx create --use --name=container-builder
 	# enable qemu for arm64 build
 	docker run --rm --privileged tonistiigi/binfmt --install all
+	docker buildx create --use --name=container-builder
 	for arch in $(ALL_ARCH.linux); do \
 		ARCH=$${arch} $(MAKE) smb; \
 		ARCH=$${arch} $(MAKE) container-linux; \
