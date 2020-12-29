@@ -1,0 +1,136 @@
+---
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: csi-smb-node-win
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: csi-smb-node-win
+  template:
+    metadata:
+      labels:
+        app: csi-smb-node-win
+    spec:
+      nodeSelector:
+        kubernetes.io/os: windows
+      priorityClassName: system-node-critical
+      containers:
+        - name: liveness-probe
+          volumeMounts:
+            - mountPath: C:\csi
+              name: plugin-dir
+          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.0.1-alpha.1-windows-1809-amd64
+          args:
+            - --csi-address=$(CSI_ENDPOINT)
+            - --probe-timeout=3s
+            - --health-port=29643
+            - --v=5
+          env:
+            - name: CSI_ENDPOINT
+              value: unix://C:\\csi\\csi.sock
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+        - name: node-driver-registrar
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.0.1
+          args:
+            - --v=5
+            - --csi-address=$(CSI_ENDPOINT)
+            - --kubelet-registration-path=C:\\var\\lib\\kubelet\\plugins\\smb.csi.k8s.io\\csi.sock
+          env:
+            - name: CSI_ENDPOINT
+              value: unix://C:\\csi\\csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: kubelet-dir
+              mountPath: "C:\\var\\lib\\kubelet"
+            - name: plugin-dir
+              mountPath: C:\csi
+            - name: registration-dir
+              mountPath: C:\registration
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+        - name: smb
+          image: mcr.microsoft.com/k8s/csi/smb-csi:v0.6.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - --v=5
+            - --endpoint=$(CSI_ENDPOINT)
+            - --nodeid=$(KUBE_NODE_NAME)
+            - "--metrics-address=0.0.0.0:29645"
+          ports:
+            - containerPort: 29643
+              name: healthz
+              protocol: TCP
+            - containerPort: 29645
+              name: metrics
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /healthz
+              port: healthz
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            periodSeconds: 30
+          env:
+            - name: CSI_ENDPOINT
+              value: unix://C:\\csi\\csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: kubelet-dir
+              mountPath: "C:\\var\\lib\\kubelet"
+            - name: plugin-dir
+              mountPath: C:\csi
+            - name: csi-proxy-fs-pipe
+              mountPath: \\.\pipe\csi-proxy-filesystem-v1alpha1
+            - name: csi-proxy-smb-pipe
+              mountPath: \\.\pipe\csi-proxy-smb-v1alpha1
+          resources:
+            limits:
+              cpu: 400m
+              memory: 400Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+      volumes:
+        - name: csi-proxy-fs-pipe
+          hostPath:
+            path: \\.\pipe\csi-proxy-filesystem-v1alpha1
+            type: ""
+        - name: csi-proxy-smb-pipe
+          hostPath:
+            path: \\.\pipe\csi-proxy-smb-v1alpha1
+            type: ""
+        - name: registration-dir
+          hostPath:
+            path: C:\var\lib\kubelet\plugins_registry\
+            type: Directory
+        - name: kubelet-dir
+          hostPath:
+            path: C:\var\lib\kubelet\
+            type: Directory
+        - name: plugin-dir
+          hostPath:
+            path: C:\var\lib\kubelet\plugins\smb.csi.k8s.io\
+            type: DirectoryOrCreate
