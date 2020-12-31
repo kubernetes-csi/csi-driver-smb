@@ -105,7 +105,7 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-            - mountPath: /var/lib/kubelet/
+            - mountPath: {{ .Values.kubelet.linuxPath }}/
               mountPropagation: Bidirectional
               name: mountpoint-dir
           resources:
