@@ -103,9 +103,9 @@ spec:
             - name: plugin-dir
               mountPath: C:\csi
             - name: csi-proxy-fs-pipe
-              mountPath: \\.\pipe\csi-proxy-filesystem-v1alpha1
+              mountPath: \\.\pipe\csi-proxy-filesystem-v1beta1
             - name: csi-proxy-smb-pipe
-              mountPath: \\.\pipe\csi-proxy-smb-v1alpha1
+              mountPath: \\.\pipe\csi-proxy-smb-v1beta1
           resources:
             limits:
               cpu: 400m
@@ -116,11 +116,11 @@ spec:
       volumes:
         - name: csi-proxy-fs-pipe
           hostPath:
-            path: \\.\pipe\csi-proxy-filesystem-v1alpha1
+            path: \\.\pipe\csi-proxy-filesystem-v1beta1
             type: ""
         - name: csi-proxy-smb-pipe
           hostPath:
-            path: \\.\pipe\csi-proxy-smb-v1alpha1
+            path: \\.\pipe\csi-proxy-smb-v1beta1
             type: ""
         - name: registration-dir
           hostPath:

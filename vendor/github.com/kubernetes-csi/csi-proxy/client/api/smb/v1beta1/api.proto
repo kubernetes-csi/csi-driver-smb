@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package v1alpha1;
+package v1beta1;
 
 service Smb {
     // NewSmbGlobalMapping creates an SMB mapping on the SMB client to an SMB share.

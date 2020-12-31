@@ -25,11 +25,11 @@ import (
 	filepath "path/filepath"
 	"strings"
 
-	fsv1alpha1 "github.com/kubernetes-csi/csi-proxy/client/api/filesystem/v1alpha1"
-	fsclientv1alpha1 "github.com/kubernetes-csi/csi-proxy/client/groups/filesystem/v1alpha1"
+	fs "github.com/kubernetes-csi/csi-proxy/client/api/filesystem/v1beta1"
+	fsclient "github.com/kubernetes-csi/csi-proxy/client/groups/filesystem/v1beta1"
 
-	smbv1alpha1 "github.com/kubernetes-csi/csi-proxy/client/api/smb/v1alpha1"
-	smbclientv1alpha1 "github.com/kubernetes-csi/csi-proxy/client/groups/smb/v1alpha1"
+	smb "github.com/kubernetes-csi/csi-proxy/client/api/smb/v1beta1"
+	smbclient "github.com/kubernetes-csi/csi-proxy/client/groups/smb/v1beta1"
 
 	"k8s.io/klog/v2"
 	utilexec "k8s.io/utils/exec"
@@ -39,8 +39,8 @@ import (
 var _ mount.Interface = &CSIProxyMounter{}
 
 type CSIProxyMounter struct {
-	FsClient  *fsclientv1alpha1.Client
-	SMBClient *smbclientv1alpha1.Client
+	FsClient  *fsclient.Client
+	SMBClient *smbclient.Client
 }
 
 func normalizeWindowsPath(path string) string {
@@ -72,7 +72,7 @@ func (mounter *CSIProxyMounter) SMBMount(source, target, fsType string, mountOpt
 		}
 	}
 
-	smbMountRequest := &smbv1alpha1.NewSmbGlobalMappingRequest{
+	smbMountRequest := &smb.NewSmbGlobalMappingRequest{
 		LocalPath:  normalizeWindowsPath(target),
 		RemotePath: source,
 		Username:   mountOptions[0],
@@ -97,7 +97,7 @@ func (mounter *CSIProxyMounter) Mount(source string, target string, fstype strin
 	klog.V(4).Infof("Mount: old name: %s. new name: %s", source, target)
 	// Mount is called after the format is done.
 	// TODO: Confirm that fstype is empty.
-	linkRequest := &fsv1alpha1.LinkPathRequest{
+	linkRequest := &fs.LinkPathRequest{
 		SourcePath: normalizeWindowsPath(source),
 		TargetPath: normalizeWindowsPath(target),
 	}
@@ -114,9 +114,9 @@ func (mounter *CSIProxyMounter) Mount(source string, target string, fstype strin
 //       rmdir with either pod or plugin context.
 func (mounter *CSIProxyMounter) Rmdir(path string) error {
 	klog.V(4).Infof("Remove directory: %s", path)
-	rmdirRequest := &fsv1alpha1.RmdirRequest{
+	rmdirRequest := &fs.RmdirRequest{
 		Path:    normalizeWindowsPath(path),
-		Context: fsv1alpha1.PathContext_POD,
+		Context: fs.PathContext_POD,
 		Force:   true,
 	}
 	_, err := mounter.FsClient.Rmdir(context.Background(), rmdirRequest)
@@ -154,7 +154,7 @@ func (mounter *CSIProxyMounter) IsLikelyNotMountPoint(path string) (bool, error)
 	}
 
 	response, err := mounter.FsClient.IsMountPoint(context.Background(),
-		&fsv1alpha1.IsMountPointRequest{
+		&fs.IsMountPointRequest{
 			Path: normalizeWindowsPath(path),
 		})
 	if err != nil {
@@ -188,9 +188,9 @@ func (mounter *CSIProxyMounter) MakeFile(pathname string) error {
 // with Plugin context..
 func (mounter *CSIProxyMounter) MakeDir(path string) error {
 	klog.V(4).Infof("Make directory: %s", path)
-	mkdirReq := &fsv1alpha1.MkdirRequest{
+	mkdirReq := &fs.MkdirRequest{
 		Path:    normalizeWindowsPath(path),
-		Context: fsv1alpha1.PathContext_PLUGIN,
+		Context: fs.PathContext_PLUGIN,
 	}
 	_, err := mounter.FsClient.Mkdir(context.Background(), mkdirReq)
 	if err != nil {
@@ -204,7 +204,7 @@ func (mounter *CSIProxyMounter) MakeDir(path string) error {
 func (mounter *CSIProxyMounter) ExistsPath(path string) (bool, error) {
 	klog.V(4).Infof("Exists path: %s", path)
 	isExistsResponse, err := mounter.FsClient.PathExists(context.Background(),
-		&fsv1alpha1.PathExistsRequest{
+		&fs.PathExistsRequest{
 			Path: normalizeWindowsPath(path),
 		})
 	if err != nil {
@@ -240,11 +240,11 @@ func (mounter *CSIProxyMounter) MountSensitive(source string, target string, fst
 // NewCSIProxyMounter - creates a new CSI Proxy mounter struct which encompassed all the
 // clients to the CSI proxy - filesystem, disk and volume clients.
 func NewCSIProxyMounter() (*CSIProxyMounter, error) {
-	fsClient, err := fsclientv1alpha1.NewClient()
+	fsClient, err := fsclient.NewClient()
 	if err != nil {
 		return nil, err
 	}
-	smbClient, err := smbclientv1alpha1.NewClient()
+	smbClient, err := smbclient.NewClient()
 	if err != nil {
 		return nil, err
 	}
