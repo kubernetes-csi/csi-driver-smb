@@ -55,8 +55,6 @@ spec:
                   fieldPath: spec.nodeName
           imagePullPolicy: {{ .Values.windows.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
-            - name: kubelet-dir
-              mountPath: "C:\\var\\lib\\kubelet"
             - name: plugin-dir
               mountPath: C:\csi
             - name: registration-dir
@@ -103,7 +101,7 @@ spec:
             privileged: true
           volumeMounts:
             - name: kubelet-dir
-              mountPath: "C:\\var\\lib\\kubelet"
+              mountPath: {{ .Values.kubelet.windowsPath }}\
             - name: plugin-dir
               mountPath: C:\csi
             - name: csi-proxy-fs-pipe
