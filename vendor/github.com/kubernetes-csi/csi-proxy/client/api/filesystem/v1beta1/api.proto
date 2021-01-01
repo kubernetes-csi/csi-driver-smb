@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package v1alpha1;
+package v1beta1;
 
 service Filesystem {
     // PathExists checks if the requested path exists in the host's filesystem
