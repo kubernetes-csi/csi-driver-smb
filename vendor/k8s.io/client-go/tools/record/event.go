@@ -31,7 +31,7 @@ import (
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record/util"
 	ref "k8s.io/client-go/tools/reference"
-	"k8s.io/klog"
+	"k8s.io/klog/v2"
 )
 
 const maxTriesPerEvent = 12
@@ -120,6 +120,10 @@ type EventBroadcaster interface {
 	// StartLogging starts sending events received from this EventBroadcaster to the given logging
 	// function. The return value can be ignored or used to stop recording, if desired.
 	StartLogging(logf func(format string, args ...interface{})) watch.Interface
+
+	// StartStructuredLogging starts sending events received from this EventBroadcaster to the structured
+	// logging function. The return value can be ignored or used to stop recording, if desired.
+	StartStructuredLogging(verbosity klog.Level) watch.Interface
 
 	// NewRecorder returns an EventRecorder that can be used to send events to this EventBroadcaster
 	// with the event source set to the given event source.
@@ -266,7 +270,7 @@ func recordEvent(sink EventSink, event *v1.Event, patch []byte, updateExistingEv
 	default:
 		// This case includes actual http transport errors. Go ahead and retry.
 	}
-	klog.Errorf("Unable to write event: '%v' (may retry after sleeping)", err)
+	klog.Errorf("Unable to write event: '%#v': '%v'(may retry after sleeping)", event, err)
 	return false
 }
 
@@ -276,6 +280,15 @@ func (e *eventBroadcasterImpl) StartLogging(logf func(format string, args ...int
 	return e.StartEventWatcher(
 		func(e *v1.Event) {
 			logf("Event(%#v): type: '%v' reason: '%v' %v", e.InvolvedObject, e.Type, e.Reason, e.Message)
+		})
+}
+
+// StartStructuredLogging starts sending events received from this EventBroadcaster to the structured logging function.
+// The return value can be ignored or used to stop recording, if desired.
+func (e *eventBroadcasterImpl) StartStructuredLogging(verbosity klog.Level) watch.Interface {
+	return e.StartEventWatcher(
+		func(e *v1.Event) {
+			klog.V(verbosity).InfoS("Event occurred", "object", klog.KRef(e.InvolvedObject.Namespace, e.InvolvedObject.Name), "kind", e.InvolvedObject.Kind, "apiVersion", e.InvolvedObject.APIVersion, "type", e.Type, "reason", e.Reason, "message", e.Message)
 		})
 }
 
@@ -310,7 +323,7 @@ type recorderImpl struct {
 	clock clock.Clock
 }
 
-func (recorder *recorderImpl) generateEvent(object runtime.Object, annotations map[string]string, timestamp metav1.Time, eventtype, reason, message string) {
+func (recorder *recorderImpl) generateEvent(object runtime.Object, annotations map[string]string, eventtype, reason, message string) {
 	ref, err := ref.GetReference(recorder.scheme, object)
 	if err != nil {
 		klog.Errorf("Could not construct reference to: '%#v' due to: '%v'. Will not report event: '%v' '%v' '%v'", object, err, eventtype, reason, message)
@@ -333,7 +346,7 @@ func (recorder *recorderImpl) generateEvent(object runtime.Object, annotations m
 }
 
 func (recorder *recorderImpl) Event(object runtime.Object, eventtype, reason, message string) {
-	recorder.generateEvent(object, nil, metav1.Now(), eventtype, reason, message)
+	recorder.generateEvent(object, nil, eventtype, reason, message)
 }
 
 func (recorder *recorderImpl) Eventf(object runtime.Object, eventtype, reason, messageFmt string, args ...interface{}) {
@@ -341,7 +354,7 @@ func (recorder *recorderImpl) Eventf(object runtime.Object, eventtype, reason, m
 }
 
 func (recorder *recorderImpl) AnnotatedEventf(object runtime.Object, annotations map[string]string, eventtype, reason, messageFmt string, args ...interface{}) {
-	recorder.generateEvent(object, annotations, metav1.Now(), eventtype, reason, fmt.Sprintf(messageFmt, args...))
+	recorder.generateEvent(object, annotations, eventtype, reason, fmt.Sprintf(messageFmt, args...))
 }
 
 func (recorder *recorderImpl) makeEvent(ref *v1.ObjectReference, annotations map[string]string, eventtype, reason, message string) *v1.Event {
