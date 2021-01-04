@@ -210,16 +210,6 @@ func TestNodeGetCapabilities(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestNodeGetVolumeStats(t *testing.T) {
-	d := NewFakeDriver()
-	req := csi.NodeGetVolumeStatsRequest{}
-	resp, err := d.NodeGetVolumeStats(context.Background(), &req)
-	assert.Nil(t, resp)
-	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
-		t.Errorf("Unexpected error: %v", err)
-	}
-}
-
 func TestNodeExpandVolume(t *testing.T) {
 	d := NewFakeDriver()
 	req := csi.NodeExpandVolumeRequest{}
@@ -562,5 +552,51 @@ func TestMakeDir(t *testing.T) {
 
 	// Remove the directory created
 	err = os.RemoveAll(targetTest)
+	assert.NoError(t, err)
+}
+
+func TestNodeGetVolumeStats(t *testing.T) {
+	nonexistedPath := "/not/a/real/directory"
+	fakePath := "/tmp/fake-volume-path"
+
+	tests := []struct {
+		desc        string
+		req         csi.NodeGetVolumeStatsRequest
+		expectedErr error
+	}{
+		{
+			desc:        "[Error] Volume ID missing",
+			req:         csi.NodeGetVolumeStatsRequest{VolumePath: fakePath},
+			expectedErr: status.Error(codes.InvalidArgument, "NodeGetVolumeStats volume ID was empty"),
+		},
+		{
+			desc:        "[Error] VolumePath missing",
+			req:         csi.NodeGetVolumeStatsRequest{VolumeId: "vol_1"},
+			expectedErr: status.Error(codes.InvalidArgument, "NodeGetVolumeStats volume path was empty"),
+		},
+		{
+			desc:        "[Error] Incorrect volume path",
+			req:         csi.NodeGetVolumeStatsRequest{VolumePath: nonexistedPath, VolumeId: "vol_1"},
+			expectedErr: status.Errorf(codes.NotFound, "path /not/a/real/directory does not exist"),
+		},
+		{
+			desc:        "[Success] Standard success",
+			req:         csi.NodeGetVolumeStatsRequest{VolumePath: fakePath, VolumeId: "vol_1"},
+			expectedErr: nil,
+		},
+	}
+
+	// Setup
+	_ = makeDir(fakePath)
+	d := NewFakeDriver()
+	for _, test := range tests {
+		_, err := d.NodeGetVolumeStats(context.Background(), &test.req)
+		if !reflect.DeepEqual(err, test.expectedErr) {
+			t.Errorf("desc: %v, expected error: %v, actual error: %v", test.desc, test.expectedErr, err)
+		}
+	}
+
+	// Clean up
+	err := os.RemoveAll(fakePath)
 	assert.NoError(t, err)
 }
