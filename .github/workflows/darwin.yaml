@@ -1,9 +1,7 @@
 name: MacOS Unit Tests
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    pull_request: {}
+    push: {}
 
 jobs:
 
