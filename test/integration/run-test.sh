@@ -70,6 +70,10 @@ echo 'Mount volume test:'
 "$CSC_BIN" node publish --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" --target-path "$target_path" "$volumeid"
 sleep 2
 
+echo "node stats test:"
+csc node stats --endpoint "$endpoint" "$volumeid:$target_path:$staging_target_path"
+sleep 2
+
 echo 'Unmount volume test:'
 "$CSC_BIN" node unpublish --endpoint "$endpoint" --target-path "$target_path" "$volumeid"
 sleep 2
