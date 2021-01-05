@@ -77,6 +77,7 @@ func (d *Driver) Run(endpoint, kubeconfig string, testMode bool) {
 	})
 
 	d.AddNodeServiceCapabilities([]csi.NodeServiceCapability_RPC_Type{
+		csi.NodeServiceCapability_RPC_GET_VOLUME_STATS,
 		csi.NodeServiceCapability_RPC_STAGE_UNSTAGE_VOLUME,
 	})
 
