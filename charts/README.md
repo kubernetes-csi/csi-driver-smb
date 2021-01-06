@@ -4,7 +4,7 @@ Quick start instructions for the setup and configuration of SMB CSI driver using
 
 ## Prerequisites
 
-1. [install Helm Client 3.0+ ](https://helm.sh/docs/intro/quickstart/#install-helm)
+ - [install Helm](https://helm.sh/docs/intro/quickstart/#install-helm)
 
 ## Install latest CSI Driver via `helm install`
 
@@ -30,7 +30,7 @@ $ helm search repo -l csi-driver-smb/
 $ helm uninstall csi-driver-smb -n kube-system
 ```
 
-## The Latest Helm Chart Configuration
+## Latest Helm Chart Configuration
 
 The following table lists the configurable parameters of the latest SMB CSI Driver chart and their default values.
 
@@ -66,10 +66,5 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `kubelet.windowsPath`                             | configure the kubelet path for Windows node                | `'C:\var\lib\kubelet'`                                            |
 
 ## Troubleshooting
-
-If there are some errors when using helm to install, follow the steps to debug:
-
-1. Add `--wait -v=5 --debug` in `helm install` command.
-2. Then the error pods  can be located.
-3. Use `kubectl describe` to acquire more info.
-4. Check the related resource of the pod, such as serviceaacount, rbac, etc.
+ - Add `--wait -v=5 --debug` in `helm install` command to get detailed error
+ - Use `kubectl describe` to acquire more info
