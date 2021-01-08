@@ -21,6 +21,8 @@ function cleanup {
   pkill -f smbplugin
   echo 'Deleting CSI sanity test binary'
   rm -rf csi-test
+  echo 'Uninstalling samba server on localhost'
+  docker rm samba -f
 }
 trap cleanup EXIT
 
@@ -36,6 +38,13 @@ function install_csi_sanity_bin {
   popd
 }
 
+function provision_samba_server {
+  echo 'Running samba server on localhost'
+  docker run -it --name samba -p 139:139 -p 445:445 -v $(pwd)/sambashare:/sambashare -e SHARE="samba;/sambashare" -d dperson/samba:latest -p
+}
+
+provision_samba_server
+
 if [[ -z "$(command -v csi-sanity)" ]]; then
 	install_csi_sanity_bin
 fi
@@ -50,4 +59,4 @@ _output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 
 echo 'Begin to run sanity test...'
 readonly CSI_SANITY_BIN='csi-sanity'
-"$CSI_SANITY_BIN" --ginkgo.v --ginkgo.noColor --csi.endpoint="$endpoint" --ginkgo.skip='should fail when the requested volume does not exist|should work|create a volume with already existing name and different capacity|should be idempotent|should fail when volume does not exist on the specified path'
+"$CSI_SANITY_BIN" --ginkgo.v --csi.testvolumeparameters="$(pwd)/test/sanity/params.yaml" --csi.endpoint="$endpoint" --ginkgo.skip='should fail when the requested volume does not exist|should work|create a volume with already existing name and different capacity|should be idempotent'

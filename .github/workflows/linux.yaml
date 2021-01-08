@@ -39,9 +39,15 @@ jobs:
         make integration-test
 
     - name: Sanity test
+      env: 
+        isRunningGithubActions1: ${GITHUB_ACTIONS}
+        isRunningGithubActions2: ${{ github.actions }}
       run: |
         export PATH=$PATH:$HOME/.local/bin
         make
+        echo "CHECK GITHUB ACTIONS\n"
+        echo ${{ env.isRunningGithubActions1 }}
+        echo ${{ env.isRunningGithubActions2 }}
         make sanity-test
 
     - name: Send coverage
