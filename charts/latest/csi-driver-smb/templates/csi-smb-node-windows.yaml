@@ -97,8 +97,6 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          securityContext:
-            privileged: true
           volumeMounts:
             - name: kubelet-dir
               mountPath: {{ .Values.kubelet.windowsPath }}\
