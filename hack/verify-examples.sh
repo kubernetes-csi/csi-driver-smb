@@ -25,7 +25,7 @@ kubectl apply -f deploy/example/statefulset-nonroot.yaml
 echo "sleep 90s ..."
 sleep 90
 
-kubectl get pods --field-selector status.phase=Running | grep deployment-blob
+kubectl get pods --field-selector status.phase=Running | grep deployment-smb
 kubectl get pods --field-selector status.phase=Running | grep statefulset-smb-0
 kubectl get pods --field-selector status.phase=Running | grep statefulset-smb-nonroot-0
 
