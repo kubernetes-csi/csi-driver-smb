@@ -200,7 +200,4 @@ create-metrics-svc:
 
 .PHONY: create-example-deployment
 create-example-deployment:
-	kubectl apply -f deploy/example/storageclass-smb.yaml
-	kubectl apply -f deploy/example/pvc-smb.yaml
-	kubectl apply -f deploy/example/deployment.yaml
-	kubectl apply -f deploy/example/statefulset.yaml
+	./hack/verify-examples.sh
