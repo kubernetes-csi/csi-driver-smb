@@ -69,8 +69,10 @@ func TestNodeStageVolume(t *testing.T) {
 
 	tests := []struct {
 		desc        string
+		setup       func(*Driver)
 		req         csi.NodeStageVolumeRequest
 		expectedErr testutil.TestError
+		cleanup     func(*Driver)
 
 		// use this field only when Windows
 		// gives flaky error messages due
@@ -121,6 +123,22 @@ func TestNodeStageVolume(t *testing.T) {
 			},
 		},
 		{
+			desc: "[Error] Volume operation in progress",
+			setup: func(d *Driver) {
+				d.volumeLocks.TryAcquire("vol_1")
+			},
+			req: csi.NodeStageVolumeRequest{VolumeId: "vol_1", StagingTargetPath: sourceTest,
+				VolumeCapability: &stdVolCap,
+				VolumeContext:    volContext,
+				Secrets:          secrets},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.Aborted, fmt.Sprintf(volumeOperationAlreadyExistsFmt, "vol_1")),
+			},
+			cleanup: func(d *Driver) {
+				d.volumeLocks.Release("vol_1")
+			},
+		},
+		{
 			desc: "[Error] Failed SMB mount mocked by MountSensitive",
 			req: csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: errorMountSensSource,
 				VolumeCapability: &stdVolCap,
@@ -159,6 +177,9 @@ func TestNodeStageVolume(t *testing.T) {
 		}
 		d.mounter = mounter
 
+		if test.setup != nil {
+			test.setup(d)
+		}
 		_, err = d.NodeStageVolume(context.Background(), &test.req)
 
 		// separate assertion for flaky error messages
@@ -170,6 +191,9 @@ func TestNodeStageVolume(t *testing.T) {
 			if !testutil.AssertError(&test.expectedErr, err) {
 				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.expectedErr.GetExpectedError())
 			}
+		}
+		if test.cleanup != nil {
+			test.cleanup(d)
 		}
 	}
 
@@ -230,9 +254,11 @@ func TestNodePublishVolume(t *testing.T) {
 
 	tests := []struct {
 		desc          string
+		setup         func(*Driver)
 		req           csi.NodePublishVolumeRequest
 		skipOnWindows bool
 		expectedErr   testutil.TestError
+		cleanup       func(*Driver)
 	}{
 		{
 			desc: "[Error] Volume capabilities missing",
@@ -276,6 +302,23 @@ func TestNodePublishVolume(t *testing.T) {
 			expectedErr: testutil.TestError{
 				DefaultError: status.Errorf(codes.Internal, "Could not mount target \"%s\": mkdir %s: not a directory", smbFile, smbFile),
 				WindowsError: status.Errorf(codes.Internal, "Could not mount target %#v: mkdir %s: The system cannot find the path specified.", smbFile, smbFile),
+			},
+		},
+		{
+			desc: "[Error] Volume operation in progress",
+			setup: func(d *Driver) {
+				d.volumeLocks.TryAcquire("vol_1")
+			},
+			req: csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: sourceTest,
+				Readonly:          true},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.Aborted, fmt.Sprintf(volumeOperationAlreadyExistsFmt, "vol_1")),
+			},
+			cleanup: func(d *Driver) {
+				d.volumeLocks.Release("vol_1")
 			},
 		},
 		{
@@ -332,9 +375,15 @@ func TestNodePublishVolume(t *testing.T) {
 
 	for _, test := range tests {
 		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+			if test.setup != nil {
+				test.setup(d)
+			}
 			_, err := d.NodePublishVolume(context.Background(), &test.req)
 			if !testutil.AssertError(&test.expectedErr, err) {
 				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.expectedErr.GetExpectedError())
+			}
+			if test.cleanup != nil {
+				test.cleanup(d)
 			}
 		}
 	}
@@ -353,9 +402,11 @@ func TestNodeUnpublishVolume(t *testing.T) {
 
 	tests := []struct {
 		desc          string
+		setup         func(*Driver)
 		req           csi.NodeUnpublishVolumeRequest
 		expectedErr   testutil.TestError
 		skipOnWindows bool
+		cleanup       func(*Driver)
 	}{
 		{
 			desc: "[Error] Volume ID missing",
@@ -369,6 +420,19 @@ func TestNodeUnpublishVolume(t *testing.T) {
 			req:  csi.NodeUnpublishVolumeRequest{VolumeId: "vol_1"},
 			expectedErr: testutil.TestError{
 				DefaultError: status.Error(codes.InvalidArgument, "Target path missing in request"),
+			},
+		},
+		{
+			desc: "[Error] Volume operation in progress",
+			setup: func(d *Driver) {
+				d.volumeLocks.TryAcquire("vol_1")
+			},
+			req: csi.NodeUnpublishVolumeRequest{TargetPath: targetFile, VolumeId: "vol_1"},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.Aborted, fmt.Sprintf(volumeOperationAlreadyExistsFmt, "vol_1")),
+			},
+			cleanup: func(d *Driver) {
+				d.volumeLocks.Release("vol_1")
 			},
 		},
 		{
@@ -399,9 +463,15 @@ func TestNodeUnpublishVolume(t *testing.T) {
 
 	for _, test := range tests {
 		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+			if test.setup != nil {
+				test.setup(d)
+			}
 			_, err := d.NodeUnpublishVolume(context.Background(), &test.req)
 			if !testutil.AssertError(&test.expectedErr, err) {
 				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.expectedErr.GetExpectedError())
+			}
+			if test.cleanup != nil {
+				test.cleanup(d)
 			}
 		}
 	}
@@ -418,9 +488,11 @@ func TestNodeUnstageVolume(t *testing.T) {
 
 	tests := []struct {
 		desc          string
+		setup         func(*Driver)
 		req           csi.NodeUnstageVolumeRequest
 		skipOnWindows bool
 		expectedErr   testutil.TestError
+		cleanup       func(*Driver)
 	}{
 		{
 			desc: "[Error] Volume ID missing",
@@ -434,6 +506,19 @@ func TestNodeUnstageVolume(t *testing.T) {
 			req:  csi.NodeUnstageVolumeRequest{VolumeId: "vol_1"},
 			expectedErr: testutil.TestError{
 				DefaultError: status.Error(codes.InvalidArgument, "Staging target not provided"),
+			},
+		},
+		{
+			desc: "[Error] Volume operation in progress",
+			setup: func(d *Driver) {
+				d.volumeLocks.TryAcquire("vol_1")
+			},
+			req: csi.NodeUnstageVolumeRequest{StagingTargetPath: targetFile, VolumeId: "vol_1"},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.Aborted, fmt.Sprintf(volumeOperationAlreadyExistsFmt, "vol_1")),
+			},
+			cleanup: func(d *Driver) {
+				d.volumeLocks.Release("vol_1")
 			},
 		},
 		{
@@ -462,12 +547,17 @@ func TestNodeUnstageVolume(t *testing.T) {
 
 	for _, test := range tests {
 		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+			if test.setup != nil {
+				test.setup(d)
+			}
 			_, err := d.NodeUnstageVolume(context.Background(), &test.req)
 			if !testutil.AssertError(&test.expectedErr, err) {
 				t.Errorf("test case: %s, \nUnexpected error: %v\nExpected error: %v", test.desc, err, test.expectedErr.GetExpectedError())
 			}
+			if test.cleanup != nil {
+				test.cleanup(d)
+			}
 		}
-
 	}
 
 	// Clean up
