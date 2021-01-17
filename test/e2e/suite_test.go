@@ -227,6 +227,8 @@ func convertToPowershellCommandIfNecessary(command string) string {
 		return "while (1) { Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt $(Get-Date -Format u); sleep 1 }"
 	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 100; done":
 		return "Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
+	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 3600; done":
+		return "Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
 	}
 
 	return command
