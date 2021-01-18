@@ -140,8 +140,8 @@ var _ = ginkgo.AfterSuite(func() {
 	if testutil.IsRunningInProw() {
 		if !isWindowsCluster {
 			createExampleDeployment := testCmd{
-				command:  "make",
-				args:     []string{"create-example-deployment"},
+				command:  "bash",
+				args:     []string{"hack/verify-examples.sh"},
 				startLog: "create example deployments",
 				endLog:   "example deployments created",
 			}
