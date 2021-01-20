@@ -197,7 +197,3 @@ endif
 .PHONY: create-metrics-svc
 create-metrics-svc:
 	kubectl create -f deploy/example/metrics/csi-smb-controller-svc.yaml
-
-.PHONY: create-example-deployment
-create-example-deployment:
-	./hack/verify-examples.sh

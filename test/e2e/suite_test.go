@@ -140,8 +140,8 @@ var _ = ginkgo.AfterSuite(func() {
 	if testutil.IsRunningInProw() {
 		if !isWindowsCluster {
 			createExampleDeployment := testCmd{
-				command:  "make",
-				args:     []string{"create-example-deployment"},
+				command:  "bash",
+				args:     []string{"hack/verify-examples.sh"},
 				startLog: "create example deployments",
 				endLog:   "example deployments created",
 			}
@@ -226,6 +226,8 @@ func convertToPowershellCommandIfNecessary(command string) string {
 	case "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 100; done":
 		return "while (1) { Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt $(Get-Date -Format u); sleep 1 }"
 	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 100; done":
+		return "Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
+	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 3600; done":
 		return "Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
 	}
 
