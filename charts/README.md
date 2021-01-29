@@ -17,6 +17,7 @@ $ helm install csi-driver-smb csi-driver-smb-latest.tgz --namespace kube-system
 ### Install a specific version of Helm chart
 Specify the version of the chart to be installed using the `--version` parameter.
 ```console
+helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v0.6.0
 ```
 
