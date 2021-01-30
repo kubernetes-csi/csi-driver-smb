@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: latest
 description: SMB CSI Driver for Kubernetes
 name: csi-driver-smb
-version: latest
+version: v0.7.0
