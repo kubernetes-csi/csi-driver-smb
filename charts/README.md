@@ -1,39 +1,33 @@
-# Installation with Helm 3
-
-Quick start instructions for the setup and configuration of SMB CSI driver using Helm.
+# Install CSI driver with Helm 3
 
 ## Prerequisites
-
  - [install Helm](https://helm.sh/docs/intro/quickstart/#install-helm)
 
-## Install latest CSI Driver via `helm install`
-
+## install latest version
 ```console
-$ cd $GOPATH/src/github.com/kubernetes-csi/csi-driver-smb/charts/latest
-$ helm package csi-driver-smb
-$ helm install csi-driver-smb csi-driver-smb-latest.tgz --namespace kube-system
+helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-sigs/csi-driver-smb/master/charts
+helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system
 ```
 
-### Install a specific version of Helm chart
-Specify the version of the chart to be installed using the `--version` parameter.
+### install a specific version
 ```console
-helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-sigs/csi-driver-smb/master/charts
 helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v0.6.0
 ```
 
-### Search for different versions of charts available
+### search for all available chart versions
 ```console
-$ helm search repo -l csi-driver-smb/
+helm search repo -l csi-driver-smb
 ```
 
-## Uninstall
+## uninstall CSI driver
 ```console
-$ helm uninstall csi-driver-smb -n kube-system
+helm uninstall csi-driver-smb -n kube-system
 ```
 
-## Latest Helm Chart Configuration
+## latest chart configuration
 
-The following table lists the configurable parameters of the latest SMB CSI Driver chart and their default values.
+The following table lists the configurable parameters of the latest SMB CSI Driver chart and default values.
 
 | Parameter                                         | Description                                                | Default                                                           |
 |---------------------------------------------------|------------------------------------------------------------|-------------------------------------------------------------------|
@@ -66,6 +60,6 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `kubelet.linuxPath`                               | configure the kubelet path for Linux node                  | `/var/lib/kubelet`                                                |
 | `kubelet.windowsPath`                             | configure the kubelet path for Windows node                | `'C:\var\lib\kubelet'`                                            |
 
-## Troubleshooting
+## troubleshooting
  - Add `--wait -v=5 --debug` in `helm install` command to get detailed error
  - Use `kubectl describe` to acquire more info
