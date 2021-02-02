@@ -1,7 +1,7 @@
 # CSI Driver on Windows
 
 ## Feature Status: Beta
-Refer to [Windows-CSI-Support](https://github.com/kubernetes/enhancements/blob/master/keps/sig-windows/20190714-windows-csi-support.md) for more details.
+Refer to [Windows-CSI-Support](https://github.com/kubernetes/enhancements/tree/master/keps/sig-windows/1122-windows-csi-support) for more details.
 
 ## Prerequisite
 - [Install CSI-Proxy on Windows Node](https://github.com/Azure/aks-engine/blob/master/docs/topics/csi-proxy-windows.md)
