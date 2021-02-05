@@ -27,7 +27,7 @@ spec:
         - name: csi-provisioner
           image: k8s.gcr.io/sig-storage/csi-provisioner:v2.0.4
           args:
-            - "-v=5"
+            - "-v=2"
             - "--csi-address=$(ADDRESS)"
             - "--leader-election"
           env:
@@ -44,12 +44,12 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: liveness-probe
-          image: k8s.gcr.io/sig-storage/livenessprobe:v2.1.0
+          image: k8s.gcr.io/sig-storage/livenessprobe:v2.2.0
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
             - --health-port=29642
-            - --v=5
+            - --v=2
           volumeMounts:
             - name: socket-dir
               mountPath: /csi

@@ -21,12 +21,12 @@ spec:
           volumeMounts:
             - mountPath: C:\csi
               name: plugin-dir
-          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.0.1-alpha.1-windows-1809-amd64
+          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.2.0
           args:
             - --csi-address=$(CSI_ENDPOINT)
             - --probe-timeout=3s
             - --health-port=29643
-            - --v=5
+            - --v=2
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
@@ -40,7 +40,7 @@ spec:
         - name: node-driver-registrar
           image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.0.1
           args:
-            - --v=5
+            - --v=2
             - --csi-address=$(CSI_ENDPOINT)
             - --kubelet-registration-path=C:\\var\\lib\\kubelet\\plugins\\smb.csi.k8s.io\\csi.sock
           env:

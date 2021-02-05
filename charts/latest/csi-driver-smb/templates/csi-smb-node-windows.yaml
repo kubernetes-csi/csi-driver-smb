@@ -28,7 +28,7 @@ spec:
             - --csi-address=$(CSI_ENDPOINT)
             - --probe-timeout=3s
             - --health-port=29643
-            - --v=5
+            - --v=2
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
@@ -43,7 +43,7 @@ spec:
         - name: node-driver-registrar
           image: "{{ .Values.windows.image.nodeDriverRegistrar.repository }}:{{ .Values.windows.image.nodeDriverRegistrar.tag }}"
           args:
-            - --v=5
+            - --v=2
             - --csi-address=$(CSI_ENDPOINT)
             - --kubelet-registration-path={{ .Values.kubelet.windowsPath }}\\plugins\\smb.csi.k8s.io\\csi.sock
           env:
@@ -97,8 +97,6 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          securityContext:
-            privileged: true
           volumeMounts:
             - name: kubelet-dir
               mountPath: {{ .Values.kubelet.windowsPath }}\

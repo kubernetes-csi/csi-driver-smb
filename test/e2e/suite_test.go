@@ -26,7 +26,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 	"github.com/kubernetes-csi/csi-driver-smb/test/utils/testutil"
@@ -139,15 +138,15 @@ var _ = ginkgo.BeforeSuite(func() {
 
 var _ = ginkgo.AfterSuite(func() {
 	if testutil.IsRunningInProw() {
-		createExampleDeployment := testCmd{
-			command:  "make",
-			args:     []string{"create-example-deployment"},
-			startLog: "create example deployments",
-			endLog:   "example deployments created",
+		if !isWindowsCluster {
+			createExampleDeployment := testCmd{
+				command:  "bash",
+				args:     []string{"hack/verify-examples.sh"},
+				startLog: "create example deployments",
+				endLog:   "example deployments created",
+			}
+			execTestCmd([]testCmd{createExampleDeployment})
 		}
-		execTestCmd([]testCmd{createExampleDeployment})
-		// sleep 120s waiting for deployment running complete
-		time.Sleep(120 * time.Second)
 
 		smbLog := testCmd{
 			command:  "bash",
@@ -227,6 +226,8 @@ func convertToPowershellCommandIfNecessary(command string) string {
 	case "while true; do echo $(date -u) >> /mnt/test-1/data; sleep 100; done":
 		return "while (1) { Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt $(Get-Date -Format u); sleep 1 }"
 	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 100; done":
+		return "Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
+	case "echo 'hello world' >> /mnt/test-1/data && while true; do sleep 3600; done":
 		return "Add-Content -Encoding Unicode C:\\mnt\\test-1\\data.txt 'hello world'; while (1) { sleep 1 }"
 	}
 

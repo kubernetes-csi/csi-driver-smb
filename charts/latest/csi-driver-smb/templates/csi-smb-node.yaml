@@ -32,7 +32,7 @@ spec:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
             - --health-port=29643
-            - --v=5
+            - --v=2
           imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           resources:
             limits:
@@ -46,7 +46,7 @@ spec:
           args:
             - --csi-address=$(ADDRESS)
             - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
-            - --v=5
+            - --v=2
           lifecycle:
             preStop:
               exec:

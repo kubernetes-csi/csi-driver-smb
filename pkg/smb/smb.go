@@ -37,6 +37,9 @@ const (
 type Driver struct {
 	csicommon.CSIDriver
 	mounter *mount.SafeFormatAndMount
+	// A map storing all volumes with ongoing operations so that additional operations
+	// for that same volume (as defined by VolumeID) return an Aborted error
+	volumeLocks *volumeLocks
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -46,6 +49,7 @@ func NewDriver(nodeID string) *Driver {
 	driver.Name = DriverName
 	driver.Version = driverVersion
 	driver.NodeID = nodeID
+	driver.volumeLocks = newVolumeLocks()
 	return &driver
 }
 
