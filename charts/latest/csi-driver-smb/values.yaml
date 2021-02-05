@@ -25,6 +25,7 @@ rbac:
 controller:
   replicas: 2
   metricsPort: 29644
+  runOnMaster: false
 
 node:
   metricsPort: 29645
