@@ -26,9 +26,11 @@ controller:
   replicas: 2
   metricsPort: 29644
   runOnMaster: false
+  logLevel: 5
 
 node:
   metricsPort: 29645
+  logLevel: 5
 
 linux:
   enabled: true
