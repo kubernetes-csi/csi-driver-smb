@@ -73,7 +73,7 @@ spec:
           image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
           imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           args:
-            - "--v=5"
+            - "--v={{ .Values.node.logLevel }}"
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
             - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"

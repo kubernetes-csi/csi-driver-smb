@@ -61,6 +61,48 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	})
 
 	testDriver = driver.InitSMBDriver()
+	ginkgo.It("should create a volume after driver restart [smb.csi.k8s.io]", func() {
+		pod := testsuites.PodDetails{
+			Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' >> /mnt/test-1/data && while true; do sleep 3600; done"),
+			Volumes: []testsuites.VolumeDetails{
+				{
+					ClaimSize: "10Gi",
+					VolumeMount: testsuites.VolumeMountDetails{
+						NameGenerate:      "test-volume-",
+						MountPathGenerate: "/mnt/test-",
+					},
+				},
+			},
+			IsWindows: isWindowsCluster,
+		}
+
+		podCheckCmd := []string{"cat", "/mnt/test-1/data"}
+		expectedString := "hello world\n"
+		if isWindowsCluster {
+			podCheckCmd = []string{"powershell.exe", "-Command", "Get-Content C:\\mnt\\test-1\\data.txt"}
+			expectedString = "hello world\r\n"
+		}
+		test := testsuites.DynamicallyProvisionedRestartDriverTest{
+			CSIDriver: testDriver,
+			Pod:       pod,
+			PodCheck: &testsuites.PodExecCheck{
+				Cmd:            podCheckCmd,
+				ExpectedString: expectedString,
+			},
+			StorageClassParameters: storageClassCreateSubDir,
+			RestartDriverFunc: func() {
+				restartDriver := testCmd{
+					command:  "bash",
+					args:     []string{"test/utils/restart_driver_daemonset.sh"},
+					startLog: "Restart driver node daemonset ...",
+					endLog:   "Restart driver node daemonset done successfully",
+				}
+				execTestCmd([]testCmd{restartDriver})
+			},
+		}
+		test.Run(cs, ns)
+	})
+
 	ginkgo.It("should create a volume on demand with mount options [smb.csi.k8s.io] [Windows]", func() {
 		pods := []testsuites.PodDetails{
 			{
@@ -289,48 +331,6 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			CSIDriver:              testDriver,
 			Pods:                   pods,
 			StorageClassParameters: storageClassCreateSubDir,
-		}
-		test.Run(cs, ns)
-	})
-
-	ginkgo.It("should create a volume after driver restart [smb.csi.k8s.io]", func() {
-		pod := testsuites.PodDetails{
-			Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' >> /mnt/test-1/data && while true; do sleep 3600; done"),
-			Volumes: []testsuites.VolumeDetails{
-				{
-					ClaimSize: "10Gi",
-					VolumeMount: testsuites.VolumeMountDetails{
-						NameGenerate:      "test-volume-",
-						MountPathGenerate: "/mnt/test-",
-					},
-				},
-			},
-			IsWindows: isWindowsCluster,
-		}
-
-		podCheckCmd := []string{"cat", "/mnt/test-1/data"}
-		expectedString := "hello world\n"
-		if isWindowsCluster {
-			podCheckCmd = []string{"powershell.exe", "-Command", "Get-Content C:\\mnt\\test-1\\data.txt"}
-			expectedString = "hello world\r\n"
-		}
-		test := testsuites.DynamicallyProvisionedRestartDriverTest{
-			CSIDriver: testDriver,
-			Pod:       pod,
-			PodCheck: &testsuites.PodExecCheck{
-				Cmd:            podCheckCmd,
-				ExpectedString: expectedString,
-			},
-			StorageClassParameters: storageClassCreateSubDir,
-			RestartDriverFunc: func() {
-				restartDriver := testCmd{
-					command:  "bash",
-					args:     []string{"test/utils/restart_driver_daemonset.sh"},
-					startLog: "Restart driver node daemonset ...",
-					endLog:   "Restart driver node daemonset done successfully",
-				}
-				execTestCmd([]testCmd{restartDriver})
-			},
 		}
 		test.Run(cs, ns)
 	})
