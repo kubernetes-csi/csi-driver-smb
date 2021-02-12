@@ -28,7 +28,7 @@ IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
 IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
 BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 LDFLAGS ?= "-X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
-E2E_HELM_OPTIONS ?= --set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) --set image.smb.tag=$(IMAGE_VERSION) --set controller.logLevel=8 --set node.logLevel=8
+E2E_HELM_OPTIONS ?= --set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) --set image.smb.tag=$(IMAGE_VERSION)
 GINKGO_FLAGS = -ginkgo.v
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
@@ -95,7 +95,9 @@ ifdef TEST_WINDOWS
 		${E2E_HELM_OPTIONS} \
 		--set windows.enabled=true \
 		--set linux.enabled=false \
-		--set controller.replicas=1
+		--set controller.replicas=1 \
+		--set controller.logLevel=6 \
+		--set node.logLevel=6
 else
 	helm install csi-driver-smb charts/latest/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug \
 		${E2E_HELM_OPTIONS}

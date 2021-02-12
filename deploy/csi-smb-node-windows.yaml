@@ -13,6 +13,10 @@ spec:
       labels:
         app: csi-smb-node-win
     spec:
+      tolerations:
+        - key: "node.kubernetes.io/os"
+          operator: "Exists"
+          effect: "NoSchedule"
       nodeSelector:
         kubernetes.io/os: windows
       priorityClassName: system-node-critical
