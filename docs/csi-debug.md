@@ -29,7 +29,19 @@ $ kubectl logs csi-smb-node-cvgbs -c smb -n kube-system > csi-smb-node.log
 ```
 
 ### troubleshooting connection failure on agent node
+ - On Linux node
 ```console
 mkdir /tmp/test
 sudo mount -v -t cifs //smb-server/fileshare /tmp/test -o ...
+```
+
+ - On Windows node
+```console
+$User = "AZURE\USERNAME"
+$PWord = ConvertTo-SecureString -String "PASSWORD" -AsPlainText -Force
+$Credential = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $User, $Pword
+New-SmbGlobalMapping -LocalPath x: -RemotePath \\smb-server\fileshare -Credential $Credential
+Get-SmbGlobalMapping
+cd x:
+dir
 ```
