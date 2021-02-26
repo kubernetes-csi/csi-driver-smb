@@ -13,6 +13,7 @@ parameters:
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
   csi.storage.k8s.io/node-stage-secret-namespace: "default"
   createSubDir: "false"  # optional: create a sub dir for new volume
+  nobrl: "false"  # optional: add "nobrl" mount option; use with caution
 reclaimPolicy: Retain  # only retain is supported
 volumeBindingMode: Immediate
 mountOptions:

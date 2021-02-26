@@ -90,11 +90,18 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 
 	context := req.GetVolumeContext()
 	var createSubDir string
+	var nobrl string
 	for k, v := range context {
 		switch strings.ToLower(k) {
 		case createSubDirField:
 			createSubDir = v
+		case nobrlField:
+			nobrl = v
 		}
+	}
+
+	if strings.EqualFold(nobrl, "true") {
+		mountOptions = append(mountOptions, "nobrl")
 	}
 
 	if strings.EqualFold(createSubDir, "true") {
@@ -168,6 +175,18 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	source, ok := context[sourceField]
 	if !ok {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("%s field is missing, current context: %v", sourceField, context))
+	}
+
+	var nobrl string
+	for k, v := range context {
+		switch strings.ToLower(k) {
+		case nobrlField:
+			nobrl = v
+		}
+	}
+
+	if strings.EqualFold(nobrl, "true") {
+		mountFlags = append(mountFlags, "nobrl")
 	}
 
 	if acquired := d.volumeLocks.TryAcquire(volumeID); !acquired {
