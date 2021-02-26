@@ -12,6 +12,6 @@ go get github.com/rexray/gocsi/csc
 ### Run integration tests
 ```console
 export GOBIN="/root/go/bin"
-make test-integration
+make integration-test
 ```
 
