@@ -110,7 +110,7 @@ spec:
               name: mountpoint-dir
           resources:
             limits:
-              cpu: 200m
+              cpu: 400m
               memory: 200Mi
             requests:
               cpu: 10m
