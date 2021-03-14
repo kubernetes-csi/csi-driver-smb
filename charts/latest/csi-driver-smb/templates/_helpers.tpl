@@ -1,13 +1,18 @@
 {{/* vim: set filetype=mustache: */}}
 
+{{/* Expand the name of the chart.*/}}
+{{- define "smb.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/* labels for helm resources */}}
 {{- define "smb.labels" -}}
 labels:
-  heritage: "{{ .Release.Service }}"
-  release: "{{ .Release.Name }}"
-  revision: "{{ .Release.Revision }}"
-  chart: "{{ .Chart.Name }}"
-  chartVersion: "{{ .Chart.Version }}"
+  app.kubernetes.io/instance: "{{ .Release.Name }}"
+  app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+  app.kubernetes.io/name: "{{ template "smb.name" . }}"
+  app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+  helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 {{- end -}}
 
 {{/* pull secrets for containers */}}
