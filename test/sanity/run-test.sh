@@ -18,10 +18,20 @@ set -eo pipefail
 
 function cleanup {
   echo 'pkill -f smbplugin'
-  pkill -f smbplugin
+  if [ -z "$GITHUB_ACTIONS" ]
+  then
+    # if not running on github actions, do not use sudo
+    pkill -f smbplugin
+  else
+    # if running on github actions, use sudo
+    sudo pkill -f smbplugin
+  fi
   echo 'Deleting CSI sanity test binary'
   rm -rf csi-test
+  echo 'Uninstalling samba server on localhost'
+  docker rm samba -f
 }
+
 trap cleanup EXIT
 
 function install_csi_sanity_bin {
@@ -36,6 +46,13 @@ function install_csi_sanity_bin {
   popd
 }
 
+function provision_samba_server {
+  echo 'Running samba server on localhost'
+  docker run -e PERMISSIONS=0777 -p 445:445 --name samba -d andyzhangx/samba:win-fix -s "share;/smbshare/;yes;no;no;all;none" -u "sanity;sanitytestpassword" -p
+}
+
+provision_samba_server
+
 if [[ -z "$(command -v csi-sanity)" ]]; then
 	install_csi_sanity_bin
 fi
@@ -46,8 +63,22 @@ if [[ "$#" -gt 0 ]] && [[ -n "$1" ]]; then
   nodeid="$1"
 fi
 
-_output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+if [ -z "$GITHUB_ACTIONS" ]
+then
+  # if not running on github actions, do not use sudo
+  _output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+else
+  # if running on github actions, use sudo
+  sudo _output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+fi
 
 echo 'Begin to run sanity test...'
-readonly CSI_SANITY_BIN='csi-sanity'
-"$CSI_SANITY_BIN" --ginkgo.v --ginkgo.noColor --csi.endpoint="$endpoint" --ginkgo.skip='should fail when the requested volume does not exist|should work|create a volume with already existing name and different capacity|should be idempotent|should fail when volume does not exist on the specified path'
+CSI_SANITY_BIN=$GOPATH/bin/csi-sanity
+if [ -z "$GITHUB_ACTIONS" ]
+then
+  # if not running on github actions, do not use sudo
+  "$CSI_SANITY_BIN" --ginkgo.v --csi.secrets="$(pwd)/test/sanity/secrets.yaml" --csi.testvolumeparameters="$(pwd)/test/sanity/params.yaml" --csi.endpoint="$endpoint" --ginkgo.skip='should fail when the requested volume does not exist|should work|create a volume with already existing name and different capacity|should be idempotent'
+else
+  # if running on github actions, use sudo
+  sudo "$CSI_SANITY_BIN" --ginkgo.v --csi.secrets="$(pwd)/test/sanity/secrets.yaml" --csi.testvolumeparameters="$(pwd)/test/sanity/params.yaml" --csi.endpoint="$endpoint" --ginkgo.skip='should fail when the requested volume does not exist|should work|create a volume with already existing name and different capacity|should be idempotent'
+fi
