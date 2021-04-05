@@ -39,9 +39,12 @@ jobs:
         make integration-test
 
     - name: Sanity test
+      env:
+        GITHUB_ACTIONS: true
       run: |
         export PATH=$PATH:$HOME/.local/bin
         make
+        echo "is running in github actions: $GITHUB_ACTIONS"
         make sanity-test
 
     - name: Send coverage
