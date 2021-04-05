@@ -334,6 +334,30 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		}
 		test.Run(cs, ns)
 	})
+
+	ginkgo.It("should create a pod with volume mount subpath [smb.csi.k8s.io] [Windows]", func() {
+		pods := []testsuites.PodDetails{
+			{
+				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
+				Volumes: []testsuites.VolumeDetails{
+					{
+						ClaimSize: "10Gi",
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+				IsWindows: isWindowsCluster,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedVolumeSubpathTester{
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: storageClassCreateSubDir,
+		}
+		test.Run(cs, ns)
+	})
 })
 
 func restClient(group string, version string) (restclientset.Interface, error) {
