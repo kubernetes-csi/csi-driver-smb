@@ -27,6 +27,10 @@ spec:
           operator: "Equal"
           value: "true"
           effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/controlplane"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: csi-provisioner
