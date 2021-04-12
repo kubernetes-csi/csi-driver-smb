@@ -18,6 +18,11 @@ $ make
 $ make verify
 ```
 
+ - If there is config file changed under `charts` directory, run following command to update chart file
+```console
+helm package charts/latest/csi-driver-smb -d charts/latest/
+```
+
 ## How to test CSI driver in local environment
 
 Install `csc` tool according to https://github.com/rexray/gocsi/tree/master/csc
@@ -47,17 +52,17 @@ $ csc node stage --endpoint tcp://127.0.0.1:10000 --cap 1,block --staging-target
 ```
 
 #### 3. Publish a SMB volume on a node (bind mount the volume from staging to target path)
-```
+```console
 $ csc node publish --endpoint tcp://127.0.0.1:10000 --cap 1,block --staging-target-path=/tmp/staging-path --target-path=/tmp/publish-path volumeid
 ```
 
 #### 4. Unpublish a SMB volume on a node
-```
+```console
 $ csc node unpublish --endpoint tcp://127.0.0.1:10000 --target-path=/tmp/publish-path volumeid
 ```
 
 #### 5. Unstage a SMB volume on a node
-```
+```console
 $ csc node unstage --endpoint tcp://127.0.0.1:10000 --staging-target-path=/tmp/staging-path volumeid
 ```
 
