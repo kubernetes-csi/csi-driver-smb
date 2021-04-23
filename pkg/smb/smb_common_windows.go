@@ -24,7 +24,7 @@ import (
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
 	"k8s.io/klog/v2"
-	"k8s.io/utils/mount"
+	mount "k8s.io/mount-utils"
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {

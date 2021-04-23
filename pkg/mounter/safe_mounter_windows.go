@@ -32,8 +32,8 @@ import (
 	smbclient "github.com/kubernetes-csi/csi-proxy/client/groups/smb/v1beta1"
 
 	"k8s.io/klog/v2"
+	mount "k8s.io/mount-utils"
 	utilexec "k8s.io/utils/exec"
-	"k8s.io/utils/mount"
 )
 
 var _ mount.Interface = &CSIProxyMounter{}
@@ -235,6 +235,10 @@ func (mounter *CSIProxyMounter) GetMode(pathname string) (os.FileMode, error) {
 
 func (mounter *CSIProxyMounter) MountSensitive(source string, target string, fstype string, options []string, sensitiveOptions []string) error {
 	return fmt.Errorf("MountSensitive not implemented for CSIProxyMounter")
+}
+
+func (mounter *CSIProxyMounter) MountSensitiveWithoutSystemd(source string, target string, fstype string, options []string, sensitiveOptions []string) error {
+	return fmt.Errorf("MountSensitiveWithoutSystemd not implemented for CSIProxyMounter")
 }
 
 // NewCSIProxyMounter - creates a new CSI Proxy mounter struct which encompassed all the

@@ -21,7 +21,7 @@ package smb
 import (
 	"os"
 
-	"k8s.io/utils/mount"
+	mount "k8s.io/mount-utils"
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string, sensitiveMountOptions []string) error {
