@@ -22,7 +22,7 @@ import (
 	"github.com/container-storage-interface/spec/lib/go/csi"
 
 	"k8s.io/klog/v2"
-	"k8s.io/utils/mount"
+	mount "k8s.io/mount-utils"
 
 	csicommon "github.com/kubernetes-csi/csi-driver-smb/pkg/csi-common"
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"

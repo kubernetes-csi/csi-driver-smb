@@ -18,11 +18,12 @@ package smb
 
 import (
 	"fmt"
-	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
 	"runtime"
 	"strings"
 
-	"k8s.io/utils/mount"
+	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
+
+	mount "k8s.io/mount-utils"
 )
 
 type fakeMounter struct {

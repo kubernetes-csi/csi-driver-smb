@@ -19,8 +19,8 @@ limitations under the License.
 package mounter
 
 import (
+	mount "k8s.io/mount-utils"
 	utilexec "k8s.io/utils/exec"
-	"k8s.io/utils/mount"
 )
 
 func NewSafeMounter() (*mount.SafeFormatAndMount, error) {
