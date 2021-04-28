@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/Azure/azure-sdk-for-go v49.1.0+incompatible
-	github.com/Azure/go-autorest/autorest v0.11.1
+	github.com/Azure/go-autorest/autorest v0.11.12
 	github.com/Azure/go-autorest/autorest/adal v0.9.5
 	github.com/Azure/go-autorest/autorest/to v0.3.0
 	github.com/container-storage-interface/spec v1.3.0
@@ -18,13 +18,13 @@ require (
 	github.com/pelletier/go-toml v1.7.0
 	github.com/prometheus/client_golang v1.7.1
 	github.com/stretchr/testify v1.6.1
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
+	golang.org/x/net v0.0.0-20210224082022-3d97a244fca7
 	google.golang.org/grpc v1.28.0
-	k8s.io/api v0.20.0
-	k8s.io/apimachinery v0.20.0
-	k8s.io/client-go v0.20.0
-	k8s.io/klog/v2 v2.4.0
-	k8s.io/kubernetes v1.21.0-alpha.0.0.20201210005053-f58c4d8cd725
+	k8s.io/api v0.21.0
+	k8s.io/apimachinery v0.21.0
+	k8s.io/client-go v0.21.0
+	k8s.io/klog/v2 v2.8.0
+	k8s.io/kubernetes v1.21.0
 	k8s.io/mount-utils v0.0.0
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/yaml v1.2.0
@@ -393,36 +393,36 @@ replace (
 	gotest.tools/gotestsum => gotest.tools/gotestsum v0.3.5
 	grpc.go4.org => grpc.go4.org v0.0.0-20170609214715-11d0a25b4919
 	honnef.co/go/tools => honnef.co/go/tools v0.0.1-2019.2.3
-	k8s.io/api => k8s.io/api v0.20.0
-	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.20.0
-	k8s.io/apimachinery => k8s.io/apimachinery v0.20.0
-	k8s.io/apiserver => k8s.io/apiserver v0.20.0
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.20.0
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20201209050023-e24efdc77f15
-	k8s.io/cloud-provider => k8s.io/cloud-provider v0.20.0
-	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.20.0
-	k8s.io/code-generator => k8s.io/code-generator v0.18.2-beta.0
-	k8s.io/component-base => k8s.io/component-base v0.20.0
-	k8s.io/component-helpers => k8s.io/component-helpers v0.20.0
-	k8s.io/controller-manager => k8s.io/controller-manager v0.20.0-alpha.1.0.20201209052538-b2c380a1dc86
-	k8s.io/cri-api => k8s.io/cri-api v0.18.2-beta.0
-	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.20.0
+	k8s.io/api => k8s.io/api v0.21.0
+	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.21.0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.21.0
+	k8s.io/apiserver => k8s.io/apiserver v0.21.0
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.21.0
+	k8s.io/client-go => k8s.io/client-go v0.21.0
+	k8s.io/cloud-provider => k8s.io/cloud-provider v0.21.0
+	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.21.0
+	k8s.io/code-generator => k8s.io/code-generator v0.21.0
+	k8s.io/component-base => k8s.io/component-base v0.21.0
+	k8s.io/component-helpers => k8s.io/component-helpers v0.21.0
+	k8s.io/controller-manager => k8s.io/controller-manager v0.21.0
+	k8s.io/cri-api => k8s.io/cri-api v0.21.0
+	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.21.0
 	k8s.io/gengo => k8s.io/gengo v0.0.0-20200114144118-36b2048a9120
 	k8s.io/heapster => k8s.io/heapster v1.2.0-beta.1
-	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.20.0
-	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.20.0
+	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.21.0
+	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.21.0
 	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd
-	k8s.io/kube-proxy => k8s.io/kube-proxy v0.20.0
-	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.20.0
-	k8s.io/kubectl => k8s.io/kubectl v0.20.0
-	k8s.io/kubelet => k8s.io/kubelet v0.20.0
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.0.0-20200413192026-36f88b5f5220
-	k8s.io/metrics => k8s.io/metrics v0.20.0
-	k8s.io/mount-utils => k8s.io/mount-utils v0.21.0-alpha.0
+	k8s.io/kube-proxy => k8s.io/kube-proxy v0.21.0
+	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.21.0
+	k8s.io/kubectl => k8s.io/kubectl v0.21.0
+	k8s.io/kubelet => k8s.io/kubelet v0.21.0
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.21.0
+	k8s.io/metrics => k8s.io/metrics v0.21.0
+	k8s.io/mount-utils => k8s.io/mount-utils v0.21.0
 	k8s.io/repo-infra => k8s.io/repo-infra v0.0.1-alpha.1
-	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.20.0
-	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.20.0
-	k8s.io/sample-controller => k8s.io/sample-controller v0.20.0
+	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.21.0
+	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.21.0
+	k8s.io/sample-controller => k8s.io/sample-controller v0.21.0
 	k8s.io/system-validators => k8s.io/system-validators v1.0.4
 	k8s.io/utils => k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	modernc.org/cc => modernc.org/cc v1.0.0
