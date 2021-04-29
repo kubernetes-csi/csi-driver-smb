@@ -1,0 +1,13 @@
+# Manifest for Kubernetes external tests.
+# See https://github.com/kubernetes/kubernetes/tree/master/test/e2e/storage/external
+
+ShortName: smb
+StorageClass:
+  FromFile: /tmp/csi-smb/storageclass.yaml
+DriverInfo:
+  Name: smb.csi.k8s.io
+  Capabilities:
+    persistence: true
+    exec: true
+    multipods: true
+    RWX: true
