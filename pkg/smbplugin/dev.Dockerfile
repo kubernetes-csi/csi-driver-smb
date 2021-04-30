@@ -17,5 +17,6 @@ RUN apt-get update && apt-get install -y ca-certificates cifs-utils util-linux e
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
 
-COPY ./_output/smbplugin /smbplugin
+ARG ARCH=amd64
+COPY ./_output/${ARCH}/smbplugin /smbplugin
 ENTRYPOINT ["/smbplugin"]

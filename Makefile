@@ -117,15 +117,15 @@ e2e-teardown:
 
 .PHONY: smb
 smb:
-	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/smbplugin ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
 
 .PHONY: smb-windows
 smb-windows:
-	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/smbplugin.exe ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin.exe ./pkg/smbplugin
 
 .PHONY: smb-darwin
 smb-darwin:
-	CGO_ENABLED=0 GOOS=darwin go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/smbplugin ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=darwin go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
 
 .PHONY: container
 container: smb
@@ -139,7 +139,8 @@ container-linux:
 .PHONY: container-windows
 container-windows:
 	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="windows/$(ARCH)" \
-		 -t $(IMAGE_TAG)-windows-$(OSVERSION)-$(ARCH) --build-arg OSVERSION=$(OSVERSION) -f ./pkg/smbplugin/Windows.Dockerfile .
+		 -t $(IMAGE_TAG)-windows-$(OSVERSION)-$(ARCH) --build-arg OSVERSION=$(OSVERSION) \
+		 --build-arg ARCH=$(ARCH) -f ./pkg/smbplugin/Windows.Dockerfile .
 
 .PHONY: container-all
 container-all: smb-windows

@@ -63,13 +63,18 @@ if [[ "$#" -gt 0 ]] && [[ -n "$1" ]]; then
   nodeid="$1"
 fi
 
+ARCH=$(uname -p)
+if [[ "${ARCH}" == "x86_64" || ${ARCH} == "unknown" ]]; then
+  ARCH="amd64"
+fi
+
 if [ -z "$GITHUB_ACTIONS" ]
 then
   # if not running on github actions, do not use sudo
-  _output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+  _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 else
   # if running on github actions, use sudo
-  sudo _output/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+  sudo _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 fi
 
 echo 'Begin to run sanity test...'
