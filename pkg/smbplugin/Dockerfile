@@ -12,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG LDFLAGS
 ARG ARCH
 
 FROM k8s.gcr.io/build-image/debian-base-${ARCH}:v2.1.3
-COPY ./_output/smbplugin /smbplugin
 RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
 
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
+ARG ARCH
 
-COPY ./_output/smbplugin /smbplugin
+COPY ./_output/${ARCH}/smbplugin /smbplugin
 ENTRYPOINT ["/smbplugin"]

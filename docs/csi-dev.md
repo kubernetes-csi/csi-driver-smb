@@ -37,7 +37,7 @@ $ make build
 #### Start CSI driver locally
 ```console
 $ cd $GOPATH/src/github.com/kubernetes-csi/csi-driver-smb
-$ ./_output/smbplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5 &
+$ ./_output/amd64/smbplugin --endpoint tcp://127.0.0.1:10000 --nodeid CSINode -v=5 &
 ```
 
 #### 1. Get plugin info

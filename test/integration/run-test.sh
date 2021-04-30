@@ -43,8 +43,13 @@ target_path='/tmp/targetpath'
 
 echo "Begin to run integration test ..."
 
+ARCH=$(uname -p)
+if [[ "${ARCH}" == "x86_64" || ${ARCH} == "unknown" ]]; then
+  ARCH="amd64"
+fi
+
 # Run CSI driver as a background service
-_output/smbplugin --endpoint "$endpoint" --nodeid CSINode -v=5 &
+_output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid CSINode -v=5 &
 trap cleanup EXIT
 
 sleep 5
