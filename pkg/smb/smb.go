@@ -31,6 +31,7 @@ import (
 const (
 	DefaultDriverName = "smb.csi.k8s.io"
 	createSubDirField = "createsubdir"
+	paramSource       = "source"
 )
 
 // Driver implements all interfaces of CSI drivers
@@ -39,7 +40,8 @@ type Driver struct {
 	mounter *mount.SafeFormatAndMount
 	// A map storing all volumes with ongoing operations so that additional operations
 	// for that same volume (as defined by VolumeID) return an Aborted error
-	volumeLocks *volumeLocks
+	volumeLocks     *volumeLocks
+	workingMountDir string
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &

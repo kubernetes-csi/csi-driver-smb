@@ -76,7 +76,7 @@ echo 'Mount volume test:'
 sleep 2
 
 echo "node stats test:"
-csc node stats --endpoint "$endpoint" "$volumeid:$target_path:$staging_target_path"
+"$CSC_BIN" node stats --endpoint "$endpoint" "$volumeid:$target_path:$staging_target_path"
 sleep 2
 
 echo 'Unmount volume test:'

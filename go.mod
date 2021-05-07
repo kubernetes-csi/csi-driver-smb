@@ -25,7 +25,7 @@ require (
 	k8s.io/client-go v0.21.0
 	k8s.io/klog/v2 v2.8.0
 	k8s.io/kubernetes v1.21.0
-	k8s.io/mount-utils v0.0.0
+	k8s.io/mount-utils v0.21.1
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/yaml v1.2.0
 )
