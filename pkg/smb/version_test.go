@@ -30,7 +30,7 @@ func TestGetVersion(t *testing.T) {
 	version := GetVersion()
 
 	expected := VersionInfo{
-		DriverName:    DriverName,
+		DriverName:    DefaultDriverName,
 		DriverVersion: "N/A",
 		GitCommit:     "N/A",
 		BuildDate:     "N/A",

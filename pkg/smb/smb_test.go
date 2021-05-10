@@ -30,12 +30,12 @@ const (
 )
 
 func NewFakeDriver() *Driver {
-	return NewDriver(fakeNodeID)
+	return NewDriver(fakeNodeID, DefaultDriverName)
 }
 
 func TestNewFakeDriver(t *testing.T) {
 	// Test New fake driver.
-	d := NewDriver(fakeNodeID)
+	d := NewDriver(fakeNodeID, DefaultDriverName)
 	assert.NotNil(t, d)
 }
 

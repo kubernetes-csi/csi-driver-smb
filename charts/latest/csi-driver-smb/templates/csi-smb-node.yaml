@@ -50,12 +50,12 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/bin/sh", "-c", "rm -rf /registration/smb.csi.k8s.io-reg.sock /csi/csi.sock"]
+                command: ["/bin/sh", "-c", "rm -rf /registration/{{ .Values.driver.name }}-reg.sock /csi/csi.sock"]
           env:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: {{ .Values.kubelet.linuxPath }}/plugins/smb.csi.k8s.io/csi.sock
+              value: {{ .Values.kubelet.linuxPath }}/plugins/{{ .Values.driver.name }}/csi.sock
           imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: socket-dir
@@ -74,6 +74,7 @@ spec:
           imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           args:
             - "--v={{ .Values.node.logLevel }}"
+            - "--drivername={{ .Values.driver.name }}"
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
             - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
@@ -117,7 +118,7 @@ spec:
               memory: 20Mi
       volumes:
         - hostPath:
-            path: {{ .Values.kubelet.linuxPath }}/plugins/smb.csi.k8s.io
+            path: {{ .Values.kubelet.linuxPath }}/plugins/{{ .Values.driver.name }}
             type: DirectoryOrCreate
           name: socket-dir
         - hostPath:

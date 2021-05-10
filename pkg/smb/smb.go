@@ -29,7 +29,7 @@ import (
 )
 
 const (
-	DriverName        = "smb.csi.k8s.io"
+	DefaultDriverName = "smb.csi.k8s.io"
 	createSubDirField = "createsubdir"
 )
 
@@ -44,9 +44,9 @@ type Driver struct {
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
-func NewDriver(nodeID string) *Driver {
+func NewDriver(nodeID, driverName string) *Driver {
 	driver := Driver{}
-	driver.Name = DriverName
+	driver.Name = driverName
 	driver.Version = driverVersion
 	driver.NodeID = nodeID
 	driver.volumeLocks = newVolumeLocks()
