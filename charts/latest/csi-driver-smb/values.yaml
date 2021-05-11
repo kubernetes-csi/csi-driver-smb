@@ -22,6 +22,9 @@ serviceAccount:
 rbac:
   create: true
 
+driver:
+  name: smb.csi.k8s.io
+
 controller:
   replicas: 2
   metricsPort: 29644

@@ -42,7 +42,7 @@ type SMBDriver struct {
 func InitSMBDriver() PVTestDriver {
 	driverName := os.Getenv(SMBDriverNameVar)
 	if driverName == "" {
-		driverName = smb.DriverName
+		driverName = smb.DefaultDriverName
 	}
 
 	klog.Infof("Using smb driver: %s", driverName)
