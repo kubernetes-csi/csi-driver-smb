@@ -14,7 +14,7 @@
 
 ARG ARCH
 
-FROM k8s.gcr.io/build-image/debian-base-${ARCH}:v2.1.3
+FROM k8s.gcr.io/build-image/debian-base:buster-v1.6.0
 RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
 
 LABEL maintainers="andyzhangx"
