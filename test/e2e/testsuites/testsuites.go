@@ -393,6 +393,14 @@ func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, 
 		testDeployment.deployment.Spec.Template.Spec.NodeSelector = map[string]string{
 			"kubernetes.io/os": "windows",
 		}
+		// support GKE windows node toleration
+		testDeployment.deployment.Spec.Template.Spec.Tolerations = []v1.Toleration{
+			{
+				Key:      "node.kubernetes.io/os",
+				Operator: v1.TolerationOpEqual,
+				Value:    "win1809",
+			},
+		}
 		testDeployment.deployment.Spec.Template.Spec.Containers[0].Image = "e2eteam/busybox:1.29"
 		testDeployment.deployment.Spec.Template.Spec.Containers[0].Command = []string{"powershell.exe"}
 		testDeployment.deployment.Spec.Template.Spec.Containers[0].Args = []string{"-Command", command}
@@ -494,6 +502,14 @@ func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string, isWindo
 	if isWindows {
 		testPod.pod.Spec.NodeSelector = map[string]string{
 			"kubernetes.io/os": "windows",
+		}
+		// support GKE windows node toleration
+		testPod.pod.Spec.Tolerations = []v1.Toleration{
+			{
+				Key:      "node.kubernetes.io/os",
+				Operator: v1.TolerationOpEqual,
+				Value:    "win1809",
+			},
 		}
 		testPod.pod.Spec.Containers[0].Image = "e2eteam/busybox:1.29"
 		testPod.pod.Spec.Containers[0].Command = []string{"powershell.exe"}
