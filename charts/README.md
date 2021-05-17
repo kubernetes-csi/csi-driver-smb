@@ -52,15 +52,15 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `node.metricsPort`                                | metrics port of csi-smb-node                         |29645
 | `node.logLevel`                                   | node driver log level                                                          |`5`                                                           |
 | `linux.enabled`                                   | whether enable linux feature                               | true                                                              |
+| `linux.kubelet`                                   | configure kubelet directory path on Linux agent node node                  | `/var/lib/kubelet`                                                |
 | `windows.enabled`                                 | whether enable windows feature                             | false                                                             |
+| `windows.kubelet`                                 | configure kubelet directory path on Windows agent node                | `'C:\var\lib\kubelet'`                                            |
 | `windows.image.livenessProbe.repository`          | windows liveness-probe docker image                        | mcr.microsoft.com/oss/kubernetes-csi/livenessprobe                |
 | `windows.image.livenessProbe.tag`                 | windows liveness-probe docker image tag                    | v2.0.1-alpha.1-windows-1809-amd64                                 |
 | `windows.image.livenessProbe.pullPolicy`          | windows liveness-probe image pull policy                   | IfNotPresent                                                      |
 | `windows.image.nodeDriverRegistrar.repository`    | windows csi-node-driver-registrar docker image             | mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar    |
 | `windows.image.nodeDriverRegistrar.tag`           | windows csi-node-driver-registrar docker image tag         | v1.2.1-alpha.1-windows-1809-amd64                                 |
 | `windows.image.nodeDriverRegistrar.pullPolicy`    | windows csi-node-driver-registrar image pull policy        | IfNotPresent                                                      |
-| `kubelet.linuxPath`                               | configure the kubelet path for Linux node                  | `/var/lib/kubelet`                                                |
-| `kubelet.windowsPath`                             | configure the kubelet path for Windows node                | `'C:\var\lib\kubelet'`                                            |
 | `controller.runOnMaster`                          | run controller on master node                              | false                                                             |
 | `node.livenessProbe.healthPort `                  | the health check port for liveness probe                   | `29643` |
 

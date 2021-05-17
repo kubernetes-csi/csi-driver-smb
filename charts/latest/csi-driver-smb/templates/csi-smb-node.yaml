@@ -55,7 +55,7 @@ spec:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: {{ .Values.kubelet.linuxPath }}/plugins/{{ .Values.driver.name }}/csi.sock
+              value: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}/csi.sock
           imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: socket-dir
@@ -106,7 +106,7 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-            - mountPath: {{ .Values.kubelet.linuxPath }}/
+            - mountPath: {{ .Values.linux.kubelet }}/
               mountPropagation: Bidirectional
               name: mountpoint-dir
           resources:
@@ -118,15 +118,15 @@ spec:
               memory: 20Mi
       volumes:
         - hostPath:
-            path: {{ .Values.kubelet.linuxPath }}/plugins/{{ .Values.driver.name }}
+            path: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}
             type: DirectoryOrCreate
           name: socket-dir
         - hostPath:
-            path: {{ .Values.kubelet.linuxPath }}/
+            path: {{ .Values.linux.kubelet }}/
             type: DirectoryOrCreate
           name: mountpoint-dir
         - hostPath:
-            path: {{ .Values.kubelet.linuxPath }}/plugins_registry/
+            path: {{ .Values.linux.kubelet }}/plugins_registry/
             type: DirectoryOrCreate
           name: registration-dir
 {{- end -}}
