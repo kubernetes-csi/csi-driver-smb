@@ -418,7 +418,7 @@ replace (
 	k8s.io/kubelet => k8s.io/kubelet v0.21.0
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.21.0
 	k8s.io/metrics => k8s.io/metrics v0.21.0
-	k8s.io/mount-utils => k8s.io/mount-utils v0.21.0
+	k8s.io/mount-utils => k8s.io/mount-utils v0.21.1
 	k8s.io/repo-infra => k8s.io/repo-infra v0.0.1-alpha.1
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.21.0
 	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.21.0
