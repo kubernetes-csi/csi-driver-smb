@@ -50,6 +50,15 @@ func AssertError(actual *TestError, expected error) bool {
 }
 
 func IsRunningInProw() bool {
+	return IsRunningInAzureProw() || IsRunningInGcpProw()
+}
+
+func IsRunningInGcpProw() bool {
+	_, ok := os.LookupEnv("GOOGLE_APPLICATION_CREDENTIAL")
+	return ok
+}
+
+func IsRunningInAzureProw() bool {
 	_, ok := os.LookupEnv("AZURE_CREDENTIALS")
 	return ok
 }
