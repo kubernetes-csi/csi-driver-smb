@@ -55,5 +55,5 @@ spec:
       volumes:
         - name: data-volume
           hostPath:
-            path: /smbshare-volume  # modify this to specify another path to store smb share data
+            path: /home/kubernetes/smbshare-volume  # modify this to specify another path to store smb share data
             type: DirectoryOrCreate
