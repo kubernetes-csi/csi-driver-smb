@@ -134,7 +134,7 @@ func CreateAzureCredentialFile(isAzureChinaCloud bool) (*Credentials, error) {
 	// If the tests are being run in Prow, credentials are not supplied through env vars. Instead, it is supplied
 	// through env var AZURE_CREDENTIALS. We need to convert it to AZURE_CREDENTIAL_FILE for sanity, integration and E2E tests
 	// https://github.com/kubernetes/test-infra/blob/master/config/jobs/kubernetes/cloud-provider-azure/cloud-provider-azure-config.yaml#L5-L6
-	if testutil.IsRunningInProw() {
+	if testutil.IsRunningInAzureProw() {
 		log.Println("Running in Prow, converting AZURE_CREDENTIALS to AZURE_CREDENTIAL_FILE")
 		c, err := getCredentialsFromAzureCredentials(os.Getenv("AZURE_CREDENTIALS"))
 		if err != nil {
