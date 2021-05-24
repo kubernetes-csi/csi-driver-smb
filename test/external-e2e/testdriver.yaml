@@ -3,7 +3,7 @@
 
 ShortName: smb
 StorageClass:
-  FromFile: /tmp/csi-smb/storageclass.yaml
+  FromFile: /tmp/csi/storageclass.yaml
 DriverInfo:
   Name: smb.csi.k8s.io
   Capabilities:
