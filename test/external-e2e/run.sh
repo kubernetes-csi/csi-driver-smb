@@ -46,6 +46,6 @@ setup_e2e_binaries
 trap print_logs EXIT
 
 ginkgo -p --progress --v -focus='External.Storage' \
-       -skip='\[Disruptive\]|\[Slow\]' kubernetes/test/bin/e2e.test  -- \
+       -skip='\[Disruptive\]|\[Slow\]|unmount after the subpath directory is deleted|support two pods which share the same volume' kubernetes/test/bin/e2e.test  -- \
        -storage.testdriver=$PROJECT_ROOT/test/external-e2e/testdriver.yaml \
        --kubeconfig=$KUBECONFIG
