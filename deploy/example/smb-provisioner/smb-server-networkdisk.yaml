@@ -16,14 +16,14 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-azuredisk-smbshare
+  name: pvc-networkdisk-smbshare
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 100Gi
-  storageClassName: default
+  storageClassName: default  # storage provider is Azure disk in Azure and persistent disk in GCE.
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -67,4 +67,4 @@ spec:
       volumes:
         - name: data-volume
           persistentVolumeClaim:
-            claimName: pvc-azuredisk-smbshare
+            claimName: pvc-networkdisk-smbshare
