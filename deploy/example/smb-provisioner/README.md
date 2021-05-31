@@ -20,9 +20,11 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-sm
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server-lb.yaml
 ```
 
-#### Option#2. Create a Samba Server deployment on Azure managed disk
+#### Option#2. Create a Samba Server deployment on network disk
+Default network disk in Azure is Azure managed disk and default one in GCE is persistent disk.
+
 ```console
-kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server-azuredisk.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server-networkdisk.yaml
 ```
 
 After deployment, a new service `smb-server` is created, file share path is `//smb-server.default.svc.cluster.local/share`
