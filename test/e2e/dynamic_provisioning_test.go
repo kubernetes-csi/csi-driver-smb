@@ -62,6 +62,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 
 	testDriver = driver.InitSMBDriver()
 	ginkgo.It("should create a volume after driver restart [smb.csi.k8s.io]", func() {
+		ginkgo.Skip("test case is disabled since node logs would be lost after driver restart")
 		pod := testsuites.PodDetails{
 			Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' >> /mnt/test-1/data && while true; do sleep 3600; done"),
 			Volumes: []testsuites.VolumeDetails{

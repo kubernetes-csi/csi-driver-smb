@@ -66,20 +66,19 @@ func (mounter *CSIProxyMounter) SMBMount(source, target, fsType string, mountOpt
 
 	if !parentExists {
 		klog.Infof("Parent directory %s does not exists. Creating the directory", parentDir)
-		err := mounter.MakeDir(parentDir)
-		if err != nil {
+		if err := mounter.MakeDir(parentDir); err != nil {
 			return fmt.Errorf("create of parent dir: %s dailed with error: %v", parentDir, err)
 		}
 	}
 
+	source = strings.Replace(source, "/", "\\", -1)
 	smbMountRequest := &smb.NewSmbGlobalMappingRequest{
 		LocalPath:  normalizeWindowsPath(target),
 		RemotePath: source,
 		Username:   mountOptions[0],
 		Password:   sensitiveMountOptions[0],
 	}
-	_, err = mounter.SMBClient.NewSmbGlobalMapping(context.Background(), smbMountRequest)
-	if err != nil {
+	if _, err := mounter.SMBClient.NewSmbGlobalMapping(context.Background(), smbMountRequest); err != nil {
 		return fmt.Errorf("smb mapping failed with error: %v", err)
 	}
 	return nil

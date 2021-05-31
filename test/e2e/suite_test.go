@@ -128,7 +128,7 @@ var _ = ginkgo.BeforeSuite(func() {
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 
 		smbPublicIP := strings.TrimSuffix(string(output), "\n")
-		source := `\\` + smbPublicIP + `\share`
+		source := `//` + smbPublicIP + `/share`
 
 		log.Printf("use source on Windows: %v\n", source)
 		defaultStorageClassParameters["source"] = source
