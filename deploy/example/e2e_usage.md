@@ -64,14 +64,15 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-sm
 ```
  - Execute `df -h` command in the container
 ```console
-# k exec -it statefulset-smb2-0 sh
-# df -h
+kubectl exec -it statefulset-smb2-0 sh -- df -h
+```
+<pre>
 Filesystem                                    Size  Used Avail Use% Mounted on
 ...
 //smb-server.default.svc.cluster.local/share  124G   23G  102G  19% /mnt/smb
 /dev/sda1                                     124G   15G  110G  12% /etc/hosts
 ...
-```
+</pre>
 
 ### Option#2: PV/PVC Usage
 #### 1. Create PV/PVC bound with SMB share
@@ -124,14 +125,16 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-sm
 
  - Execute `df -h` command in the container
 ```console
-$ kubectl exec -it nginx-smb -- sh
-# df -h
+kubectl exec -it nginx-smb -- df -h
+```
+<pre>
 Filesystem            Size  Used Avail Use% Mounted on
 ...
 /dev/sda1              97G   21G   77G  22% /etc/hosts
 //20.43.191.64/share   97G   21G   77G  22% /mnt/smb
 ...
-```
+</pre>
+
 In the above example, there is a `/mnt/smb` directory mounted as cifs filesystem.
 
 ### 2.2 Create a deployment on Windows
