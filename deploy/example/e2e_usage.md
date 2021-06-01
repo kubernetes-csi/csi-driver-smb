@@ -47,7 +47,7 @@ metadata:
   name: smb
 provisioner: smb.csi.k8s.io
 parameters:
-  source: \\52.146.58.223\share
+  source: //52.146.58.223/share
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
   csi.storage.k8s.io/node-stage-secret-namespace: "default"
   createSubDir: "false"  # optional: create a sub dir for new volume
