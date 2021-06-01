@@ -64,7 +64,7 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-sm
 ```
  - Execute `df -h` command in the container
 ```console
-kubectl exec -it statefulset-smb2-0 sh -- df -h
+kubectl exec -it statefulset-smb-0 sh -- df -h
 ```
 <pre>
 Filesystem                                    Size  Used Avail Use% Mounted on
