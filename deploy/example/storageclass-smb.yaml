@@ -14,8 +14,7 @@ parameters:
   csi.storage.k8s.io/node-stage-secret-namespace: "default"
   csi.storage.k8s.io/provisioner-secret-name: "smbcreds"
   csi.storage.k8s.io/provisioner-secret-namespace: "default"
-  createSubDir: "true"  # optional: create a sub dir for new volume
-reclaimPolicy: Retain  # only retain is supported
+  createSubDir: "true"  # create a sub dir for new volume, "true" by default
 volumeBindingMode: Immediate
 mountOptions:
   - dir_mode=0777
