@@ -16,15 +16,17 @@
 
 set -euo pipefail
 
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+
 setup_e2e() {
     # If run in prow, need to use kubernetes_e2e.py to set up the project and kubernetes automatically.
     # If run locally, start a k8s cluster with Windows nodes.
-    make e2e-bootstrap
-    make install-smb-provisioner
-    make create-metrics-svc
+    make -C $PROJECT_ROOT e2e-bootstrap
+    make -C $PROJECT_ROOT install-smb-provisioner
+    make -C $PROJECT_ROOT create-metrics-svc
 }
 
 export TEST_WINDOWS=true
 
-setup_e2e
-make e2e-test
+# setup_e2e
+make -C $PROJECT_ROOT e2e-test
