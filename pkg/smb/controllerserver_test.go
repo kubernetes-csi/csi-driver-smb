@@ -33,9 +33,9 @@ import (
 )
 
 const (
-	testServer    = "test-server"
+	testServer    = "test-server/baseDir"
 	testCSIVolume = "test-csi"
-	testVolumeID  = "test-server/test-csi"
+	testVolumeID  = "test-server/baseDir#test-csi"
 )
 
 func TestControllerGetCapabilities(t *testing.T) {
@@ -401,5 +401,52 @@ func TestListSnapshots(t *testing.T) {
 	assert.Nil(t, resp)
 	if !reflect.DeepEqual(err, status.Error(codes.Unimplemented, "")) {
 		t.Errorf("Unexpected error: %v", err)
+	}
+}
+
+func TestGetSmbVolFromID(t *testing.T) {
+
+	cases := []struct {
+		desc      string
+		volumeID  string
+		source    string
+		subDir    string
+		expectErr bool
+	}{
+		{
+			desc:      "correct volume id",
+			volumeID:  "smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			source:    "//smb-server.default.svc.cluster.local/share",
+			subDir:    "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			expectErr: false,
+		},
+		{
+			desc:      "correct volume id with multiple base directories",
+			volumeID:  "smb-server.default.svc.cluster.local/share/dir1/dir2#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			source:    "//smb-server.default.svc.cluster.local/share/dir1/dir2",
+			subDir:    "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			expectErr: false,
+		},
+		{
+			desc:      "incorrect volume id",
+			volumeID:  "smb-server.default.svc.cluster.local/share",
+			source:    "//smb-server.default.svc.cluster.local/share",
+			subDir:    "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			expectErr: true,
+		},
+	}
+	for _, test := range cases {
+		test := test //pin
+		t.Run(test.desc, func(t *testing.T) {
+			smbVolume, err := getSmbVolFromID(test.volumeID)
+
+			if !test.expectErr {
+				assert.Equal(t, smbVolume.sourceField, test.source)
+				assert.Equal(t, smbVolume.subDir, test.subDir)
+				assert.Nil(t, err)
+			} else {
+				assert.NotNil(t, err)
+			}
+		})
 	}
 }
