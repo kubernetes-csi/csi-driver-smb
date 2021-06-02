@@ -18,6 +18,7 @@ REGISTRY ?= andyzhangx
 REGISTRY_NAME = $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
 IMAGE_NAME ?= smb-csi
 IMAGE_VERSION ?= v1.1.0
+VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
 ifdef CI
 ifndef PUBLISH
@@ -95,7 +96,7 @@ e2e-test:
 e2e-bootstrap: install-helm
 	docker pull $(IMAGE_TAG) || make container-all push-manifest
 ifdef TEST_WINDOWS
-	helm upgrade csi-driver-smb charts/latest/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug --install \
+	helm upgrade csi-driver-smb charts/$(VERSION)/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug --install \
 		${E2E_HELM_OPTIONS} \
 		--set windows.enabled=true \
 		--set linux.enabled=false \
@@ -103,7 +104,7 @@ ifdef TEST_WINDOWS
 		--set controller.logLevel=6 \
 		--set node.logLevel=6
 else
-	helm upgrade csi-driver-smb charts/latest/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug --install \
+	helm upgrade csi-driver-smb charts/$(VERSION)/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug --install \
 		${E2E_HELM_OPTIONS}
 endif
 
