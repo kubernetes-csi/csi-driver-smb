@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2020 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
-
 set -euo pipefail
 
 setup_e2e() {
@@ -26,5 +26,5 @@ setup_e2e() {
 
 export TEST_WINDOWS=true
 
-setup_e2e()
+setup_e2e
 make e2e-test
