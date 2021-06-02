@@ -1,0 +1,55 @@
+image:
+  smb:
+    repository: mcr.microsoft.com/k8s/csi/smb-csi
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+  csiProvisioner:
+    repository: k8s.gcr.io/sig-storage/csi-provisioner
+    tag: v2.1.0
+    pullPolicy: IfNotPresent
+  livenessProbe:
+    repository: k8s.gcr.io/sig-storage/livenessprobe
+    tag: v2.3.0
+    pullPolicy: IfNotPresent
+  nodeDriverRegistrar:
+    repository: k8s.gcr.io/sig-storage/csi-node-driver-registrar
+    tag: v2.2.0
+    pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+
+rbac:
+  create: true
+
+driver:
+  name: smb.csi.k8s.io
+
+controller:
+  replicas: 2
+  metricsPort: 29644
+  runOnMaster: false
+  logLevel: 5
+
+node:
+  metricsPort: 29645
+  logLevel: 5
+  livenessProbe:
+    healthPort: 29643
+
+linux:
+  enabled: true
+  kubelet: /var/lib/kubelet
+
+windows:
+  enabled: false
+  kubelet: 'C:\var\lib\kubelet'
+  image:
+    livenessProbe:
+      repository: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe
+      tag: v2.3.0
+      pullPolicy: IfNotPresent
+    nodeDriverRegistrar:
+      repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
+      tag: v2.2.0
+      pullPolicy: IfNotPresent
