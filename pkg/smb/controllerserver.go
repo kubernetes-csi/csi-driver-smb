@@ -75,16 +75,18 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 
 	// check if create SubDir is enable in storage class parameters
 	parameters := req.GetParameters()
-	var createSubDir string
+	createSubDir := true
 	for k, v := range parameters {
 		switch strings.ToLower(k) {
 		case createSubDirField:
-			createSubDir = v
+			if v == "false" {
+				createSubDir = false
+			}
 		}
 	}
 
 	secrets := req.GetSecrets()
-	if strings.EqualFold(createSubDir, "true") {
+	if createSubDir {
 		if len(secrets) > 0 {
 			// Mount smb base share so we can create a subdirectory
 			if err := d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
