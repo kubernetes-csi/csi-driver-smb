@@ -30,6 +30,11 @@ import (
 	"k8s.io/klog/v2"
 )
 
+const (
+	volumeIDRegex            = "^(.*)#(.*)$"
+	sourceAndSubDirSeperator = "#"
+)
+
 // smbVolume is an internal representation of a volume
 // created by the provisioner.
 type smbVolume struct {
@@ -68,13 +73,13 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	reqCapacity := req.GetCapacityRange().GetRequiredBytes()
-	smbVol, err := d.newSMBVolume(name, reqCapacity, req.GetParameters())
+	parameters := req.GetParameters()
+	smbVol, err := d.newSMBVolume(name, reqCapacity, parameters)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	// check if create SubDir is enable in storage class parameters
-	parameters := req.GetParameters()
 	createSubDir := true
 	for k, v := range parameters {
 		switch strings.ToLower(k) {
@@ -117,7 +122,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	if volumeID == "" {
 		return nil, status.Error(codes.InvalidArgument, "volume id is empty")
 	}
-	smbVol, err := d.getSmbVolFromID(volumeID)
+	smbVol, err := getSmbVolFromID(volumeID)
 	if err != nil {
 		// An invalid ID should be treated as doesn't exist
 		klog.Warningf("failed to get smb volume for volume id %v deletion: %v", volumeID, err)
@@ -213,7 +218,7 @@ func (d *Driver) getVolumeIDFromSmbVol(vol *smbVolume) string {
 	idElements := make([]string, totalIDElements)
 	idElements[idsourceField] = strings.Trim(vol.sourceField, "/")
 	idElements[idSubDir] = strings.Trim(vol.subDir, "/")
-	return strings.Join(idElements, "/")
+	return strings.Join(idElements, sourceAndSubDirSeperator)
 }
 
 // Get working directory for CreateVolume and DeleteVolume
@@ -311,15 +316,17 @@ func (d *Driver) smbVolToCSI(vol *smbVolume, parameters map[string]string) *csi.
 }
 
 // Given a CSI volume id, return a smbVolume
-func (d *Driver) getSmbVolFromID(id string) (*smbVolume, error) {
-	volRegex := regexp.MustCompile("^([^/]+)/([^/]+)$")
+// a sample volume Id: smb-server.default.svc.cluster.local/share/pvc-4729891a-f57e-4982-9c60-e9884af1be2f
+func getSmbVolFromID(id string) (*smbVolume, error) {
+	volRegex := regexp.MustCompile(volumeIDRegex)
 	tokens := volRegex.FindStringSubmatch(id)
-	if tokens == nil {
-		return nil, fmt.Errorf("Could not split %q into server, baseDir and subDir", id)
+	if tokens == nil || len(tokens) != 3 {
+		return nil, fmt.Errorf("Could not split %q into server and subDir", id)
 	}
+	source := "//" + tokens[1]
 	return &smbVolume{
 		id:          id,
-		sourceField: tokens[1],
+		sourceField: source,
 		subDir:      tokens[2],
 	}, nil
 }
