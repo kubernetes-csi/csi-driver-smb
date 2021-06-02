@@ -20,11 +20,10 @@ package smb
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
 	"k8s.io/klog/v2"
 	mount "k8s.io/mount-utils"
+	"os"
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {

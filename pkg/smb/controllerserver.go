@@ -18,32 +18,132 @@ package smb
 
 import (
 	"context"
+	"fmt"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"k8s.io/klog/v2"
+)
+
+// smbVolume is an internal representation of a volume
+// created by the provisioner.
+type smbVolume struct {
+	// Volume id
+	id string
+	// Address of the SMB server.
+	sourceField string
+	// Subdirectory of the SMB server to create volumes under
+	subDir string
+	// size of volume
+	size int64
+}
+
+// Ordering of elements in the CSI volume id.
+// ID is of the form {server}/{subDir}.
+const (
+	idsourceField = iota
+	idSubDir
+	totalIDElements // Always last
 )
 
 // CreateVolume only supports static provisioning, no create volume action
 func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
+	name := req.GetName()
+	if len(name) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "CreateVolume name must be provided")
+	}
+
+	var volCap *csi.VolumeCapability
 	volumeCapabilities := req.GetVolumeCapabilities()
 	if len(volumeCapabilities) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "CreateVolume Volume capabilities must be provided")
 	}
-	return &csi.CreateVolumeResponse{
-		Volume: &csi.Volume{
-			VolumeId:      req.GetName(),
-			CapacityBytes: req.GetCapacityRange().GetRequiredBytes(),
-			VolumeContext: req.GetParameters(),
-		},
-	}, nil
+	if len(volumeCapabilities) > 0 {
+		volCap = req.GetVolumeCapabilities()[0]
+	}
+
+	reqCapacity := req.GetCapacityRange().GetRequiredBytes()
+	smbVol, err := d.newSMBVolume(name, reqCapacity, req.GetParameters())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	// check if create SubDir is enable in storage class parameters
+	parameters := req.GetParameters()
+	var createSubDir string
+	for k, v := range parameters {
+		switch strings.ToLower(k) {
+		case createSubDirField:
+			createSubDir = v
+		}
+	}
+
+	secrets := req.GetSecrets()
+	if strings.EqualFold(createSubDir, "true") {
+		if len(secrets) > 0 {
+			// Mount smb base share so we can create a subdirectory
+			if err := d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
+			}
+			defer func() {
+				if err = d.internalUnmount(ctx, smbVol); err != nil {
+					klog.Warningf("failed to unmount smb server: %v", err.Error())
+				}
+			}()
+			// Create subdirectory under base-dir
+			// TODO: revisit permissions
+			internalVolumePath := d.getInternalVolumePath(smbVol)
+			if err = os.Mkdir(internalVolumePath, 0777); err != nil && !os.IsExist(err) {
+				return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
+			}
+			parameters[sourceField] = parameters[sourceField] + "/" + smbVol.subDir
+		} else {
+			klog.Warningf("CreateVolume: Volume secrets should be provided when createSubDir is true")
+		}
+	}
+	return &csi.CreateVolumeResponse{Volume: d.smbVolToCSI(smbVol, parameters)}, nil
 }
 
 // DeleteVolume only supports static provisioning, no delete volume action
 func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest) (*csi.DeleteVolumeResponse, error) {
-	if len(req.GetVolumeId()) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
+	volumeID := req.GetVolumeId()
+	if volumeID == "" {
+		return nil, status.Error(codes.InvalidArgument, "volume id is empty")
 	}
+	smbVol, err := d.getSmbVolFromID(volumeID)
+	if err != nil {
+		// An invalid ID should be treated as doesn't exist
+		klog.Warningf("failed to get smb volume for volume id %v deletion: %v", volumeID, err)
+		return &csi.DeleteVolumeResponse{}, nil
+	}
+
+	secrets := req.GetSecrets()
+	if len(secrets) > 0 {
+		// Mount smb base share so we can delete the subdirectory
+		if err = d.internalMount(ctx, smbVol, nil, secrets); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
+		}
+		defer func() {
+			if err = d.internalUnmount(ctx, smbVol); err != nil {
+				klog.Warningf("failed to unmount smb server: %v", err.Error())
+			}
+		}()
+
+		// Delete subdirectory under base-dir
+		internalVolumePath := d.getInternalVolumePath(smbVol)
+		klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
+		if err = os.RemoveAll(internalVolumePath); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
+		}
+	} else {
+		klog.Warningf("DeleteVolume: Volume secrets should be provided")
+	}
+
 	return &csi.DeleteVolumeResponse{}, nil
 }
 
@@ -104,4 +204,120 @@ func (d *Driver) DeleteSnapshot(ctx context.Context, req *csi.DeleteSnapshotRequ
 
 func (d *Driver) ListSnapshots(ctx context.Context, req *csi.ListSnapshotsRequest) (*csi.ListSnapshotsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "")
+}
+
+// Given a smbVolume, return a CSI volume id
+func (d *Driver) getVolumeIDFromSmbVol(vol *smbVolume) string {
+	idElements := make([]string, totalIDElements)
+	idElements[idsourceField] = strings.Trim(vol.sourceField, "/")
+	idElements[idSubDir] = strings.Trim(vol.subDir, "/")
+	return strings.Join(idElements, "/")
+}
+
+// Get working directory for CreateVolume and DeleteVolume
+func (d *Driver) getInternalMountPath(vol *smbVolume) string {
+	// use default if empty
+	if d.workingMountDir == "" {
+		d.workingMountDir = "/tmp"
+	}
+	return filepath.Join(d.workingMountDir, vol.subDir)
+}
+
+// Mount smb server at base-dir
+func (d *Driver) internalMount(ctx context.Context, vol *smbVolume, volCap *csi.VolumeCapability, secrets map[string]string) error {
+	stagingPath := d.getInternalMountPath(vol)
+
+	if volCap == nil {
+		volCap = &csi.VolumeCapability{
+			AccessType: &csi.VolumeCapability_Mount{
+				Mount: &csi.VolumeCapability_MountVolume{},
+			},
+		}
+	}
+
+	klog.V(4).Infof("internally mounting %v at %v", sourceField, stagingPath)
+	_, err := d.NodeStageVolume(ctx, &csi.NodeStageVolumeRequest{
+		StagingTargetPath: stagingPath,
+		VolumeContext: map[string]string{
+			sourceField: vol.sourceField,
+		},
+		VolumeCapability: volCap,
+		VolumeId:         vol.id,
+		Secrets:          secrets,
+	})
+	return err
+}
+
+// Unmount smb server at base-dir
+func (d *Driver) internalUnmount(ctx context.Context, vol *smbVolume) error {
+	targetPath := d.getInternalMountPath(vol)
+
+	// Unmount smb server at base-dir
+	klog.V(4).Infof("internally unmounting %v", targetPath)
+	_, err := d.NodeUnstageVolume(ctx, &csi.NodeUnstageVolumeRequest{
+		VolumeId:          vol.id,
+		StagingTargetPath: d.getInternalMountPath(vol),
+	})
+	return err
+}
+
+// Convert VolumeCreate parameters to an smbVolume
+func (d *Driver) newSMBVolume(name string, size int64, params map[string]string) (*smbVolume, error) {
+	var sourceField string
+
+	// Validate parameters (case-insensitive).
+	for k, v := range params {
+		switch strings.ToLower(k) {
+		case paramSource:
+			sourceField = v
+		}
+	}
+
+	// Validate required parameters
+	if sourceField == "" {
+		return nil, fmt.Errorf("%v is a required parameter", paramSource)
+	}
+
+	vol := &smbVolume{
+		sourceField: sourceField,
+		subDir:      name,
+		size:        size,
+	}
+	vol.id = d.getVolumeIDFromSmbVol(vol)
+
+	return vol, nil
+}
+
+// Get internal path where the volume is created
+// The reason why the internal path is "workingDir/subDir/subDir" is because:
+//   * the semantic is actually "workingDir/volId/subDir" and volId == subDir.
+//   * we need a mount directory per volId because you can have multiple
+//     CreateVolume calls in parallel and they may use the same underlying share.
+//     Instead of refcounting how many CreateVolume calls are using the same
+//     share, it's simpler to just do a mount per request.
+func (d *Driver) getInternalVolumePath(vol *smbVolume) string {
+	return filepath.Join(d.getInternalMountPath(vol), vol.subDir)
+}
+
+// Convert into smbVolume into a csi.Volume
+func (d *Driver) smbVolToCSI(vol *smbVolume, parameters map[string]string) *csi.Volume {
+	return &csi.Volume{
+		CapacityBytes: 0, // by setting it to zero, Provisioner will use PVC requested size as PV size
+		VolumeId:      vol.id,
+		VolumeContext: parameters,
+	}
+}
+
+// Given a CSI volume id, return a smbVolume
+func (d *Driver) getSmbVolFromID(id string) (*smbVolume, error) {
+	volRegex := regexp.MustCompile("^([^/]+)/([^/]+)$")
+	tokens := volRegex.FindStringSubmatch(id)
+	if tokens == nil {
+		return nil, fmt.Errorf("Could not split %q into server, baseDir and subDir", id)
+	}
+	return &smbVolume{
+		id:          id,
+		sourceField: tokens[1],
+		subDir:      tokens[2],
+	}, nil
 }

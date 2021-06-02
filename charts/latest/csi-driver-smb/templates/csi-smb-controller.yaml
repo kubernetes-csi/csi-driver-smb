@@ -15,6 +15,7 @@ spec:
 {{ include "smb.labels" . | indent 6 }}
         app: csi-smb-controller
     spec:
+      dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: csi-smb-controller-sa
       nodeSelector:
         kubernetes.io/os: linux
@@ -96,6 +97,8 @@ spec:
           env:
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
+          securityContext:
+            privileged: true
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
