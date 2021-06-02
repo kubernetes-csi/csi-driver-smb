@@ -1,9 +1,9 @@
-# Azure file CSI driver development guide
+# SMB CSI driver development guide
 
 ## How to build this project
  - Clone repo
 ```console
-$ mkdir -p $GOPATH/src/sigs.k8s.io/
+$ mkdir -p $GOPATH/src/github.com/kubernetes-csi
 $ git clone https://github.com/kubernetes-csi/csi-driver-smb $GOPATH/src/github.com/kubernetes-csi/csi-driver-smb
 ```
 
