@@ -3,21 +3,25 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: csi-smb-controller
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.controller.replicas }}
   selector:
     matchLabels:
       app: csi-smb-controller
   template:
     metadata:
-      labels:
+{{ include "smb.labels" . | indent 6 }}
         app: csi-smb-controller
     spec:
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: csi-smb-controller-sa
       nodeSelector:
         kubernetes.io/os: linux
+        {{- if .Values.controller.runOnMaster}}
+        kubernetes.io/role: master
+        {{- end}}
       priorityClassName: system-cluster-critical
       tolerations:
         - key: "node-role.kubernetes.io/master"
@@ -28,9 +32,10 @@ spec:
           operator: "Equal"
           value: "true"
           effect: "NoSchedule"
+      {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: csi-provisioner
-          image: k8s.gcr.io/sig-storage/csi-provisioner:v2.1.0
+          image: "{{ .Values.image.csiProvisioner.repository }}:{{ .Values.image.csiProvisioner.tag }}"
           args:
             - "-v=2"
             - "--csi-address=$(ADDRESS)"
@@ -38,6 +43,7 @@ spec:
           env:
             - name: ADDRESS
               value: /csi/csi.sock
+          imagePullPolicy: {{ .Values.image.csiProvisioner.pullPolicy }}
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
@@ -49,12 +55,13 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: liveness-probe
-          image: k8s.gcr.io/sig-storage/livenessprobe:v2.3.0
+          image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
             - --health-port=29642
             - --v=2
+          imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -66,17 +73,17 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: mcr.microsoft.com/k8s/csi/smb-csi:v1.0.0
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           args:
-            - "--v=5"
+            - "--v={{ .Values.controller.logLevel }}"
             - "--endpoint=$(CSI_ENDPOINT)"
-            - "--metrics-address=0.0.0.0:29644"
+            - "--metrics-address=0.0.0.0:{{ .Values.controller.metricsPort }}"
           ports:
             - containerPort: 29642
               name: healthz
               protocol: TCP
-            - containerPort: 29644
+            - containerPort: {{ .Values.controller.metricsPort }}
               name: metrics
               protocol: TCP
           livenessProbe:

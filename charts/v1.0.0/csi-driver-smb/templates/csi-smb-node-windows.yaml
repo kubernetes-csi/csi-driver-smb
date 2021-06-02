@@ -1,16 +1,17 @@
----
+{{- if .Values.windows.enabled}}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: csi-smb-node-win
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
 spec:
   selector:
     matchLabels:
       app: csi-smb-node-win
   template:
     metadata:
-      labels:
+{{ include "smb.labels" . | indent 6 }}
         app: csi-smb-node-win
     spec:
       tolerations:
@@ -20,12 +21,13 @@ spec:
       nodeSelector:
         kubernetes.io/os: windows
       priorityClassName: system-node-critical
+      {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: liveness-probe
           volumeMounts:
             - mountPath: C:\csi
               name: plugin-dir
-          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.3.0
+          image: "{{ .Values.windows.image.livenessProbe.repository }}:{{ .Values.windows.image.livenessProbe.tag }}"
           args:
             - --csi-address=$(CSI_ENDPOINT)
             - --probe-timeout=3s
@@ -34,6 +36,7 @@ spec:
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
+          imagePullPolicy: {{ .Values.windows.image.livenessProbe.pullPolicy }}
           resources:
             limits:
               cpu: 200m
@@ -42,11 +45,11 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: node-driver-registrar
-          image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.2.0
+          image: "{{ .Values.windows.image.nodeDriverRegistrar.repository }}:{{ .Values.windows.image.nodeDriverRegistrar.tag }}"
           args:
             - --v=2
             - --csi-address=$(CSI_ENDPOINT)
-            - --kubelet-registration-path=C:\\var\\lib\\kubelet\\plugins\\smb.csi.k8s.io\\csi.sock
+            - --kubelet-registration-path={{ .Values.windows.kubelet }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
@@ -54,9 +57,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+          imagePullPolicy: {{ .Values.windows.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
-            - name: kubelet-dir
-              mountPath: "C:\\var\\lib\\kubelet"
             - name: plugin-dir
               mountPath: C:\csi
             - name: registration-dir
@@ -69,18 +71,19 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: mcr.microsoft.com/k8s/csi/smb-csi:v1.0.0
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           args:
-            - --v=5
+            - "--v={{ .Values.node.logLevel }}"
+            - "--drivername={{ .Values.driver.name }}"
             - --endpoint=$(CSI_ENDPOINT)
             - --nodeid=$(KUBE_NODE_NAME)
-            - "--metrics-address=0.0.0.0:29645"
+            - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
           ports:
             - containerPort: 29643
               name: healthz
               protocol: TCP
-            - containerPort: 29645
+            - containerPort: {{ .Values.node.metricsPort }}
               name: metrics
               protocol: TCP
           livenessProbe:
@@ -101,7 +104,7 @@ spec:
                   fieldPath: spec.nodeName
           volumeMounts:
             - name: kubelet-dir
-              mountPath: "C:\\var\\lib\\kubelet"
+              mountPath: {{ .Values.windows.kubelet }}\
             - name: plugin-dir
               mountPath: C:\csi
             - name: csi-proxy-fs-pipe
@@ -126,13 +129,14 @@ spec:
             type: ""
         - name: registration-dir
           hostPath:
-            path: C:\var\lib\kubelet\plugins_registry\
+            path: {{ .Values.windows.kubelet }}\plugins_registry\
             type: Directory
         - name: kubelet-dir
           hostPath:
-            path: C:\var\lib\kubelet\
+            path: {{ .Values.windows.kubelet }}\
             type: Directory
         - name: plugin-dir
           hostPath:
-            path: C:\var\lib\kubelet\plugins\smb.csi.k8s.io\
+            path: {{ .Values.windows.kubelet }}\plugins\{{ .Values.driver.name }}\
             type: DirectoryOrCreate
+{{- end -}}

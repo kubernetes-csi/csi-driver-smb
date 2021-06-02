@@ -1,16 +1,17 @@
----
+{{- if .Values.linux.enabled}}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: csi-smb-node
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
 spec:
   selector:
     matchLabels:
       app: csi-smb-node
   template:
     metadata:
-      labels:
+{{ include "smb.labels" . | indent 6 }}
         app: csi-smb-node
     spec:
       hostNetwork: true
@@ -20,17 +21,19 @@ spec:
       priorityClassName: system-node-critical
       tolerations:
         - operator: "Exists"
+      {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: liveness-probe
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-          image: k8s.gcr.io/sig-storage/livenessprobe:v2.3.0
+          image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
-            - --health-port=29643
+            - --health-port={{ .Values.node.livenessProbe.healthPort }}
             - --v=2
+          imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           resources:
             limits:
               cpu: 100m
@@ -39,7 +42,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: node-driver-registrar
-          image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.2.0
+          image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
           args:
             - --csi-address=$(ADDRESS)
             - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
@@ -47,12 +50,13 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/bin/sh", "-c", "rm -rf /registration/smb.csi.k8s.io-reg.sock /csi/csi.sock"]
+                command: ["/bin/sh", "-c", "rm -rf /registration/{{ .Values.driver.name }}-reg.sock /csi/csi.sock"]
           env:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: /var/lib/kubelet/plugins/smb.csi.k8s.io/csi.sock
+              value: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}/csi.sock
+          imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -66,18 +70,19 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: mcr.microsoft.com/k8s/csi/smb-csi:v1.0.0
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           args:
-            - "--v=5"
+            - "--v={{ .Values.node.logLevel }}"
+            - "--drivername={{ .Values.driver.name }}"
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
-            - "--metrics-address=0.0.0.0:29645"
+            - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
           ports:
             - containerPort: 29643
               name: healthz
               protocol: TCP
-            - containerPort: 29645
+            - containerPort: {{ .Values.node.metricsPort }}
               name: metrics
               protocol: TCP
           livenessProbe:
@@ -101,7 +106,7 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-            - mountPath: /var/lib/kubelet/
+            - mountPath: {{ .Values.linux.kubelet }}/
               mountPropagation: Bidirectional
               name: mountpoint-dir
           resources:
@@ -113,15 +118,15 @@ spec:
               memory: 20Mi
       volumes:
         - hostPath:
-            path: /var/lib/kubelet/plugins/smb.csi.k8s.io
+            path: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}
             type: DirectoryOrCreate
           name: socket-dir
         - hostPath:
-            path: /var/lib/kubelet/
+            path: {{ .Values.linux.kubelet }}/
             type: DirectoryOrCreate
           name: mountpoint-dir
         - hostPath:
-            path: /var/lib/kubelet/plugins_registry/
+            path: {{ .Values.linux.kubelet }}/plugins_registry/
             type: DirectoryOrCreate
           name: registration-dir
----
+{{- end -}}
