@@ -55,7 +55,7 @@ trap cleanup EXIT
 sleep 5
 # set secret for csc node stage
 export X_CSI_SECRETS=username=username,"password=test"
-params='source=//0.0.0.0/share,createSubDir="true"'
+params='source=//0.0.0.0/share,createSubDir=false'
 # Begin to run CSI functions one by one
 echo 'Create volume test:'
 readonly value=$("$CSC_BIN" controller new --endpoint "$endpoint" --cap 1,block "$volname" --req-bytes 2147483648 --params "$params")
