@@ -6,3 +6,6 @@ metadata:
 spec:
   attachRequired: false
   podInfoOnMount: true
+  {{- if .Values.feature.enableFSGroupPolicy}}
+  fsGroupPolicy: File
+  {{- end}}

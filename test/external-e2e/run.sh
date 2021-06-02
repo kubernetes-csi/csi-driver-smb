@@ -28,6 +28,9 @@ setup_e2e_binaries() {
     curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.21.0/kubernetes-test-linux-amd64.tar.gz --output e2e-tests.tar.gz
     tar -xvf e2e-tests.tar.gz && rm e2e-tests.tar.gz
 
+    # enable fsGroupPolicy (only available from k8s 1.20)
+    export EXTRA_HELM_OPTIONS="--set feature.enableFSGroupPolicy=true"
+
     # install csi driver smb
     mkdir -p /tmp/csi && cp deploy/example/storageclass-smb.yaml /tmp/csi/storageclass.yaml
     sed -i 's/Retain/Delete/g' /tmp/csi/storageclass.yaml

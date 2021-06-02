@@ -53,3 +53,6 @@ windows:
       repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
       tag: v2.2.0
       pullPolicy: IfNotPresent
+
+feature:
+  enableFSGroupPolicy: false

@@ -3,6 +3,11 @@
 ## Prerequisites
  - [install Helm](https://helm.sh/docs/intro/quickstart/#install-helm)
 
+### Tips
+- `--set controller.runOnMaster=true` could make csi-smb-controller only run on master node
+- `--set feature.enableFSGroupPolicy=true` could enable `fsGroupPolicy` on a k8s 1.20+ cluster
+- `--set controller.replicas=1` could set replica of csi-smb-controller as `1`
+
 ## install latest version
 ```console
 helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
@@ -63,6 +68,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `windows.image.nodeDriverRegistrar.pullPolicy`    | windows csi-node-driver-registrar image pull policy        | IfNotPresent                                                      |
 | `controller.runOnMaster`                          | run controller on master node                              | false                                                             |
 | `node.livenessProbe.healthPort `                  | the health check port for liveness probe                   | `29643` |
+| `feature.enableFSGroupPolicy`                     | enable `fsGroupPolicy` on a k8s 1.20+ cluster              | `false` |
 
 ## troubleshooting
  - Add `--wait -v=5 --debug` in `helm install` command to get detailed error

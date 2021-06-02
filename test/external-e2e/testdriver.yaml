@@ -11,3 +11,4 @@ DriverInfo:
     exec: true
     multipods: true
     RWX: true
+    fsGroup: true
