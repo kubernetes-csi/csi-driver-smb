@@ -30,7 +30,6 @@ import (
 
 const (
 	DefaultDriverName = "smb.csi.k8s.io"
-	createSubDirField = "createsubdir"
 	paramSource       = "source"
 )
 
