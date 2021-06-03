@@ -94,8 +94,7 @@ func TestCreateVolume(t *testing.T) {
 					},
 				},
 				Parameters: map[string]string{
-					paramSource:       testServer,
-					createSubDirField: "true",
+					paramSource: testServer,
 				},
 				Secrets: map[string]string{
 					usernameField: "test",
@@ -107,8 +106,7 @@ func TestCreateVolume(t *testing.T) {
 				Volume: &csi.Volume{
 					VolumeId: testVolumeID,
 					VolumeContext: map[string]string{
-						paramSource:       filepath.Join(testServer, testCSIVolume),
-						createSubDirField: "true",
+						paramSource: filepath.Join(testServer, testCSIVolume),
 					},
 				},
 			},

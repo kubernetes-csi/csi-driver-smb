@@ -21,10 +21,13 @@ metadata:
 provisioner: smb.csi.k8s.io
 parameters:
   source: "//smb-server.default.svc.cluster.local/share"
+  # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
+  # with PV name under source
+  csi.storage.k8s.io/provisioner-secret-name: "smbcreds"
+  csi.storage.k8s.io/provisioner-secret-namespace: "default"
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
   csi.storage.k8s.io/node-stage-secret-namespace: "default"
-  createSubDir: "false"  # optional: create a sub dir for new volume
-reclaimPolicy: Retain  # only retain is supported
+reclaimPolicy: Delete  # available values: Delete, Retain
 volumeBindingMode: Immediate
 mountOptions:
   - dir_mode=0777
@@ -48,10 +51,13 @@ metadata:
 provisioner: smb.csi.k8s.io
 parameters:
   source: //52.146.58.223/share
+  # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
+  # with PV name under source
+  csi.storage.k8s.io/provisioner-secret-name: "smbcreds"
+  csi.storage.k8s.io/provisioner-secret-namespace: "default"
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
   csi.storage.k8s.io/node-stage-secret-namespace: "default"
-  createSubDir: "false"  # optional: create a sub dir for new volume
-reclaimPolicy: Retain  # only retain is supported
+reclaimPolicy: Delete  # available values: Delete, Retain
 volumeBindingMode: Immediate
 mountOptions:
   - dir_mode=0777
