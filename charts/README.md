@@ -63,6 +63,44 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `windows.image.nodeDriverRegistrar.pullPolicy`    | windows csi-node-driver-registrar image pull policy        | IfNotPresent                                                      |
 | `controller.runOnMaster`                          | run controller on master node                              | false                                                             |
 | `node.livenessProbe.healthPort `                  | the health check port for liveness probe                   | `29643` |
+| `controller.resources.csiProvisioner.limits.cpu`      | csi-provisioner cpu limits                            | 100m                                                           |
+| `controller.resources.csiProvisioner.limits.memory`   | csi-provisioner memory limits                         | 100Mi                                                          |
+| `controller.resources.csiProvisioner.requests.cpu`    | csi-provisioner cpu requests limits                   | 10m                                                            |
+| `controller.resources.csiProvisioner.requests.memory` | csi-provisioner memory requests limits                | 20Mi                                                           |
+| `controller.resources.livenessProbe.limits.cpu`       | liveness-probe cpu limits                             | 100m                                                           |
+| `controller.resources.livenessProbe.limits.memory`    | liveness-probe memory limits                          | 300Mi                                                          |
+| `controller.resources.livenessProbe.requests.cpu`     | liveness-probe cpu requests limits                    | 10m                                                            |
+| `controller.resources.livenessProbe.requests.memory`  | liveness-probe memory requests limits                 | 20Mi                                                           |
+| `controller.resources.smb.limits.cpu`                | smb-csi-driver cpu limits                            | 200m                                                           |
+| `controller.resources.smb.limits.memory`             | smb-csi-driver memory limits                         | 200Mi                                                          |
+| `controller.resources.smb.requests.cpu`              | smb-csi-driver cpu requests limits                   | 10m                                                            |
+| `controller.resources.smb.requests.memory`           | smb-csi-driver memory requests limits                | 20Mi                                                           |
+| `controller.resources.csiResizer.limits.cpu`          | csi-resizer cpu limits                                | 100m                                                           |
+| `controller.resources.csiResizer.limits.memory`       | csi-resizer memory limits                             | 300Mi                                                          |
+| `controller.resources.csiResizer.requests.cpu`        | csi-resizer cpu requests limits                       | 10m                                                            |
+| `controller.resources.csiResizer.requests.memory`     | csi-resizer memory requests limits                    | 20Mi                                                           |
+| `controller.affinity`                                 | controller pod affinity                               | {}                                                             |
+| `controller.nodeSelector`                             | controller pod node selector                          | {}                                                             |
+| `controller.tolerations`                              | controller pod tolerations                            | []                                                             |
+| `node.resources.livenessProbe.limits.cpu`             | liveness-probe cpu limits                             | 100m                                                           |
+| `node.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | 100Mi                                                          |
+| `node.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | 10m                                                            |
+| `node.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | 20Mi                                                           |
+| `node.resources.nodeDriverRegistrar.limits.cpu`       | csi-node-driver-registrar cpu limits                  | 100m                                                           |
+| `node.resources.nodeDriverRegistrar.limits.memory`    | csi-node-driver-registrar memory limits               | 100Mi                                                          |
+| `node.resources.nodeDriverRegistrar.requests.cpu`     | csi-node-driver-registrar cpu requests limits         | 10m                                                            |
+| `node.resources.nodeDriverRegistrar.requests.memory`  | csi-node-driver-registrar memory requests limits      | 20Mi                                                           |
+| `node.resources.smb.limits.cpu`                      | smb-csi-driver cpu limits                            | `2`                                                            |
+| `node.resources.smb.limits.memory`                   | smb-csi-driver memory limits                         | 2100Mi                                                         |
+| `node.resources.smb.requests.cpu`                    | smb-csi-driver cpu requests limits                   | 10m                                                            |
+| `node.resources.smb.requests.memory`                 | smb-csi-driver memory requests limits                | 20Mi                                                           |
+| `node.affinity`                                       | node pod affinity                                     | {}                                                             |
+| `node.nodeSelector`                                   | node pod node selector                                | {}                                                             |
+| `node.tolerations`                                    | node pod tolerations                                  | []                                                             |
+| `podAnnotations`                                      | collection of annotations to add to all the pods      | {}                                                             |
+| `podLabels`                                           | collection of labels to add to all the pods           | {}                                                             |
+| `priorityClassName`                                   | priority class name to be added to pods               | system-cluster-critical                                        |
+| `securityContext`                                     | security context to be added to pods                  | {}                                                             |
 
 ## troubleshooting
  - Add `--wait -v=5 --debug` in `helm install` command to get detailed error
