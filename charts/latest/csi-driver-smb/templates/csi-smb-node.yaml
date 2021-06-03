@@ -13,15 +13,31 @@ spec:
     metadata:
 {{ include "smb.labels" . | indent 6 }}
         app: csi-smb-node
+        {{- if .Values.podLabels }}
+{{- toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
         kubernetes.io/os: linux
-      priorityClassName: system-node-critical
+{{- with .Values.node.nodeSelector }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+        {{- if .Values.node.affinity }}
+{{- toYaml .Values.node.affinity | nindent 8 }}
+        {{- end }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       tolerations:
         - operator: "Exists"
       {{- include "smb.pullSecrets" . | indent 6 }}
+        {{- if .Values.node.tolerations }}
+{{- toYaml .Values.node.tolerations | nindent 8 }}
+        {{- end }}
       containers:
         - name: liveness-probe
           volumeMounts:
@@ -34,13 +50,7 @@ spec:
             - --health-port={{ .Values.node.livenessProbe.healthPort }}
             - --v=2
           imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
-          resources:
-            limits:
-              cpu: 100m
-              memory: 100Mi
-            requests:
-              cpu: 10m
-              memory: 20Mi
+          resources: {{- toYaml .Values.node.resources.livenessProbe | nindent 12 }}
         - name: node-driver-registrar
           image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
           args:
@@ -62,13 +72,7 @@ spec:
               mountPath: /csi
             - name: registration-dir
               mountPath: /registration
-          resources:
-            limits:
-              cpu: 100m
-              memory: 100Mi
-            requests:
-              cpu: 10m
-              memory: 20Mi
+          resources: {{- toYaml .Values.node.resources.nodeDriverRegistrar | nindent 12 }}
         - name: smb
           image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
           imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
@@ -109,13 +113,7 @@ spec:
             - mountPath: {{ .Values.linux.kubelet }}/
               mountPropagation: Bidirectional
               name: mountpoint-dir
-          resources:
-            limits:
-              cpu: 400m
-              memory: 200Mi
-            requests:
-              cpu: 10m
-              memory: 20Mi
+          resources: {{- toYaml .Values.node.resources.smb | nindent 12 }}
       volumes:
         - hostPath:
             path: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}
@@ -129,4 +127,7 @@ spec:
             path: {{ .Values.linux.kubelet }}/plugins_registry/
             type: DirectoryOrCreate
           name: registration-dir
+      {{- if .Values.securityContext }}
+      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
 {{- end -}}

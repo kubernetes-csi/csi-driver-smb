@@ -30,12 +30,62 @@ controller:
   metricsPort: 29644
   runOnMaster: false
   logLevel: 5
+  resources:
+    csiProvisioner:
+      limits:
+        cpu: 100m
+        memory: 300Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    livenessProbe:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    smb:
+      limits:
+        cpu: 200m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
 
 node:
   metricsPort: 29645
   logLevel: 5
   livenessProbe:
     healthPort: 29643
+  resources:
+    livenessProbe:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    nodeDriverRegistrar:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    smb:
+      limits:
+        cpu: 400m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
 
 linux:
   enabled: true
@@ -53,3 +103,16 @@ windows:
       repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
       tag: v2.2.0
       pullPolicy: IfNotPresent
+
+
+## Collection of annotations to add to all the pods
+podAnnotations: {}
+## Collection of labels to add to all the pods
+podLabels: {}
+## Leverage a PriorityClass to ensure your pods survive resource shortages
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+priorityClassName: system-cluster-critical
+## Security context give the opportunity to run container as nonroot by setting a securityContext
+## by example :
+## securityContext: { runAsUser: 1001 }
+securityContext: {}

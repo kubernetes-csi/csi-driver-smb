@@ -14,10 +14,24 @@ spec:
     metadata:
 {{ include "smb.labels" . | indent 6 }}
         app: csi-smb-controller
+        {{- if .Values.podLabels }}
+{{- toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
+{{- with .Values.controller.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: csi-smb-controller-sa
       nodeSelector:
+{{- with .Values.controller.nodeSelector }}
+{{ toYaml . | indent 8 }}
+{{- end }}
         kubernetes.io/os: linux
         {{- if .Values.controller.runOnMaster}}
         kubernetes.io/role: master
@@ -32,6 +46,9 @@ spec:
           operator: "Equal"
           value: "true"
           effect: "NoSchedule"
+{{- with .Values.controller.tolerations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
       {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: csi-provisioner
@@ -47,13 +64,7 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-          resources:
-            limits:
-              cpu: 100m
-              memory: 300Mi
-            requests:
-              cpu: 10m
-              memory: 20Mi
+          resources: {{- toYaml .Values.controller.resources.csiProvisioner | nindent 12 }}
         - name: liveness-probe
           image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
           args:
@@ -65,13 +76,7 @@ spec:
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
-          resources:
-            limits:
-              cpu: 100m
-              memory: 100Mi
-            requests:
-              cpu: 10m
-              memory: 20Mi
+          resources: {{- toYaml .Values.controller.resources.livenessProbe | nindent 12 }}
         - name: smb
           image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
           imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
@@ -102,13 +107,10 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-          resources:
-            limits:
-              cpu: 200m
-              memory: 200Mi
-            requests:
-              cpu: 10m
-              memory: 20Mi
+          resources: {{- toYaml .Values.controller.resources.smb | nindent 12 }}
       volumes:
         - name: socket-dir
           emptyDir: {}
+      {{- if .Values.securityContext }}
+      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}

@@ -53,3 +53,6 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 helm search repo -l csi-driver-smb
 echo "helm chart index verified."
+
+echo "linting helm charts"
+helm lint charts/latest/csi-driver-smb
