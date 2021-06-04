@@ -28,5 +28,5 @@ setup_e2e() {
 
 export TEST_WINDOWS=true
 
-# setup_e2e
+setup_e2e
 make -C $PROJECT_ROOT e2e-test
