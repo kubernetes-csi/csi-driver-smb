@@ -50,18 +50,18 @@ metadata:
   name: smb
 provisioner: smb.csi.k8s.io
 parameters:
-  source: //52.146.58.223/share
-  # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
-  # with PV name under source
+  # On Windows, "*.default.svc.cluster.local" could not be recognized by csi-proxy
+  source: "//smb-server.default.svc.cluster.local/share"
   csi.storage.k8s.io/provisioner-secret-name: "smbcreds"
   csi.storage.k8s.io/provisioner-secret-namespace: "default"
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
   csi.storage.k8s.io/node-stage-secret-namespace: "default"
-reclaimPolicy: Delete  # available values: Delete, Retain
 volumeBindingMode: Immediate
 mountOptions:
   - dir_mode=0777
   - file_mode=0777
+  - uid=1001
+  - gid=1001
 ```
 
 #### 2. Create a statefulset with SMB volume mount
@@ -70,7 +70,7 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-sm
 ```
  - Execute `df -h` command in the container
 ```console
-kubectl exec -it statefulset-smb-0 sh -- df -h
+kubectl exec -it statefulset-smb-0 -- df -h
 ```
 <pre>
 Filesystem                                    Size  Used Avail Use% Mounted on
