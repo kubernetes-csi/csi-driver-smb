@@ -32,12 +32,11 @@ spec:
 {{- toYaml .Values.node.affinity | nindent 8 }}
         {{- end }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
+{{- with .Values.linux.tolerations }}
       tolerations:
-        - operator: "Exists"
+{{ toYaml . | indent 8 }}
+{{- end }}
       {{- include "smb.pullSecrets" . | indent 6 }}
-        {{- if .Values.node.tolerations }}
-{{- toYaml .Values.node.tolerations | nindent 8 }}
-        {{- end }}
       containers:
         - name: liveness-probe
           volumeMounts:

@@ -54,7 +54,15 @@ controller:
         memory: 20Mi
   affinity: {}
   nodeSelector: {}
-  tolerations: []
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "node-role.kubernetes.io/controlplane"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
 
 node:
   metricsPort: 29645
@@ -85,11 +93,12 @@ node:
         memory: 20Mi
   affinity: {}
   nodeSelector: {}
-  tolerations: []
 
 linux:
   enabled: true
   kubelet: /var/lib/kubelet
+  tolerations:
+    - operator: "Exists"
 
 windows:
   enabled: false
@@ -103,7 +112,10 @@ windows:
       repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
       tag: v2.2.0
       pullPolicy: IfNotPresent
-
+  tolerations:
+    - key: "node.kubernetes.io/os"
+      operator: "Exists"
+      effect: "NoSchedule"
 
 ## Collection of annotations to add to all the pods
 podAnnotations: {}

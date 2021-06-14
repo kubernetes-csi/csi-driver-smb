@@ -96,7 +96,6 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `node.resources.smb.requests.memory`                 | smb-csi-driver memory requests limits                | 20Mi                                                           |
 | `node.affinity`                                       | node pod affinity                                     | {}                                                             |
 | `node.nodeSelector`                                   | node pod node selector                                | {}                                                             |
-| `node.tolerations`                                    | node pod tolerations                                  | []                                                             |
 | `podAnnotations`                                      | collection of annotations to add to all the pods      | {}                                                             |
 | `podLabels`                                           | collection of labels to add to all the pods           | {}                                                             |
 | `priorityClassName`                                   | priority class name to be added to pods               | system-cluster-critical                                        |
