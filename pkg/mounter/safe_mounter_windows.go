@@ -21,6 +21,7 @@ package mounter
 import (
 	"context"
 	"fmt"
+	"net"
 	"os"
 	filepath "path/filepath"
 	"strings"
@@ -71,6 +72,19 @@ func (mounter *CSIProxyMounter) SMBMount(source, target, fsType string, mountOpt
 		}
 	}
 
+	parts := strings.FieldsFunc(source, Split)
+	if len(parts) > 0 && strings.HasSuffix(parts[0], "svc.cluster.local") {
+		// replace hostname with IP in the source
+		domainName := parts[0]
+		ip, err := net.ResolveIPAddr("ip4", domainName)
+		if err != nil {
+			klog.Warningf("could not resolve name to IPv4 address for host %s, failed with error: %v", domainName, err)
+		} else {
+			klog.V(2).Infof("resolve the name of host %s to IPv4 address: %s", domainName, ip.String())
+			source = strings.Replace(source, domainName, ip.String(), 1)
+		}
+	}
+
 	source = strings.Replace(source, "/", "\\", -1)
 	smbMountRequest := &smb.NewSmbGlobalMappingRequest{
 		LocalPath:  normalizeWindowsPath(target),
@@ -105,6 +119,10 @@ func (mounter *CSIProxyMounter) Mount(source string, target string, fstype strin
 		return err
 	}
 	return nil
+}
+
+func Split(r rune) bool {
+	return r == ' ' || r == '/'
 }
 
 // Rmdir - delete the given directory

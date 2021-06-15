@@ -113,20 +113,6 @@ var _ = ginkgo.BeforeSuite(func() {
 			err := os.Chdir("test/e2e")
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		}()
-
-		getSMBPublicIPScript := "test/utils/get_smb_svc_public_ip.sh"
-		log.Printf("run script: %s\n", getSMBPublicIPScript)
-
-		cmd := exec.Command("bash", getSMBPublicIPScript)
-		output, err := cmd.CombinedOutput()
-		log.Printf("got output: %v, error: %v\n", string(output), err)
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-		smbPublicIP := strings.TrimSuffix(string(output), "\n")
-		source := `//` + smbPublicIP + `/share`
-
-		log.Printf("use source on Windows: %v\n", source)
-		defaultStorageClassParameters["source"] = source
 	}
 })
 
