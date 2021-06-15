@@ -37,16 +37,8 @@ spec:
         kubernetes.io/role: master
         {{- end}}
       priorityClassName: system-cluster-critical
-      tolerations:
-        - key: "node-role.kubernetes.io/master"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
-        - key: "node-role.kubernetes.io/controlplane"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
 {{- with .Values.controller.tolerations }}
+      tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
       {{- include "smb.pullSecrets" . | indent 6 }}

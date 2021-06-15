@@ -14,10 +14,10 @@ spec:
 {{ include "smb.labels" . | indent 6 }}
         app: csi-smb-node-win
     spec:
+{{- with .Values.windows.tolerations }}
       tolerations:
-        - key: "node.kubernetes.io/os"
-          operator: "Exists"
-          effect: "NoSchedule"
+{{ toYaml . | indent 8 }}
+{{- end }}
       nodeSelector:
         kubernetes.io/os: windows
       priorityClassName: system-node-critical

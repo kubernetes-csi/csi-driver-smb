@@ -107,6 +107,8 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
 		}
 		parameters[sourceField] = parameters[sourceField] + "/" + smbVol.subDir
+	} else {
+		klog.Infof("CreateVolume(%s) does not provide secrets", name)
 	}
 	return &csi.CreateVolumeResponse{Volume: d.smbVolToCSI(smbVol, parameters)}, nil
 }
@@ -142,6 +144,8 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 		if err = os.RemoveAll(internalVolumePath); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
 		}
+	} else {
+		klog.Infof("DeleteVolume(%s) does not provide secrets", volumeID)
 	}
 
 	return &csi.DeleteVolumeResponse{}, nil
