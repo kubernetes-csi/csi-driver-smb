@@ -15,7 +15,6 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server.yaml
 ```
  - Access by Windows node
-> Since `smb-server.default.svc.cluster.local` could not be recognized by CSI proxy on Windows node, above `smb-server-lb.yaml` configures `LoadBalancer` as `Service.type`, and then configure public IP address for `source` in storage class
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server-lb.yaml
 ```
