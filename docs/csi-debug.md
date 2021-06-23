@@ -28,6 +28,21 @@ csi-smb-node-dr4s4                        3/3     Running   0          7m4s    1
 $ kubectl logs csi-smb-node-cvgbs -c smb -n kube-system > csi-smb-node.log
 ```
 
+#### Update driver version quickly by editting driver deployment directly
+ - update controller deployment
+```console
+kubectl edit deployment csi-smb-controller -n kube-system
+```
+ - update daemonset deployment
+```console
+kubectl edit ds csi-smb-node -n kube-system
+```
+change below deployment config, e.g.
+```console
+        image: mcr.microsoft.com/k8s/csi/smb-csi:v1.1.0
+        imagePullPolicy: Always
+```
+
 ### troubleshooting connection failure on agent node
  - On Linux node
 ```console
