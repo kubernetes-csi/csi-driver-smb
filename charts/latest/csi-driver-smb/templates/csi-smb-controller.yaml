@@ -76,6 +76,7 @@ spec:
             - "--v={{ .Values.controller.logLevel }}"
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--metrics-address=0.0.0.0:{{ .Values.controller.metricsPort }}"
+            - "--drivername={{ .Values.driver.name }}"
           ports:
             - containerPort: 29642
               name: healthz
