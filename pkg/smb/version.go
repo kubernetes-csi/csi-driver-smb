@@ -43,9 +43,14 @@ type VersionInfo struct {
 }
 
 // GetVersion returns the version information of the driver
-func GetVersion() VersionInfo {
+func GetVersion(driverName string) VersionInfo {
+	displayDriverName := DefaultDriverName
+	if driverName != "" {
+		displayDriverName = driverName
+	}
+
 	return VersionInfo{
-		DriverName:    DefaultDriverName,
+		DriverName:    displayDriverName,
 		DriverVersion: driverVersion,
 		GitCommit:     gitCommit,
 		BuildDate:     buildDate,
@@ -57,8 +62,8 @@ func GetVersion() VersionInfo {
 
 // GetVersionYAML returns the version information of the driver
 // in YAML format
-func GetVersionYAML() (string, error) {
-	info := GetVersion()
+func GetVersionYAML(driverName string) (string, error) {
+	info := GetVersion(driverName)
 	marshalled, err := yaml.Marshal(&info)
 	if err != nil {
 		return "", err

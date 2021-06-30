@@ -47,7 +47,7 @@ var (
 func main() {
 	flag.Parse()
 	if *version {
-		info, err := smb.GetVersionYAML()
+		info, err := smb.GetVersionYAML(*driverName)
 		if err != nil {
 			klog.Fatalln(err)
 		}
