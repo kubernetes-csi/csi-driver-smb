@@ -27,7 +27,7 @@ import (
 )
 
 func TestGetVersion(t *testing.T) {
-	version := GetVersion("")
+	version := GetVersion(DefaultDriverName)
 
 	expected := VersionInfo{
 		DriverName:    DefaultDriverName,

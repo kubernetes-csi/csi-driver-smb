@@ -44,13 +44,8 @@ type VersionInfo struct {
 
 // GetVersion returns the version information of the driver
 func GetVersion(driverName string) VersionInfo {
-	displayDriverName := DefaultDriverName
-	if driverName != "" {
-		displayDriverName = driverName
-	}
-
 	return VersionInfo{
-		DriverName:    displayDriverName,
+		DriverName:    driverName,
 		DriverVersion: driverVersion,
 		GitCommit:     gitCommit,
 		BuildDate:     buildDate,
