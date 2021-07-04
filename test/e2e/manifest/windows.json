@@ -26,7 +26,7 @@
         "windowsProfile": {
             "adminUsername": "azureuser",
             "adminPassword": "replacepassword1234$",
-            "csiProxyURL": "https://kubernetesartifacts.azureedge.net/csi-proxy/v0.2.2/binaries/csi-proxy-v0.2.2.tar.gz",
+            "csiProxyURL": "https://github.com/andyzhangx/demo/raw/master/windows/csi-proxy-v1.0.0-rc.1.tar.gz",
             "enableCSIProxy": true,
             "sshEnabled": true,
             "windowsPublisher": "microsoft-aks",
