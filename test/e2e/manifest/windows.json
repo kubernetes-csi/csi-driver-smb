@@ -31,8 +31,8 @@
             "sshEnabled": true,
             "windowsPublisher": "microsoft-aks",
             "windowsOffer": "aks-windows",
-            "windowsSku": "2019-datacenter-core-smalldisk-2008",
-            "imageVersion": "17763.1397.200820"
+            "windowsSku": "2019-datacenter-core-smalldisk-2104",
+            "imageVersion": "17763.1879.210414"
         },
         "linuxProfile": {
             "adminUsername": "azureuser",
