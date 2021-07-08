@@ -28,7 +28,7 @@ csi-smb-node-dr4s4                        3/3     Running   0          7m4s    1
 $ kubectl logs csi-smb-node-cvgbs -c smb -n kube-system > csi-smb-node.log
 ```
 
-#### Update driver version quickly by editting driver deployment directly
+#### Update driver version quickly by editing driver deployment directly
  - update controller deployment
 ```console
 kubectl edit deployment csi-smb-controller -n kube-system
