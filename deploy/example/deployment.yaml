@@ -1,4 +1,16 @@
 ---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-smb
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: smb
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

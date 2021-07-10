@@ -2,17 +2,17 @@
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: csi-smb-node-win
+  name: {{ .Values.windows.dsName }}
   namespace: {{ .Release.Namespace }}
 {{ include "smb.labels" . | indent 2 }}
 spec:
   selector:
     matchLabels:
-      app: csi-smb-node-win
+      app: {{ .Values.windows.dsName }}
   template:
     metadata:
 {{ include "smb.labels" . | indent 6 }}
-        app: csi-smb-node-win
+        app: {{ .Values.windows.dsName }}
     spec:
 {{- with .Values.windows.tolerations }}
       tolerations:
@@ -31,7 +31,7 @@ spec:
           args:
             - --csi-address=$(CSI_ENDPOINT)
             - --probe-timeout=3s
-            - --health-port=29643
+            - --health-port={{ .Values.node.livenessProbe.healthPort }}
             - --v=2
           env:
             - name: CSI_ENDPOINT
@@ -80,7 +80,7 @@ spec:
             - --nodeid=$(KUBE_NODE_NAME)
             - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
           ports:
-            - containerPort: 29643
+            - containerPort: {{ .Values.node.livenessProbe.healthPort }}
               name: healthz
               protocol: TCP
           livenessProbe:

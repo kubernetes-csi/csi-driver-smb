@@ -2,17 +2,17 @@
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: csi-smb-node
+  name: {{ .Values.linux.dsName }}
   namespace: {{ .Release.Namespace }}
 {{ include "smb.labels" . | indent 2 }}
 spec:
   selector:
     matchLabels:
-      app: csi-smb-node
+      app: {{ .Values.linux.dsName }}
   template:
     metadata:
 {{ include "smb.labels" . | indent 6 }}
-        app: csi-smb-node
+        app: {{ .Values.linux.dsName }}
         {{- if .Values.podLabels }}
 {{- toYaml .Values.podLabels | nindent 8 }}
         {{- end }}
@@ -82,7 +82,7 @@ spec:
             - "--nodeid=$(KUBE_NODE_NAME)"
             - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
           ports:
-            - containerPort: 29643
+            - containerPort: {{ .Values.node.livenessProbe.healthPort }}
               name: healthz
               protocol: TCP
           livenessProbe:
