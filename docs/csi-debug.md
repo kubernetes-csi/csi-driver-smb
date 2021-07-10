@@ -28,6 +28,11 @@ csi-smb-node-dr4s4                        3/3     Running   0          7m4s    1
 $ kubectl logs csi-smb-node-cvgbs -c smb -n kube-system > csi-smb-node.log
 ```
 
+ - check cifs mount inside driver
+```console
+kubectl exec -it csi-smb-node-cvgbs -n kube-system -c smb -- mount | grep cifs
+```
+
 #### Update driver version quickly by editing driver deployment directly
  - update controller deployment
 ```console
