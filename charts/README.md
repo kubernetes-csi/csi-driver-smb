@@ -3,6 +3,10 @@
 ## Prerequisites
  - [install Helm](https://helm.sh/docs/intro/quickstart/#install-helm)
 
+### Tips
+ - make controller only run on master node: `--set controller.runOnMaster=true`
+ - set replica of controller as `1`: `--set controller.replicas=1`
+
 ## install latest version
 ```console
 helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
@@ -13,6 +17,13 @@ helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-syste
 ```console
 helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v1.1.0
+```
+
+### install driver with customized driver name, deployment name
+> only supported from `v1.2.0`+
+ - following example would install a driver with name `smb2`
+```console
+helm install csi-driver-smb2 csi-driver-smb/csi-driver-smb --namespace kube-system --set driver.name="smb2.csi.k8s.io" --set controller.name="csi-smb2-controller" --set rbac.name=smb2 --set serviceAccount.controller=csi-smb2-controller-sa --set serviceAccount.node=csi-smb2-node-sa --set node.name=csi-smb2-node --set node.livenessProbe.healthPort=39643
 ```
 
 ### search for all available chart versions
