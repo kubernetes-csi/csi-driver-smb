@@ -15,21 +15,29 @@
 
 set -euo pipefail
 
+rollout_and_wait() {
+    echo "Applying config \"$1\""
+    trap "echo \"Failed to apply config \\\"$1\\\"\" >&2" err
+
+    APPNAME=$(kubectl apply -f $1 | grep -E "^(:?daemonset|deployment|statefulset|pod)" | awk '{printf $1}')
+    if [[ -n $(expr "${APPNAME}" : "\(daemonset\|deployment\|statefulset\)" || true) ]]; then
+        kubectl rollout status $APPNAME --watch --timeout=5m
+    else
+        kubectl wait "${APPNAME}" --for condition=ready --timeout=5m
+    fi
+}
+
 echo "begin to create deployment examples ..."
 kubectl apply -f deploy/example/storageclass-smb.yaml
-kubectl apply -f deploy/example/pvc-smb.yaml
-kubectl apply -f deploy/example/deployment.yaml
-kubectl apply -f deploy/example/statefulset.yaml
-kubectl apply -f deploy/example/statefulset-nonroot.yaml
 
-echo "sleep 60s ..."
-sleep 60
+EXAMPLES=(\
+    deploy/example/deployment.yaml \
+    deploy/example/statefulset.yaml \
+    deploy/example/statefulset-nonroot.yaml \
+)
 
-echo "begin to check pod status ..."
-kubectl get pods -o wide
-
-kubectl get pods --field-selector status.phase=Running | grep deployment-smb
-kubectl get pods --field-selector status.phase=Running | grep statefulset-smb-0
-kubectl get pods --field-selector status.phase=Running | grep statefulset-smb-nonroot-0
+for EXAMPLE in "${EXAMPLES[@]}"; do
+    rollout_and_wait $EXAMPLE
+done
 
 echo "deployment examples running completed."

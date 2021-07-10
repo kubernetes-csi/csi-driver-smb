@@ -17,6 +17,7 @@
 set -xe
 
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
+DRIVER="test"
 
 install_ginkgo () {
     apt update -y
@@ -28,22 +29,27 @@ setup_e2e_binaries() {
     curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.21.0/kubernetes-test-linux-amd64.tar.gz --output e2e-tests.tar.gz
     tar -xvf e2e-tests.tar.gz && rm e2e-tests.tar.gz
 
-    # install csi driver
-    mkdir -p /tmp/csi && cp deploy/example/storageclass-smb.yaml /tmp/csi/storageclass.yaml
-    make e2e-bootstrap
+    # test on alternative driver name
+    export EXTRA_HELM_OPTIONS=" --set driver.name=$DRIVER.csi.k8s.io --set controller.name=csi-$DRIVER-controller --set linux.dsName=csi-$DRIVER-node --set windows.dsName=csi-$DRIVER-node-win"
+    sed -i "s/smb.csi.k8s.io/$DRIVER.csi.k8s.io/g" deploy/example/storageclass-smb.yaml
     make install-smb-provisioner
+    make e2e-bootstrap
+    sed -i "s/csi-smb-controller/csi-$DRIVER-controller/g" deploy/example/metrics/csi-smb-controller-svc.yaml
     make create-metrics-svc
 }
 
 print_logs() {
+    bash ./hack/verify-examples.sh
     echo "print out driver logs ..."
-    bash ./test/utils/smb_log.sh
+    bash ./test/utils/smb_log.sh $DRIVER
 }
 
 install_ginkgo
 setup_e2e_binaries
 trap print_logs EXIT
 
+mkdir -p /tmp/csi
+cp deploy/example/storageclass-smb.yaml /tmp/csi/storageclass.yaml
 ginkgo -p --progress --v -focus='External.Storage' \
        -skip='\[Disruptive\]|\[Slow\]|unmount after the subpath directory is deleted|support two pods which share the same volume' kubernetes/test/bin/e2e.test  -- \
        -storage.testdriver=$PROJECT_ROOT/test/external-e2e/testdriver.yaml \

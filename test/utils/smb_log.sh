@@ -18,6 +18,10 @@ set -e
 
 NS=kube-system
 CONTAINER=smb
+DRIVER=smb
+if [[ "$#" -gt 0 ]]; then
+    DRIVER=$1
+fi
 
 echo "print out all nodes status ..."
 kubectl get nodes -o wide
@@ -31,28 +35,28 @@ echo "print out all $NS namespace pods status ..."
 kubectl get pods -n${NS} -o wide
 echo "======================================================================================"
 
-echo "print out csi-smb-controller pods ..."
+echo "print out csi-$DRIVER-controller pods ..."
 echo "======================================================================================"
-LABEL='app=csi-smb-controller'
+LABEL="app=csi-$DRIVER-controller"
 kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
 
-echo "print out csi-smb-node logs ..."
+echo "print out csi-$DRIVER-node logs ..."
 echo "======================================================================================"
-LABEL='app=csi-smb-node'
+LABEL="app=csi-$DRIVER-node"
 kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
 
-echo "print out csi-smb-node-win logs ..."
+echo "print out csi-$DRIVER-node-win logs ..."
 echo "======================================================================================"
-LABEL='app=csi-smb-node-win'
+LABEL="app=csi-$DRIVER-node-win"
 kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
 
 echo "print out metrics ..."
 echo "======================================================================================"
-ip=`kubectl get svc csi-smb-controller -n kube-system | grep smb | awk '{print $4}'`
+ip=`kubectl get svc csi-$DRIVER-controller -n kube-system | awk '{print $4}'`
 curl http://$ip:29644/metrics

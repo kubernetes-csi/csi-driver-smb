@@ -17,17 +17,22 @@ image:
     pullPolicy: IfNotPresent
 
 serviceAccount:
-  create: true
+  create: true # When true, service accounts will be created for you. Set to false if you want to use your own.
+  controller: csi-smb-controller-sa # Name of Service Account to be created or used
 
 rbac:
   create: true
+  name: smb
 
 driver:
   name: smb.csi.k8s.io
 
 controller:
+  name: csi-smb-controller
   replicas: 2
   metricsPort: 29644
+  livenessProbe:
+    healthPort: 29642
   runOnMaster: false
   logLevel: 5
   resources:
@@ -56,12 +61,10 @@ controller:
   nodeSelector: {}
   tolerations:
     - key: "node-role.kubernetes.io/master"
-      operator: "Equal"
-      value: "true"
+      operator: "Exists"
       effect: "NoSchedule"
     - key: "node-role.kubernetes.io/controlplane"
-      operator: "Equal"
-      value: "true"
+      operator: "Exists"
       effect: "NoSchedule"
 
 node:
@@ -96,12 +99,14 @@ node:
 
 linux:
   enabled: true
+  dsName: csi-smb-node # daemonset name
   kubelet: /var/lib/kubelet
   tolerations:
     - operator: "Exists"
 
 windows:
   enabled: false
+  dsName: csi-smb-node-win # daemonset name
   kubelet: 'C:\var\lib\kubelet'
   image:
     livenessProbe:
