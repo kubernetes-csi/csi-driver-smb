@@ -1,0 +1,135 @@
+image:
+  smb:
+    repository: mcr.microsoft.com/k8s/csi/smb-csi
+    tag: v1.2.0
+    pullPolicy: IfNotPresent
+  csiProvisioner:
+    repository: k8s.gcr.io/sig-storage/csi-provisioner
+    tag: v2.1.0
+    pullPolicy: IfNotPresent
+  livenessProbe:
+    repository: k8s.gcr.io/sig-storage/livenessprobe
+    tag: v2.3.0
+    pullPolicy: IfNotPresent
+  nodeDriverRegistrar:
+    repository: k8s.gcr.io/sig-storage/csi-node-driver-registrar
+    tag: v2.2.0
+    pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true # When true, service accounts will be created for you. Set to false if you want to use your own.
+  controller: csi-smb-controller-sa # Name of Service Account to be created or used
+
+rbac:
+  create: true
+  name: smb
+
+driver:
+  name: smb.csi.k8s.io
+
+controller:
+  name: csi-smb-controller
+  replicas: 2
+  metricsPort: 29644
+  livenessProbe:
+    healthPort: 29642
+  runOnMaster: false
+  logLevel: 5
+  resources:
+    csiProvisioner:
+      limits:
+        cpu: 100m
+        memory: 300Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    livenessProbe:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    smb:
+      limits:
+        cpu: 200m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+  affinity: {}
+  nodeSelector: {}
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "node-role.kubernetes.io/controlplane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+node:
+  metricsPort: 29645
+  logLevel: 5
+  livenessProbe:
+    healthPort: 29643
+  resources:
+    livenessProbe:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    nodeDriverRegistrar:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    smb:
+      limits:
+        cpu: 400m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+  affinity: {}
+  nodeSelector: {}
+
+linux:
+  enabled: true
+  dsName: csi-smb-node # daemonset name
+  kubelet: /var/lib/kubelet
+  tolerations:
+    - operator: "Exists"
+
+windows:
+  enabled: false
+  dsName: csi-smb-node-win # daemonset name
+  kubelet: 'C:\var\lib\kubelet'
+  image:
+    livenessProbe:
+      repository: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe
+      tag: v2.3.0
+      pullPolicy: IfNotPresent
+    nodeDriverRegistrar:
+      repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
+      tag: v2.2.0
+      pullPolicy: IfNotPresent
+  tolerations:
+    - key: "node.kubernetes.io/os"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+## Collection of annotations to add to all the pods
+podAnnotations: {}
+## Collection of labels to add to all the pods
+podLabels: {}
+## Leverage a PriorityClass to ensure your pods survive resource shortages
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+priorityClassName: system-cluster-critical
+## Security context give the opportunity to run container as nonroot by setting a securityContext
+## by example :
+## securityContext: { runAsUser: 1001 }
+securityContext: {}
