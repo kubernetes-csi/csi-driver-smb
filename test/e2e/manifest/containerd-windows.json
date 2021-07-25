@@ -1,0 +1,57 @@
+{
+    "apiVersion": "vlabs",
+    "properties": {
+        "featureFlags": {
+            "enableTelemetry": true
+        },
+        "orchestratorProfile": {
+            "orchestratorType": "Kubernetes",
+            "orchestratorRelease": "",
+            "kubernetesConfig": {
+                "useManagedIdentity": false,
+                "containerRuntime": "containerd",
+                "windowsContainerdURL": "https://acs-mirror.azureedge.net/containerd/windows/v0.0.41/binaries/containerd-v0.0.41-windows-amd64.tar.gz"
+            }
+        },
+        "masterProfile": {
+            "count": 1,
+            "dnsPrefix": "",
+            "vmSize": "Standard_D2_v3"
+        },
+        "agentPoolProfiles": [
+            {
+                "name": "windowspool1",
+                "count": 2,
+                "vmSize": "Standard_D4s_v3",
+                "osDiskSizeGB": 128,
+                "availabilityProfile": "AvailabilitySet",
+                "osType": "Windows"
+            }
+        ],
+        "windowsProfile": {
+            "adminUsername": "azureuser",
+            "adminPassword": "replacepassword1234$",
+            "csiProxyURL": "https://acs-mirror.azureedge.net/csi-proxy/v0.2.2/binaries/csi-proxy-v0.2.2.tar.gz",
+            "enableCSIProxy": true,
+            "sshEnabled": true,
+            "windowsPublisher": "microsoft-aks",
+            "windowsOffer": "aks-windows",
+            "windowsSku": "2019-datacenter-core-ctrd-2104",
+            "imageVersion": "17763.1879.210414"
+        },
+        "linuxProfile": {
+            "adminUsername": "azureuser",
+            "ssh": {
+                "publicKeys": [
+                    {
+                        "keyData": ""
+                    }
+                ]
+            }
+        },
+        "servicePrincipalProfile": {
+            "clientID": "",
+            "secret": ""
+        }
+    }
+}
