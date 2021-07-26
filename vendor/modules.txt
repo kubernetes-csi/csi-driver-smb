@@ -122,10 +122,14 @@ github.com/kubernetes-csi/csi-lib-utils/protosanitizer
 ## explicit
 github.com/kubernetes-csi/csi-proxy/client
 github.com/kubernetes-csi/csi-proxy/client/api/filesystem/v1
+github.com/kubernetes-csi/csi-proxy/client/api/filesystem/v1beta1
 github.com/kubernetes-csi/csi-proxy/client/api/smb/v1
+github.com/kubernetes-csi/csi-proxy/client/api/smb/v1beta1
 github.com/kubernetes-csi/csi-proxy/client/apiversion
 github.com/kubernetes-csi/csi-proxy/client/groups/filesystem/v1
+github.com/kubernetes-csi/csi-proxy/client/groups/filesystem/v1beta1
 github.com/kubernetes-csi/csi-proxy/client/groups/smb/v1
+github.com/kubernetes-csi/csi-proxy/client/groups/smb/v1beta1
 # github.com/kubernetes-csi/external-snapshotter/v2 v2.0.0-20200617021606-4800ca72d403
 ## explicit
 github.com/kubernetes-csi/external-snapshotter/v2/pkg/apis/volumesnapshot/v1beta1

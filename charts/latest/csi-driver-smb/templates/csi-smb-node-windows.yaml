@@ -104,10 +104,16 @@ spec:
               mountPath: {{ .Values.windows.kubelet }}\
             - name: plugin-dir
               mountPath: C:\csi
-            - name: csi-proxy-fs-pipe
+            - name: csi-proxy-fs-pipe-v1
               mountPath: \\.\pipe\csi-proxy-filesystem-v1
-            - name: csi-proxy-smb-pipe
+            - name: csi-proxy-smb-pipe-v1
               mountPath: \\.\pipe\csi-proxy-smb-v1
+            # these paths are still included for compatibility, they're used
+            # only if the node has still the beta version of the CSI proxy
+            - name: csi-proxy-fs-pipe-v1beta1
+              mountPath: \\.\pipe\csi-proxy-filesystem-v1beta1
+            - name: csi-proxy-smb-pipe-v1beta1
+              mountPath: \\.\pipe\csi-proxy-smb-v1beta1
           resources:
             limits:
               cpu: 400m
@@ -116,13 +122,23 @@ spec:
               cpu: 10m
               memory: 20Mi
       volumes:
-        - name: csi-proxy-fs-pipe
+        - name: csi-proxy-fs-pipe-v1
           hostPath:
             path: \\.\pipe\csi-proxy-filesystem-v1
             type: ""
-        - name: csi-proxy-smb-pipe
+        - name: csi-proxy-smb-pipe-v1
           hostPath:
             path: \\.\pipe\csi-proxy-smb-v1
+            type: ""
+        # these paths are still included for compatibility, they're used
+        # only if the node has still the beta version of the CSI proxy
+        - name: csi-proxy-fs-pipe-v1beta1
+          hostPath:
+            path: \\.\pipe\csi-proxy-filesystem-v1beta1
+            type: ""
+        - name: csi-proxy-smb-pipe-v1beta1
+          hostPath:
+            path: \\.\pipe\csi-proxy-smb-v1beta1
             type: ""
         - name: registration-dir
           hostPath:
