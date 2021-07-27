@@ -10,7 +10,7 @@ This driver allows Kubernetes to use [SMB](https://wiki.wireshark.org/SMB) CSI v
 ### Container Images & Kubernetes Compatibility:
 |Driver Version | Image                                    | supported k8s version | supported [Windows csi-proxy](https://github.com/kubernetes-csi/csi-proxy) version |
 |---------------|------------------------------------------|-----------------------|-------------------------------------|
-|master branch  |mcr.microsoft.com/k8s/csi/smb-csi:latest  | 1.18+                 | v0.2.2+                             |
+|master branch  |mcr.microsoft.com/k8s/csi/smb-csi:latest  | 1.18+                 | v0.2.2, v1.0.0+                     |
 |v1.2.0         |mcr.microsoft.com/k8s/csi/smb-csi:v1.2.0  | 1.18+                 | v0.2.2+                             |
 |v1.1.0         |mcr.microsoft.com/k8s/csi/smb-csi:v1.1.0  | 1.18+                 | v0.2.2+                             |
 |v1.0.0         |mcr.microsoft.com/k8s/csi/smb-csi:v1.0.0  | 1.17+                 | v0.2.2+                             |
