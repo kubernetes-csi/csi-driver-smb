@@ -20,34 +20,41 @@ package smb
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
 	"k8s.io/klog/v2"
 	mount "k8s.io/mount-utils"
-	"os"
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {
-	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
-	if !ok {
-		return fmt.Errorf("could not cast to csi proxy class")
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
+		return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions)
 	}
-	return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions)
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+		return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions)
+	}
+	return fmt.Errorf("could not cast to csi proxy class")
 }
 
 func Unmount(m *mount.SafeFormatAndMount, target string) error {
-	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
-	if !ok {
-		return fmt.Errorf("could not cast to csi proxy class")
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
+		return proxy.SMBUnmount(target)
 	}
-	return proxy.SMBUnmount(target)
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+		return proxy.SMBUnmount(target)
+	}
+	return fmt.Errorf("could not cast to csi proxy class")
 }
 
 func RemoveStageTarget(m *mount.SafeFormatAndMount, target string) error {
-	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
-	if !ok {
-		return fmt.Errorf("could not cast to csi proxy class")
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
+		return proxy.Rmdir(target)
 	}
-	return proxy.Rmdir(target)
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+		return proxy.Rmdir(target)
+	}
+	return fmt.Errorf("could not cast to csi proxy class")
 }
 
 // CleanupSMBMountPoint - In windows CSI proxy call to umount is used to unmount the SMB.
@@ -58,32 +65,45 @@ func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveM
 }
 
 func CleanupMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
-	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
-	if !ok {
-		return fmt.Errorf("could not cast to csi proxy class")
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
+		return proxy.Rmdir(target)
 	}
-	return proxy.Rmdir(target)
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+		return proxy.Rmdir(target)
+	}
+	return fmt.Errorf("could not cast to csi proxy class")
 }
 
 func removeDir(path string, m *mount.SafeFormatAndMount) error {
-	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
-	if !ok {
-		return fmt.Errorf("could not cast to csi proxy class")
-	}
-
-	isExists, err := proxy.ExistsPath(path)
-	if err != nil {
-		return err
-	}
-
-	if isExists {
-		klog.V(4).Infof("Removing path: %s", path)
-		err = proxy.Rmdir(path)
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
+		isExists, err := proxy.ExistsPath(path)
 		if err != nil {
 			return err
 		}
+
+		if isExists {
+			klog.V(4).Infof("Removing path: %s", path)
+			if err = proxy.Rmdir(path); err != nil {
+				return err
+			}
+		}
+		return nil
 	}
-	return nil
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+		isExists, err := proxy.ExistsPath(path)
+		if err != nil {
+			return err
+		}
+
+		if isExists {
+			klog.V(4).Infof("Removing path: %s", path)
+			if err = proxy.Rmdir(path); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	return fmt.Errorf("could not cast to csi proxy class")
 }
 
 // preparePublishPath - In case of windows, the publish code path creates a soft link
@@ -98,9 +118,11 @@ func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
 }
 
 func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
-	proxy, ok := m.Interface.(*mounter.CSIProxyMounter)
-	if !ok {
-		return fmt.Errorf("could not cast to csi proxy class")
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
+		return proxy.MakeDir(name)
 	}
-	return proxy.MakeDir(name)
+	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+		return proxy.MakeDir(name)
+	}
+	return fmt.Errorf("could not cast to csi proxy class")
 }

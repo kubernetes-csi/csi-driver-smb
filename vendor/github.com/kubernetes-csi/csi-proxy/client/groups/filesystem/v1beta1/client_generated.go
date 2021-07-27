@@ -13,9 +13,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-const groupName = "filesystem"
+// GroupName is the group name of this API.
+const GroupName = "filesystem"
 
-var version = apiversion.NewVersionOrPanic("v1beta1")
+// Version is the api version.
+var Version = apiversion.NewVersionOrPanic("v1beta1")
 
 type Client struct {
 	client     v1beta1.FilesystemClient
@@ -25,7 +27,19 @@ type Client struct {
 // NewClient returns a client to make calls to the filesystem API group version v1beta1.
 // It's the caller's responsibility to Close the client when done.
 func NewClient() (*Client, error) {
-	pipePath := client.PipePath(groupName, version)
+	pipePath := client.PipePath(GroupName, Version)
+	return NewClientWithPipePath(pipePath)
+}
+
+// NewClientWithPipePath returns a client to make calls to the named pipe located at "pipePath".
+// It's the caller's responsibility to Close the client when done.
+func NewClientWithPipePath(pipePath string) (*Client, error) {
+
+	// verify that the pipe exists
+	_, err := winio.DialPipe(pipePath, nil)
+	if err != nil {
+		return nil, err
+	}
 
 	connection, err := grpc.Dial(pipePath,
 		grpc.WithContextDialer(func(context context.Context, s string) (net.Conn, error) {
