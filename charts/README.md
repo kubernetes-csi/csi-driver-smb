@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `controller.metricsPort`                          | metrics port of csi-smb-controller                   |29644                                               |
 | `controller.livenessProbe.healthPort `            | health check port for liveness probe                   | `29642` |
 | `controller.logLevel`                             | controller driver log level                                                          |`5`                                                           |
+| `node.maxUnavailable`                             | `maxUnavailable` value of csi-smb-node daemonset                            |1
 | `node.metricsPort`                                | metrics port of csi-smb-node                         |29645
 | `node.logLevel`                                   | node driver log level                                                          |`5`                                                           |
 | `linux.enabled`                                   | whether enable linux feature                               | true                                                              |
