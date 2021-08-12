@@ -68,6 +68,7 @@ controller:
       effect: "NoSchedule"
 
 node:
+  maxUnavailable: 1
   metricsPort: 29645
   logLevel: 5
   livenessProbe:
