@@ -1,6 +1,7 @@
 image:
+  baseRepo: mcr.microsoft.com
   smb:
-    repository: mcr.microsoft.com/k8s/csi/smb-csi
+    repository: /k8s/csi/smb-csi
     tag: latest
     pullPolicy: IfNotPresent
   csiProvisioner:
@@ -111,11 +112,11 @@ windows:
   kubelet: 'C:\var\lib\kubelet'
   image:
     livenessProbe:
-      repository: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe
+      repository: /oss/kubernetes-csi/livenessprobe
       tag: v2.3.0
       pullPolicy: IfNotPresent
     nodeDriverRegistrar:
-      repository: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar
+      repository: /oss/kubernetes-csi/csi-node-driver-registrar
       tag: v2.3.0
       pullPolicy: IfNotPresent
   tolerations:

@@ -46,7 +46,11 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
+{{- if hasPrefix "/" .Values.image.livenessProbe.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
+{{- else }}
           image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
+{{- end }}
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
@@ -55,7 +59,11 @@ spec:
           imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           resources: {{- toYaml .Values.node.resources.livenessProbe | nindent 12 }}
         - name: node-driver-registrar
+{{- if hasPrefix "/" .Values.image.nodeDriverRegistrar.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
+{{- else }}
           image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
+{{- end }}
           args:
             - --csi-address=$(ADDRESS)
             - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
@@ -77,7 +85,11 @@ spec:
               mountPath: /registration
           resources: {{- toYaml .Values.node.resources.nodeDriverRegistrar | nindent 12 }}
         - name: smb
+{{- if hasPrefix "/" .Values.image.smb.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+{{- else }}
           image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+{{- end }}
           imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           args:
             - "--v={{ .Values.node.logLevel }}"
