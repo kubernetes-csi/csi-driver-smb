@@ -46,14 +46,23 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: node-driver-registrar
-          image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.2.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.3.0
           args:
             - --v=2
             - --csi-address=$(CSI_ENDPOINT)
-            - --kubelet-registration-path=C:\\var\\lib\\kubelet\\plugins\\smb.csi.k8s.io\\csi.sock
+            - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+          livenessProbe:
+            exec:
+              command:
+                - /csi-node-driver-registrar.exe
+                - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+                - --mode=kubelet-registration-probe
+            initialDelaySeconds: 3
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: C:\\var\\lib\\kubelet\\plugins\\smb.csi.k8s.io\\csi.sock
             - name: KUBE_NODE_NAME
               valueFrom:
                 fieldRef:

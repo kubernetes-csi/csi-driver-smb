@@ -53,10 +53,19 @@ spec:
           args:
             - --v=2
             - --csi-address=$(CSI_ENDPOINT)
-            - --kubelet-registration-path={{ .Values.windows.kubelet }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
+            - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+          livenessProbe:
+            exec:
+              command:
+                - /csi-node-driver-registrar.exe
+                - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+                - --mode=kubelet-registration-probe
+            initialDelaySeconds: 3
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: {{ .Values.windows.kubelet }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
             - name: KUBE_NODE_NAME
               valueFrom:
                 fieldRef:
