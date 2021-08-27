@@ -42,6 +42,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 
 | Parameter                                         | Description                                                | Default                                                           |
 |---------------------------------------------------|------------------------------------------------------------|-------------------------------------------------------------------|
+| `image.baseRepo`                                  | base repository of driver images                          | `mcr.microsoft.com`                      |
 | `image.smb.repository`                            | csi-driver-smb docker image                                | mcr.microsoft.com/k8s/csi/smb-csi                                 |
 | `image.smb.tag`                                   | csi-driver-smb docker image tag                            | latest                                                            |
 | `image.smb.pullPolicy`                            | csi-driver-smb image pull policy                           | IfNotPresent                                                      |

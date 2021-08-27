@@ -29,7 +29,7 @@ function validate_image() {
   local -r expected_image="${1}"
   local -r image="${2}"
 
-  if [[ "${expected_image}" != "${image}" ]]; then
+  if [[ ! "${expected_image}" == *"${image}" ]]; then
     echo "Expected ${expected_image}, but got ${image} in helm chart"
     exit 1
   fi
