@@ -5,15 +5,15 @@ image:
     tag: latest
     pullPolicy: IfNotPresent
   csiProvisioner:
-    repository: k8s.gcr.io/sig-storage/csi-provisioner
+    repository: /oss/kubernetes-csi/csi-provisioner
     tag: v2.1.0
     pullPolicy: IfNotPresent
   livenessProbe:
-    repository: k8s.gcr.io/sig-storage/livenessprobe
+    repository: /oss/kubernetes-csi/livenessprobe
     tag: v2.3.0
     pullPolicy: IfNotPresent
   nodeDriverRegistrar:
-    repository: k8s.gcr.io/sig-storage/csi-node-driver-registrar
+    repository: /oss/kubernetes-csi/csi-node-driver-registrar
     tag: v2.3.0
     pullPolicy: IfNotPresent
 
