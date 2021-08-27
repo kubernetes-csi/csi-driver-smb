@@ -43,83 +43,77 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | Parameter                                         | Description                                                | Default                                                           |
 |---------------------------------------------------|------------------------------------------------------------|-------------------------------------------------------------------|
 | `image.baseRepo`                                  | base repository of driver images                          | `mcr.microsoft.com`                      |
-| `image.smb.repository`                            | csi-driver-smb docker image                                | mcr.microsoft.com/k8s/csi/smb-csi                                 |
-| `image.smb.tag`                                   | csi-driver-smb docker image tag                            | latest                                                            |
-| `image.smb.pullPolicy`                            | csi-driver-smb image pull policy                           | IfNotPresent                                                      |
-| `image.csiProvisioner.repository`                 | csi-provisioner docker image                               | mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner              |
-| `image.csiProvisioner.tag`                        | csi-provisioner docker image tag                           | v1.4.0                                                            |
-| `image.csiProvisioner.pullPolicy`                 | csi-provisioner image pull policy                          | IfNotPresent                                                      |
-| `image.livenessProbe.repository`                  | liveness-probe docker image                                | mcr.microsoft.com/oss/kubernetes-csi/livenessprobe                |
-| `image.livenessProbe.tag`                         | liveness-probe docker image tag                            | v2.3.0                                                            |
-| `image.livenessProbe.pullPolicy`                  | liveness-probe image pull policy                           | IfNotPresent                                                      |
-| `image.nodeDriverRegistrar.repository`            | csi-node-driver-registrar docker image                     | mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar    |
-| `image.nodeDriverRegistrar.tag`                   | csi-node-driver-registrar docker image tag                 | v2.3.0                                                            |
-| `image.nodeDriverRegistrar.pullPolicy`            | csi-node-driver-registrar image pull policy                | IfNotPresent                                                      |
-| `imagePullSecrets`                                | Specify docker-registry secret names as an array           | [] (does not add image pull secrets to deployed pods)             |
-| `serviceAccount.create`                           | whether create service account of csi-smb-controller       | true                                                              |
-| `rbac.create`                                     | whether create rbac of csi-smb-controller                  | true                                                              |
-| `rbac.name`                                       | driver name in rbac role                | true                                                         |
+| `image.smb.repository`                            | csi-driver-smb docker image                                | `/k8s/csi/smb-csi`                                 |
+| `image.smb.tag`                                   | csi-driver-smb docker image tag                            | `latest`                                                            |
+| `image.smb.pullPolicy`                            | csi-driver-smb image pull policy                           | `IfNotPresent`                                                      |
+| `image.csiProvisioner.repository`                 | csi-provisioner docker image                               | `/oss/kubernetes-csi/csi-provisioner`              |
+| `image.csiProvisioner.tag`                        | csi-provisioner docker image tag                           | `v2.1.0`                                                            |
+| `image.csiProvisioner.pullPolicy`                 | csi-provisioner image pull policy                          | `IfNotPresent`                                                      |
+| `image.livenessProbe.repository`                  | liveness-probe docker image                                | `/oss/kubernetes-csi/livenessprobe`                |
+| `image.livenessProbe.tag`                         | liveness-probe docker image tag                            | `v2.3.0`                                                            |
+| `image.livenessProbe.pullPolicy`                  | liveness-probe image pull policy                           | `IfNotPresent`                                                      |
+| `image.nodeDriverRegistrar.repository`            | csi-node-driver-registrar docker image                     | `/oss/kubernetes-csi/csi-node-driver-registrar`    |
+| `image.nodeDriverRegistrar.tag`                   | csi-node-driver-registrar docker image tag                 | `v2.3.0`                                                            |
+| `image.nodeDriverRegistrar.pullPolicy`            | csi-node-driver-registrar image pull policy                | `IfNotPresent`                                                      |
+| `imagePullSecrets`                                | Specify docker-registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods)             |
+| `serviceAccount.create`                           | whether create service account of csi-smb-controller       | `true`                                                              |
+| `rbac.create`                                     | whether create rbac of csi-smb-controller                  | `true`                                                              |
+| `rbac.name`                                       | driver name in rbac role                | `true`                                                         |
 | `controller.name`                                 | name of driver deployment               | `csi-smb-controller`
-| `controller.replicas`                             | the replicas of csi-smb-controller                                  | 2                                                   |
-| `controller.metricsPort`                          | metrics port of csi-smb-controller                   |29644                                               |
+| `controller.replicas`                             | the replicas of csi-smb-controller                                  | `2`                                                   |
+| `controller.metricsPort`                          | metrics port of csi-smb-controller                   |`29644`                                               |
 | `controller.livenessProbe.healthPort `            | health check port for liveness probe                   | `29642` |
 | `controller.logLevel`                             | controller driver log level                                                          |`5`                                                           |
-| `node.maxUnavailable`                             | `maxUnavailable` value of csi-smb-node daemonset                            |1
-| `node.metricsPort`                                | metrics port of csi-smb-node                         |29645
+| `node.maxUnavailable`                             | `maxUnavailable` value of csi-smb-node daemonset                            |`1`
+| `node.metricsPort`                                | metrics port of csi-smb-node                         |`29645`
 | `node.logLevel`                                   | node driver log level                                                          |`5`                                                           |
-| `linux.enabled`                                   | whether enable linux feature                               | true                                                              |
+| `linux.enabled`                                   | whether enable linux feature                               |`true`                                                              |
 | `linux.dsName`                                    | name of driver daemonset on linux                             |`csi-smb-node`                                                         |
 | `linux.kubelet`                                   | configure kubelet directory path on Linux agent node node                  | `/var/lib/kubelet`                                                |
-| `windows.enabled`                                 | whether enable windows feature                             | false                                                             |
+| `windows.enabled`                                 | whether enable windows feature                             | `false`                                                             |
 | `windows.dsName`                                  | name of driver daemonset on windows                             |`csi-smb-node-win`                                                         |
 | `windows.kubelet`                                 | configure kubelet directory path on Windows agent node                | `'C:\var\lib\kubelet'`                                            |
-| `windows.image.livenessProbe.repository`          | windows liveness-probe docker image                        | mcr.microsoft.com/oss/kubernetes-csi/livenessprobe                |
-| `windows.image.livenessProbe.tag`                 | windows liveness-probe docker image tag                    | v2.3.0                                 |
-| `windows.image.livenessProbe.pullPolicy`          | windows liveness-probe image pull policy                   | IfNotPresent                                                      |
-| `windows.image.nodeDriverRegistrar.repository`    | windows csi-node-driver-registrar docker image             | mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar    |
-| `windows.image.nodeDriverRegistrar.tag`           | windows csi-node-driver-registrar docker image tag         | v2.3.0                                 |
-| `windows.image.nodeDriverRegistrar.pullPolicy`    | windows csi-node-driver-registrar image pull policy        | IfNotPresent                                                      |
-| `controller.runOnMaster`                          | run controller on master node                              | false                                                             |
+| `controller.runOnMaster`                          | run controller on master node                              | `false`                                                             |
 | `node.livenessProbe.healthPort `                  | health check port for liveness probe                   | `29643` |
-| `controller.resources.csiProvisioner.limits.cpu`      | csi-provisioner cpu limits                            | 100m                                                           |
-| `controller.resources.csiProvisioner.limits.memory`   | csi-provisioner memory limits                         | 100Mi                                                          |
-| `controller.resources.csiProvisioner.requests.cpu`    | csi-provisioner cpu requests limits                   | 10m                                                            |
-| `controller.resources.csiProvisioner.requests.memory` | csi-provisioner memory requests limits                | 20Mi                                                           |
-| `controller.resources.livenessProbe.limits.cpu`       | liveness-probe cpu limits                             | 100m                                                           |
-| `controller.resources.livenessProbe.limits.memory`    | liveness-probe memory limits                          | 300Mi                                                          |
-| `controller.resources.livenessProbe.requests.cpu`     | liveness-probe cpu requests limits                    | 10m                                                            |
-| `controller.resources.livenessProbe.requests.memory`  | liveness-probe memory requests limits                 | 20Mi                                                           |
-| `controller.resources.smb.limits.cpu`                | smb-csi-driver cpu limits                            | 200m                                                           |
-| `controller.resources.smb.limits.memory`             | smb-csi-driver memory limits                         | 200Mi                                                          |
-| `controller.resources.smb.requests.cpu`              | smb-csi-driver cpu requests limits                   | 10m                                                            |
-| `controller.resources.smb.requests.memory`           | smb-csi-driver memory requests limits                | 20Mi                                                           |
-| `controller.resources.csiResizer.limits.cpu`          | csi-resizer cpu limits                                | 100m                                                           |
-| `controller.resources.csiResizer.limits.memory`       | csi-resizer memory limits                             | 300Mi                                                          |
-| `controller.resources.csiResizer.requests.cpu`        | csi-resizer cpu requests limits                       | 10m                                                            |
-| `controller.resources.csiResizer.requests.memory`     | csi-resizer memory requests limits                    | 20Mi                                                           |
-| `controller.affinity`                                 | controller pod affinity                               | {}                                                             |
-| `controller.nodeSelector`                             | controller pod node selector                          | {}                                                             |
-| `controller.tolerations`                              | controller pod tolerations                            | []                                                             |
+| `controller.resources.csiProvisioner.limits.cpu`      | csi-provisioner cpu limits                            | `100m`                                                           |
+| `controller.resources.csiProvisioner.limits.memory`   | csi-provisioner memory limits                         | `100Mi`                                                          |
+| `controller.resources.csiProvisioner.requests.cpu`    | csi-provisioner cpu requests limits                   | `10m`                                                            |
+| `controller.resources.csiProvisioner.requests.memory` | csi-provisioner memory requests limits                | `20Mi`                                                           |
+| `controller.resources.livenessProbe.limits.cpu`       | liveness-probe cpu limits                             | `100m`                                                           |
+| `controller.resources.livenessProbe.limits.memory`    | liveness-probe memory limits                          | `300Mi`                                                          |
+| `controller.resources.livenessProbe.requests.cpu`     | liveness-probe cpu requests limits                    | `10m`                                                            |
+| `controller.resources.livenessProbe.requests.memory`  | liveness-probe memory requests limits                 | `20Mi`                                                           |
+| `controller.resources.smb.limits.cpu`                | smb-csi-driver cpu limits                            | `200m`                                                           |
+| `controller.resources.smb.limits.memory`             | smb-csi-driver memory limits                         | `200Mi`                                                          |
+| `controller.resources.smb.requests.cpu`              | smb-csi-driver cpu requests limits                   | `10m`                                                            |
+| `controller.resources.smb.requests.memory`           | smb-csi-driver memory requests limits                | `20Mi`                                                           |
+| `controller.resources.csiResizer.limits.cpu`          | csi-resizer cpu limits                                | `100m`                                                           |
+| `controller.resources.csiResizer.limits.memory`       | csi-resizer memory limits                             | `300Mi`                                                          |
+| `controller.resources.csiResizer.requests.cpu`        | csi-resizer cpu requests limits                       | `10m`                                                            |
+| `controller.resources.csiResizer.requests.memory`     | csi-resizer memory requests limits                    | `20Mi`                                                           |
+| `controller.affinity`                                 | controller pod affinity                               | `{}`                                                             |
+| `controller.nodeSelector`                             | controller pod node selector                          | `{}`                                                             |
+| `controller.tolerations`                              | controller pod tolerations                            | `[]`                                                             |
 | `node.metricsPort`                                    | metrics port of csi-smb-node                         |`29645`                                                        |
 | `node.livenessProbe.healthPort `                      | health check port for liveness probe                   | `29643` |
-| `node.resources.livenessProbe.limits.cpu`             | liveness-probe cpu limits                             | 100m                                                           |
-| `node.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | 100Mi                                                          |
-| `node.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | 10m                                                            |
-| `node.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | 20Mi                                                           |
-| `node.resources.nodeDriverRegistrar.limits.cpu`       | csi-node-driver-registrar cpu limits                  | 100m                                                           |
-| `node.resources.nodeDriverRegistrar.limits.memory`    | csi-node-driver-registrar memory limits               | 100Mi                                                          |
-| `node.resources.nodeDriverRegistrar.requests.cpu`     | csi-node-driver-registrar cpu requests limits         | 10m                                                            |
-| `node.resources.nodeDriverRegistrar.requests.memory`  | csi-node-driver-registrar memory requests limits      | 20Mi                                                           |
+| `node.resources.livenessProbe.limits.cpu`             | liveness-probe cpu limits                             | `100m`                                                           |
+| `node.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | `100Mi`                                                          |
+| `node.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | `10m`                                                            |
+| `node.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | `20Mi`                                                           |
+| `node.resources.nodeDriverRegistrar.limits.cpu`       | csi-node-driver-registrar cpu limits                  | `100m`                                                           |
+| `node.resources.nodeDriverRegistrar.limits.memory`    | csi-node-driver-registrar memory limits               | `100Mi`                                                          |
+| `node.resources.nodeDriverRegistrar.requests.cpu`     | csi-node-driver-registrar cpu requests limits         | `10m`                                                            |
+| `node.resources.nodeDriverRegistrar.requests.memory`  | csi-node-driver-registrar memory requests limits      | `20Mi`                                                           |
 | `node.resources.smb.limits.cpu`                      | smb-csi-driver cpu limits                            | `2`                                                            |
-| `node.resources.smb.limits.memory`                   | smb-csi-driver memory limits                         | 2100Mi                                                         |
-| `node.resources.smb.requests.cpu`                    | smb-csi-driver cpu requests limits                   | 10m                                                            |
-| `node.resources.smb.requests.memory`                 | smb-csi-driver memory requests limits                | 20Mi                                                           |
-| `node.affinity`                                       | node pod affinity                                     | {}                                                             |
-| `node.nodeSelector`                                   | node pod node selector                                | {}                                                             |
-| `podAnnotations`                                      | collection of annotations to add to all the pods      | {}                                                             |
-| `podLabels`                                           | collection of labels to add to all the pods           | {}                                                             |
-| `priorityClassName`                                   | priority class name to be added to pods               | system-cluster-critical                                        |
-| `securityContext`                                     | security context to be added to pods                  | {}                                                             |
+| `node.resources.smb.limits.memory`                   | smb-csi-driver memory limits                         | `2100Mi`                                                         |
+| `node.resources.smb.requests.cpu`                    | smb-csi-driver cpu requests limits                   | `10m`                                                            |
+| `node.resources.smb.requests.memory`                 | smb-csi-driver memory requests limits                | `20Mi`                                                           |
+| `node.affinity`                                      | node pod affinity                                     | {}                                                             |
+| `node.nodeSelector`                                   | node pod node selector                                | `{}`                                                             |
+| `podAnnotations`                                      | collection of annotations to add to all the pods      | `{}`                                                             |
+| `podLabels`                                           | collection of labels to add to all the pods           | `{}`                                                             |
+| `priorityClassName`                                   | priority class name to be added to pods               | `system-cluster-critical`                                        |
+| `securityContext`                                     | security context to be added to pods                  | `{}`                                                             |
 
 ## troubleshooting
  - Add `--wait -v=5 --debug` in `helm install` command to get detailed error
