@@ -49,6 +49,11 @@ kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
 
+echo "print out csi-$DRIVER-node-win events ..."
+echo "======================================================================================"
+LABEL="app=csi-$DRIVER-node-win"
+kubectl describe pods -n${NS} -l${LABEL}
+
 echo "print out csi-$DRIVER-node-win logs ..."
 echo "======================================================================================"
 LABEL="app=csi-$DRIVER-node-win"
