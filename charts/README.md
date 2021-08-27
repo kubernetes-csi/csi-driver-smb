@@ -73,12 +73,6 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `windows.enabled`                                 | whether enable windows feature                             | false                                                             |
 | `windows.dsName`                                  | name of driver daemonset on windows                             |`csi-smb-node-win`                                                         |
 | `windows.kubelet`                                 | configure kubelet directory path on Windows agent node                | `'C:\var\lib\kubelet'`                                            |
-| `windows.image.livenessProbe.repository`          | windows liveness-probe docker image                        | mcr.microsoft.com/oss/kubernetes-csi/livenessprobe                |
-| `windows.image.livenessProbe.tag`                 | windows liveness-probe docker image tag                    | v2.3.0                                 |
-| `windows.image.livenessProbe.pullPolicy`          | windows liveness-probe image pull policy                   | IfNotPresent                                                      |
-| `windows.image.nodeDriverRegistrar.repository`    | windows csi-node-driver-registrar docker image             | mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar    |
-| `windows.image.nodeDriverRegistrar.tag`           | windows csi-node-driver-registrar docker image tag         | v2.3.0                                 |
-| `windows.image.nodeDriverRegistrar.pullPolicy`    | windows csi-node-driver-registrar image pull policy        | IfNotPresent                                                      |
 | `controller.runOnMaster`                          | run controller on master node                              | false                                                             |
 | `node.livenessProbe.healthPort `                  | health check port for liveness probe                   | `29643` |
 | `controller.resources.csiProvisioner.limits.cpu`      | csi-provisioner cpu limits                            | 100m                                                           |

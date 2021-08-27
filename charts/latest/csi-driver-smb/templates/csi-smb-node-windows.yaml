@@ -31,10 +31,10 @@ spec:
           volumeMounts:
             - mountPath: C:\csi
               name: plugin-dir
-{{- if hasPrefix "/" .Values.windows.image.livenessProbe.repository }}
-          image: "{{ .Values.image.baseRepo }}{{ .Values.windows.image.livenessProbe.repository }}:{{ .Values.windows.image.livenessProbe.tag }}"
+{{- if hasPrefix "/" .Values.image.livenessProbe.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
 {{- else }}
-          image: "{{ .Values.windows.image.livenessProbe.repository }}:{{ .Values.windows.image.livenessProbe.tag }}"
+          image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
 {{- end }}
           args:
             - --csi-address=$(CSI_ENDPOINT)
@@ -44,7 +44,7 @@ spec:
           env:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
-          imagePullPolicy: {{ .Values.windows.image.livenessProbe.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           resources:
             limits:
               cpu: 200m
@@ -53,10 +53,10 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: node-driver-registrar
-{{- if hasPrefix "/" .Values.windows.image.nodeDriverRegistrar.repository }}
-          image: "{{ .Values.image.baseRepo }}{{ .Values.windows.image.nodeDriverRegistrar.repository }}:{{ .Values.windows.image.nodeDriverRegistrar.tag }}"
+{{- if hasPrefix "/" .Values.image.nodeDriverRegistrar.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
 {{- else }}
-          image: "{{ .Values.windows.image.nodeDriverRegistrar.repository }}:{{ .Values.windows.image.nodeDriverRegistrar.tag }}"
+          image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
 {{- end }}
           args:
             - --v=2
@@ -78,7 +78,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-          imagePullPolicy: {{ .Values.windows.image.nodeDriverRegistrar.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: plugin-dir
               mountPath: C:\csi
