@@ -29,7 +29,7 @@ spec:
           volumeMounts:
             - mountPath: C:\csi
               name: plugin-dir
-          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.3.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.4.0
           args:
             - --csi-address=$(CSI_ENDPOINT)
             - --probe-timeout=3s
