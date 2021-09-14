@@ -41,7 +41,7 @@ export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
 # Generate all combination of all OS, ARCH, and OSVERSIONS for iteration
 ALL_OS = linux windows
 ALL_ARCH.linux = arm64 amd64
-ALL_OS_ARCH.linux = $(foreach arch, ${ALL_ARCH.linux}, linux-$(arch))
+ALL_OS_ARCH.linux = linux-arm64 linux-arm-v7 linux-amd64
 ALL_ARCH.windows = amd64
 ALL_OSVERSIONS.windows := 1809 1903 1909 2004
 ALL_OS_ARCH.windows = $(foreach arch, $(ALL_ARCH.windows), $(foreach osversion, ${ALL_OSVERSIONS.windows}, windows-${osversion}-${arch}))
@@ -121,6 +121,10 @@ e2e-teardown:
 smb:
 	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
 
+.PHONY: smb-armv7
+smb-armv7:
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/arm/v7/smbplugin ./pkg/smbplugin
+
 .PHONY: smb-windows
 smb-windows:
 	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin.exe ./pkg/smbplugin
@@ -137,6 +141,11 @@ container: smb
 container-linux:
 	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="linux/$(ARCH)" \
 		-t $(IMAGE_TAG)-linux-$(ARCH) --build-arg ARCH=$(ARCH) -f ./pkg/smbplugin/Dockerfile .
+
+.PHONY: container-linux-armv7
+container-linux-armv7:
+	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="linux/arm/v7" \
+		-t $(IMAGE_TAG)-linux-arm-v7 --build-arg ARCH=arm/v7 -f ./pkg/smbplugin/Dockerfile .
 
 .PHONY: container-windows
 container-windows:
@@ -156,6 +165,8 @@ container-all: smb-windows
 		ARCH=$${arch} $(MAKE) smb; \
 		ARCH=$${arch} $(MAKE) container-linux; \
 	done
+	$(MAKE) smb-armv7
+	$(MAKE) container-linux-armv7
 	for osversion in $(ALL_OSVERSIONS.windows); do \
 		OSVERSION=$${osversion} $(MAKE) container-windows; \
 	done
