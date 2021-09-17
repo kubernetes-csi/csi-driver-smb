@@ -41,7 +41,7 @@ export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
 # Generate all combination of all OS, ARCH, and OSVERSIONS for iteration
 ALL_OS = linux windows
 ALL_ARCH.linux = arm64 amd64
-ALL_OS_ARCH.linux = linux-arm64 linux-arm-v7 linux-amd64
+ALL_OS_ARCH.linux = $(foreach arch, ${ALL_ARCH.linux}, linux-$(arch))
 ALL_ARCH.windows = amd64
 ALL_OSVERSIONS.windows := 1809 1903 1909 2004
 ALL_OS_ARCH.windows = $(foreach arch, $(ALL_ARCH.windows), $(foreach osversion, ${ALL_OSVERSIONS.windows}, windows-${osversion}-${arch}))
@@ -165,8 +165,6 @@ container-all: smb-windows
 		ARCH=$${arch} $(MAKE) smb; \
 		ARCH=$${arch} $(MAKE) container-linux; \
 	done
-	$(MAKE) smb-armv7
-	$(MAKE) container-linux-armv7
 	for osversion in $(ALL_OSVERSIONS.windows); do \
 		OSVERSION=$${osversion} $(MAKE) container-windows; \
 	done
