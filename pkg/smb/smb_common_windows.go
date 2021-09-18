@@ -29,30 +29,21 @@ import (
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
-		return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions)
-	}
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
 		return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions)
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
 }
 
 func Unmount(m *mount.SafeFormatAndMount, target string) error {
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
-		return proxy.SMBUnmount(target)
-	}
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
 		return proxy.SMBUnmount(target)
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
 }
 
 func RemoveStageTarget(m *mount.SafeFormatAndMount, target string) error {
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
-		return proxy.Rmdir(target)
-	}
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
 		return proxy.Rmdir(target)
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
@@ -66,31 +57,14 @@ func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveM
 }
 
 func CleanupMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
-		return proxy.Rmdir(target)
-	}
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
 		return proxy.Rmdir(target)
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
 }
 
 func removeDir(path string, m *mount.SafeFormatAndMount) error {
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
-		isExists, err := proxy.ExistsPath(path)
-		if err != nil {
-			return err
-		}
-
-		if isExists {
-			klog.V(4).Infof("Removing path: %s", path)
-			if err = proxy.Rmdir(path); err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
 		isExists, err := proxy.ExistsPath(path)
 		if err != nil {
 			return err
@@ -119,10 +93,7 @@ func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
 }
 
 func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounter); ok {
-		return proxy.MakeDir(name)
-	}
-	if proxy, ok := m.Interface.(*mounter.CSIProxyMounterV1Beta); ok {
+	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
 		return proxy.MakeDir(name)
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
