@@ -7,7 +7,7 @@ require (
 	github.com/Azure/go-autorest/autorest v0.11.12
 	github.com/Azure/go-autorest/autorest/adal v0.9.5
 	github.com/Azure/go-autorest/autorest/to v0.3.0
-	github.com/container-storage-interface/spec v1.3.0
+	github.com/container-storage-interface/spec v1.5.0
 	github.com/golang/protobuf v1.4.3
 	github.com/kubernetes-csi/csi-lib-utils v0.7.0
 	github.com/kubernetes-csi/csi-proxy/client v1.0.1
@@ -88,7 +88,6 @@ replace (
 	github.com/clusterhq/flocker-go => github.com/clusterhq/flocker-go v0.0.0-20160920122132-2b8b7259d313
 	github.com/cockroachdb/datadriven => github.com/cockroachdb/datadriven v0.0.0-20190809214429-80d97fb3cbaa
 	github.com/codegangsta/negroni => github.com/codegangsta/negroni v1.0.0
-	github.com/container-storage-interface/spec => github.com/container-storage-interface/spec v1.3.0
 	github.com/containerd/console => github.com/containerd/console v0.0.0-20170925154832-84eeaae905fa
 	github.com/containerd/containerd => github.com/containerd/containerd v1.0.2
 	github.com/containerd/typeurl => github.com/containerd/typeurl v0.0.0-20190228175220-2a93cfde8c20
