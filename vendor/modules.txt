@@ -57,7 +57,7 @@ github.com/beorn7/perks/quantile
 github.com/blang/semver
 # github.com/cespare/xxhash/v2 v2.1.1
 github.com/cespare/xxhash/v2
-# github.com/container-storage-interface/spec v1.3.0 => github.com/container-storage-interface/spec v1.3.0
+# github.com/container-storage-interface/spec v1.5.0
 ## explicit
 github.com/container-storage-interface/spec/lib/go/csi
 # github.com/davecgh/go-spew v1.1.1 => github.com/davecgh/go-spew v1.1.1
@@ -910,7 +910,6 @@ sigs.k8s.io/yaml
 # github.com/clusterhq/flocker-go => github.com/clusterhq/flocker-go v0.0.0-20160920122132-2b8b7259d313
 # github.com/cockroachdb/datadriven => github.com/cockroachdb/datadriven v0.0.0-20190809214429-80d97fb3cbaa
 # github.com/codegangsta/negroni => github.com/codegangsta/negroni v1.0.0
-# github.com/container-storage-interface/spec => github.com/container-storage-interface/spec v1.3.0
 # github.com/containerd/console => github.com/containerd/console v0.0.0-20170925154832-84eeaae905fa
 # github.com/containerd/containerd => github.com/containerd/containerd v1.0.2
 # github.com/containerd/typeurl => github.com/containerd/typeurl v0.0.0-20190228175220-2a93cfde8c20
