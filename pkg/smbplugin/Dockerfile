@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG ARCH
+FROM k8s.gcr.io/build-image/debian-base:bullseye-v1.0.0
 
-FROM k8s.gcr.io/build-image/debian-base:buster-v1.6.0
-RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
+RUN apt update && apt-mark unhold libcap2
+RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs libssl1.1
 
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
-ARG ARCH
+ARG ARCH=amd64
 
 COPY ./_output/${ARCH}/smbplugin /smbplugin
 ENTRYPOINT ["/smbplugin"]
