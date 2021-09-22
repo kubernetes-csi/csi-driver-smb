@@ -135,7 +135,7 @@ smb-darwin:
 
 .PHONY: container
 container: smb
-	docker build --no-cache -t $(IMAGE_TAG) -f ./pkg/smbplugin/Dockerfile .
+	docker build --no-cache -t $(IMAGE_TAG) --output=type=docker -f ./pkg/smbplugin/Dockerfile .
 
 .PHONY: container-linux
 container-linux:
