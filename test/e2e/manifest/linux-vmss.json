@@ -36,7 +36,8 @@
                 "name": "agentpool1",
                 "count": 2,
                 "vmSize": "Standard_DS2_v2",
-                "availabilityProfile": "VirtualMachineScaleSets"
+                "availabilityProfile": "VirtualMachineScaleSets",
+                "distro": "aks-ubuntu-18.04"
             }
         ],
         "linuxProfile": {
