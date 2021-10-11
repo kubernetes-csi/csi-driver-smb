@@ -72,6 +72,14 @@ spec:
             preStop:
               exec:
                 command: ["/bin/sh", "-c", "rm -rf /registration/{{ .Values.driver.name }}-reg.sock /csi/csi.sock"]
+          livenessProbe:
+            exec:
+              command:
+                - /csi-node-driver-registrar
+                - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+                - --mode=kubelet-registration-probe
+            initialDelaySeconds: 30
+            timeoutSeconds: 15
           env:
             - name: ADDRESS
               value: /csi/csi.sock
