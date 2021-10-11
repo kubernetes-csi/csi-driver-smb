@@ -33,6 +33,12 @@ $ kubectl logs csi-smb-node-cvgbs -c smb -n kube-system > csi-smb-node.log
 kubectl exec -it csi-smb-node-cvgbs -n kube-system -c smb -- mount | grep cifs
 ```
 
+ - get Windows csi-proxy logs inside driver
+```console
+kubectl exec -it csi-smb-node-win-xxxxx -n kube-system -c smb cmd
+type c:\k\csi-proxy.err.log
+```
+
 #### Update driver version quickly by editing driver deployment directly
  - update controller deployment
 ```console
