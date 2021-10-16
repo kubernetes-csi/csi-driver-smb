@@ -39,7 +39,7 @@ function install_csi_sanity_bin {
   mkdir -p $GOPATH/src/github.com/kubernetes-csi
   pushd $GOPATH/src/github.com/kubernetes-csi
   export GO111MODULE=off
-  git clone https://github.com/kubernetes-csi/csi-test.git -b v4.2.0
+  git clone https://github.com/kubernetes-csi/csi-test.git -b v4.3.0
   pushd csi-test/cmd/csi-sanity
   make install
   popd
@@ -82,8 +82,8 @@ CSI_SANITY_BIN=$GOPATH/bin/csi-sanity
 if [ -z "$GITHUB_ACTIONS" ]
 then
   # if not running on github actions, do not use sudo
-  "$CSI_SANITY_BIN" --ginkgo.v --csi.secrets="$(pwd)/test/sanity/secrets.yaml" --csi.testvolumeparameters="$(pwd)/test/sanity/params.yaml" --csi.endpoint="$endpoint" --ginkgo.skip='create a volume with already existing name and different capacity|should fail when requesting to create a volume with already existing name and different capacity|should fail when the requested volume does not exist|should return appropriate capabilities'
+  "$CSI_SANITY_BIN" --ginkgo.v --csi.secrets="$(pwd)/test/sanity/secrets.yaml" --csi.testvolumeparameters="$(pwd)/test/sanity/params.yaml" --csi.endpoint="$endpoint" --ginkgo.skip='create a volume with already existing name and different capacity|should fail when requesting to create a volume with already existing name and different capacity|should fail when the requested volume does not exist'
 else
   # if running on github actions, use sudo
-  sudo "$CSI_SANITY_BIN" --ginkgo.v --csi.secrets="$(pwd)/test/sanity/secrets.yaml" --csi.testvolumeparameters="$(pwd)/test/sanity/params.yaml" --csi.endpoint="$endpoint" --ginkgo.skip='create a volume with already existing name and different capacity|should fail when requesting to create a volume with already existing name and different capacity|should fail when the requested volume does not exist|should return appropriate capabilities'
+  sudo "$CSI_SANITY_BIN" --ginkgo.v --csi.secrets="$(pwd)/test/sanity/secrets.yaml" --csi.testvolumeparameters="$(pwd)/test/sanity/params.yaml" --csi.endpoint="$endpoint" --ginkgo.skip='create a volume with already existing name and different capacity|should fail when requesting to create a volume with already existing name and different capacity|should fail when the requested volume does not exist'
 fi
