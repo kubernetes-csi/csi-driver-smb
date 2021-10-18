@@ -2,7 +2,7 @@ image:
   baseRepo: mcr.microsoft.com
   smb:
     repository: /k8s/csi/smb-csi
-    tag: v1.3.0
+    tag: latest
     pullPolicy: IfNotPresent
   csiProvisioner:
     repository: /oss/kubernetes-csi/csi-provisioner
