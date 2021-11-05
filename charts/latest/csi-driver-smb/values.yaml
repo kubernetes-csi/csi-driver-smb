@@ -39,7 +39,7 @@ controller:
   resources:
     csiProvisioner:
       limits:
-        cpu: 100m
+        cpu: 200m
         memory: 300Mi
       requests:
         cpu: 10m
@@ -84,7 +84,7 @@ node:
         memory: 20Mi
     nodeDriverRegistrar:
       limits:
-        cpu: 100m
+        cpu: 200m
         memory: 100Mi
       requests:
         cpu: 10m
