@@ -11,3 +11,5 @@ DriverInfo:
     exec: true
     multipods: true
     RWX: true
+  StressTestOptions:
+    NumPods: 30
