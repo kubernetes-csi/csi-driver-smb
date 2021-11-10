@@ -1,5 +1,5 @@
 ## Driver Parameters
-> This driver only supports static provisioning, bring your own Samba server before using this driver.
+> Bring your own Samba server before using this driver.
 ### Storage Class Usage
 > get an [example](../deploy/example/storageclass-smb.yaml)
 
