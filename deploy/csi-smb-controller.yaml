@@ -47,7 +47,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: liveness-probe
-          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.4.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.5.0
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
