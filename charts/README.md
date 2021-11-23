@@ -7,12 +7,6 @@
  - make controller only run on master node: `--set controller.runOnMaster=true`
  - set replica of controller as `1`: `--set controller.replicas=1`
 
-## install latest version
-```console
-helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
-helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system
-```
-
 ### install a specific version
 ```console
 helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
@@ -59,61 +53,72 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `serviceAccount.create`                           | whether create service account of csi-smb-controller       | `true`                                                              |
 | `rbac.create`                                     | whether create rbac of csi-smb-controller                  | `true`                                                              |
 | `rbac.name`                                       | driver name in rbac role                | `true`                                                         |
+| `podAnnotations`                                      | collection of annotations to add to all the pods      | `{}`                                                             |
+| `podLabels`                                           | collection of labels to add to all the pods           | `{}`                                                             |
+| `priorityClassName`                                   | priority class name to be added to pods               | `system-cluster-critical`                                        |
+| `securityContext`                                     | security context to be added to pods                  | `{}`                                                             |
 | `controller.name`                                 | name of driver deployment               | `csi-smb-controller`
 | `controller.replicas`                             | the replicas of csi-smb-controller                                  | `2`                                                   |
 | `controller.metricsPort`                          | metrics port of csi-smb-controller                   |`29644`                                               |
 | `controller.livenessProbe.healthPort `            | health check port for liveness probe                   | `29642` |
 | `controller.logLevel`                             | controller driver log level                                                          |`5`                                                           |
-| `node.maxUnavailable`                             | `maxUnavailable` value of csi-smb-node daemonset                            |`1`
-| `node.metricsPort`                                | metrics port of csi-smb-node                         |`29645`
-| `node.logLevel`                                   | node driver log level                                                          |`5`                                                           |
-| `linux.enabled`                                   | whether enable linux feature                               |`true`                                                              |
-| `linux.dsName`                                    | name of driver daemonset on linux                             |`csi-smb-node`                                                         |
-| `linux.kubelet`                                   | configure kubelet directory path on Linux agent node node                  | `/var/lib/kubelet`                                                |
-| `windows.enabled`                                 | whether enable windows feature                             | `false`                                                             |
-| `windows.dsName`                                  | name of driver daemonset on windows                             |`csi-smb-node-win`                                                         |
-| `windows.kubelet`                                 | configure kubelet directory path on Windows agent node                | `'C:\var\lib\kubelet'`                                            |
 | `controller.runOnMaster`                          | run controller on master node                              | `false`                                                             |
 | `node.livenessProbe.healthPort `                  | health check port for liveness probe                   | `29643` |
-| `controller.resources.csiProvisioner.limits.cpu`      | csi-provisioner cpu limits                            | `100m`                                                           |
+| `controller.resources.csiProvisioner.limits.cpu`      | csi-provisioner cpu limits                            | `1`                                                           |
 | `controller.resources.csiProvisioner.limits.memory`   | csi-provisioner memory limits                         | `100Mi`                                                          |
 | `controller.resources.csiProvisioner.requests.cpu`    | csi-provisioner cpu requests limits                   | `10m`                                                            |
 | `controller.resources.csiProvisioner.requests.memory` | csi-provisioner memory requests limits                | `20Mi`                                                           |
-| `controller.resources.livenessProbe.limits.cpu`       | liveness-probe cpu limits                             | `100m`                                                           |
+| `controller.resources.livenessProbe.limits.cpu`       | liveness-probe cpu limits                             | `1`                                                           |
 | `controller.resources.livenessProbe.limits.memory`    | liveness-probe memory limits                          | `300Mi`                                                          |
 | `controller.resources.livenessProbe.requests.cpu`     | liveness-probe cpu requests limits                    | `10m`                                                            |
 | `controller.resources.livenessProbe.requests.memory`  | liveness-probe memory requests limits                 | `20Mi`                                                           |
-| `controller.resources.smb.limits.cpu`                | smb-csi-driver cpu limits                            | `200m`                                                           |
+| `controller.resources.smb.limits.cpu`                | smb-csi-driver cpu limits                            | `1`                                                           |
 | `controller.resources.smb.limits.memory`             | smb-csi-driver memory limits                         | `200Mi`                                                          |
 | `controller.resources.smb.requests.cpu`              | smb-csi-driver cpu requests limits                   | `10m`                                                            |
 | `controller.resources.smb.requests.memory`           | smb-csi-driver memory requests limits                | `20Mi`                                                           |
-| `controller.resources.csiResizer.limits.cpu`          | csi-resizer cpu limits                                | `100m`                                                           |
+| `controller.resources.csiResizer.limits.cpu`          | csi-resizer cpu limits                                | `1`                                                           |
 | `controller.resources.csiResizer.limits.memory`       | csi-resizer memory limits                             | `300Mi`                                                          |
 | `controller.resources.csiResizer.requests.cpu`        | csi-resizer cpu requests limits                       | `10m`                                                            |
 | `controller.resources.csiResizer.requests.memory`     | csi-resizer memory requests limits                    | `20Mi`                                                           |
 | `controller.affinity`                                 | controller pod affinity                               | `{}`                                                             |
 | `controller.nodeSelector`                             | controller pod node selector                          | `{}`                                                             |
 | `controller.tolerations`                              | controller pod tolerations                            | `[]`                                                             |
+| `node.maxUnavailable`                             | `maxUnavailable` value of csi-smb-node daemonset                            |`1`
 | `node.metricsPort`                                    | metrics port of csi-smb-node                         |`29645`                                                        |
 | `node.livenessProbe.healthPort `                      | health check port for liveness probe                   | `29643` |
-| `node.resources.livenessProbe.limits.cpu`             | liveness-probe cpu limits                             | `100m`                                                           |
-| `node.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | `100Mi`                                                          |
-| `node.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | `10m`                                                            |
-| `node.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | `20Mi`                                                           |
-| `node.resources.nodeDriverRegistrar.limits.cpu`       | csi-node-driver-registrar cpu limits                  | `100m`                                                           |
-| `node.resources.nodeDriverRegistrar.limits.memory`    | csi-node-driver-registrar memory limits               | `100Mi`                                                          |
-| `node.resources.nodeDriverRegistrar.requests.cpu`     | csi-node-driver-registrar cpu requests limits         | `10m`                                                            |
-| `node.resources.nodeDriverRegistrar.requests.memory`  | csi-node-driver-registrar memory requests limits      | `20Mi`                                                           |
-| `node.resources.smb.limits.cpu`                      | smb-csi-driver cpu limits                            | `2`                                                            |
-| `node.resources.smb.limits.memory`                   | smb-csi-driver memory limits                         | `2100Mi`                                                         |
-| `node.resources.smb.requests.cpu`                    | smb-csi-driver cpu requests limits                   | `10m`                                                            |
-| `node.resources.smb.requests.memory`                 | smb-csi-driver memory requests limits                | `20Mi`                                                           |
+| `node.logLevel`                                   | node driver log level                                                          |`5`                                                           |
 | `node.affinity`                                      | node pod affinity                                     | {}                                                             |
 | `node.nodeSelector`                                   | node pod node selector                                | `{}`                                                             |
-| `podAnnotations`                                      | collection of annotations to add to all the pods      | `{}`                                                             |
-| `podLabels`                                           | collection of labels to add to all the pods           | `{}`                                                             |
-| `priorityClassName`                                   | priority class name to be added to pods               | `system-cluster-critical`                                        |
-| `securityContext`                                     | security context to be added to pods                  | `{}`                                                             |
+| `linux.enabled`                                   | whether enable linux feature                               |`true`                                                              |
+| `linux.dsName`                                    | name of driver daemonset on linux                             |`csi-smb-node`                                                         |
+| `linux.kubelet`                                   | configure kubelet directory path on Linux agent node node                  | `/var/lib/kubelet`                                                |
+| `linux.resources.livenessProbe.limits.cpu`             | liveness-probe cpu limits                             | `1`                                                           |
+| `linux.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | `100Mi`                                                          |
+| `linux.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | `10m`                                                            |
+| `linux.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | `20Mi`                                                           |
+| `linux.resources.nodeDriverRegistrar.limits.cpu`       | csi-node-driver-registrar cpu limits                  | `1`                                                           |
+| `linux.resources.nodeDriverRegistrar.limits.memory`    | csi-node-driver-registrar memory limits               | `100Mi`                                                          |
+| `linux.resources.nodeDriverRegistrar.requests.cpu`     | csi-node-driver-registrar cpu requests limits         | `10m`                                                            |
+| `linux.resources.nodeDriverRegistrar.requests.memory`  | csi-node-driver-registrar memory requests limits      | `20Mi`                                                           |
+| `linux.resources.smb.limits.cpu`                       | smb-csi-driver cpu limits                            | `1`                                                            |
+| `linux.resources.smb.limits.memory`                    | smb-csi-driver memory limits                         | `200Mi`                                                         |
+| `linux.resources.smb.requests.cpu`                     | smb-csi-driver cpu requests limits                   | `10m`                                                            |
+| `linux.resources.smb.requests.memory`                  | smb-csi-driver memory requests limits                | `20Mi` 
+| `windows.enabled`                                 | whether enable windows feature                             | `false`                                                             |
+| `windows.dsName`                                  | name of driver daemonset on windows                             |`csi-smb-node-win`                                                         |
+| `windows.resources.livenessProbe.limits.cpu`             | liveness-probe cpu limits                             | `1`                                                           |
+| `windows.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | `200Mi`                                                          |
+| `windows.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | `10m`                                                            |
+| `windows.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | `20Mi`                                                           |
+| `windows.resources.nodeDriverRegistrar.limits.cpu`       | csi-node-driver-registrar cpu limits                  | `1`                                                           |
+| `windows.resources.nodeDriverRegistrar.limits.memory`    | csi-node-driver-registrar memory limits               | `200Mi`                                                          |
+| `windows.resources.nodeDriverRegistrar.requests.cpu`     | csi-node-driver-registrar cpu requests limits         | `10m`                                                            |
+| `windows.resources.nodeDriverRegistrar.requests.memory`  | csi-node-driver-registrar memory requests limits      | `20Mi`                                                           |
+| `windows.resources.smb.limits.cpu`                       | smb-csi-driver cpu limits                            | `1`                                                            |
+| `windows.resources.smb.limits.memory`                    | smb-csi-driver memory limits                         | `400Mi`                                                         |
+| `windows.resources.smb.requests.cpu`                     | smb-csi-driver cpu requests limits                   | `10m`                                                            |
+| `windows.resources.smb.requests.memory`                  | smb-csi-driver memory requests limits                | `20Mi`                                                           |
+| `windows.kubelet`                                 | configure kubelet directory path on Windows agent node                | `'C:\var\lib\kubelet'`                                            |
 
 ## troubleshooting
  - Add `--wait -v=5 --debug` in `helm install` command to get detailed error
