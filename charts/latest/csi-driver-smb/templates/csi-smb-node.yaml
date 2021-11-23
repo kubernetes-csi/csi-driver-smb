@@ -57,7 +57,7 @@ spec:
             - --health-port={{ .Values.node.livenessProbe.healthPort }}
             - --v=2
           imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
-          resources: {{- toYaml .Values.node.resources.livenessProbe | nindent 12 }}
+          resources: {{- toYaml .Values.linux.resources.livenessProbe | nindent 12 }}
         - name: node-driver-registrar
 {{- if hasPrefix "/" .Values.image.nodeDriverRegistrar.repository }}
           image: "{{ .Values.image.baseRepo }}{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
@@ -87,7 +87,7 @@ spec:
               mountPath: /csi
             - name: registration-dir
               mountPath: /registration
-          resources: {{- toYaml .Values.node.resources.nodeDriverRegistrar | nindent 12 }}
+          resources: {{- toYaml .Values.linux.resources.nodeDriverRegistrar | nindent 12 }}
         - name: smb
 {{- if hasPrefix "/" .Values.image.smb.repository }}
           image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
@@ -129,7 +129,7 @@ spec:
             - mountPath: {{ .Values.linux.kubelet }}/
               mountPropagation: Bidirectional
               name: mountpoint-dir
-          resources: {{- toYaml .Values.node.resources.smb | nindent 12 }}
+          resources: {{- toYaml .Values.linux.resources.smb | nindent 12 }}
       volumes:
         - hostPath:
             path: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}
