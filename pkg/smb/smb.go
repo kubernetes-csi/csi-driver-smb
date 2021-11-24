@@ -88,6 +88,7 @@ func (d *Driver) Run(endpoint, kubeconfig string, testMode bool) {
 		csi.NodeServiceCapability_RPC_GET_VOLUME_STATS,
 		csi.NodeServiceCapability_RPC_STAGE_UNSTAGE_VOLUME,
 		csi.NodeServiceCapability_RPC_SINGLE_NODE_MULTI_WRITER,
+		csi.NodeServiceCapability_RPC_VOLUME_MOUNT_GROUP,
 	})
 
 	s := csicommon.NewNonBlockingGRPCServer()

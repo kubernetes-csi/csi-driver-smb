@@ -31,7 +31,7 @@ setup_e2e_binaries() {
 
     # test on alternative driver name
     export EXTRA_HELM_OPTIONS=" --set driver.name=$DRIVER.csi.k8s.io --set controller.name=csi-$DRIVER-controller --set linux.dsName=csi-$DRIVER-node --set windows.dsName=csi-$DRIVER-node-win --set image.csiProvisioner.tag=v3.0.0"
-    sed -i "s/smb.csi.k8s.io/$DRIVER.csi.k8s.io/g" deploy/example/storageclass-smb.yaml
+    sed -i "s/smb.csi.k8s.io/$DRIVER.csi.k8s.io/g" test/external-e2e/storageclass-test.yaml
     make install-smb-provisioner
     make e2e-bootstrap
     sed -i "s/csi-smb-controller/csi-$DRIVER-controller/g" deploy/example/metrics/csi-smb-controller-svc.yaml
