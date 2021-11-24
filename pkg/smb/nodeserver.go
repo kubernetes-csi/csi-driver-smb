@@ -132,7 +132,12 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 
 	context := req.GetVolumeContext()
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
+	volumeMountGroup := req.GetVolumeCapability().GetMount().GetVolumeMountGroup()
 	secrets := req.GetSecrets()
+	gidPresent, err := checkGidPresentInMountFlags(volumeMountGroup, mountFlags)
+	if err != nil {
+		return nil, err
+	}
 
 	source, ok := context[sourceField]
 	if !ok {
@@ -172,6 +177,9 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 		sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
 		mountOptions = mountFlags
+		if !gidPresent && volumeMountGroup != "" {
+			mountOptions = append(mountOptions, fmt.Sprintf("gid=%s", volumeMountGroup))
+		}
 		if domain != "" {
 			mountOptions = append(mountOptions, fmt.Sprintf("%s=%s", domainField, domain))
 		}
@@ -364,4 +372,18 @@ func makeDir(pathname string) error {
 		}
 	}
 	return nil
+}
+
+func checkGidPresentInMountFlags(volumeMountGroup string, mountFlags []string) (bool, error) {
+	gidPresentInMountFlags := false
+	for _, mountFlag := range mountFlags {
+		if strings.HasPrefix(mountFlag, "gid") {
+			gidPresentInMountFlags = true
+			kvpair := strings.Split(mountFlag, "=")
+			if volumeMountGroup != "" && len(kvpair) == 2 && !strings.EqualFold(volumeMountGroup, kvpair[1]) {
+				return false, status.Error(codes.InvalidArgument, fmt.Sprintf("gid(%s) in storageClass and pod fsgroup(%s) are not equal", kvpair[1], volumeMountGroup))
+			}
+		}
+	}
+	return gidPresentInMountFlags, nil
 }

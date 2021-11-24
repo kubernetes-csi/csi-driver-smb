@@ -32,6 +32,7 @@ setup_e2e_binaries() {
     # test on alternative driver name
     export EXTRA_HELM_OPTIONS=" --set driver.name=$DRIVER.csi.k8s.io --set controller.name=csi-$DRIVER-controller --set linux.dsName=csi-$DRIVER-node --set windows.dsName=csi-$DRIVER-node-win --set image.csiProvisioner.tag=v3.0.0"
     sed -i "s/smb.csi.k8s.io/$DRIVER.csi.k8s.io/g" deploy/example/storageclass-smb.yaml
+    sed -i "s/gid=/uid=/g" deploy/example/storageclass-smb.yaml
     make install-smb-provisioner
     make e2e-bootstrap
     sed -i "s/csi-smb-controller/csi-$DRIVER-controller/g" deploy/example/metrics/csi-smb-controller-svc.yaml
@@ -51,6 +52,6 @@ trap print_logs EXIT
 mkdir -p /tmp/csi
 cp deploy/example/storageclass-smb.yaml /tmp/csi/storageclass.yaml
 ginkgo -p --progress --v -focus='External.Storage' \
-       -skip='\[Disruptive\]|\[Slow\]|unmount after the subpath directory is deleted|support two pods which share the same volume' kubernetes/test/bin/e2e.test  -- \
+       -skip='\[Disruptive\]|\[Slow\]|unmount after the subpath directory is deleted|support two pods which share the same volume|volume contents ownership changed' kubernetes/test/bin/e2e.test  -- \
        -storage.testdriver=$PROJECT_ROOT/test/external-e2e/testdriver.yaml \
        --kubeconfig=$KUBECONFIG
