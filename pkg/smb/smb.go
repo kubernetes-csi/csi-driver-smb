@@ -39,17 +39,19 @@ type Driver struct {
 	mounter *mount.SafeFormatAndMount
 	// A map storing all volumes with ongoing operations so that additional operations
 	// for that same volume (as defined by VolumeID) return an Aborted error
-	volumeLocks     *volumeLocks
-	workingMountDir string
+	volumeLocks          *volumeLocks
+	workingMountDir      string
+	enableGetVolumeStats bool
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
-func NewDriver(nodeID, driverName string) *Driver {
+func NewDriver(nodeID, driverName string, enableGetVolumeStats bool) *Driver {
 	driver := Driver{}
 	driver.Name = driverName
 	driver.Version = driverVersion
 	driver.NodeID = nodeID
+	driver.enableGetVolumeStats = enableGetVolumeStats
 	driver.volumeLocks = newVolumeLocks()
 	return &driver
 }
@@ -84,12 +86,15 @@ func (d *Driver) Run(endpoint, kubeconfig string, testMode bool) {
 		csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER,
 	})
 
-	d.AddNodeServiceCapabilities([]csi.NodeServiceCapability_RPC_Type{
-		csi.NodeServiceCapability_RPC_GET_VOLUME_STATS,
+	nodeCap := []csi.NodeServiceCapability_RPC_Type{
 		csi.NodeServiceCapability_RPC_STAGE_UNSTAGE_VOLUME,
 		csi.NodeServiceCapability_RPC_SINGLE_NODE_MULTI_WRITER,
 		csi.NodeServiceCapability_RPC_VOLUME_MOUNT_GROUP,
-	})
+	}
+	if d.enableGetVolumeStats {
+		nodeCap = append(nodeCap, csi.NodeServiceCapability_RPC_GET_VOLUME_STATS)
+	}
+	d.AddNodeServiceCapabilities(nodeCap)
 
 	s := csicommon.NewNonBlockingGRPCServer()
 	// Driver d act as IdentityServer, ControllerServer and NodeServer

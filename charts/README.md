@@ -36,6 +36,8 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 
 | Parameter                                         | Description                                                | Default                                                           |
 |---------------------------------------------------|------------------------------------------------------------|-------------------------------------------------------------------|
+| `driver.name`                                     | alternative driver name                                    | `smb.csi.k8s.io` |
+| `feature.enableGetVolumeStats`                    | allow GET_VOLUME_STATS on agent node                  | `false`                      |
 | `image.baseRepo`                                  | base repository of driver images                          | `mcr.microsoft.com`                      |
 | `image.smb.repository`                            | csi-driver-smb docker image                                | `/k8s/csi/smb-csi`                                 |
 | `image.smb.tag`                                   | csi-driver-smb docker image tag                            | `latest`                                                            |
