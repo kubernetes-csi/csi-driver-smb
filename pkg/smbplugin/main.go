@@ -36,12 +36,13 @@ func init() {
 }
 
 var (
-	endpoint       = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
-	nodeID         = flag.String("nodeid", "", "node id")
-	driverName     = flag.String("drivername", smb.DefaultDriverName, "name of the driver")
-	version        = flag.Bool("version", false, "Print the version and exit.")
-	metricsAddress = flag.String("metrics-address", "0.0.0.0:29644", "export the metrics")
-	kubeconfig     = flag.String("kubeconfig", "", "Absolute path to the kubeconfig file. Required only when running out of cluster.")
+	endpoint             = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
+	nodeID               = flag.String("nodeid", "", "node id")
+	driverName           = flag.String("drivername", smb.DefaultDriverName, "name of the driver")
+	version              = flag.Bool("version", false, "Print the version and exit.")
+	metricsAddress       = flag.String("metrics-address", "0.0.0.0:29644", "export the metrics")
+	kubeconfig           = flag.String("kubeconfig", "", "Absolute path to the kubeconfig file. Required only when running out of cluster.")
+	enableGetVolumeStats = flag.Bool("enable-get-volume-stats", false, "allow GET_VOLUME_STATS on agent node")
 )
 
 func main() {
@@ -64,7 +65,7 @@ func main() {
 }
 
 func handle() {
-	driver := smb.NewDriver(*nodeID, *driverName)
+	driver := smb.NewDriver(*nodeID, *driverName, *enableGetVolumeStats)
 	if driver == nil {
 		klog.Fatalln("Failed to initialize smb CSI Driver")
 	}

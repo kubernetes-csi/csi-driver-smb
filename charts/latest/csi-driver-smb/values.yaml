@@ -28,6 +28,9 @@ rbac:
 driver:
   name: smb.csi.k8s.io
 
+feature:
+  enableGetVolumeStats: false
+
 controller:
   name: csi-smb-controller
   replicas: 2
