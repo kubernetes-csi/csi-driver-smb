@@ -136,21 +136,17 @@ spec:
         - name: csi-proxy-fs-pipe-v1
           hostPath:
             path: \\.\pipe\csi-proxy-filesystem-v1
-            type: ""
         - name: csi-proxy-smb-pipe-v1
           hostPath:
             path: \\.\pipe\csi-proxy-smb-v1
-            type: ""
         # these paths are still included for compatibility, they're used
         # only if the node has still the beta version of the CSI proxy
         - name: csi-proxy-fs-pipe-v1beta1
           hostPath:
             path: \\.\pipe\csi-proxy-filesystem-v1beta1
-            type: ""
         - name: csi-proxy-smb-pipe-v1beta1
           hostPath:
             path: \\.\pipe\csi-proxy-smb-v1beta1
-            type: ""
         - name: registration-dir
           hostPath:
             path: C:\var\lib\kubelet\plugins_registry\
