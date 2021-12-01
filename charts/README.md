@@ -38,17 +38,17 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 |---------------------------------------------------|------------------------------------------------------------|-------------------------------------------------------------------|
 | `driver.name`                                     | alternative driver name                                    | `smb.csi.k8s.io` |
 | `feature.enableGetVolumeStats`                    | allow GET_VOLUME_STATS on agent node                       | `false`                      |
-| `image.baseRepo`                                  | base repository of driver images                           | `mcr.microsoft.com`                      |
-| `image.smb.repository`                            | csi-driver-smb docker image                                | `/k8s/csi/smb-csi`                                 |
+| `image.baseRepo`                                  | base repository of driver images                           | `k8s.gcr.io/sig-storage`                      |
+| `image.smb.repository`                            | csi-driver-smb docker image                                | `mcr.microsoft.com/k8s/csi/smb-csi`                                 |
 | `image.smb.tag`                                   | csi-driver-smb docker image tag                            | `latest`                                                            |
 | `image.smb.pullPolicy`                            | csi-driver-smb image pull policy                           | `IfNotPresent`                                                      |
-| `image.csiProvisioner.repository`                 | csi-provisioner docker image                               | `/oss/kubernetes-csi/csi-provisioner`              |
+| `image.csiProvisioner.repository`                 | csi-provisioner docker image                               | `k8s.gcr.io/sig-storage/csi-provisioner`              |
 | `image.csiProvisioner.tag`                        | csi-provisioner docker image tag                           | `v2.2.0`                                                            |
 | `image.csiProvisioner.pullPolicy`                 | csi-provisioner image pull policy                          | `IfNotPresent`                                                      |
-| `image.livenessProbe.repository`                  | liveness-probe docker image                                | `/oss/kubernetes-csi/livenessprobe`                |
+| `image.livenessProbe.repository`                  | liveness-probe docker image                                | `k8s.gcr.io/sig-storage/livenessprobe`                |
 | `image.livenessProbe.tag`                         | liveness-probe docker image tag                            | `v2.5.0`                                                            |
 | `image.livenessProbe.pullPolicy`                  | liveness-probe image pull policy                           | `IfNotPresent`                                                      |
-| `image.nodeDriverRegistrar.repository`            | csi-node-driver-registrar docker image                     | `/oss/kubernetes-csi/csi-node-driver-registrar`    |
+| `image.nodeDriverRegistrar.repository`            | csi-node-driver-registrar docker image                     | `k8s.gcr.io/sig-storage/csi-node-driver-registrar`    |
 | `image.nodeDriverRegistrar.tag`                   | csi-node-driver-registrar docker image tag                 | `v2.4.0`                                                            |
 | `image.nodeDriverRegistrar.pullPolicy`            | csi-node-driver-registrar image pull policy                | `IfNotPresent`                                                      |
 | `imagePullSecrets`                                | Specify docker-registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods)             |
