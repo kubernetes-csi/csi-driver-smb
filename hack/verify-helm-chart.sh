@@ -37,8 +37,19 @@ function validate_image() {
 
 echo "Comparing image version between helm chart and manifests in deploy folder"
 
+if [[ -z "$(command -v pip)" ]]; then
+  echo "Cannot find pip. Installing pip3..."
+  apt install python3-pip -y
+  update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+fi
+
+if [[ -z "$(command -v jq)" ]]; then
+  echo "Cannot find jq. Installing yq..."
+  apt install jq -y
+fi
+
 # jq-equivalent for yaml
-pip install yq
+pip install yq --ignore-installed PyYAML
 
 # Extract images from csi-smb-controller.yaml
 expected_csi_provisioner_image="$(cat ${PKG_ROOT}/deploy/csi-smb-controller.yaml | yq -r .spec.template.spec.containers[0].image | head -n 1)"
