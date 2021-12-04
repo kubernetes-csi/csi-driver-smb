@@ -3,7 +3,7 @@ entries:
   csi-driver-smb:
   - apiVersion: v1
     appVersion: latest
-    created: "2021-11-26T07:18:49.941998834Z"
+    created: "2021-12-04T14:11:08.29419673Z"
     description: SMB CSI Driver for Kubernetes
     digest: ba9a5725e5e7b71b88380031db0a40cf8cf653570629dd78d693c0fbafdc34b9
     name: csi-driver-smb
@@ -11,17 +11,17 @@ entries:
     - https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/latest/csi-driver-smb-v1.4.0.tgz
     version: v1.4.0
   - apiVersion: v1
-    appVersion: latest
-    created: "2021-11-26T07:18:49.950690984Z"
+    appVersion: v1.4.0
+    created: "2021-12-04T14:11:08.302010578Z"
     description: SMB CSI Driver for Kubernetes
-    digest: 910ea3629c43742602e505df92d4cdb48904f12f1ad8bc4f04b7310e20ec0dd4
+    digest: e3dea7fa93171c83ca4eb3032f234aa282716d218cae959dd1b1b6ac76273a20
     name: csi-driver-smb
     urls:
     - https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/v1.4.0/csi-driver-smb-v1.4.0.tgz
     version: v1.4.0
   - apiVersion: v1
     appVersion: v1.3.0
-    created: "2021-11-26T07:18:49.949541978Z"
+    created: "2021-12-04T14:11:08.301124872Z"
     description: SMB CSI Driver for Kubernetes
     digest: d2236d36f1cb24139ddf87ea87229369ed856efc42330e656330f6cfa7635858
     name: csi-driver-smb
@@ -30,7 +30,7 @@ entries:
     version: v1.3.0
   - apiVersion: v1
     appVersion: v1.2.0
-    created: "2021-11-26T07:18:49.948590572Z"
+    created: "2021-12-04T14:11:08.300228867Z"
     description: SMB CSI Driver for Kubernetes
     digest: f475924011bf4b3d920cee85e07f1236731fc8256634c12f49b8eae1711c99ab
     name: csi-driver-smb
@@ -39,7 +39,7 @@ entries:
     version: v1.2.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2021-11-26T07:18:49.947571266Z"
+    created: "2021-12-04T14:11:08.299480262Z"
     description: SMB CSI Driver for Kubernetes
     digest: 19bdba4a6b473bf3d7494cea64146fc1874c8440e3adf5262d822659cd276837
     name: csi-driver-smb
@@ -48,7 +48,7 @@ entries:
     version: v1.1.0
   - apiVersion: v1
     appVersion: v1.0.0
-    created: "2021-11-26T07:18:49.94658556Z"
+    created: "2021-12-04T14:11:08.298695457Z"
     description: SMB CSI Driver for Kubernetes
     digest: 2360e6e088403818944cc057ad3bf0f99ae295a421d4637f1d3c7cbe3c4ab27f
     name: csi-driver-smb
@@ -57,7 +57,7 @@ entries:
     version: v1.0.0
   - apiVersion: v1
     appVersion: v0.6.0
-    created: "2021-11-26T07:18:49.945957457Z"
+    created: "2021-12-04T14:11:08.298131954Z"
     description: SMB CSI Driver for Kubernetes
     digest: 5ad0b7b9f84fa313387a9bbfb0ed59cff70b10633cedf81e7b77af936ff2806e
     name: csi-driver-smb
@@ -66,7 +66,7 @@ entries:
     version: v0.6.0
   - apiVersion: v1
     appVersion: v0.5.0
-    created: "2021-11-26T07:18:49.945289553Z"
+    created: "2021-12-04T14:11:08.297417749Z"
     description: SMB CSI Driver for Kubernetes
     digest: b400ef563745dcaf4a819a05b1e8a11d9442ae1ddf46da70542d5c87cd4cd9a1
     name: csi-driver-smb
@@ -75,7 +75,7 @@ entries:
     version: v0.5.0
   - apiVersion: v1
     appVersion: v0.4.0
-    created: "2021-11-26T07:18:49.944630549Z"
+    created: "2021-12-04T14:11:08.296278942Z"
     description: SMB CSI Driver for Kubernetes
     digest: fb6d581ba5d4d1d78ca468f6daa4a24c47bb147b74d005d3c394521b4e534a3e
     name: csi-driver-smb
@@ -84,7 +84,7 @@ entries:
     version: v0.4.0
   - apiVersion: v1
     appVersion: v0.3.0
-    created: "2021-11-26T07:18:49.943684744Z"
+    created: "2021-12-04T14:11:08.295176836Z"
     description: SMB CSI Driver for Kubernetes
     digest: ee9e58db6d4a95491e2012c6607126bbff827b9c439e90e9a9798d2a73b0cb22
     name: csi-driver-smb
@@ -93,11 +93,11 @@ entries:
     version: v0.3.0
   - apiVersion: v1
     appVersion: v0.2.0
-    created: "2021-11-26T07:18:49.942593037Z"
+    created: "2021-12-04T14:11:08.294688133Z"
     description: SMB CSI Driver for Kubernetes
     digest: 8d8667106306d78dea9f63e5a3e8ee7ad2b60f86bd625f5968e37ca6a0cad317
     name: csi-driver-smb
     urls:
     - https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/v0.2.0/csi-driver-smb-v0.2.0.tgz
     version: v0.2.0
-generated: "2021-11-26T07:18:49.940617526Z"
+generated: "2021-12-04T14:11:08.292992922Z"
