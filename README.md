@@ -3,7 +3,7 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkubernetes-csi%2Fcsi-driver-smb.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkubernetes-csi%2Fcsi-driver-smb?ref=badge_shield)
 
 ### About
-This driver allows Kubernetes to use [SMB](https://wiki.wireshark.org/SMB) CSI volume, csi plugin name: `smb.csi.k8s.io`
+This driver allows Kubernetes to use [SMB](https://wiki.wireshark.org/SMB) CSI volume, csi plugin name: `smb.csi.k8s.io`. This driver requires existing and already configured SMB server, it supports dynamic provisioning of Persistent Volumes via Persistent Volume Claims by creating a new sub directory under SMB server.
 
 ### Project status: GA
 
