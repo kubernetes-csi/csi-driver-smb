@@ -40,7 +40,6 @@ spec:
               value: unix://C:\\csi\\csi.sock
           resources:
             limits:
-              cpu: 1
               memory: 200Mi
             requests:
               cpu: 10m
@@ -77,7 +76,6 @@ spec:
               mountPath: C:\registration
           resources:
             limits:
-              cpu: 1
               memory: 200Mi
             requests:
               cpu: 10m
@@ -127,7 +125,6 @@ spec:
               mountPath: \\.\pipe\csi-proxy-smb-v1beta1
           resources:
             limits:
-              cpu: 1
               memory: 400Mi
             requests:
               cpu: 10m

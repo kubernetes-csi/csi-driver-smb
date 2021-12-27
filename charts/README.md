@@ -66,19 +66,15 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `controller.logLevel`                             | controller driver log level                                                          |`5`                                                           |
 | `controller.runOnMaster`                          | run controller on master node                              | `false`                                                             |
 | `node.livenessProbe.healthPort `                  | health check port for liveness probe                   | `29643` |
-| `controller.resources.csiProvisioner.limits.cpu`      | csi-provisioner cpu limits                            | `1`                                                           |
 | `controller.resources.csiProvisioner.limits.memory`   | csi-provisioner memory limits                         | `100Mi`                                                          |
 | `controller.resources.csiProvisioner.requests.cpu`    | csi-provisioner cpu requests limits                   | `10m`                                                            |
 | `controller.resources.csiProvisioner.requests.memory` | csi-provisioner memory requests limits                | `20Mi`                                                           |
-| `controller.resources.livenessProbe.limits.cpu`       | liveness-probe cpu limits                             | `1`                                                           |
 | `controller.resources.livenessProbe.limits.memory`    | liveness-probe memory limits                          | `300Mi`                                                          |
 | `controller.resources.livenessProbe.requests.cpu`     | liveness-probe cpu requests limits                    | `10m`                                                            |
 | `controller.resources.livenessProbe.requests.memory`  | liveness-probe memory requests limits                 | `20Mi`                                                           |
-| `controller.resources.smb.limits.cpu`                | smb-csi-driver cpu limits                            | `1`                                                           |
 | `controller.resources.smb.limits.memory`             | smb-csi-driver memory limits                         | `200Mi`                                                          |
 | `controller.resources.smb.requests.cpu`              | smb-csi-driver cpu requests limits                   | `10m`                                                            |
 | `controller.resources.smb.requests.memory`           | smb-csi-driver memory requests limits                | `20Mi`                                                           |
-| `controller.resources.csiResizer.limits.cpu`          | csi-resizer cpu limits                                | `1`                                                           |
 | `controller.resources.csiResizer.limits.memory`       | csi-resizer memory limits                             | `300Mi`                                                          |
 | `controller.resources.csiResizer.requests.cpu`        | csi-resizer cpu requests limits                       | `10m`                                                            |
 | `controller.resources.csiResizer.requests.memory`     | csi-resizer memory requests limits                    | `20Mi`                                                           |
@@ -94,29 +90,23 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `linux.enabled`                                   | whether enable linux feature                               |`true`                                                              |
 | `linux.dsName`                                    | name of driver daemonset on linux                             |`csi-smb-node`                                                         |
 | `linux.kubelet`                                   | configure kubelet directory path on Linux agent node node                  | `/var/lib/kubelet`                                                |
-| `linux.resources.livenessProbe.limits.cpu`             | liveness-probe cpu limits                             | `1`                                                           |
 | `linux.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | `100Mi`                                                          |
 | `linux.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | `10m`                                                            |
 | `linux.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | `20Mi`                                                           |
-| `linux.resources.nodeDriverRegistrar.limits.cpu`       | csi-node-driver-registrar cpu limits                  | `1`                                                           |
 | `linux.resources.nodeDriverRegistrar.limits.memory`    | csi-node-driver-registrar memory limits               | `100Mi`                                                          |
 | `linux.resources.nodeDriverRegistrar.requests.cpu`     | csi-node-driver-registrar cpu requests limits         | `10m`                                                            |
 | `linux.resources.nodeDriverRegistrar.requests.memory`  | csi-node-driver-registrar memory requests limits      | `20Mi`                                                           |
-| `linux.resources.smb.limits.cpu`                       | smb-csi-driver cpu limits                            | `1`                                                            |
 | `linux.resources.smb.limits.memory`                    | smb-csi-driver memory limits                         | `200Mi`                                                         |
 | `linux.resources.smb.requests.cpu`                     | smb-csi-driver cpu requests limits                   | `10m`                                                            |
 | `linux.resources.smb.requests.memory`                  | smb-csi-driver memory requests limits                | `20Mi` 
 | `windows.enabled`                                 | whether enable windows feature                             | `false`                                                             |
 | `windows.dsName`                                  | name of driver daemonset on windows                             |`csi-smb-node-win`                                                         |
-| `windows.resources.livenessProbe.limits.cpu`             | liveness-probe cpu limits                             | `1`                                                           |
 | `windows.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | `200Mi`                                                          |
 | `windows.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | `10m`                                                            |
 | `windows.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | `20Mi`                                                           |
-| `windows.resources.nodeDriverRegistrar.limits.cpu`       | csi-node-driver-registrar cpu limits                  | `1`                                                           |
 | `windows.resources.nodeDriverRegistrar.limits.memory`    | csi-node-driver-registrar memory limits               | `200Mi`                                                          |
 | `windows.resources.nodeDriverRegistrar.requests.cpu`     | csi-node-driver-registrar cpu requests limits         | `10m`                                                            |
 | `windows.resources.nodeDriverRegistrar.requests.memory`  | csi-node-driver-registrar memory requests limits      | `20Mi`                                                           |
-| `windows.resources.smb.limits.cpu`                       | smb-csi-driver cpu limits                            | `1`                                                            |
 | `windows.resources.smb.limits.memory`                    | smb-csi-driver memory limits                         | `400Mi`                                                         |
 | `windows.resources.smb.requests.cpu`                     | smb-csi-driver cpu requests limits                   | `10m`                                                            |
 | `windows.resources.smb.requests.memory`                  | smb-csi-driver memory requests limits                | `20Mi`                                                           |
