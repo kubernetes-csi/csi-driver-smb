@@ -19,7 +19,7 @@ jobs:
 
     - name: Check deploy folder
       run: |
-        pluto detect-files -d deploy
+        pluto detect-files -d deploy --ignore-deprecations --ignore-removals
 
     - name: Check example folder
       run: |

@@ -280,6 +280,10 @@ func (mounter *csiProxyMounter) MountSensitiveWithoutSystemd(source string, targ
 	return fmt.Errorf("MountSensitiveWithoutSystemd not implemented for CSIProxyMounter")
 }
 
+func (mounter *csiProxyMounter) MountSensitiveWithoutSystemdWithMountFlags(source string, target string, fstype string, options []string, sensitiveOptions []string, mountFlags []string) error {
+	return mounter.MountSensitive(source, target, fstype, options, sensitiveOptions /* sensitiveOptions */)
+}
+
 // NewCSIProxyMounter - creates a new CSI Proxy mounter struct which encompassed all the
 // clients to the CSI proxy - filesystem, disk and volume clients.
 func NewCSIProxyMounter() (*csiProxyMounter, error) {
