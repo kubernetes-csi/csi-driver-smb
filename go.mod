@@ -3,30 +3,30 @@ module github.com/kubernetes-csi/csi-driver-smb
 go 1.16
 
 require (
-	github.com/Azure/azure-sdk-for-go v43.0.0+incompatible
-	github.com/Azure/go-autorest/autorest v0.11.12
-	github.com/Azure/go-autorest/autorest/adal v0.9.5
-	github.com/Azure/go-autorest/autorest/to v0.2.0
+	github.com/Azure/azure-sdk-for-go v55.0.0+incompatible
+	github.com/Azure/go-autorest/autorest v0.11.18
+	github.com/Azure/go-autorest/autorest/adal v0.9.13
+	github.com/Azure/go-autorest/autorest/to v0.4.0
 	github.com/container-storage-interface/spec v1.5.0
-	github.com/golang/protobuf v1.4.3
+	github.com/golang/protobuf v1.5.2
 	github.com/kubernetes-csi/csi-lib-utils v0.7.0
 	github.com/kubernetes-csi/csi-proxy/client v1.0.1
 	github.com/kubernetes-csi/external-snapshotter/v2 v2.0.0-20200617021606-4800ca72d403
-	github.com/onsi/ginkgo v1.11.0
-	github.com/onsi/gomega v1.7.1
+	github.com/onsi/ginkgo v1.14.0
+	github.com/onsi/gomega v1.10.1
 	github.com/pborman/uuid v1.2.0
 	github.com/pelletier/go-toml v1.7.0
-	github.com/prometheus/client_golang v1.7.1
-	github.com/stretchr/testify v1.6.1
-	golang.org/x/net v0.0.0-20210224082022-3d97a244fca7
-	google.golang.org/grpc v1.28.0
-	k8s.io/api v0.21.0
-	k8s.io/apimachinery v0.21.0
-	k8s.io/client-go v0.21.0
-	k8s.io/klog/v2 v2.8.0
-	k8s.io/kubernetes v1.21.1
-	k8s.io/mount-utils v0.21.1
-	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
+	github.com/prometheus/client_golang v1.11.0
+	github.com/stretchr/testify v1.7.0
+	golang.org/x/net v0.0.0-20210825183410-e898025ed96a
+	google.golang.org/grpc v1.40.0
+	k8s.io/api v0.23.0
+	k8s.io/apimachinery v0.23.0
+	k8s.io/client-go v0.23.0
+	k8s.io/klog/v2 v2.30.0
+	k8s.io/kubernetes v1.23.0
+	k8s.io/mount-utils v0.23.0
+	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b
 	sigs.k8s.io/yaml v1.2.0
 )
 
@@ -87,8 +87,6 @@ replace (
 	github.com/coreos/go-etcd => github.com/coreos/go-etcd v2.0.0+incompatible
 	github.com/coreos/go-oidc => github.com/coreos/go-oidc v2.1.0+incompatible
 	github.com/coreos/go-semver => github.com/coreos/go-semver v0.3.0
-	github.com/coreos/go-systemd => github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e
-	github.com/coreos/go-systemd/v22 => github.com/coreos/go-systemd/v22 v22.0.0
 	github.com/coreos/pkg => github.com/coreos/pkg v0.0.0-20180108230652-97fdf19511ea
 	github.com/cpuguy83/go-md2man => github.com/cpuguy83/go-md2man v1.0.10
 	github.com/creack/pty => github.com/creack/pty v1.1.7
@@ -190,11 +188,7 @@ replace (
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.0
 	github.com/gostaticanalysis/analysisutil => github.com/gostaticanalysis/analysisutil v0.0.3
 	github.com/gregjones/httpcache => github.com/gregjones/httpcache v0.0.0-20180305231024-9cad4c3443a7
-	github.com/grpc-ecosystem/go-grpc-middleware => github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
-	github.com/grpc-ecosystem/go-grpc-prometheus => github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/grpc-ecosystem/grpc-gateway => github.com/grpc-ecosystem/grpc-gateway v1.9.5
 	github.com/hashicorp/go-syslog => github.com/hashicorp/go-syslog v1.0.0
-	github.com/hashicorp/golang-lru => github.com/hashicorp/golang-lru v0.5.1
 	github.com/hashicorp/hcl => github.com/hashicorp/hcl v1.0.0
 	github.com/heketi/heketi => github.com/heketi/heketi v9.0.1-0.20190917153846-c2e2a4ab7ab9+incompatible
 	github.com/heketi/tests => github.com/heketi/tests v0.0.0-20151005000721-f3775cbcefd6
@@ -278,7 +272,6 @@ replace (
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.7.1
 	github.com/prometheus/client_model => github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/procfs => github.com/prometheus/procfs v0.0.2
-	github.com/quasilyte/go-consistent => github.com/quasilyte/go-consistent v0.0.0-20190521200055-c6f3937de18c
 	github.com/quobyte/api => github.com/quobyte/api v0.1.2
 	github.com/remyoudompheng/bigfft => github.com/remyoudompheng/bigfft v0.0.0-20170806203942-52369c62f446
 	github.com/robfig/cron => github.com/robfig/cron v1.1.0
@@ -332,7 +325,7 @@ replace (
 	go.etcd.io/bbolt => go.etcd.io/bbolt v1.3.4
 	go.etcd.io/etcd => go.etcd.io/etcd v0.0.0-20200410171415-59f5fb25a533
 	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.1.2
-	go.opencensus.io => go.opencensus.io v0.21.0
+	go.opencensus.io => go.opencensus.io v0.23.0
 	go.uber.org/atomic => go.uber.org/atomic v1.6.0
 	go.uber.org/multierr => go.uber.org/multierr v1.5.0
 	go.uber.org/tools => go.uber.org/tools v0.0.0-20190618225709-2cfd321de3ee
@@ -359,7 +352,6 @@ replace (
 	google.golang.org/api => google.golang.org/api v0.6.1-0.20190607001116-5213b8090861
 	google.golang.org/appengine => google.golang.org/appengine v1.5.0
 	google.golang.org/genproto => google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55
-	google.golang.org/grpc => google.golang.org/grpc v1.27.0
 	gopkg.in/airbrake/gobrake.v2 => gopkg.in/airbrake/gobrake.v2 v2.0.9
 	gopkg.in/alecthomas/kingpin.v2 => gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/check.v1 => gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127
@@ -380,38 +372,38 @@ replace (
 	gotest.tools/gotestsum => gotest.tools/gotestsum v0.3.5
 	grpc.go4.org => grpc.go4.org v0.0.0-20170609214715-11d0a25b4919
 	honnef.co/go/tools => honnef.co/go/tools v0.0.1-2019.2.3
-	k8s.io/api => k8s.io/api v0.21.0
-	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.21.0
-	k8s.io/apimachinery => k8s.io/apimachinery v0.21.0
-	k8s.io/apiserver => k8s.io/apiserver v0.21.0
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.21.0
-	k8s.io/client-go => k8s.io/client-go v0.21.0
-	k8s.io/cloud-provider => k8s.io/cloud-provider v0.21.0
-	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.21.0
-	k8s.io/code-generator => k8s.io/code-generator v0.21.0
-	k8s.io/component-base => k8s.io/component-base v0.21.0
-	k8s.io/component-helpers => k8s.io/component-helpers v0.21.0
-	k8s.io/controller-manager => k8s.io/controller-manager v0.21.0
-	k8s.io/cri-api => k8s.io/cri-api v0.21.0
-	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.21.0
+	k8s.io/api => k8s.io/api v0.23.0
+	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.23.0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.23.0
+	k8s.io/apiserver => k8s.io/apiserver v0.23.0
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.23.0
+	k8s.io/client-go => k8s.io/client-go v0.23.0
+	k8s.io/cloud-provider => k8s.io/cloud-provider v0.23.0
+	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.23.0
+	k8s.io/code-generator => k8s.io/code-generator v0.23.0
+	k8s.io/component-base => k8s.io/component-base v0.23.0
+	k8s.io/component-helpers => k8s.io/component-helpers v0.23.0
+	k8s.io/controller-manager => k8s.io/controller-manager v0.23.0
+	k8s.io/cri-api => k8s.io/cri-api v0.23.0
+	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.23.0
 	k8s.io/gengo => k8s.io/gengo v0.0.0-20200114144118-36b2048a9120
 	k8s.io/heapster => k8s.io/heapster v1.2.0-beta.1
-	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.21.0
-	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.21.0
+	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.23.0
+	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.23.0
 	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd
-	k8s.io/kube-proxy => k8s.io/kube-proxy v0.21.0
-	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.21.0
-	k8s.io/kubectl => k8s.io/kubectl v0.21.0
-	k8s.io/kubelet => k8s.io/kubelet v0.21.0
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.21.0
-	k8s.io/metrics => k8s.io/metrics v0.21.0
-	k8s.io/mount-utils => k8s.io/mount-utils v0.21.1
+	k8s.io/kube-proxy => k8s.io/kube-proxy v0.23.0
+	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.23.0
+	k8s.io/kubectl => k8s.io/kubectl v0.23.0
+	k8s.io/kubelet => k8s.io/kubelet v0.23.0
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.23.0
+	k8s.io/metrics => k8s.io/metrics v0.23.0
+	k8s.io/mount-utils => k8s.io/mount-utils v0.23.0
+	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.23.0
 	k8s.io/repo-infra => k8s.io/repo-infra v0.0.1-alpha.1
-	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.21.0
-	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.21.0
-	k8s.io/sample-controller => k8s.io/sample-controller v0.21.0
+	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.23.0
+	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.23.0
+	k8s.io/sample-controller => k8s.io/sample-controller v0.23.0
 	k8s.io/system-validators => k8s.io/system-validators v1.0.4
-	k8s.io/utils => k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	modernc.org/cc => modernc.org/cc v1.0.0
 	modernc.org/golex => modernc.org/golex v1.0.0
 	modernc.org/mathutil => modernc.org/mathutil v1.0.0
