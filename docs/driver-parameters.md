@@ -6,6 +6,7 @@
 Name | Meaning | Available Value | Mandatory | Default value
 --- | --- | --- | --- | ---
 source | Samba Server address | `//smb-server-address/sharename` </br>([Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) format: `//accountname.file.core.windows.net/filesharename`) | Yes |
+subDir | existing sub directory under smb share |  | No | sub directory must exist otherwise mount would fail
 csi.storage.k8s.io/provisioner-secret-name | secret name that stores `username`, `password`(`domain` is optional); if secret is provided, driver will create a sub directory with PV name under `source` | existing secret name |  No  |
 csi.storage.k8s.io/provisioner-secret-namespace | namespace where the secret is | existing secret namespace |  No  |
 csi.storage.k8s.io/node-stage-secret-name | secret name that stores `username`, `password`(`domain` is optional) | existing secret name |  Yes  |
@@ -17,5 +18,11 @@ csi.storage.k8s.io/node-stage-secret-namespace | namespace where the secret is |
 Name | Meaning | Available Value | Mandatory | Default value
 --- | --- | --- | --- | ---
 volumeAttributes.source | Samba Server address | `//smb-server-address/sharename` </br>([Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) format: `//accountname.file.core.windows.net/filesharename`) | Yes |
+volumeAttributes.subDir | existing sub directory under smb share |  | No | sub directory must exist otherwise mount would fail
 nodeStageSecretRef.name | secret name that stores `username`, `password`(`domain` is optional) | existing secret name |  Yes  |
 nodeStageSecretRef.namespace | namespace where the secret is | k8s namespace  |  Yes  |
+
+ - Use `kubectl create secret` to create `smbcreds` secret to store Samba Server username, password
+```console
+kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
+```

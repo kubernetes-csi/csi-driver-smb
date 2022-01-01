@@ -36,14 +36,6 @@ import (
 	"golang.org/x/net/context"
 )
 
-const (
-	usernameField     = "username"
-	passwordField     = "password"
-	sourceField       = "source"
-	domainField       = "domain"
-	defaultDomainName = "AZURE"
-)
-
 // NodePublishVolume mount the volume from staging to target path
 func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
 	if req.GetVolumeCapability() == nil {
@@ -139,8 +131,17 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		return nil, err
 	}
 
-	source, ok := context[sourceField]
-	if !ok {
+	var source, subDir string
+	for k, v := range context {
+		switch strings.ToLower(k) {
+		case sourceField:
+			source = v
+		case subDirField:
+			subDir = v
+		}
+	}
+
+	if source == "" {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("%s field is missing, current context: %v", sourceField, context))
 	}
 
@@ -197,6 +198,10 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	} else {
 		if err = prepareStagePath(targetPath, d.mounter); err != nil {
 			return nil, fmt.Errorf("prepare stage path failed for %s with error: %v", targetPath, err)
+		}
+		if subDir != "" {
+			source = strings.TrimRight(source, "/")
+			source = fmt.Sprintf("%s/%s", source, subDir)
 		}
 		mountComplete := false
 		err = wait.PollImmediate(1*time.Second, 2*time.Minute, func() (bool, error) {

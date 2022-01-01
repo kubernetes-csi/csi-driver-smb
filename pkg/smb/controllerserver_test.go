@@ -35,7 +35,7 @@ import (
 const (
 	testServer    = "test-server/baseDir"
 	testCSIVolume = "test-csi"
-	testVolumeID  = "test-server/baseDir#test-csi"
+	testVolumeID  = "test-server/baseDir#test-csi#"
 )
 
 func TestControllerGetCapabilities(t *testing.T) {
@@ -94,7 +94,7 @@ func TestCreateVolume(t *testing.T) {
 					},
 				},
 				Parameters: map[string]string{
-					paramSource: testServer,
+					sourceField: testServer,
 				},
 				Secrets: map[string]string{
 					usernameField: "test",
@@ -106,7 +106,8 @@ func TestCreateVolume(t *testing.T) {
 				Volume: &csi.Volume{
 					VolumeId: testVolumeID,
 					VolumeContext: map[string]string{
-						paramSource: filepath.Join(testServer, testCSIVolume),
+						sourceField: testServer,
+						subDirField: testCSIVolume,
 					},
 				},
 			},
@@ -128,7 +129,7 @@ func TestCreateVolume(t *testing.T) {
 					},
 				},
 				Parameters: map[string]string{
-					paramSource: testServer,
+					sourceField: testServer,
 				},
 			},
 			expectErr: true,
@@ -403,12 +404,12 @@ func TestListSnapshots(t *testing.T) {
 }
 
 func TestGetSmbVolFromID(t *testing.T) {
-
 	cases := []struct {
 		desc      string
 		volumeID  string
 		source    string
 		subDir    string
+		uuid      string
 		expectErr bool
 	}{
 		{
@@ -419,10 +420,25 @@ func TestGetSmbVolFromID(t *testing.T) {
 			expectErr: false,
 		},
 		{
+			desc:      "correct volume id with empty uuid",
+			volumeID:  "smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f#",
+			source:    "//smb-server.default.svc.cluster.local/share",
+			subDir:    "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			expectErr: false,
+		},
+		{
 			desc:      "correct volume id with multiple base directories",
 			volumeID:  "smb-server.default.svc.cluster.local/share/dir1/dir2#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
 			source:    "//smb-server.default.svc.cluster.local/share/dir1/dir2",
 			subDir:    "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			expectErr: false,
+		},
+		{
+			desc:      "existing sub dir",
+			volumeID:  "smb-server.default.svc.cluster.local/share#subdir#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			source:    "//smb-server.default.svc.cluster.local/share",
+			subDir:    "subdir",
+			uuid:      "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
 			expectErr: false,
 		},
 		{
@@ -441,10 +457,114 @@ func TestGetSmbVolFromID(t *testing.T) {
 			if !test.expectErr {
 				assert.Equal(t, smbVolume.sourceField, test.source)
 				assert.Equal(t, smbVolume.subDir, test.subDir)
+				assert.Equal(t, smbVolume.uuid, test.uuid)
 				assert.Nil(t, err)
 			} else {
 				assert.NotNil(t, err)
 			}
 		})
+	}
+}
+
+func TestGetVolumeIDFromSmbVol(t *testing.T) {
+	cases := []struct {
+		desc   string
+		vol    *smbVolume
+		result string
+	}{
+		{
+			desc: "volume without uuid",
+			vol: &smbVolume{
+				sourceField: "//smb-server.default.svc.cluster.local/share",
+				subDir:      "subdir",
+			},
+			result: "smb-server.default.svc.cluster.local/share#subdir#",
+		},
+		{
+			desc: "volume with uuid",
+			vol: &smbVolume{
+				sourceField: "//smb-server.default.svc.cluster.local/share",
+				subDir:      "subdir",
+				uuid:        "uuid",
+			},
+			result: "smb-server.default.svc.cluster.local/share#subdir#uuid",
+		},
+		{
+			desc: "volume without subdir",
+			vol: &smbVolume{
+				sourceField: "//smb-server.default.svc.cluster.local/share",
+			},
+			result: "smb-server.default.svc.cluster.local/share##",
+		},
+	}
+
+	for _, test := range cases {
+		volumeID := getVolumeIDFromSmbVol(test.vol)
+		assert.Equal(t, volumeID, test.result)
+	}
+}
+
+func TestNewSMBVolume(t *testing.T) {
+	cases := []struct {
+		desc      string
+		name      string
+		size      int64
+		params    map[string]string
+		expectVol *smbVolume
+		expectErr error
+	}{
+		{
+			desc: "subDir is specified",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+				"subDir": "subdir",
+			},
+			expectVol: &smbVolume{
+				id:          "smb-server.default.svc.cluster.local/share#subdir#pv-name",
+				sourceField: "//smb-server.default.svc.cluster.local/share",
+				subDir:      "subdir",
+				size:        100,
+				uuid:        "pv-name",
+			},
+		},
+		{
+			desc: "subDir not specified",
+			name: "pv-name",
+			size: 200,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+			},
+			expectVol: &smbVolume{
+				id:          "smb-server.default.svc.cluster.local/share#pv-name#",
+				sourceField: "//smb-server.default.svc.cluster.local/share",
+				subDir:      "pv-name",
+				size:        200,
+				uuid:        "",
+			},
+		},
+		{
+			desc:      "invalid parameter",
+			params:    map[string]string{"invalid-parameter": "value"},
+			expectVol: nil,
+			expectErr: fmt.Errorf("invalid parameter %s in storage class", "invalid-parameter"),
+		},
+		{
+			desc:      "source value is empty",
+			params:    map[string]string{},
+			expectVol: nil,
+			expectErr: fmt.Errorf("%s is a required parameter", sourceField),
+		},
+	}
+
+	for _, test := range cases {
+		vol, err := newSMBVolume(test.name, test.size, test.params)
+		if !reflect.DeepEqual(err, test.expectErr) {
+			t.Errorf("[test: %s] Unexpected error: %v, expected error: %v", test.desc, err, test.expectErr)
+		}
+		if !reflect.DeepEqual(vol, test.expectVol) {
+			t.Errorf("[test: %s] Unexpected vol: %v, expected vol: %v", test.desc, vol, test.expectVol)
+		}
 	}
 }
