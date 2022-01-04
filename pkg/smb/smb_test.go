@@ -100,3 +100,39 @@ func TestRun(t *testing.T) {
 		t.Run(tc.name, tc.testFunc)
 	}
 }
+
+func TestGetMountOptions(t *testing.T) {
+	tests := []struct {
+		desc    string
+		context map[string]string
+		result  string
+	}{
+		{
+			desc:    "nil context",
+			context: nil,
+			result:  "",
+		},
+		{
+			desc:    "empty context",
+			context: map[string]string{},
+			result:  "",
+		},
+		{
+			desc:    "valid mountOptions",
+			context: map[string]string{"mountOptions": "dir_mode=0777"},
+			result:  "dir_mode=0777",
+		},
+		{
+			desc:    "valid mountOptions(lowercase)",
+			context: map[string]string{"mountoptions": "dir_mode=0777,file_mode=0777,uid=0,gid=0,mfsymlinks"},
+			result:  "dir_mode=0777,file_mode=0777,uid=0,gid=0,mfsymlinks",
+		},
+	}
+
+	for _, test := range tests {
+		result := getMountOptions(test.context)
+		if result != test.result {
+			t.Errorf("Unexpected result: %s, expected: %s", result, test.result)
+		}
+	}
+}

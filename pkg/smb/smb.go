@@ -17,7 +17,7 @@ limitations under the License.
 package smb
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 
@@ -35,6 +35,7 @@ const (
 	sourceField       = "source"
 	subDirField       = "subdir"
 	domainField       = "domain"
+	mountOptionsField = "mountoptions"
 	defaultDomainName = "AZURE"
 )
 
@@ -67,7 +68,7 @@ func (d *Driver) Run(endpoint, kubeconfig string, testMode bool) {
 	if err != nil {
 		klog.Fatalf("%v", err)
 	}
-	klog.Infof("\nDRIVER INFORMATION:\n-------------------\n%s\n\nStreaming logs below:", versionMeta)
+	klog.V(2).Infof("\nDRIVER INFORMATION:\n-------------------\n%s\n\nStreaming logs below:", versionMeta)
 
 	d.mounter, err = mounter.NewSafeMounter()
 	if err != nil {
@@ -109,6 +110,16 @@ func (d *Driver) Run(endpoint, kubeconfig string, testMode bool) {
 
 func IsCorruptedDir(dir string) bool {
 	_, pathErr := mount.PathExists(dir)
-	fmt.Printf("IsCorruptedDir(%s) returned with error: %v", dir, pathErr)
 	return pathErr != nil && mount.IsCorruptedMnt(pathErr)
+}
+
+// getMountOptions get mountOptions value from a map
+func getMountOptions(context map[string]string) string {
+	for k, v := range context {
+		switch strings.ToLower(k) {
+		case mountOptionsField:
+			return v
+		}
+	}
+	return ""
 }
