@@ -356,7 +356,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test := testsuites.DynamicallyProvisionedVolumeSubpathTester{
 			CSIDriver:              testDriver,
 			Pods:                   pods,
-			StorageClassParameters: defaultStorageClassParameters,
+			StorageClassParameters: noProvisionerSecretStorageClassParameters,
 		}
 		test.Run(cs, ns)
 	})
