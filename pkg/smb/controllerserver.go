@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -31,8 +30,7 @@ import (
 )
 
 const (
-	volumeIDRegex            = "^(.*)#(.*)$"
-	sourceAndSubDirSeperator = "#"
+	separator = "#"
 )
 
 // smbVolume is an internal representation of a volume
@@ -46,6 +44,8 @@ type smbVolume struct {
 	subDir string
 	// size of volume
 	size int64
+	// pv name when subDir is not empty
+	uuid string
 }
 
 // Ordering of elements in the CSI volume id.
@@ -53,10 +53,10 @@ type smbVolume struct {
 const (
 	idsourceField = iota
 	idSubDir
+	idUUID
 	totalIDElements // Always last
 )
 
-// CreateVolume only supports static provisioning, no create volume action
 func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
 	name := req.GetName()
 	if len(name) == 0 {
@@ -74,41 +74,38 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 
 	reqCapacity := req.GetCapacityRange().GetRequiredBytes()
 	parameters := req.GetParameters()
-	// Validate parameters (case-insensitive).
-	for k := range parameters {
-		switch strings.ToLower(k) {
-		case paramSource:
-			// no op
-		default:
-			return nil, fmt.Errorf("invalid parameter %s in storage class", k)
-		}
+	if parameters == nil {
+		parameters = make(map[string]string)
 	}
-
-	smbVol, err := d.newSMBVolume(name, reqCapacity, parameters)
+	smbVol, err := newSMBVolume(name, reqCapacity, parameters)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	secrets := req.GetSecrets()
 	if len(secrets) > 0 {
-		// Mount smb base share so we can create a subdirectory
-		if err := d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
-		}
-		defer func() {
-			if err = d.internalUnmount(ctx, smbVol); err != nil {
-				klog.Warningf("failed to unmount smb server: %v", err.Error())
+		if len(smbVol.uuid) > 0 {
+			klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory creation", smbVol.subDir)
+		} else {
+			// Mount smb base share so we can create a subdirectory
+			if err := d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
 			}
-		}()
-		// Create subdirectory under base-dir
-		// TODO: revisit permissions
-		internalVolumePath := d.getInternalVolumePath(smbVol)
-		if err = os.Mkdir(internalVolumePath, 0777); err != nil && !os.IsExist(err) {
-			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
+			defer func() {
+				if err = d.internalUnmount(ctx, smbVol); err != nil {
+					klog.Warningf("failed to unmount smb server: %v", err.Error())
+				}
+			}()
+			// Create subdirectory under base-dir
+			// TODO: revisit permissions
+			internalVolumePath := d.getInternalVolumePath(smbVol)
+			if err = os.Mkdir(internalVolumePath, 0777); err != nil && !os.IsExist(err) {
+				return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
+			}
+			parameters[subDirField] = smbVol.subDir
 		}
-		parameters[sourceField] = parameters[sourceField] + "/" + smbVol.subDir
 	} else {
-		klog.Infof("CreateVolume(%s) does not provide secrets", name)
+		klog.V(2).Infof("CreateVolume(%s) does not provide secrets", name)
 	}
 	return &csi.CreateVolumeResponse{Volume: d.smbVolToCSI(smbVol, parameters)}, nil
 }
@@ -128,21 +125,25 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 
 	secrets := req.GetSecrets()
 	if len(secrets) > 0 {
-		// Mount smb base share so we can delete the subdirectory
-		if err = d.internalMount(ctx, smbVol, nil, secrets); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
-		}
-		defer func() {
-			if err = d.internalUnmount(ctx, smbVol); err != nil {
-				klog.Warningf("failed to unmount smb server: %v", err.Error())
+		if len(smbVol.uuid) > 0 {
+			klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory creation", smbVol.subDir)
+		} else {
+			// Mount smb base share so we can delete the subdirectory
+			if err = d.internalMount(ctx, smbVol, nil, secrets); err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
 			}
-		}()
+			defer func() {
+				if err = d.internalUnmount(ctx, smbVol); err != nil {
+					klog.Warningf("failed to unmount smb server: %v", err.Error())
+				}
+			}()
 
-		// Delete subdirectory under base-dir
-		internalVolumePath := d.getInternalVolumePath(smbVol)
-		klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
-		if err = os.RemoveAll(internalVolumePath); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
+			// Delete subdirectory under base-dir
+			internalVolumePath := d.getInternalVolumePath(smbVol)
+			klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
+			if err = os.RemoveAll(internalVolumePath); err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
+			}
 		}
 	} else {
 		klog.Infof("DeleteVolume(%s) does not provide secrets", volumeID)
@@ -211,11 +212,12 @@ func (d *Driver) ListSnapshots(ctx context.Context, req *csi.ListSnapshotsReques
 }
 
 // Given a smbVolume, return a CSI volume id
-func (d *Driver) getVolumeIDFromSmbVol(vol *smbVolume) string {
+func getVolumeIDFromSmbVol(vol *smbVolume) string {
 	idElements := make([]string, totalIDElements)
 	idElements[idsourceField] = strings.Trim(vol.sourceField, "/")
 	idElements[idSubDir] = strings.Trim(vol.subDir, "/")
-	return strings.Join(idElements, sourceAndSubDirSeperator)
+	idElements[idUUID] = vol.uuid
+	return strings.Join(idElements, separator)
 }
 
 // Get working directory for CreateVolume and DeleteVolume
@@ -266,29 +268,38 @@ func (d *Driver) internalUnmount(ctx context.Context, vol *smbVolume) error {
 }
 
 // Convert VolumeCreate parameters to an smbVolume
-func (d *Driver) newSMBVolume(name string, size int64, params map[string]string) (*smbVolume, error) {
-	var sourceField string
+func newSMBVolume(name string, size int64, params map[string]string) (*smbVolume, error) {
+	var source, subDir string
 
-	// Validate parameters (case-insensitive).
+	// validate parameters (case-insensitive).
 	for k, v := range params {
 		switch strings.ToLower(k) {
-		case paramSource:
-			sourceField = v
+		case sourceField:
+			source = v
+		case subDirField:
+			subDir = v
+		default:
+			return nil, fmt.Errorf("invalid parameter %s in storage class", k)
 		}
 	}
 
-	// Validate required parameters
-	if sourceField == "" {
-		return nil, fmt.Errorf("%v is a required parameter", paramSource)
+	if source == "" {
+		return nil, fmt.Errorf("%v is a required parameter", sourceField)
 	}
 
 	vol := &smbVolume{
-		sourceField: sourceField,
-		subDir:      name,
+		sourceField: source,
 		size:        size,
 	}
-	vol.id = d.getVolumeIDFromSmbVol(vol)
-
+	if subDir == "" {
+		// use pv name by default if not specified
+		vol.subDir = name
+	} else {
+		vol.subDir = subDir
+		// make volume id unique if subDir is provided
+		vol.uuid = name
+	}
+	vol.id = getVolumeIDFromSmbVol(vol)
 	return vol, nil
 }
 
@@ -313,17 +324,22 @@ func (d *Driver) smbVolToCSI(vol *smbVolume, parameters map[string]string) *csi.
 }
 
 // Given a CSI volume id, return a smbVolume
-// a sample volume Id: smb-server.default.svc.cluster.local/share/pvc-4729891a-f57e-4982-9c60-e9884af1be2f
+// sample volume Id:
+//		smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f
+//		smb-server.default.svc.cluster.local/share#subdir#pvc-4729891a-f57e-4982-9c60-e9884af1be2f
 func getSmbVolFromID(id string) (*smbVolume, error) {
-	volRegex := regexp.MustCompile(volumeIDRegex)
-	tokens := volRegex.FindStringSubmatch(id)
-	if tokens == nil || len(tokens) != 3 {
+	segments := strings.Split(id, separator)
+	if len(segments) < 2 {
 		return nil, fmt.Errorf("Could not split %q into server and subDir", id)
 	}
-	source := "//" + tokens[1]
-	return &smbVolume{
+	source := "//" + segments[0]
+	vol := &smbVolume{
 		id:          id,
 		sourceField: source,
-		subDir:      tokens[2],
-	}, nil
+		subDir:      segments[1],
+	}
+	if len(segments) >= 3 {
+		vol.uuid = segments[2]
+	}
+	return vol, nil
 }

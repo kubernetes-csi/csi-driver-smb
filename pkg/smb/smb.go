@@ -30,7 +30,12 @@ import (
 
 const (
 	DefaultDriverName = "smb.csi.k8s.io"
-	paramSource       = "source"
+	usernameField     = "username"
+	passwordField     = "password"
+	sourceField       = "source"
+	subDirField       = "subdir"
+	domainField       = "domain"
+	defaultDomainName = "AZURE"
 )
 
 // Driver implements all interfaces of CSI drivers

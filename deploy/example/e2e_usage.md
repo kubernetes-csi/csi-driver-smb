@@ -22,7 +22,7 @@ provisioner: smb.csi.k8s.io
 parameters:
   source: "//smb-server.default.svc.cluster.local/share"
   # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
-  # with PV name under source
+  # with PV name by default under source
   csi.storage.k8s.io/provisioner-secret-name: "smbcreds"
   csi.storage.k8s.io/provisioner-secret-namespace: "default"
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
@@ -52,6 +52,8 @@ provisioner: smb.csi.k8s.io
 parameters:
   # On Windows, "*.default.svc.cluster.local" could not be recognized by csi-proxy
   source: "//smb-server.default.svc.cluster.local/share"
+  # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
+  # with PV name by default under source
   csi.storage.k8s.io/provisioner-secret-name: "smbcreds"
   csi.storage.k8s.io/provisioner-secret-namespace: "default"
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
