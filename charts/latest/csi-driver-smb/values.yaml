@@ -39,6 +39,7 @@ controller:
     healthPort: 29642
   runOnMaster: false
   logLevel: 5
+  workingMountDir: "/tmp"
   resources:
     csiProvisioner:
       limits:

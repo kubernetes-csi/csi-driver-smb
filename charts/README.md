@@ -64,6 +64,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `controller.metricsPort`                          | metrics port of csi-smb-controller                   |`29644`                                               |
 | `controller.livenessProbe.healthPort `            | health check port for liveness probe                   | `29642` |
 | `controller.logLevel`                             | controller driver log level                                                          |`5`                                                           |
+| `controller.workingMountDir`                      | working directory for provisioner to mount smb shares temporarily                  | `/tmp`                                                             |
 | `controller.runOnMaster`                          | run controller on master node                              | `false`                                                             |
 | `node.livenessProbe.healthPort `                  | health check port for liveness probe                   | `29643` |
 | `controller.resources.csiProvisioner.limits.memory`   | csi-provisioner memory limits                         | `100Mi`                                                          |

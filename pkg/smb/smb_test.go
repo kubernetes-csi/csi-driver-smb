@@ -30,12 +30,21 @@ const (
 )
 
 func NewFakeDriver() *Driver {
-	return NewDriver(fakeNodeID, DefaultDriverName, true)
+	options := DriverOptions{
+		NodeID:               fakeNodeID,
+		DriverName:           DefaultDriverName,
+		EnableGetVolumeStats: true,
+	}
+	return NewDriver(&options)
 }
 
 func TestNewFakeDriver(t *testing.T) {
-	// Test New fake driver.
-	d := NewDriver(fakeNodeID, DefaultDriverName, true)
+	options := DriverOptions{
+		NodeID:               fakeNodeID,
+		DriverName:           DefaultDriverName,
+		EnableGetVolumeStats: true,
+	}
+	d := NewDriver(&options)
 	assert.NotNil(t, d)
 }
 

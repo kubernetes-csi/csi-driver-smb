@@ -235,10 +235,6 @@ func getVolumeIDFromSmbVol(vol *smbVolume) string {
 
 // Get working directory for CreateVolume and DeleteVolume
 func (d *Driver) getInternalMountPath(vol *smbVolume) string {
-	// use default if empty
-	if d.workingMountDir == "" {
-		d.workingMountDir = "/tmp"
-	}
 	return filepath.Join(d.workingMountDir, vol.subDir)
 }
 

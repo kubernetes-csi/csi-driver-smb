@@ -39,6 +39,14 @@ const (
 	defaultDomainName = "AZURE"
 )
 
+// DriverOptions defines driver parameters specified in driver deployment
+type DriverOptions struct {
+	NodeID               string
+	DriverName           string
+	EnableGetVolumeStats bool
+	WorkingMountDir      string
+}
+
 // Driver implements all interfaces of CSI drivers
 type Driver struct {
 	csicommon.CSIDriver
@@ -52,12 +60,13 @@ type Driver struct {
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
 // does not support optional driver plugin info manifest field. Refer to CSI spec for more details.
-func NewDriver(nodeID, driverName string, enableGetVolumeStats bool) *Driver {
+func NewDriver(options *DriverOptions) *Driver {
 	driver := Driver{}
-	driver.Name = driverName
+	driver.Name = options.DriverName
 	driver.Version = driverVersion
-	driver.NodeID = nodeID
-	driver.enableGetVolumeStats = enableGetVolumeStats
+	driver.NodeID = options.NodeID
+	driver.enableGetVolumeStats = options.EnableGetVolumeStats
+	driver.workingMountDir = options.WorkingMountDir
 	driver.volumeLocks = newVolumeLocks()
 	return &driver
 }
