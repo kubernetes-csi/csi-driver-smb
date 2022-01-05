@@ -213,7 +213,7 @@ clean:
 .PHONY: install-smb-provisioner
 install-smb-provisioner:
 	kubectl delete secret smbcreds --ignore-not-found
-	kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
+	kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD" --from-literal mountOptions="dir_mode=0777,file_mode=0777,uid=0,gid=0,mfsymlinks"
 ifdef TEST_WINDOWS
 	kubectl apply -f deploy/example/smb-provisioner/smb-server-lb.yaml
 else

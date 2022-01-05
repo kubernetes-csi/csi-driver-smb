@@ -123,13 +123,26 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 		return &csi.DeleteVolumeResponse{}, nil
 	}
 
+	var volCap *csi.VolumeCapability
+	mountOptions := getMountOptions(req.GetSecrets())
+	if mountOptions != "" {
+		klog.V(2).Infof("DeleteVolume: found mountOptions(%v) for volume(%s)", mountOptions, volumeID)
+		volCap = &csi.VolumeCapability{
+			AccessType: &csi.VolumeCapability_Mount{
+				Mount: &csi.VolumeCapability_MountVolume{
+					MountFlags: []string{mountOptions},
+				},
+			},
+		}
+	}
+
 	secrets := req.GetSecrets()
 	if len(secrets) > 0 {
 		if len(smbVol.uuid) > 0 {
 			klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory creation", smbVol.subDir)
 		} else {
 			// Mount smb base share so we can delete the subdirectory
-			if err = d.internalMount(ctx, smbVol, nil, secrets); err != nil {
+			if err = d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
 			}
 			defer func() {
@@ -146,7 +159,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 			}
 		}
 	} else {
-		klog.Infof("DeleteVolume(%s) does not provide secrets", volumeID)
+		klog.V(2).Infof("DeleteVolume(%s) does not provide secrets", volumeID)
 	}
 
 	return &csi.DeleteVolumeResponse{}, nil

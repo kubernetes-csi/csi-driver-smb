@@ -26,3 +26,13 @@ nodeStageSecretRef.namespace | namespace where the secret is | k8s namespace  | 
 ```console
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
+
+### Tips
+#### provide `mountOptions` for `DeleteVolume`
+> since `DeleteVolumeRequest` does not provide `mountOptions`, following is the workaround to provide `mountOptions` for `DeleteVolume`
+  - create a secret `smbcreds` with `mountOptions`
+```console
+kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD" --from-literal mountOptions="dir_mode=0777,file_mode=0777,uid=0,gid=0,mfsymlinks"
+```
+
+ - set `csi.storage.k8s.io/provisioner-secret-name: "smbcreds"` in storage class
