@@ -113,7 +113,12 @@ var _ = ginkgo.BeforeSuite(func() {
 
 		nodeid := os.Getenv("nodeid")
 		kubeconfig := os.Getenv(kubeconfigEnvVar)
-		smbDriver = smb.NewDriver(nodeid, smb.DefaultDriverName, false)
+		options := smb.DriverOptions{
+			NodeID:               nodeid,
+			DriverName:           smb.DefaultDriverName,
+			EnableGetVolumeStats: false,
+		}
+		smbDriver = smb.NewDriver(&options)
 		go func() {
 			smbDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()), kubeconfig, false)
 		}()

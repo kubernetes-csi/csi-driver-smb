@@ -43,6 +43,7 @@ var (
 	metricsAddress       = flag.String("metrics-address", "0.0.0.0:29644", "export the metrics")
 	kubeconfig           = flag.String("kubeconfig", "", "Absolute path to the kubeconfig file. Required only when running out of cluster.")
 	enableGetVolumeStats = flag.Bool("enable-get-volume-stats", false, "allow GET_VOLUME_STATS on agent node")
+	workingMountDir      = flag.String("working-mount-dir", "/tmp", "working directory for provisioner to mount smb shares temporarily")
 )
 
 func main() {
@@ -65,10 +66,13 @@ func main() {
 }
 
 func handle() {
-	driver := smb.NewDriver(*nodeID, *driverName, *enableGetVolumeStats)
-	if driver == nil {
-		klog.Fatalln("Failed to initialize smb CSI Driver")
+	driverOptions := smb.DriverOptions{
+		NodeID:               *nodeID,
+		DriverName:           *driverName,
+		EnableGetVolumeStats: *enableGetVolumeStats,
+		WorkingMountDir:      *workingMountDir,
 	}
+	driver := smb.NewDriver(&driverOptions)
 	driver.Run(*endpoint, *kubeconfig, false)
 }
 

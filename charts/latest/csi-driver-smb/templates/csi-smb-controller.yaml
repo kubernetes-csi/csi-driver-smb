@@ -89,6 +89,7 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--metrics-address=0.0.0.0:{{ .Values.controller.metricsPort }}"
             - "--drivername={{ .Values.driver.name }}"
+            - "--working-mount-dir={{ .Values.controller.workingMountDir }}"
           ports:
             - containerPort: {{ .Values.controller.livenessProbe.healthPort }}
               name: healthz
