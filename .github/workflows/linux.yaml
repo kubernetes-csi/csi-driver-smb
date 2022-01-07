@@ -28,7 +28,6 @@ jobs:
     - name: Build Test
       run: |
         export PATH=$PATH:$HOME/.local/bin
-        make verify
         go test -covermode=count -coverprofile=profile.cov ./pkg/...
         export DOCKER_CLI_EXPERIMENTAL=enabled && make container
 
