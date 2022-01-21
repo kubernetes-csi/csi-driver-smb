@@ -159,7 +159,7 @@ container-all: smb-windows
 	docker buildx create --use --name=container-builder
 	# enable qemu for arm64 build
 	# https://github.com/docker/buildx/issues/464#issuecomment-741507760
-	docker run --privileged --rm tonistiigi/binfmt --uninstall qemu-aarch64
+	docker run --privileged --rm tonistiigi/binfmt --uninstall qemu-aarch64,arm
 	docker run --rm --privileged tonistiigi/binfmt --install all
 	for arch in $(ALL_ARCH.linux); do \
 		ARCH=$${arch} $(MAKE) smb; \
