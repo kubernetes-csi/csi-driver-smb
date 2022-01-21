@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `image.smb.tag`                                   | csi-driver-smb docker image tag                            | `latest`                                                            |
 | `image.smb.pullPolicy`                            | csi-driver-smb image pull policy                           | `IfNotPresent`                                                      |
 | `image.csiProvisioner.repository`                 | csi-provisioner docker image                               | `k8s.gcr.io/sig-storage/csi-provisioner`              |
-| `image.csiProvisioner.tag`                        | csi-provisioner docker image tag                           | `v2.2.0`                                                            |
+| `image.csiProvisioner.tag`                        | csi-provisioner docker image tag                           | `v3.1.0`                                                            |
 | `image.csiProvisioner.pullPolicy`                 | csi-provisioner image pull policy                          | `IfNotPresent`                                                      |
 | `image.livenessProbe.repository`                  | liveness-probe docker image                                | `k8s.gcr.io/sig-storage/livenessprobe`                |
 | `image.livenessProbe.tag`                         | liveness-probe docker image tag                            | `v2.5.0`                                                            |
