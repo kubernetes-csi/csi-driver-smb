@@ -1,0 +1,23 @@
+# See https://cloud.google.com/cloud-build/docs/build-config
+# For more information about Image pushing refer to https://github.com/kubernetes/test-infra/blob/master/config/jobs/image-pushing/README.md
+timeout: 3600s
+
+options:
+  substitution_option: ALLOW_LOOSE
+
+steps:
+  - name: 'gcr.io/k8s-testimages/gcb-docker-gcloud:v20210331-c732583'
+    entrypoint: make
+    env:
+    - REGISTRY=gcr.io
+    - IMAGE_NAME=${_STAGING_PROJECT}/smb-csi
+    - PUBLISH=1
+    - CI=1
+    # default cloudbuild has HOME=/builder/home and docker buildx is in /root/.docker/cli-plugins/docker-buildx
+    # set the home to /root explicitly to if using docker buildx
+    - HOME=/root
+    args:
+      - container-all push-manifest push-latest
+
+substitutions:
+  _STAGING_PROJECT: 'k8s-staging-cloud-provider-gcp'
