@@ -42,24 +42,6 @@ func NewVolumeCapabilityAccessMode(mode csi.VolumeCapability_AccessMode_Mode) *c
 	return &csi.VolumeCapability_AccessMode{Mode: mode}
 }
 
-func NewDefaultNodeServer(d *CSIDriver) *DefaultNodeServer {
-	return &DefaultNodeServer{
-		Driver: d,
-	}
-}
-
-func NewDefaultIdentityServer(d *CSIDriver) *DefaultIdentityServer {
-	return &DefaultIdentityServer{
-		Driver: d,
-	}
-}
-
-func NewDefaultControllerServer(d *CSIDriver) *DefaultControllerServer {
-	return &DefaultControllerServer{
-		Driver: d,
-	}
-}
-
 func NewControllerServiceCapability(cap csi.ControllerServiceCapability_RPC_Type) *csi.ControllerServiceCapability {
 	return &csi.ControllerServiceCapability{
 		Type: &csi.ControllerServiceCapability_Rpc{
@@ -78,30 +60,6 @@ func NewNodeServiceCapability(cap csi.NodeServiceCapability_RPC_Type) *csi.NodeS
 			},
 		},
 	}
-}
-
-func RunNodePublishServer(endpoint string, d *CSIDriver, ns csi.NodeServer, testMode bool) {
-	ids := NewDefaultIdentityServer(d)
-
-	s := NewNonBlockingGRPCServer()
-	s.Start(endpoint, ids, nil, ns, testMode)
-	s.Wait()
-}
-
-func RunControllerPublishServer(endpoint string, d *CSIDriver, cs csi.ControllerServer, testMode bool) {
-	ids := NewDefaultIdentityServer(d)
-
-	s := NewNonBlockingGRPCServer()
-	s.Start(endpoint, ids, cs, nil, testMode)
-	s.Wait()
-}
-
-func RunControllerandNodePublishServer(endpoint string, d *CSIDriver, cs csi.ControllerServer, ns csi.NodeServer, testMode bool) {
-	ids := NewDefaultIdentityServer(d)
-
-	s := NewNonBlockingGRPCServer()
-	s.Start(endpoint, ids, cs, ns, testMode)
-	s.Wait()
 }
 
 func getLogLevel(method string) int32 {
