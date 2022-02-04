@@ -146,33 +146,6 @@ func TestLogGRPC(t *testing.T) {
 	}
 }
 
-func TestNewDefaultNodeServer(t *testing.T) {
-	d := NewFakeDriver()
-	resp := NewDefaultNodeServer(d)
-	assert.NotNil(t, resp)
-	assert.Equal(t, resp.Driver.Name, fakeDriverName)
-	assert.Equal(t, resp.Driver.NodeID, fakeNodeID)
-	assert.Equal(t, resp.Driver.Version, vendorVersion)
-}
-
-func TestNewDefaultIdentityServer(t *testing.T) {
-	d := NewFakeDriver()
-	resp := NewDefaultIdentityServer(d)
-	assert.NotNil(t, resp)
-	assert.Equal(t, resp.Driver.Name, fakeDriverName)
-	assert.Equal(t, resp.Driver.NodeID, fakeNodeID)
-	assert.Equal(t, resp.Driver.Version, vendorVersion)
-}
-
-func TestNewDefaultControllerServer(t *testing.T) {
-	d := NewFakeDriver()
-	resp := NewDefaultControllerServer(d)
-	assert.NotNil(t, resp)
-	assert.Equal(t, resp.Driver.Name, fakeDriverName)
-	assert.Equal(t, resp.Driver.NodeID, fakeNodeID)
-	assert.Equal(t, resp.Driver.Version, vendorVersion)
-}
-
 func TestNewVolumeCapabilityAccessMode(t *testing.T) {
 	tests := []struct {
 		mode csi.VolumeCapability_AccessMode_Mode
