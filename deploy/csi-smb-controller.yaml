@@ -5,7 +5,7 @@ metadata:
   name: csi-smb-controller
   namespace: kube-system
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: csi-smb-controller

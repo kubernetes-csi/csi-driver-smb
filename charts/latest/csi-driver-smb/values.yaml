@@ -33,7 +33,7 @@ feature:
 
 controller:
   name: csi-smb-controller
-  replicas: 2
+  replicas: 1
   metricsPort: 29644
   livenessProbe:
     healthPort: 29642
