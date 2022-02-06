@@ -5,7 +5,6 @@
 
 ### Tips
  - make controller only run on master node: `--set controller.runOnMaster=true`
- - set replica of controller as `1`: `--set controller.replicas=1`
 
 ### install a specific version
 ```console
@@ -60,7 +59,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `priorityClassName`                                   | priority class name to be added to pods               | `system-cluster-critical`                                        |
 | `securityContext`                                     | security context to be added to pods                  | `{}`                                                             |
 | `controller.name`                                 | name of driver deployment               | `csi-smb-controller`
-| `controller.replicas`                             | the replicas of csi-smb-controller                                  | `2`                                                   |
+| `controller.replicas`                             | replica num of csi-smb-controller                                  | `1`                                                   |
 | `controller.metricsPort`                          | metrics port of csi-smb-controller                   |`29644`                                               |
 | `controller.livenessProbe.healthPort `            | health check port for liveness probe                   | `29642` |
 | `controller.logLevel`                             | controller driver log level                                                          |`5`                                                           |
