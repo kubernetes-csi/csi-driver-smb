@@ -25,7 +25,6 @@ import (
 	v1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	clientset "k8s.io/client-go/kubernetes"
-	restclientset "k8s.io/client-go/rest"
 )
 
 type PodDetails struct {
@@ -62,14 +61,8 @@ const (
 )
 
 const (
-	VolumeSnapshotKind = "VolumeSnapshot"
-	VolumePVCKind      = "PersistentVolumeClaim"
-	APIVersionv1beta1  = "v1beta1"
-	SnapshotAPIVersion = "snapshot.storage.k8s.io/" + APIVersionv1beta1
-)
-
-var (
-	SnapshotAPIGroup = "snapshot.storage.k8s.io"
+	VolumePVCKind     = "PersistentVolumeClaim"
+	APIVersionv1beta1 = "v1beta1"
 )
 
 type VolumeMountDetails struct {
@@ -214,13 +207,4 @@ func (volume *VolumeDetails) SetupPreProvisionedPersistentVolumeClaim(client cli
 	tpvc.ValidateProvisionedPersistentVolume()
 
 	return tpvc, cleanupFuncs
-}
-
-func CreateVolumeSnapshotClass(client restclientset.Interface, namespace *v1.Namespace, csiDriver driver.VolumeSnapshotTestDriver) (*TestVolumeSnapshotClass, func()) {
-	ginkgo.By("setting up the VolumeSnapshotClass")
-	volumeSnapshotClass := csiDriver.GetVolumeSnapshotClass(namespace.Name)
-	tvsc := NewTestVolumeSnapshotClass(client, namespace, volumeSnapshotClass)
-	tvsc.Create()
-
-	return tvsc, tvsc.Cleanup
 }

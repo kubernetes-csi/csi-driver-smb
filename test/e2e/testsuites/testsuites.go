@@ -27,8 +27,6 @@ import (
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/kubernetes-csi/external-snapshotter/v2/pkg/apis/volumesnapshot/v1beta1"
-	snapshotclientset "github.com/kubernetes-csi/external-snapshotter/v2/pkg/client/clientset/versioned"
 	"github.com/onsi/ginkgo"
 	"github.com/onsi/gomega"
 	apps "k8s.io/api/apps/v1"
@@ -40,9 +38,7 @@ import (
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
-	"k8s.io/apimachinery/pkg/util/wait"
 	clientset "k8s.io/client-go/kubernetes"
-	restclientset "k8s.io/client-go/rest"
 	"k8s.io/kubernetes/pkg/kubelet/events"
 	"k8s.io/kubernetes/test/e2e/framework"
 	"k8s.io/kubernetes/test/e2e/framework/deployment"
@@ -666,77 +662,6 @@ func (t *TestSecret) Cleanup() {
 	e2elog.Logf("deleting Secret %s", t.secret.Name)
 	err := t.client.CoreV1().Secrets(t.namespace.Name).Delete(context.TODO(), t.secret.Name, metav1.DeleteOptions{})
 	framework.ExpectNoError(err)
-}
-
-type TestVolumeSnapshotClass struct {
-	client              restclientset.Interface
-	volumeSnapshotClass *v1beta1.VolumeSnapshotClass
-	namespace           *v1.Namespace
-}
-
-func NewTestVolumeSnapshotClass(c restclientset.Interface, ns *v1.Namespace, vsc *v1beta1.VolumeSnapshotClass) *TestVolumeSnapshotClass {
-	return &TestVolumeSnapshotClass{
-		client:              c,
-		volumeSnapshotClass: vsc,
-		namespace:           ns,
-	}
-}
-
-func (t *TestVolumeSnapshotClass) Create() {
-	ginkgo.By("creating a VolumeSnapshotClass")
-	var err error
-	t.volumeSnapshotClass, err = snapshotclientset.New(t.client).SnapshotV1beta1().VolumeSnapshotClasses().Create(context.TODO(), t.volumeSnapshotClass, metav1.CreateOptions{})
-	framework.ExpectNoError(err)
-}
-
-func (t *TestVolumeSnapshotClass) CreateSnapshot(pvc *v1.PersistentVolumeClaim) *v1beta1.VolumeSnapshot {
-	ginkgo.By("creating a VolumeSnapshot for " + pvc.Name)
-	snapshot := &v1beta1.VolumeSnapshot{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       VolumeSnapshotKind,
-			APIVersion: SnapshotAPIVersion,
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			GenerateName: "volume-snapshot-",
-			Namespace:    t.namespace.Name,
-		},
-		Spec: v1beta1.VolumeSnapshotSpec{
-			VolumeSnapshotClassName: &t.volumeSnapshotClass.Name,
-			Source: v1beta1.VolumeSnapshotSource{
-				PersistentVolumeClaimName: &pvc.Name,
-			},
-		},
-	}
-	snapshot, err := snapshotclientset.New(t.client).SnapshotV1beta1().VolumeSnapshots(t.namespace.Name).Create(context.TODO(), snapshot, metav1.CreateOptions{})
-	framework.ExpectNoError(err)
-	return snapshot
-}
-
-func (t *TestVolumeSnapshotClass) ReadyToUse(snapshot *v1beta1.VolumeSnapshot) {
-	ginkgo.By("waiting for VolumeSnapshot to be ready to use - " + snapshot.Name)
-	err := wait.Poll(15*time.Second, 5*time.Minute, func() (bool, error) {
-		vs, err := snapshotclientset.New(t.client).SnapshotV1beta1().VolumeSnapshots(t.namespace.Name).Get(context.TODO(), snapshot.Name, metav1.GetOptions{})
-		if err != nil {
-			return false, fmt.Errorf("did not see ReadyToUse: %v", err)
-		}
-		e2elog.Logf("the status ReadyToUse of VolumeSnapshot(%q): %v", snapshot.Name, *vs.Status.ReadyToUse)
-		return *vs.Status.ReadyToUse, nil
-	})
-	framework.ExpectNoError(err)
-}
-
-func (t *TestVolumeSnapshotClass) DeleteSnapshot(vs *v1beta1.VolumeSnapshot) {
-	ginkgo.By("deleting a VolumeSnapshot " + vs.Name)
-	err := snapshotclientset.New(t.client).SnapshotV1beta1().VolumeSnapshots(t.namespace.Name).Delete(context.TODO(), vs.Name, metav1.DeleteOptions{})
-	framework.ExpectNoError(err)
-}
-
-func (t *TestVolumeSnapshotClass) Cleanup() {
-	// skip deleting volume snapshot storage class otherwise snapshot e2e test will fail, details:
-	// https://github.com/kubernetes-sigs/azuredisk-csi-driver/pull/260#issuecomment-583296932
-	e2elog.Logf("skip deleting VolumeSnapshotClass %s", t.volumeSnapshotClass.Name)
-	//err := snapshotclientset.New(t.client).SnapshotV1beta1().VolumeSnapshotClasses().Delete(t.volumeSnapshotClass.Name, nil)
-	//framework.ExpectNoError(err)
 }
 
 func cleanupPodOrFail(client clientset.Interface, name, namespace string) {
