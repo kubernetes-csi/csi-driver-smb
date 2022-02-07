@@ -26,11 +26,11 @@ install_ginkgo () {
 
 setup_e2e_binaries() {
     # download k8s external e2e binary
-    curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.22.0/kubernetes-test-linux-amd64.tar.gz --output e2e-tests.tar.gz
+    curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.23.0/kubernetes-test-linux-amd64.tar.gz --output e2e-tests.tar.gz
     tar -xvf e2e-tests.tar.gz && rm e2e-tests.tar.gz
 
     # test on alternative driver name
-    export EXTRA_HELM_OPTIONS=" --set driver.name=$DRIVER.csi.k8s.io --set controller.name=csi-$DRIVER-controller --set linux.dsName=csi-$DRIVER-node --set windows.dsName=csi-$DRIVER-node-win --set image.csiProvisioner.tag=v3.0.0"
+    export EXTRA_HELM_OPTIONS=" --set driver.name=$DRIVER.csi.k8s.io --set controller.name=csi-$DRIVER-controller --set linux.dsName=csi-$DRIVER-node --set windows.dsName=csi-$DRIVER-node-win"
     sed -i "s/smb.csi.k8s.io/$DRIVER.csi.k8s.io/g" deploy/example/storageclass-smb.yaml
     sed -i "s/gid=/uid=/g" deploy/example/storageclass-smb.yaml
     make install-smb-provisioner
@@ -52,6 +52,6 @@ trap print_logs EXIT
 mkdir -p /tmp/csi
 cp deploy/example/storageclass-smb.yaml /tmp/csi/storageclass.yaml
 ginkgo -p --progress --v -focus='External.Storage' \
-       -skip='\[Disruptive\]|\[Slow\]|unmount after the subpath directory is deleted|support two pods which share the same volume|volume contents ownership changed' kubernetes/test/bin/e2e.test  -- \
+       -skip='\[Disruptive\]|\[Slow\]|support two pods which share the same volume|volume contents ownership changed' kubernetes/test/bin/e2e.test  -- \
        -storage.testdriver=$PROJECT_ROOT/test/external-e2e/testdriver.yaml \
        --kubeconfig=$KUBECONFIG
