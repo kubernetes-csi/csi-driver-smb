@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2020 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
-
 KUBERNETES_VERSION=v1.18.8
 KUBECONFIG=$HOME/.kube/config
 
@@ -24,7 +24,7 @@ curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$KUBE
 sudo kind create cluster --image kindest/node:$KUBERNETES_VERSION
 mkdir -p $HOME/.kube
 sudo chown -R $USER: $HOME/.kube/
-sudo kind get kubeconfig > $KUBECONFIG
+kind get kubeconfig > $KUBECONFIG
 
 echo "Setup samba server and deploy SMB CSI driver"
 kubectl cluster-info
