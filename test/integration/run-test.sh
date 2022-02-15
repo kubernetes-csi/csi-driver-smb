@@ -20,7 +20,7 @@ if [[ -z "$(command -v csc)" ]]; then
   GO111MODULE=off go get github.com/rexray/gocsi/csc
 fi
 
-readonly dirname="/tmp/$(date +%s)"
+dirname="/tmp/$(date +%s)"
 
 mkdir "$dirname"
 export PERMISSIONS=0777
@@ -36,7 +36,7 @@ function cleanup {
 }
 
 readonly CSC_BIN="$GOBIN/csc"
-readonly volname="citest-$(date +%s)"
+volname="citest-$(date +%s)"
 endpoint='tcp://127.0.0.1:10000'
 staging_target_path='/tmp/stagingtargetpath'
 target_path='/tmp/targetpath'
@@ -56,10 +56,10 @@ sleep 5
 params='source=//0.0.0.0/share'
 # Begin to run CSI functions one by one
 echo 'Create volume test:'
-readonly value=$("$CSC_BIN" controller new --endpoint "$endpoint" --cap 1,block "$volname" --req-bytes 2147483648 --params "$params")
+value=$("$CSC_BIN" controller new --endpoint "$endpoint" --cap 1,block "$volname" --req-bytes 2147483648 --params "$params")
 sleep 2
 
-readonly volumeid=$(echo "$value" | awk '{print $1}' | sed 's/"//g')
+volumeid=$(echo "$value" | awk '{print $1}' | sed 's/"//g')
 echo "Got volume id: $volumeid"
 
 # set secret for csc node stage

@@ -15,7 +15,7 @@ $ kubectl logs csi-smb-controller-56bfddd689-dh5tk -c smb -n kube-system > csi-s
 > note: there could be multiple controller pods, if there are no helpful logs, try to get logs from other controller pods
 
 ### Case#2: volume mount/unmount failed
- - locate csi driver pod and make sure which pod do tha actual volume mount/unmount
+ - locate csi driver pod that does the actual volume mount/unmount
 ```console
 $ kubectl get po -o wide -n kube-system | grep csi-smb-node
 NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE
