@@ -115,22 +115,22 @@ windows:
   resources:
     livenessProbe:
       limits:
-        memory: 200Mi
+        memory: 100Mi
       requests:
         cpu: 10m
-        memory: 20Mi
+        memory: 40Mi
     nodeDriverRegistrar:
       limits:
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 40Mi
+    smb:
+      limits:
         memory: 200Mi
       requests:
         cpu: 10m
-        memory: 20Mi
-    smb:
-      limits:
-        memory: 400Mi
-      requests:
-        cpu: 10m
-        memory: 20Mi
+        memory: 40Mi
 
 ## Collection of annotations to add to all the pods
 podAnnotations: {}
