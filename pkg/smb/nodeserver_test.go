@@ -21,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 	"runtime"
 	"strings"
@@ -34,6 +35,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	mount "k8s.io/mount-utils"
+	"k8s.io/utils/exec"
 )
 
 func matchFlakyWindowsError(mainError error, substr string) bool {
@@ -577,6 +579,7 @@ func TestEnsureMountPoint(t *testing.T) {
 	// Setup
 	_ = makeDir(alreadyExistTarget)
 	d := NewFakeDriver()
+
 	fakeMounter := &fakeMounter{}
 	d.mounter = &mount.SafeFormatAndMount{
 		Interface: fakeMounter,
@@ -701,4 +704,56 @@ func TestCheckGidPresentInMountFlags(t *testing.T) {
 			t.Errorf("[%s]: Expected result : %t, Actual result: %t", test.desc, test.result, gIDPresent)
 		}
 	}
+}
+
+func TestNodePublishVolumeIdempotentMount(t *testing.T) {
+	if runtime.GOOS == "windows" || os.Getuid() != 0 {
+		return
+	}
+	sourceTest := "./sourcetest"
+	err := makeDir(sourceTest)
+	assert.NoError(t, err)
+
+	targetTest := "./targettest"
+	err = makeDir(targetTest)
+	assert.NoError(t, err)
+
+	d := NewFakeDriver()
+	d.mounter = &mount.SafeFormatAndMount{
+		Interface: mount.New(""),
+		Exec:      exec.New(),
+	}
+
+	volumeCap := csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER}
+	req := csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+		VolumeId:          "vol_1",
+		TargetPath:        targetTest,
+		StagingTargetPath: sourceTest,
+		Readonly:          true}
+
+	_, err = d.NodePublishVolume(context.Background(), &req)
+	assert.NoError(t, err)
+	_, err = d.NodePublishVolume(context.Background(), &req)
+	assert.NoError(t, err)
+
+	// ensure the target not be mounted twice
+	targetAbs, err := filepath.Abs(targetTest)
+	assert.NoError(t, err)
+
+	mountList, err := d.mounter.List()
+	assert.NoError(t, err)
+	mountPointNum := 0
+	for _, mountPoint := range mountList {
+		if mountPoint.Path == targetAbs {
+			mountPointNum++
+		}
+	}
+	assert.Equal(t, 1, mountPointNum)
+	err = d.mounter.Unmount(targetTest)
+	assert.NoError(t, err)
+	_ = d.mounter.Unmount(targetTest)
+	err = os.RemoveAll(sourceTest)
+	assert.NoError(t, err)
+	err = os.RemoveAll(targetTest)
+	assert.NoError(t, err)
 }
