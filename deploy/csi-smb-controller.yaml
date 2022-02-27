@@ -14,7 +14,7 @@ spec:
       labels:
         app: csi-smb-controller
     spec:
-      dnsPolicy: ClusterFirstWithHostNet
+      dnsPolicy: Default  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
       serviceAccountName: csi-smb-controller-sa
       nodeSelector:
         kubernetes.io/os: linux
