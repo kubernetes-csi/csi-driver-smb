@@ -1,8 +1,17 @@
 ## Install SMB CSI driver master version on a Kubernetes cluster
 
 ### Install by kubectl
+ - Option#1. remote install
 ```console
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/install-driver.sh | bash -s master --
+```
+
+ - Option#2. local install
+```console
+git clone https://github.com/kubernetes-csi/csi-driver-smb.git
+cd csi-driver-smb
+git checkout master
+./deploy/install-driver.sh master local
 ```
 
  - check pods status:
@@ -16,12 +25,20 @@ example output:
 ```
 NAME                                        READY   STATUS    RESTARTS   AGE     IP            NODE                                NOMINATED NODE   READINESS GATES
 csi-smb-controller-788486959d-5qmn7         3/3     Running   0          23s     10.244.0.45   aks-agentpool-60632172-vmss000006   <none>           <none>
-csi-smb-controller-788486959d-g4hpm         3/3     Running   0          32s     10.244.1.33   aks-agentpool-60632172-vmss000007   <none>           <none>
 csi-smb-node-4gwzl                          3/3     Running   0          15s     10.244.1.34   aks-agentpool-60632172-vmss000007   <none>           <none>
 csi-smb-node-hg76w                          3/3     Running   0          27s     10.244.0.44   aks-agentpool-60632172-vmss000006   <none>           <none>
 ```
 
 ### clean up SMB CSI driver
+ - Option#1. remote uninstall
 ```console
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/uninstall-driver.sh | bash -s --
+```
+
+ - Option#2. local uninstall
+```console
+git clone https://github.com/kubernetes-csi/csi-driver-smb.git
+cd csi-driver-smb
+git checkout master
+./deploy/uninstall-driver.sh master local
 ```
