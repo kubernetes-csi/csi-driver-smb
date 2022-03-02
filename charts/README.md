@@ -60,12 +60,12 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `securityContext`                                     | security context to be added to pods                  | `{}`                                                             |
 | `controller.name`                                 | name of driver deployment               | `csi-smb-controller`
 | `controller.replicas`                             | replica num of csi-smb-controller                                  | `1`                                                   |
+| `controller.dnsPolicy`                                      | dnsPolicy of driver node daemonset, available values: `Default`, `ClusterFirstWithHostNet`, `ClusterFirst`                              |
 | `controller.metricsPort`                          | metrics port of csi-smb-controller                   |`29644`                                               |
 | `controller.livenessProbe.healthPort `            | health check port for liveness probe                   | `29642` |
 | `controller.logLevel`                             | controller driver log level                                                          |`5`                                                           |
 | `controller.workingMountDir`                      | working directory for provisioner to mount smb shares temporarily                  | `/tmp`                                                             |
 | `controller.runOnMaster`                          | run controller on master node                              | `false`                                                             |
-| `node.livenessProbe.healthPort `                  | health check port for liveness probe                   | `29643` |
 | `controller.resources.csiProvisioner.limits.memory`   | csi-provisioner memory limits                         | `100Mi`                                                          |
 | `controller.resources.csiProvisioner.requests.cpu`    | csi-provisioner cpu requests limits                   | `10m`                                                            |
 | `controller.resources.csiProvisioner.requests.memory` | csi-provisioner memory requests limits                | `20Mi`                                                           |
@@ -89,6 +89,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `node.nodeSelector`                                   | node pod node selector                                | `{}`                                                             |
 | `linux.enabled`                                   | whether enable linux feature                               |`true`                                                              |
 | `linux.dsName`                                    | name of driver daemonset on linux                             |`csi-smb-node`                                                         |
+| `linux.dnsPolicy`                                      | dnsPolicy of driver node daemonset, available values: `Default`, `ClusterFirstWithHostNet`, `ClusterFirst`                              |
 | `linux.kubelet`                                   | configure kubelet directory path on Linux agent node node                  | `/var/lib/kubelet`                                                |
 | `linux.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | `100Mi`                                                          |
 | `linux.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | `10m`                                                            |

@@ -34,6 +34,7 @@ feature:
 controller:
   name: csi-smb-controller
   replicas: 1
+  dnsPolicy: Default  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
   metricsPort: 29644
   livenessProbe:
     healthPort: 29642
@@ -81,6 +82,7 @@ node:
 linux:
   enabled: true
   dsName: csi-smb-node # daemonset name
+  dnsPolicy: Default  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
   kubelet: /var/lib/kubelet
   tolerations:
     - operator: "Exists"
@@ -132,6 +134,7 @@ windows:
         cpu: 10m
         memory: 40Mi
 
+customLabels: {}
 ## Collection of annotations to add to all the pods
 podAnnotations: {}
 ## Collection of labels to add to all the pods

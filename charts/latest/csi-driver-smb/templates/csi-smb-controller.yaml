@@ -26,7 +26,7 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-      dnsPolicy: ClusterFirstWithHostNet
+      dnsPolicy: {{ .Values.controller.dnsPolicy }}
       serviceAccountName: {{ .Values.serviceAccount.controller }}
       nodeSelector:
 {{- with .Values.controller.nodeSelector }}
