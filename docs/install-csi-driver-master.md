@@ -1,4 +1,5 @@
 ## Install SMB CSI driver master version on a Kubernetes cluster
+If you have already installed Helm, you can also use it to install this driver. Please check [Installation with Helm](../charts/README.md).
 
 ### Install by kubectl
  - Option#1. remote install
