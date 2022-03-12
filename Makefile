@@ -65,6 +65,12 @@ update:
 	hack/update-dependencies.sh
 	hack/verify-update.sh
 
+# There seems to be some shell quoting problem with cloudbuild.yaml, and trying
+# to pass multiple make targets appears as a single quoted string. See
+# cloudbuild.yaml for how this is used.
+.PHONY: cloudbuild
+cloudbuild: container-all push-manifest push-latest
+
 .PHONY: verify
 verify: unit-test
 	hack/verify-all.sh

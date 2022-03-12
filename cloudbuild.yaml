@@ -17,7 +17,7 @@ steps:
     # set the home to /root explicitly to if using docker buildx
     - HOME=/root
     args:
-      - container-all push-manifest push-latest
+      - cloudbuild
 
 substitutions:
   _STAGING_PROJECT: 'k8s-staging-cloud-provider-gcp'
