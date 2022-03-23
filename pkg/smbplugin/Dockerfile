@@ -22,6 +22,7 @@ RUN clean-install libgmp10 bsdutils libssl1.1 openssl
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
 ARG ARCH=amd64
+ARG binary=./_output/${ARCH}/smbplugin
+COPY ${binary} /smbplugin
 
-COPY ./_output/${ARCH}/smbplugin /smbplugin
 ENTRYPOINT ["/smbplugin"]
