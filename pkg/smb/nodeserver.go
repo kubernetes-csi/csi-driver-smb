@@ -127,10 +127,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
 	volumeMountGroup := req.GetVolumeCapability().GetMount().GetVolumeMountGroup()
 	secrets := req.GetSecrets()
-	gidPresent, err := checkGidPresentInMountFlags(volumeMountGroup, mountFlags)
-	if err != nil {
-		return nil, err
-	}
+	gidPresent := checkGidPresentInMountFlags(mountFlags)
 
 	var source, subDir string
 	for k, v := range context {
@@ -401,16 +398,11 @@ func makeDir(pathname string) error {
 	return nil
 }
 
-func checkGidPresentInMountFlags(volumeMountGroup string, mountFlags []string) (bool, error) {
-	gidPresentInMountFlags := false
+func checkGidPresentInMountFlags(mountFlags []string) bool {
 	for _, mountFlag := range mountFlags {
 		if strings.HasPrefix(mountFlag, "gid") {
-			gidPresentInMountFlags = true
-			kvpair := strings.Split(mountFlag, "=")
-			if volumeMountGroup != "" && len(kvpair) == 2 && !strings.EqualFold(volumeMountGroup, kvpair[1]) {
-				return false, status.Error(codes.InvalidArgument, fmt.Sprintf("gid(%s) in storageClass and pod fsgroup(%s) are not equal", kvpair[1], volumeMountGroup))
-			}
+			return true
 		}
 	}
-	return gidPresentInMountFlags, nil
+	return false
 }
