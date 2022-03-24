@@ -666,40 +666,24 @@ func TestNodeGetVolumeStats(t *testing.T) {
 
 func TestCheckGidPresentInMountFlags(t *testing.T) {
 	tests := []struct {
-		desc             string
-		VolumeMountGroup string
-		MountFlags       []string
-		expectedErr      error
-		result           bool
+		desc       string
+		MountFlags []string
+		result     bool
 	}{
 		{
-			desc:             "[Error] VolumeMountGroup is different from gid in mount options",
-			VolumeMountGroup: "2000",
-			MountFlags:       []string{"gid=3000"},
-			expectedErr:      status.Error(codes.InvalidArgument, "gid(3000) in storageClass and pod fsgroup(2000) are not equal"),
-			result:           false,
+			desc:       "[Success] Gid present in mount flags",
+			MountFlags: []string{"gid=3000"},
+			result:     true,
 		},
 		{
-			desc:             "[Success] Gid present in mount flags",
-			VolumeMountGroup: "",
-			MountFlags:       []string{"gid=3000"},
-			expectedErr:      nil,
-			result:           true,
-		},
-		{
-			desc:             "[Success] Gid not present in mount flags",
-			VolumeMountGroup: "",
-			MountFlags:       []string{},
-			expectedErr:      nil,
-			result:           false,
+			desc:       "[Success] Gid not present in mount flags",
+			MountFlags: []string{},
+			result:     false,
 		},
 	}
 
 	for _, test := range tests {
-		gIDPresent, err := checkGidPresentInMountFlags(test.VolumeMountGroup, test.MountFlags)
-		if !reflect.DeepEqual(err, test.expectedErr) {
-			t.Errorf("[%s]: Unexpected Error: %v, expected error: %v", test.desc, err, test.expectedErr)
-		}
+		gIDPresent := checkGidPresentInMountFlags(test.MountFlags)
 		if gIDPresent != test.result {
 			t.Errorf("[%s]: Expected result : %t, Actual result: %t", test.desc, test.result, gIDPresent)
 		}
