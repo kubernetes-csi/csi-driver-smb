@@ -6,7 +6,8 @@ FROM mcr.microsoft.com/windows/nanoserver:${OSVERSION}
 LABEL description="CSI SMB plugin"
 
 ARG ARCH=amd64
-COPY ./_output/${ARCH}/smbplugin.exe /smbplugin.exe
+ARG binary=./_output/${ARCH}/smbplugin.exe
+COPY ${binary} /smbplugin.exe
 COPY --from=core /Windows/System32/netapi32.dll /Windows/System32/netapi32.dll
 USER ContainerAdministrator
 ENTRYPOINT ["/smbplugin.exe"]
