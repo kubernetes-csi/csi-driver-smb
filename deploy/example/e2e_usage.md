@@ -96,10 +96,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: smb
   mountOptions:
     - dir_mode=0777
     - file_mode=0777
-    - vers=3.0
   csi:
     driver: smb.csi.k8s.io
     readOnly: false
