@@ -52,6 +52,6 @@ trap print_logs EXIT
 mkdir -p /tmp/csi
 cp deploy/example/storageclass-smb.yaml /tmp/csi/storageclass.yaml
 ginkgo -p --progress --v -focus='External.Storage' \
-       -skip='\[Disruptive\]|\[Slow\]|support two pods which share the same volume|volume contents ownership changed' kubernetes/test/bin/e2e.test  -- \
+       -skip='\[Disruptive\]|support two pods which share the same volume|volume contents ownership changed' kubernetes/test/bin/e2e.test  -- \
        -storage.testdriver=$PROJECT_ROOT/test/external-e2e/testdriver.yaml \
        --kubeconfig=$KUBECONFIG
