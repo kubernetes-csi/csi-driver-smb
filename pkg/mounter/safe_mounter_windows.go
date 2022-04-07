@@ -68,7 +68,7 @@ func normalizeWindowsPath(path string) string {
 }
 
 func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {
-	klog.V(4).Infof("SMBMount: remote path: %s. local path: %s", source, target)
+	klog.V(2).Infof("SMBMount: remote path: %s local path: %s", source, target)
 
 	if len(mountOptions) == 0 || len(sensitiveMountOptions) == 0 {
 		return fmt.Errorf("empty mountOptions(len: %d) or sensitiveMountOptions(len: %d) is not allowed", len(mountOptions), len(sensitiveMountOptions))
@@ -81,7 +81,7 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 	}
 
 	if !parentExists {
-		klog.Infof("Parent directory %s does not exists. Creating the directory", parentDir)
+		klog.V(2).Infof("Parent directory %s does not exists. Creating the directory", parentDir)
 		if err := mounter.MakeDir(parentDir); err != nil {
 			return fmt.Errorf("create of parent dir: %s dailed with error: %v", parentDir, err)
 		}
@@ -89,8 +89,8 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 
 	parts := strings.FieldsFunc(source, Split)
 	if len(parts) > 0 && strings.HasSuffix(parts[0], "svc.cluster.local") {
-		// replace hostname with IP in the source
 		domainName := parts[0]
+		klog.V(2).Infof("begin to replace hostname(%s) with IP for source(%s)", domainName, source)
 		ip, err := net.ResolveIPAddr("ip4", domainName)
 		if err != nil {
 			klog.Warningf("could not resolve name to IPv4 address for host %s, failed with error: %v", domainName, err)
@@ -101,15 +101,18 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 	}
 
 	source = strings.Replace(source, "/", "\\", -1)
+	normalizedTarget := normalizeWindowsPath(target)
 	smbMountRequest := &smb.NewSmbGlobalMappingRequest{
-		LocalPath:  normalizeWindowsPath(target),
+		LocalPath:  normalizedTarget,
 		RemotePath: source,
 		Username:   mountOptions[0],
 		Password:   sensitiveMountOptions[0],
 	}
+	klog.V(2).Infof("begin to mount %s on %s", source, normalizedTarget)
 	if _, err := mounter.SMBClient.NewSmbGlobalMapping(context.Background(), smbMountRequest); err != nil {
 		return fmt.Errorf("smb mapping failed with error: %v", err)
 	}
+	klog.V(2).Infof("mount %s on %s successfully", source, normalizedTarget)
 	return nil
 }
 
