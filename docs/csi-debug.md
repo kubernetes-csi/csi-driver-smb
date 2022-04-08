@@ -84,7 +84,7 @@ dir
 Invoke-WebRequest https://acs-mirror.azureedge.net/csi-proxy/v1.0.2/binaries/csi-proxy-v1.0.2.tar.gz -OutFile csi-proxy.tar.gz;
 tar -xvf csi-proxy.tar.gz
 copy .\bin\csi-proxy.exe .
-sc.exe create csiproxy binPath= "c:\k\csi-proxy.exe -windows-service -log_file=c:\k\csi-proxy.log -logtostderr=false"
+sc.exe create csiproxy binPath= "c:\k\csi-proxy.exe -windows-service -log_file=c:\k\csi-proxy.log -logtostderr=false --v=5"
 sc.exe failure csiproxy reset= 0 actions= restart/10000
 sc.exe start csiproxy
 ```

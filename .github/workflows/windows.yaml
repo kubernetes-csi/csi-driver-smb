@@ -25,9 +25,9 @@ jobs:
         run: |
           # start the CSI Proxy before running tests on windows
           Start-Job -Name CSIProxy -ScriptBlock {
-            Invoke-WebRequest https://acs-mirror.azureedge.net/csi-proxy/v1.0.0/binaries/csi-proxy-v1.0.0.tar.gz -OutFile csi-proxy.tar.gz;
+            Invoke-WebRequest https://acs-mirror.azureedge.net/csi-proxy/v1.1.1/binaries/csi-proxy-v1.1.1.tar.gz -OutFile csi-proxy.tar.gz;
             tar -xvf csi-proxy.tar.gz
-            .\bin\csi-proxy.exe --kubelet-path $pwd
+            .\bin\csi-proxy.exe --kubelet-path $pwd --v=5
           };
 
           Start-Sleep -Seconds 30;
