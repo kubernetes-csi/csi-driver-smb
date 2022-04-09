@@ -56,6 +56,14 @@ func TestControllerGetCapabilities(t *testing.T) {
 func TestCreateVolume(t *testing.T) {
 	d := NewFakeDriver()
 
+	blockVolCap := []*csi.VolumeCapability{
+		{
+			AccessType: &csi.VolumeCapability_Block{
+				Block: &csi.VolumeCapability_BlockVolume{},
+			},
+		},
+	}
+
 	// Setup workingMountDir
 	workingMountDir, err := os.Getwd()
 	if err != nil {
@@ -131,6 +139,20 @@ func TestCreateVolume(t *testing.T) {
 				Parameters: map[string]string{
 					sourceField: testServer,
 				},
+			},
+			expectErr: true,
+		},
+		{
+			name: "Volume capabilities missing",
+			req: &csi.CreateVolumeRequest{
+				VolumeCapabilities: []*csi.VolumeCapability{},
+			},
+			expectErr: true,
+		},
+		{
+			name: "block volume capability not supported",
+			req: &csi.CreateVolumeRequest{
+				VolumeCapabilities: blockVolCap,
 			},
 			expectErr: true,
 		},
@@ -269,13 +291,21 @@ func TestDeleteVolume(t *testing.T) {
 
 func TestValidateVolumeCapabilities(t *testing.T) {
 	d := NewFakeDriver()
-	stdVolCap := []*csi.VolumeCapability{
+	mountVolCap := []*csi.VolumeCapability{
 		{
 			AccessType: &csi.VolumeCapability_Mount{
 				Mount: &csi.VolumeCapability_MountVolume{},
 			},
 			AccessMode: &csi.VolumeCapability_AccessMode{
 				Mode: csi.VolumeCapability_AccessMode_SINGLE_NODE_WRITER,
+			},
+		},
+	}
+
+	blockVolCap := []*csi.VolumeCapability{
+		{
+			AccessType: &csi.VolumeCapability_Block{
+				Block: &csi.VolumeCapability_BlockVolume{},
 			},
 		},
 	}
@@ -293,13 +323,21 @@ func TestValidateVolumeCapabilities(t *testing.T) {
 		{
 			desc:        "Volume capabilities missing",
 			req:         csi.ValidateVolumeCapabilitiesRequest{VolumeId: "vol_1"},
-			expectedErr: status.Error(codes.InvalidArgument, "Volume capabilities missing in request"),
+			expectedErr: status.Error(codes.InvalidArgument, "volume capabilities missing in request"),
+		},
+		{
+			desc: "block volume capability not supported",
+			req: csi.ValidateVolumeCapabilitiesRequest{
+				VolumeId:           "vol_1",
+				VolumeCapabilities: blockVolCap,
+			},
+			expectedErr: status.Error(codes.InvalidArgument, "block volume capability not supported"),
 		},
 		{
 			desc: "Valid request",
 			req: csi.ValidateVolumeCapabilitiesRequest{
 				VolumeId:           "vol_1#f5713de20cde511e8ba4900#fileshare#diskname#",
-				VolumeCapabilities: stdVolCap,
+				VolumeCapabilities: mountVolCap,
 			},
 			expectedErr: nil,
 		},
@@ -308,7 +346,7 @@ func TestValidateVolumeCapabilities(t *testing.T) {
 	for _, test := range tests {
 		_, err := d.ValidateVolumeCapabilities(context.Background(), &test.req)
 		if !reflect.DeepEqual(err, test.expectedErr) {
-			t.Errorf("Unexpected error: %v", err)
+			t.Errorf("[test: %s] Unexpected error: %v, expected error: %v", test.desc, err, test.expectedErr)
 		}
 	}
 }
@@ -565,6 +603,49 @@ func TestNewSMBVolume(t *testing.T) {
 		}
 		if !reflect.DeepEqual(vol, test.expectVol) {
 			t.Errorf("[test: %s] Unexpected vol: %v, expected vol: %v", test.desc, vol, test.expectVol)
+		}
+	}
+}
+
+func TestIsValidVolumeCapabilities(t *testing.T) {
+	mountVolumeCapabilities := []*csi.VolumeCapability{
+		{
+			AccessType: &csi.VolumeCapability_Mount{
+				Mount: &csi.VolumeCapability_MountVolume{},
+			},
+		},
+	}
+	blockVolumeCapabilities := []*csi.VolumeCapability{
+		{
+			AccessType: &csi.VolumeCapability_Block{
+				Block: &csi.VolumeCapability_BlockVolume{},
+			},
+		},
+	}
+
+	cases := []struct {
+		desc      string
+		volCaps   []*csi.VolumeCapability
+		expectErr error
+	}{
+		{
+			volCaps:   mountVolumeCapabilities,
+			expectErr: nil,
+		},
+		{
+			volCaps:   blockVolumeCapabilities,
+			expectErr: fmt.Errorf("block volume capability not supported"),
+		},
+		{
+			volCaps:   []*csi.VolumeCapability{},
+			expectErr: fmt.Errorf("volume capabilities missing in request"),
+		},
+	}
+
+	for _, test := range cases {
+		err := isValidVolumeCapabilities(test.volCaps)
+		if !reflect.DeepEqual(err, test.expectErr) {
+			t.Errorf("[test: %s] Unexpected error: %v, expected error: %v", test.desc, err, test.expectErr)
 		}
 	}
 }

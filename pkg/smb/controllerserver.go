@@ -63,13 +63,9 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		return nil, status.Error(codes.InvalidArgument, "CreateVolume name must be provided")
 	}
 
-	var volCap *csi.VolumeCapability
 	volumeCapabilities := req.GetVolumeCapabilities()
-	if len(volumeCapabilities) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "CreateVolume Volume capabilities must be provided")
-	}
-	if len(volumeCapabilities) > 0 {
-		volCap = req.GetVolumeCapabilities()[0]
+	if err := isValidVolumeCapabilities(volumeCapabilities); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	reqCapacity := req.GetCapacityRange().GetRequiredBytes()
@@ -88,7 +84,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 			klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory creation", smbVol.subDir)
 		} else {
 			// Mount smb base share so we can create a subdirectory
-			if err := d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
+			if err := d.internalMount(ctx, smbVol, volumeCapabilities[0], secrets); err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
 			}
 			defer func() {
@@ -189,11 +185,10 @@ func (d *Driver) ValidateVolumeCapabilities(ctx context.Context, req *csi.Valida
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
-	if req.GetVolumeCapabilities() == nil {
-		return nil, status.Error(codes.InvalidArgument, "Volume capabilities missing in request")
+	if err := isValidVolumeCapabilities(req.GetVolumeCapabilities()); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	// supports all AccessModes, no need to check capabilities here
 	return &csi.ValidateVolumeCapabilitiesResponse{
 		Confirmed: &csi.ValidateVolumeCapabilitiesResponse_Confirmed{
 			VolumeCapabilities: req.GetVolumeCapabilities(),
@@ -356,4 +351,17 @@ func getSmbVolFromID(id string) (*smbVolume, error) {
 		vol.uuid = segments[2]
 	}
 	return vol, nil
+}
+
+// isValidVolumeCapabilities validates the given VolumeCapability array is valid
+func isValidVolumeCapabilities(volCaps []*csi.VolumeCapability) error {
+	if len(volCaps) == 0 {
+		return fmt.Errorf("volume capabilities missing in request")
+	}
+	for _, c := range volCaps {
+		if c.GetBlock() != nil {
+			return fmt.Errorf("block volume capability not supported")
+		}
+	}
+	return nil
 }
