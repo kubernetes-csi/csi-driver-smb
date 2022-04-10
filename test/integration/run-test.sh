@@ -56,7 +56,7 @@ sleep 5
 params='source=//0.0.0.0/share'
 # Begin to run CSI functions one by one
 echo 'Create volume test:'
-value=$("$CSC_BIN" controller new --endpoint "$endpoint" --cap 1,block "$volname" --req-bytes 2147483648 --params "$params")
+value=$("$CSC_BIN" controller new --endpoint "$endpoint" --cap MULTI_NODE_MULTI_WRITER,mount,xfs "$volname" --req-bytes 2147483648 --params "$params")
 sleep 2
 
 volumeid=$(echo "$value" | awk '{print $1}' | sed 's/"//g')
@@ -66,14 +66,14 @@ echo "Got volume id: $volumeid"
 export X_CSI_SECRETS=username=username,"password=test"
 
 echo "stage volume test:"
-"$CSC_BIN" node stage --endpoint "$endpoint" --cap 1,block  --vol-context=source="//0.0.0.0/share" --staging-target-path "$staging_target_path" "$volumeid"
+"$CSC_BIN" node stage --endpoint "$endpoint" --cap MULTI_NODE_MULTI_WRITER,mount,xfs  --vol-context=source="//0.0.0.0/share" --staging-target-path "$staging_target_path" "$volumeid"
 sleep 2
 
 # check cifs mount
 mount | grep cifs
 
 echo 'Mount volume test:'
-"$CSC_BIN" node publish --endpoint "$endpoint" --cap 1,block --staging-target-path "$staging_target_path" --target-path "$target_path" "$volumeid"
+"$CSC_BIN" node publish --endpoint "$endpoint" --cap MULTI_NODE_MULTI_WRITER,mount,xfs --staging-target-path "$staging_target_path" --target-path "$target_path" "$volumeid"
 sleep 2
 
 echo "node stats test:"
