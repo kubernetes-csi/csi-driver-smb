@@ -26,7 +26,7 @@ install_ginkgo () {
 
 setup_e2e_binaries() {
     # download k8s external e2e binary
-    curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.23.0/kubernetes-test-linux-amd64.tar.gz --output e2e-tests.tar.gz
+    curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.23.5/kubernetes-test-linux-amd64.tar.gz --output e2e-tests.tar.gz
     tar -xvf e2e-tests.tar.gz && rm e2e-tests.tar.gz
 
     # test on alternative driver name
@@ -52,6 +52,6 @@ trap print_logs EXIT
 mkdir -p /tmp/csi
 cp deploy/example/storageclass-smb.yaml /tmp/csi/storageclass.yaml
 ginkgo -p --progress --v -focus='External.Storage' \
-       -skip='\[Disruptive\]|support two pods which share the same volume|volume contents ownership changed' kubernetes/test/bin/e2e.test  -- \
+       -skip='\[Disruptive\]|support two pods which share the same volume' kubernetes/test/bin/e2e.test  -- \
        -storage.testdriver=$PROJECT_ROOT/test/external-e2e/testdriver.yaml \
        --kubeconfig=$KUBECONFIG
