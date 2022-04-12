@@ -24,6 +24,7 @@ Please refer to [`smb.csi.k8s.io` driver parameters](./docs/driver-parameters.md
  - install by [helm charts](./charts)
  
 ### Examples
+ - [How to Use the Windows CSI Proxy and CSI SMB Driver for Kubernetes](https://www.phillipsj.net/posts/how-to-use-the-windows-csi-proxy-and-csi-smb-driver-for-kubernetes/)
  - [Set up a Samba Server on a Kubernetes cluster](./deploy/example/smb-provisioner/)
  - [Basic usage](./deploy/example/e2e_usage.md)
  - [Windows](./deploy/example/windows)
