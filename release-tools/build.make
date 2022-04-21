@@ -58,7 +58,7 @@ IMAGE_TAGS+=$(shell git branch -r --points-at=HEAD | grep 'origin/release-' | gr
 IMAGE_TAGS+=$(shell tagged="$$(git describe --tags --match='v*' --abbrev=0)"; if [ "$$tagged" ] && [ "$$(git rev-list -n1 HEAD)" = "$$(git rev-list -n1 $$tagged)" ]; then echo $$tagged; fi)
 
 # Images are named after the command contained in them.
-IMAGE_NAME=$(REGISTRY_NAME)/$*
+IMAGE_NAME?=$(REGISTRY_NAME)/$*
 
 ifdef V
 # Adding "-alsologtostderr" assumes that all test binaries contain glog. This is not guaranteed.
