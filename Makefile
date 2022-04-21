@@ -38,6 +38,8 @@ GOBIN ?= $(GOPATH)/bin
 DOCKER_CLI_EXPERIMENTAL = enabled
 export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
 
+include release-tools/build.make
+
 # Generate all combination of all OS, ARCH, and OSVERSIONS for iteration
 ALL_OS = linux windows
 ALL_ARCH.linux = arm64 amd64 ppc64le
@@ -57,19 +59,12 @@ OUTPUT_TYPE ?= registry
 
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all
 all: smb
 
 .PHONY: update
 update:
 	hack/update-dependencies.sh
 	hack/verify-update.sh
-
-# There seems to be some shell quoting problem with cloudbuild.yaml, and trying
-# to pass multiple make targets appears as a single quoted string. See
-# cloudbuild.yaml for how this is used.
-.PHONY: cloudbuild
-cloudbuild: container-all push-manifest push-latest
 
 .PHONY: verify
 verify: unit-test
@@ -125,19 +120,19 @@ e2e-teardown:
 
 .PHONY: smb
 smb:
-	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags "${LDFLAGS}" -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
 
 .PHONY: smb-armv7
 smb-armv7:
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/arm/v7/smbplugin ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -ldflags "${LDFLAGS}" -mod vendor -o _output/arm/v7/smbplugin ./pkg/smbplugin
 
 .PHONY: smb-windows
 smb-windows:
-	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin.exe ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=windows go build -a -ldflags "${LDFLAGS}" -mod vendor -o _output/${ARCH}/smbplugin.exe ./pkg/smbplugin
 
 .PHONY: smb-darwin
 smb-darwin:
-	CGO_ENABLED=0 GOOS=darwin go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=darwin go build -a -ldflags "${LDFLAGS}" -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
 
 .PHONY: container
 container: smb
@@ -210,11 +205,6 @@ ifdef CI
 else
 	docker push $(IMAGE_TAG_LATEST)
 endif
-
-.PHONY: clean
-clean:
-	go clean -r -x
-	-rm -rf _output
 
 .PHONY: install-smb-provisioner
 install-smb-provisioner:
