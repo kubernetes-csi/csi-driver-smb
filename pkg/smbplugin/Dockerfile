@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM k8s.gcr.io/build-image/debian-base:bullseye-v1.2.0
+FROM registry.k8s.io/build-image/debian-base:bullseye-v1.2.0
 
-RUN apt update && apt upgrade -y && apt-mark unhold libcap2
-RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
+RUN apt update && apt upgrade -y && apt-mark unhold libcap2 && clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
 
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
