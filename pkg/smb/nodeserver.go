@@ -160,21 +160,34 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 	}
 
+	requireUsernamePwdOption := true
+	for _, v := range mountFlags {
+		if v == "guest" {
+			// in guest login, username and password options are not needed
+			requireUsernamePwdOption = false
+			break
+		}
+	}
+
 	var mountOptions, sensitiveMountOptions []string
 	if runtime.GOOS == "windows" {
 		if domain == "" {
 			domain = defaultDomainName
 		}
-		if !strings.Contains(username, "\\") {
-			username = fmt.Sprintf("%s\\%s", domain, username)
+		if requireUsernamePwdOption {
+			if !strings.Contains(username, "\\") {
+				username = fmt.Sprintf("%s\\%s", domain, username)
+			}
+			mountOptions = []string{username}
+			sensitiveMountOptions = []string{password}
 		}
-		mountOptions = []string{username}
-		sensitiveMountOptions = []string{password}
 	} else {
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
-		sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
+		if requireUsernamePwdOption {
+			sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
+		}
 		mountOptions = mountFlags
 		if !gidPresent && volumeMountGroup != "" {
 			mountOptions = append(mountOptions, fmt.Sprintf("gid=%s", volumeMountGroup))
