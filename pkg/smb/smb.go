@@ -132,3 +132,12 @@ func getMountOptions(context map[string]string) string {
 	}
 	return ""
 }
+
+func hasGuestMountOptions(options []string) bool {
+	for _, v := range options {
+		if v == "guest" {
+			return true
+		}
+	}
+	return false
+}
