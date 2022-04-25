@@ -145,3 +145,33 @@ func TestGetMountOptions(t *testing.T) {
 		}
 	}
 }
+
+func TestHasGuestMountOptions(t *testing.T) {
+	tests := []struct {
+		desc    string
+		options []string
+		result  bool
+	}{
+		{
+			desc:   "empty options",
+			result: false,
+		},
+		{
+			desc:    "no guest option",
+			options: []string{"a", "b"},
+			result:  false,
+		},
+		{
+			desc:    "has guest option",
+			options: []string{"a", "b", "guest"},
+			result:  true,
+		},
+	}
+
+	for _, test := range tests {
+		result := hasGuestMountOptions(test.options)
+		if result != test.result {
+			t.Errorf("test(%s): unexpected result: %v, expected: %v", test.desc, result, test.result)
+		}
+	}
+}

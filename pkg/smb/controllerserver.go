@@ -79,29 +79,40 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	secrets := req.GetSecrets()
-	if len(secrets) > 0 {
-		if len(smbVol.uuid) > 0 {
-			klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory creation", smbVol.subDir)
-		} else {
-			// Mount smb base share so we can create a subdirectory
-			if err := d.internalMount(ctx, smbVol, volumeCapabilities[0], secrets); err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
-			}
-			defer func() {
-				if err = d.internalUnmount(ctx, smbVol); err != nil {
-					klog.Warningf("failed to unmount smb server: %v", err.Error())
-				}
-			}()
-			// Create subdirectory under base-dir
-			// TODO: revisit permissions
-			internalVolumePath := d.getInternalVolumePath(smbVol)
-			if err = os.Mkdir(internalVolumePath, 0777); err != nil && !os.IsExist(err) {
-				return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
-			}
-			parameters[subDirField] = smbVol.subDir
+	createSubDir := len(secrets) > 0
+	if len(smbVol.uuid) > 0 {
+		klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory creation", smbVol.subDir)
+		createSubDir = false
+	}
+
+	volCap := volumeCapabilities[0]
+	if volCap.GetMount() != nil && !createSubDir {
+		options := volCap.GetMount().GetMountFlags()
+		if hasGuestMountOptions(options) {
+			klog.V(2).Infof("guest mount option(%v) is provided, create subdirectory", options)
+			createSubDir = true
 		}
+	}
+
+	if createSubDir {
+		// Mount smb base share so we can create a subdirectory
+		if err := d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
+		}
+		defer func() {
+			if err = d.internalUnmount(ctx, smbVol); err != nil {
+				klog.Warningf("failed to unmount smb server: %v", err.Error())
+			}
+		}()
+		// Create subdirectory under base-dir
+		// TODO: revisit permissions
+		internalVolumePath := d.getInternalVolumePath(smbVol)
+		if err = os.Mkdir(internalVolumePath, 0777); err != nil && !os.IsExist(err) {
+			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
+		}
+		parameters[subDirField] = smbVol.subDir
 	} else {
-		klog.V(2).Infof("CreateVolume(%s) does not provide secrets", name)
+		klog.V(2).Infof("CreateVolume(%s) does not create subdirectory", name)
 	}
 	return &csi.CreateVolumeResponse{Volume: d.smbVolToCSI(smbVol, parameters)}, nil
 }
@@ -133,29 +144,38 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	}
 
 	secrets := req.GetSecrets()
-	if len(secrets) > 0 {
-		if len(smbVol.uuid) > 0 {
-			klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory creation", smbVol.subDir)
-		} else {
-			// Mount smb base share so we can delete the subdirectory
-			if err = d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
-			}
-			defer func() {
-				if err = d.internalUnmount(ctx, smbVol); err != nil {
-					klog.Warningf("failed to unmount smb server: %v", err.Error())
-				}
-			}()
+	deleteSubDir := len(secrets) > 0
+	if len(smbVol.uuid) > 0 {
+		klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory deletion", smbVol.subDir)
+		deleteSubDir = false
+	}
+	if !deleteSubDir {
+		options := strings.Split(mountOptions, ",")
+		if hasGuestMountOptions(options) {
+			klog.V(2).Infof("guest mount option(%v) is provided, delete subdirectory", options)
+			deleteSubDir = true
+		}
+	}
 
-			// Delete subdirectory under base-dir
-			internalVolumePath := d.getInternalVolumePath(smbVol)
-			klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
-			if err = os.RemoveAll(internalVolumePath); err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
+	if deleteSubDir {
+		// Mount smb base share so we can delete the subdirectory
+		if err = d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
+		}
+		defer func() {
+			if err = d.internalUnmount(ctx, smbVol); err != nil {
+				klog.Warningf("failed to unmount smb server: %v", err.Error())
 			}
+		}()
+
+		// Delete subdirectory under base-dir
+		internalVolumePath := d.getInternalVolumePath(smbVol)
+		klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
+		if err = os.RemoveAll(internalVolumePath); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
 		}
 	} else {
-		klog.V(2).Infof("DeleteVolume(%s) does not provide secrets", volumeID)
+		klog.V(2).Infof("DeleteVolume(%s) does not delete subdirectory", volumeID)
 	}
 
 	return &csi.DeleteVolumeResponse{}, nil

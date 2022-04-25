@@ -160,14 +160,8 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 	}
 
-	requireUsernamePwdOption := true
-	for _, v := range mountFlags {
-		if v == "guest" {
-			// in guest login, username and password options are not needed
-			requireUsernamePwdOption = false
-			break
-		}
-	}
+	// in guest login, username and password options are not needed
+	requireUsernamePwdOption := !hasGuestMountOptions(mountFlags)
 
 	var mountOptions, sensitiveMountOptions []string
 	if runtime.GOOS == "windows" {
