@@ -17,7 +17,7 @@ This driver allows Kubernetes to access [SMB](https://wiki.wireshark.org/SMB) se
 |v1.4.0         | 1.19+                 | v0.2.2+                             |
 
 ### Driver parameters
-Please refer to [`smb.csi.k8s.io` driver parameters](./docs/driver-parameters.md)
+Please refer to `smb.csi.k8s.io` [driver parameters](./docs/driver-parameters.md)
 
 ### Install driver on a Kubernetes cluster
  - install by [kubectl](./docs/install-smb-csi-driver.md)
