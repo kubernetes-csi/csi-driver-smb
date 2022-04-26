@@ -13,10 +13,19 @@
 # limitations under the License.
 
 PKG = github.com/kubernetes-csi/csi-driver-smb
+GINKGO_FLAGS = -ginkgo.v
+GO111MODULE = on
+GOPATH ?= $(shell go env GOPATH)
+GOBIN ?= $(GOPATH)/bin
+DOCKER_CLI_EXPERIMENTAL = enabled
+IMAGE_NAME ?= smb-csi
+export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
+
+include release-tools/build.make
+
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
 REGISTRY_NAME = $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
-IMAGE_NAME ?= smb-csi
 IMAGE_VERSION ?= v1.7.0
 VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
@@ -31,15 +40,6 @@ BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 LDFLAGS ?= "-X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
 E2E_HELM_OPTIONS ?= --set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) --set image.smb.tag=$(IMAGE_VERSION) --set controller.dnsPolicy=ClusterFirstWithHostNet --set linux.dnsPolicy=ClusterFirstWithHostNet
 E2E_HELM_OPTIONS += ${EXTRA_HELM_OPTIONS}
-GINKGO_FLAGS = -ginkgo.v
-GO111MODULE = on
-GOPATH ?= $(shell go env GOPATH)
-GOBIN ?= $(GOPATH)/bin
-DOCKER_CLI_EXPERIMENTAL = enabled
-export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
-
-include release-tools/build.make
-
 # Generate all combination of all OS, ARCH, and OSVERSIONS for iteration
 ALL_OS = linux windows
 ALL_ARCH.linux = arm64 amd64 ppc64le
