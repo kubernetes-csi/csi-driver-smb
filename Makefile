@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+CMDS=smb-csi
 PKG = github.com/kubernetes-csi/csi-driver-smb
 GINKGO_FLAGS = -ginkgo.v
 GO111MODULE = on
