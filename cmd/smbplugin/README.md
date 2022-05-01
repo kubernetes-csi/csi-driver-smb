@@ -15,7 +15,7 @@ az acr build -r $acrName -t $acrRepo:$ver-$linux -f cmd/smbplugin/Dockerfile  --
 
 win="windows-1809-amd64"
 make smb-windows
-az acr build -r $acrName -t $acrRepo:$ver-$win -f cmd/smbplugin/Windows.Dockerfile --platform windows .
+az acr build -r $acrName -t $acrRepo:$ver-$win -f cmd/smbplugin/Dockerfile.Windows --platform windows .
 
 docker manifest create $acrRepo:$ver $acrRepo:$ver-$linux $acrRepo:$ver-$win
 docker manifest inspect $acrRepo:$ver
