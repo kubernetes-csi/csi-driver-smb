@@ -23,7 +23,7 @@ fi
 
 export REGISTRY_NAME="$1"
 export REGISTRY=$REGISTRY_NAME.azurecr.io
-export IMAGE_NAME=public/k8s/csi/smb-csi
+export IMAGENAME=public/k8s/csi/smb-csi
 export CI=1
 export PUBLISH=1
 
