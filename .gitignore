@@ -68,3 +68,5 @@ cscope.*
 
 /bazel-*
 *.pyc
+
+bin
