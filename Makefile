@@ -12,11 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+CMDS=smbplugin
 PKG = github.com/kubernetes-csi/csi-driver-smb
+GINKGO_FLAGS = -ginkgo.v
+GO111MODULE = on
+GOPATH ?= $(shell go env GOPATH)
+GOBIN ?= $(GOPATH)/bin
+DOCKER_CLI_EXPERIMENTAL = enabled
+IMAGENAME ?= smb-csi
+export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
+
+include release-tools/build.make
+
 GIT_COMMIT ?= $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
 REGISTRY_NAME = $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
-IMAGE_NAME ?= smb-csi
 IMAGE_VERSION ?= v1.4.0
 VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
@@ -25,25 +35,19 @@ ifndef PUBLISH
 override IMAGE_VERSION := e2e-$(GIT_COMMIT)
 endif
 endif
-IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
-IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
+IMAGE_TAG = $(REGISTRY)/$(IMAGENAME):$(IMAGE_VERSION)
+IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGENAME):latest
 BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-LDFLAGS ?= "-X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE} -s -w -extldflags '-static'"
-E2E_HELM_OPTIONS ?= --set image.smb.repository=$(REGISTRY)/$(IMAGE_NAME) --set image.smb.tag=$(IMAGE_VERSION)
+LDFLAGS = -X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE}
+EXT_LDFLAGS = -s -w -extldflags "-static"
+E2E_HELM_OPTIONS ?= --set image.smb.repository=$(REGISTRY)/$(IMAGENAME) --set image.smb.tag=$(IMAGE_VERSION) --set controller.dnsPolicy=ClusterFirstWithHostNet --set linux.dnsPolicy=ClusterFirstWithHostNet
 E2E_HELM_OPTIONS += ${EXTRA_HELM_OPTIONS}
-GINKGO_FLAGS = -ginkgo.v
-GO111MODULE = on
-GOPATH ?= $(shell go env GOPATH)
-GOBIN ?= $(GOPATH)/bin
-DOCKER_CLI_EXPERIMENTAL = enabled
-export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
-
 # Generate all combination of all OS, ARCH, and OSVERSIONS for iteration
 ALL_OS = linux windows
-ALL_ARCH.linux = arm64 amd64
-ALL_OS_ARCH.linux = linux-arm64 linux-arm-v7 linux-amd64
+ALL_ARCH.linux = arm64 amd64 ppc64le
+ALL_OS_ARCH.linux = linux-arm64 linux-arm-v7 linux-amd64 linux-ppc64le
 ALL_ARCH.windows = amd64
-ALL_OSVERSIONS.windows := 1809 1903 1909 2004 20H2 ltsc2022
+ALL_OSVERSIONS.windows := 1809 20H2 ltsc2022
 ALL_OS_ARCH.windows = $(foreach arch, $(ALL_ARCH.windows), $(foreach osversion, ${ALL_OSVERSIONS.windows}, windows-${osversion}-${arch}))
 ALL_OS_ARCH = $(foreach os, $(ALL_OS), ${ALL_OS_ARCH.${os}})
 
@@ -57,7 +61,6 @@ OUTPUT_TYPE ?= registry
 
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all
 all: smb
 
 .PHONY: update
@@ -119,39 +122,39 @@ e2e-teardown:
 
 .PHONY: smb
 smb:
-	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags "${LDFLAGS} ${EXT_LDFLAGS}" -mod vendor -o _output/${ARCH}/smbplugin ./cmd/smbplugin
 
 .PHONY: smb-armv7
 smb-armv7:
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/arm/v7/smbplugin ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -ldflags "${LDFLAGS} ${EXT_LDFLAGS}" -mod vendor -o _output/arm/v7/smbplugin ./cmd/smbplugin
 
 .PHONY: smb-windows
 smb-windows:
-	CGO_ENABLED=0 GOOS=windows go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin.exe ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=windows go build -a -ldflags "${LDFLAGS} ${EXT_LDFLAGS}" -mod vendor -o _output/${ARCH}/smbplugin.exe ./cmd/smbplugin
 
 .PHONY: smb-darwin
 smb-darwin:
-	CGO_ENABLED=0 GOOS=darwin go build -a -ldflags ${LDFLAGS} -mod vendor -o _output/${ARCH}/smbplugin ./pkg/smbplugin
+	CGO_ENABLED=0 GOOS=darwin go build -a -ldflags "${LDFLAGS} ${EXT_LDFLAGS}" -mod vendor -o _output/${ARCH}/smbplugin ./cmd/smbplugin
 
 .PHONY: container
 container: smb
-	docker build --no-cache -t $(IMAGE_TAG) --output=type=docker -f ./pkg/smbplugin/Dockerfile .
+	docker build --no-cache -t $(IMAGE_TAG) --output=type=docker -f ./cmd/smbplugin/Dockerfile .
 
 .PHONY: container-linux
 container-linux:
 	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="linux/$(ARCH)" \
-		-t $(IMAGE_TAG)-linux-$(ARCH) --build-arg ARCH=$(ARCH) -f ./pkg/smbplugin/Dockerfile .
+		-t $(IMAGE_TAG)-linux-$(ARCH) --build-arg ARCH=$(ARCH) -f ./cmd/smbplugin/Dockerfile .
 
 .PHONY: container-linux-armv7
 container-linux-armv7:
 	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="linux/arm/v7" \
-		-t $(IMAGE_TAG)-linux-arm-v7 --build-arg ARCH=arm/v7 -f ./pkg/smbplugin/Dockerfile .
+		-t $(IMAGE_TAG)-linux-arm-v7 --build-arg ARCH=arm/v7 -f ./cmd/smbplugin/Dockerfile .
 
 .PHONY: container-windows
 container-windows:
 	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="windows/$(ARCH)" \
 		 -t $(IMAGE_TAG)-windows-$(OSVERSION)-$(ARCH) --build-arg OSVERSION=$(OSVERSION) \
-		 --build-arg ARCH=$(ARCH) -f ./pkg/smbplugin/Windows.Dockerfile .
+		 --build-arg ARCH=$(ARCH) -f ./cmd/smbplugin/Windows.Dockerfile .
 
 .PHONY: container-all
 container-all: smb-windows
@@ -159,7 +162,7 @@ container-all: smb-windows
 	docker buildx create --use --name=container-builder
 	# enable qemu for arm64 build
 	# https://github.com/docker/buildx/issues/464#issuecomment-741507760
-	docker run --privileged --rm tonistiigi/binfmt --uninstall qemu-aarch64
+	docker run --privileged --rm tonistiigi/binfmt --uninstall qemu-aarch64,arm
 	docker run --rm --privileged tonistiigi/binfmt --install all
 	for arch in $(ALL_ARCH.linux); do \
 		ARCH=$${arch} $(MAKE) smb; \
@@ -205,15 +208,10 @@ else
 	docker push $(IMAGE_TAG_LATEST)
 endif
 
-.PHONY: clean
-clean:
-	go clean -r -x
-	-rm -rf _output
-
 .PHONY: install-smb-provisioner
 install-smb-provisioner:
 	kubectl delete secret smbcreds --ignore-not-found
-	kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
+	kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD" --from-literal mountOptions="dir_mode=0777,file_mode=0777,uid=0,gid=0,mfsymlinks"
 ifdef TEST_WINDOWS
 	kubectl apply -f deploy/example/smb-provisioner/smb-server-lb.yaml
 else

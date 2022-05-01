@@ -39,7 +39,7 @@ var (
 	endpoint             = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
 	nodeID               = flag.String("nodeid", "", "node id")
 	driverName           = flag.String("drivername", smb.DefaultDriverName, "name of the driver")
-	version              = flag.Bool("version", false, "Print the version and exit.")
+	ver                  = flag.Bool("ver", false, "Print the version and exit.")
 	metricsAddress       = flag.String("metrics-address", "0.0.0.0:29644", "export the metrics")
 	kubeconfig           = flag.String("kubeconfig", "", "Absolute path to the kubeconfig file. Required only when running out of cluster.")
 	enableGetVolumeStats = flag.Bool("enable-get-volume-stats", false, "allow GET_VOLUME_STATS on agent node")
@@ -47,7 +47,7 @@ var (
 
 func main() {
 	flag.Parse()
-	if *version {
+	if *ver {
 		info, err := smb.GetVersionYAML(*driverName)
 		if err != nil {
 			klog.Fatalln(err)
