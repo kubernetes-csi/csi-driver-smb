@@ -76,7 +76,7 @@ github.com/gogo/protobuf/proto
 github.com/gogo/protobuf/sortkeys
 # github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e => github.com/golang/groupcache v0.0.0-20160516000752-02826c3e7903
 github.com/golang/groupcache/lru
-# github.com/golang/protobuf v1.4.3
+# github.com/golang/protobuf v1.5.0
 ## explicit
 github.com/golang/protobuf/descriptor
 github.com/golang/protobuf/proto
@@ -86,7 +86,7 @@ github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
 github.com/golang/protobuf/ptypes/wrappers
-# github.com/google/go-cmp v0.5.2 => github.com/google/go-cmp v0.3.0
+# github.com/google/go-cmp v0.5.5 => github.com/google/go-cmp v0.3.0
 github.com/google/go-cmp/cmp
 github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
@@ -243,14 +243,15 @@ golang.org/x/oauth2/google
 golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
-# golang.org/x/sys v0.0.0-20210225134936-a50acf3fe073 => golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd
+# golang.org/x/sys v0.0.0-20210426230700-d19ff857e887 => golang.org/x/sys v0.0.0-20220209214540-3681064d5158
 golang.org/x/sys/cpu
+golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # golang.org/x/term v0.0.0-20210220032956-6a3ed077a48d
 golang.org/x/term
-# golang.org/x/text v0.3.4 => golang.org/x/text v0.3.3
+# golang.org/x/text v0.3.4 => golang.org/x/text v0.3.7
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex
@@ -327,7 +328,7 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.25.0
+# google.golang.org/protobuf v1.26.0
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
 google.golang.org/protobuf/internal/descfmt
@@ -338,13 +339,12 @@ google.golang.org/protobuf/internal/encoding/messageset
 google.golang.org/protobuf/internal/encoding/tag
 google.golang.org/protobuf/internal/encoding/text
 google.golang.org/protobuf/internal/errors
-google.golang.org/protobuf/internal/fieldsort
 google.golang.org/protobuf/internal/filedesc
 google.golang.org/protobuf/internal/filetype
 google.golang.org/protobuf/internal/flags
 google.golang.org/protobuf/internal/genid
 google.golang.org/protobuf/internal/impl
-google.golang.org/protobuf/internal/mapsort
+google.golang.org/protobuf/internal/order
 google.golang.org/protobuf/internal/pragma
 google.golang.org/protobuf/internal/set
 google.golang.org/protobuf/internal/strs
@@ -765,7 +765,7 @@ k8s.io/kubectl/pkg/scale
 k8s.io/kubectl/pkg/util/podutils
 # k8s.io/kubelet v0.0.0 => k8s.io/kubelet v0.21.0
 k8s.io/kubelet/pkg/apis/stats/v1alpha1
-# k8s.io/kubernetes v1.21.1
+# k8s.io/kubernetes v1.21.5
 ## explicit
 k8s.io/kubernetes/pkg/api/legacyscheme
 k8s.io/kubernetes/pkg/api/service
@@ -829,7 +829,7 @@ k8s.io/kubernetes/test/e2e/storage/podlogs
 k8s.io/kubernetes/test/e2e/storage/utils
 k8s.io/kubernetes/test/utils
 k8s.io/kubernetes/test/utils/image
-# k8s.io/mount-utils v0.21.1 => k8s.io/mount-utils v0.21.1
+# k8s.io/mount-utils v0.21.5 => k8s.io/mount-utils v0.21.5
 ## explicit
 k8s.io/mount-utils
 # k8s.io/utils v0.0.0-20201110183641-67b214c5f920 => k8s.io/utils v0.0.0-20201110183641-67b214c5f920
@@ -847,7 +847,7 @@ k8s.io/utils/trace
 # sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.15
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client/pkg/client
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client/proto/client
-# sigs.k8s.io/structured-merge-diff/v4 v4.1.0
+# sigs.k8s.io/structured-merge-diff/v4 v4.1.2
 sigs.k8s.io/structured-merge-diff/v4/fieldpath
 sigs.k8s.io/structured-merge-diff/v4/schema
 sigs.k8s.io/structured-merge-diff/v4/typed
@@ -1172,8 +1172,8 @@ sigs.k8s.io/yaml
 # golang.org/x/oauth2 => golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 # golang.org/x/perf => golang.org/x/perf v0.0.0-20180704124530-6e6d33e29852
 # golang.org/x/sync => golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
-# golang.org/x/sys => golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd
-# golang.org/x/text => golang.org/x/text v0.3.3
+# golang.org/x/sys => golang.org/x/sys v0.0.0-20220209214540-3681064d5158
+# golang.org/x/text => golang.org/x/text v0.3.7
 # golang.org/x/time => golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 # golang.org/x/tools => golang.org/x/tools v0.0.0-20191029190741-b9c20aec41a5
 # golang.org/x/xerrors => golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7
@@ -1229,7 +1229,7 @@ sigs.k8s.io/yaml
 # k8s.io/kubelet => k8s.io/kubelet v0.21.0
 # k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.21.0
 # k8s.io/metrics => k8s.io/metrics v0.21.0
-# k8s.io/mount-utils => k8s.io/mount-utils v0.21.1
+# k8s.io/mount-utils => k8s.io/mount-utils v0.21.5
 # k8s.io/repo-infra => k8s.io/repo-infra v0.0.1-alpha.1
 # k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.21.0
 # k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.21.0

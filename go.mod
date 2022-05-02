@@ -8,7 +8,7 @@ require (
 	github.com/Azure/go-autorest/autorest/adal v0.9.5
 	github.com/Azure/go-autorest/autorest/to v0.2.0
 	github.com/container-storage-interface/spec v1.5.0
-	github.com/golang/protobuf v1.4.3
+	github.com/golang/protobuf v1.5.0
 	github.com/kubernetes-csi/csi-lib-utils v0.7.0
 	github.com/kubernetes-csi/csi-proxy/client v1.0.1
 	github.com/kubernetes-csi/external-snapshotter/v2 v2.0.0-20200617021606-4800ca72d403
@@ -24,8 +24,8 @@ require (
 	k8s.io/apimachinery v0.21.0
 	k8s.io/client-go v0.21.0
 	k8s.io/klog/v2 v2.8.0
-	k8s.io/kubernetes v1.21.1
-	k8s.io/mount-utils v0.21.1
+	k8s.io/kubernetes v1.21.5
+	k8s.io/mount-utils v0.21.5
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/yaml v1.2.0
 )
@@ -348,8 +348,8 @@ replace (
 	golang.org/x/oauth2 => golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	golang.org/x/perf => golang.org/x/perf v0.0.0-20180704124530-6e6d33e29852
 	golang.org/x/sync => golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
-	golang.org/x/sys => golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd
-	golang.org/x/text => golang.org/x/text v0.3.3
+	golang.org/x/sys => golang.org/x/sys v0.0.0-20220209214540-3681064d5158
+	golang.org/x/text => golang.org/x/text v0.3.7
 	golang.org/x/time => golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20191029190741-b9c20aec41a5
 	golang.org/x/xerrors => golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7
@@ -405,7 +405,7 @@ replace (
 	k8s.io/kubelet => k8s.io/kubelet v0.21.0
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.21.0
 	k8s.io/metrics => k8s.io/metrics v0.21.0
-	k8s.io/mount-utils => k8s.io/mount-utils v0.21.1
+	k8s.io/mount-utils => k8s.io/mount-utils v0.21.5
 	k8s.io/repo-infra => k8s.io/repo-infra v0.0.1-alpha.1
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.21.0
 	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.21.0
