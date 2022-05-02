@@ -154,7 +154,7 @@ container-linux-armv7:
 container-windows:
 	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="windows/$(ARCH)" \
 		 -t $(IMAGE_TAG)-windows-$(OSVERSION)-$(ARCH) --build-arg OSVERSION=$(OSVERSION) \
-		 --build-arg ARCH=$(ARCH) -f ./cmd/smbplugin/Windows.Dockerfile .
+		 --build-arg ARCH=$(ARCH) -f ./cmd/smbplugin/Dockerfile.Windows .
 
 .PHONY: container-all
 container-all: smb-windows
