@@ -91,7 +91,7 @@ make container-all
 make push-manifest
 ```
 
- - Replace `mcr.microsoft.com/k8s/csi/smb-csi:latest` in [`csi-smb-controller.yaml`](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/csi-smb-controller.yaml) and [`csi-smb-node.yaml`](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/csi-smb-node.yaml) with above dockerhub image urls and then follow [install CSI driver master version](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/docs/install-csi-driver-master.md)
+ - Replace `registry.k8s.io/sig-storage/smbplugin:canary` in [`csi-smb-controller.yaml`](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/csi-smb-controller.yaml) and [`csi-smb-node.yaml`](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/csi-smb-node.yaml) with above dockerhub image urls and then follow [install CSI driver master version](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/docs/install-csi-driver-master.md)
  ```console
 wget -O csi-smb-node.yaml https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/csi-smb-node.yaml
 # edit csi-smb-node.yaml

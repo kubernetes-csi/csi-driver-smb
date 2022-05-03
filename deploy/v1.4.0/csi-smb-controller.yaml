@@ -64,7 +64,7 @@ spec:
               cpu: 10m
               memory: 20Mi
         - name: smb
-          image: mcr.microsoft.com/k8s/csi/smb-csi:v1.4.0
+          image: registry.k8s.io/sig-storage/smbplugin:v1.4.0
           imagePullPolicy: IfNotPresent
           args:
             - "--v=5"
