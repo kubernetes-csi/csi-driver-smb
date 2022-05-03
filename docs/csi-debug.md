@@ -50,7 +50,7 @@ kubectl edit ds csi-smb-node -n kube-system
 ```
 change below deployment config, e.g.
 ```console
-        image: mcr.microsoft.com/k8s/csi/smb-csi:v1.4.0
+        image: registry.k8s.io/sig-storage/smbplugin:v1.5.0
         imagePullPolicy: Always
 ```
 

@@ -1,7 +1,7 @@
 image:
   baseRepo: registry.k8s.io/sig-storage
   smb:
-    repository: mcr.microsoft.com/k8s/csi/smb-csi
+    repository: registry.k8s.io/sig-storage/smbplugin
     tag: v1.6.0
     pullPolicy: IfNotPresent
   csiProvisioner:

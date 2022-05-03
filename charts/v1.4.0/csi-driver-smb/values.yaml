@@ -1,19 +1,19 @@
 image:
-  baseRepo: mcr.microsoft.com
+  baseRepo: registry.k8s.io/sig-storage
   smb:
-    repository: /k8s/csi/smb-csi
+    repository: smbplugin
     tag: v1.4.0
     pullPolicy: IfNotPresent
   csiProvisioner:
-    repository: /oss/kubernetes-csi/csi-provisioner
+    repository: csi-provisioner
     tag: v2.2.2
     pullPolicy: IfNotPresent
   livenessProbe:
-    repository: /oss/kubernetes-csi/livenessprobe
+    repository: livenessprobe
     tag: v2.5.0
     pullPolicy: IfNotPresent
   nodeDriverRegistrar:
-    repository: /oss/kubernetes-csi/csi-node-driver-registrar
+    repository: csi-node-driver-registrar
     tag: v2.4.0
     pullPolicy: IfNotPresent
 
