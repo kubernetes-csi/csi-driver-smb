@@ -52,6 +52,6 @@ trap print_logs EXIT
 mkdir -p /tmp/csi
 cp deploy/example/storageclass-smb.yaml /tmp/csi/storageclass.yaml
 ginkgo -p --progress --v -focus='External.Storage' \
-       -skip='\[Disruptive\]|support two pods which share the same volume||should provision storage with any volume data source|should mount multiple PV pointing to the same storage on the same node' kubernetes/test/bin/e2e.test  -- \
+       -skip='\[Disruptive\]||should provision storage with any volume data source|should mount multiple PV pointing to the same storage on the same node' kubernetes/test/bin/e2e.test  -- \
        -storage.testdriver=$PROJECT_ROOT/test/external-e2e/testdriver.yaml \
        --kubeconfig=$KUBECONFIG
