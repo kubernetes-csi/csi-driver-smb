@@ -26,3 +26,5 @@ csi-smb-node-dr4s4                        3/3     Running   0          7m4s    1
 ```console
 $ kubectl logs csi-smb-node-cvgbs -c smb -n kube-system > csi-smb-node.log
 ```
+
+ - get `/var/log/messages` and `dmesg` output when there is mount failure on Linux node
