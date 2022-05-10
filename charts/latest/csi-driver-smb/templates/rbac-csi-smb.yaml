@@ -1,16 +1,27 @@
+{{- if .Values.serviceAccount.create -}}
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: csi-smb-controller-sa
-  namespace: kube-system
-
+  name: {{ .Values.serviceAccount.controller }}
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
 ---
-
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: v1
+kind: ServiceAccount
 metadata:
-  name: smb-external-provisioner-role
+  name: {{ .Values.serviceAccount.node }}
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
+{{ end }}
+
+{{- if .Values.rbac.create -}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.rbac.name }}-external-provisioner-role
+{{ include "smb.labels" . | indent 2 }}
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -41,12 +52,14 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: smb-csi-provisioner-binding
+  name: {{ .Values.rbac.name }}-csi-provisioner-binding
+{{ include "smb.labels" . | indent 2 }}
 subjects:
   - kind: ServiceAccount
-    name: csi-smb-controller-sa
-    namespace: kube-system
+    name: {{ .Values.serviceAccount.controller }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: smb-external-provisioner-role
+  name: {{ .Values.rbac.name }}-external-provisioner-role
   apiGroup: rbac.authorization.k8s.io
+{{ end }}

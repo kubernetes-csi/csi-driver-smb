@@ -38,5 +38,5 @@ kubectl delete -f $repo/csi-smb-controller.yaml --ignore-not-found
 kubectl delete -f $repo/csi-smb-node.yaml --ignore-not-found
 kubectl delete -f $repo/csi-smb-node-windows.yaml --ignore-not-found
 kubectl delete -f $repo/csi-smb-driver.yaml --ignore-not-found
-kubectl delete -f $repo/rbac-csi-smb-controller.yaml --ignore-not-found
+kubectl delete -f $repo/rbac-csi-smb.yaml --ignore-not-found
 echo 'Uninstalled SMB CSI driver successfully.'

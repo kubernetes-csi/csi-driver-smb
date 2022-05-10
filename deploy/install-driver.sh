@@ -34,7 +34,7 @@ if [ $ver != "master" ]; then
 fi
 
 echo "Installing SMB CSI driver, version: $ver ..."
-kubectl apply -f $repo/rbac-csi-smb-controller.yaml
+kubectl apply -f $repo/rbac-csi-smb.yaml
 kubectl apply -f $repo/csi-smb-driver.yaml
 kubectl apply -f $repo/csi-smb-controller.yaml
 kubectl apply -f $repo/csi-smb-node.yaml

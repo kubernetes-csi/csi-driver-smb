@@ -19,7 +19,8 @@ image:
 
 serviceAccount:
   create: true # When true, service accounts will be created for you. Set to false if you want to use your own.
-  controller: csi-smb-controller-sa # Name of Service Account to be created or used
+  controller: csi-smb-controller-sa
+  node: csi-smb-node-sa
 
 rbac:
   create: true
