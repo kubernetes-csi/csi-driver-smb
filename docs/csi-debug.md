@@ -56,6 +56,7 @@ change below deployment config, e.g.
 
 ### troubleshooting connection failure on agent node
  - On Linux node
+> get `/var/log/messages` and `dmesg` output when there is mount failure on Linux node
 ```console
 mkdir /tmp/test
 sudo mount -v -t cifs //smb-server/fileshare /tmp/test -o vers=3.0,username=accountname,password=accountkey,dir_mode=0777,file_mode=0777,cache=strict,actimeo=30
