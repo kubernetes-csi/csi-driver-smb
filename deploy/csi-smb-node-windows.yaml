@@ -24,6 +24,7 @@ spec:
       nodeSelector:
         kubernetes.io/os: windows
       priorityClassName: system-node-critical
+      serviceAccountName: csi-smb-node-sa
       containers:
         - name: liveness-probe
           volumeMounts:
