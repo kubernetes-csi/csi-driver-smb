@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: csi-proxy
+  name: csi-proxy
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: csi-proxy
+  template:
+    metadata:
+      labels:
+        k8s-app: csi-proxy
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      securityContext:
+        windowsOptions:
+          hostProcess: true
+          runAsUserName: "NT AUTHORITY\\SYSTEM"
+      hostNetwork: true
+      containers:
+        - name: csi-proxy
+          image: ghcr.io/kubernetes-sigs/sig-windows/csi-proxy:v1.0.2
