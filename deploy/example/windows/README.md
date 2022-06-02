@@ -7,16 +7,21 @@
 Refer to [Windows-CSI-Support](https://github.com/kubernetes/enhancements/tree/master/keps/sig-windows/1122-windows-csi-support) for more details.
 
 ## Prerequisite
-- [Install CSI-Proxy on Windows Node](https://github.com/Azure/aks-engine/blob/master/docs/topics/csi-proxy-windows.md)
+- [Install CSI-Proxy on Windows Node](https://github.com/kubernetes-csi/csi-proxy#installation)
+- install csi-proxy on k8s 1.23+ Windows node using host process daemonset directly
+```console
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/windows/csi-proxy.yaml
+```
+
 
 ## Deploy a Windows pod with PVC mount
 ### Create a Windows deployment
-```
+```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/windows/statefulset.yaml
 ```
 
 ### Enter pod container to verify
-```
+```console
 $ kubectl exec -it busybox-smb-0  -- bash
 C:/ $ ls mnt/smb
 ```
