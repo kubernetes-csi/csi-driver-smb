@@ -25,6 +25,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- with .Values.node.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}    
       hostNetwork: true
       dnsPolicy: {{ .Values.linux.dnsPolicy }}
       serviceAccountName: csi-smb-node-sa
@@ -33,9 +37,6 @@ spec:
 {{- with .Values.node.nodeSelector }}
 {{ toYaml . | indent 8 }}
 {{- end }}
-        {{- if .Values.node.affinity }}
-{{- toYaml .Values.node.affinity | nindent 8 }}
-        {{- end }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
 {{- with .Values.linux.tolerations }}
       tolerations:
