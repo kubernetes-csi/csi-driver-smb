@@ -31,7 +31,7 @@ spec:
 {{- end }}    
       hostNetwork: true
       dnsPolicy: {{ .Values.linux.dnsPolicy }}
-      serviceAccountName: csi-smb-node-sa
+      serviceAccountName: {{ .Values.serviceAccount.node }}
       nodeSelector:
         kubernetes.io/os: linux
 {{- with .Values.node.nodeSelector }}
