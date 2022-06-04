@@ -33,9 +33,10 @@ spec:
 {{- with .Values.node.nodeSelector }}
 {{ toYaml . | indent 8 }}
 {{- end }}
-        {{- if .Values.node.affinity }}
-{{- toYaml .Values.node.affinity | nindent 8 }}
-        {{- end }}
+{{- with .Values.node.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
 {{- with .Values.linux.tolerations }}
       tolerations:
