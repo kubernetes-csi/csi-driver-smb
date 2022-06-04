@@ -24,8 +24,15 @@ spec:
 {{- end }}
       nodeSelector:
         kubernetes.io/os: windows
+{{- with .Values.node.nodeSelector }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.node.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
       priorityClassName: system-node-critical
-      serviceAccountName: csi-smb-node-sa
+      serviceAccountName: {{ .Values.serviceAccount.node }}
       {{- include "smb.pullSecrets" . | indent 6 }}
       containers:
         - name: liveness-probe
