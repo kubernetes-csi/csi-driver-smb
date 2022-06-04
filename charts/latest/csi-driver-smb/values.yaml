@@ -30,7 +30,7 @@ driver:
   name: smb.csi.k8s.io
 
 feature:
-  enableGetVolumeStats: false
+  enableGetVolumeStats: true
 
 controller:
   name: csi-smb-controller
