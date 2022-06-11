@@ -81,8 +81,8 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	secrets := req.GetSecrets()
 	createSubDir := len(secrets) > 0
 	if len(smbVol.uuid) > 0 {
-		klog.V(2).Infof("existing subDir(%s) is provided, skip subdirectory creation", smbVol.subDir)
-		createSubDir = false
+		klog.V(2).Infof("create subdirectory(%s) if not exists", smbVol.subDir)
+		createSubDir = true
 	}
 
 	volCap := volumeCapabilities[0]

@@ -6,7 +6,7 @@
 Name | Meaning | Available Value | Mandatory | Default value
 --- | --- | --- | --- | ---
 source | Samba Server address | `//smb-server-address/sharename` </br>([Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) format: `//accountname.file.core.windows.net/filesharename`) | Yes |
-subDir | existing sub directory under smb share |  | No | sub directory must exist otherwise mount would fail
+subDir | sub directory under smb share |  | No | if sub directory does not exist, this driver would create a new one
 csi.storage.k8s.io/provisioner-secret-name | secret name that stores `username`, `password`(`domain` is optional); if secret is provided, driver will create a sub directory with PV name under `source` | existing secret name |  No  |
 csi.storage.k8s.io/provisioner-secret-namespace | namespace where the secret is | existing secret namespace |  No  |
 csi.storage.k8s.io/node-stage-secret-name | secret name that stores `username`, `password`(`domain` is optional) | existing secret name |  Yes  |

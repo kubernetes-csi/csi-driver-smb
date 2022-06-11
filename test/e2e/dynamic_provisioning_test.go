@@ -167,44 +167,6 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(cs, ns)
 	})
 
-	ginkgo.It("[createSubDir] should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [smb.csi.k8s.io] [Windows]", func() {
-		pods := []testsuites.PodDetails{
-			{
-				Cmd: convertToPowershellCommandIfNecessary("while true; do echo $(date -u) >> /mnt/test-1/data; sleep 100; done"),
-				Volumes: []testsuites.VolumeDetails{
-					{
-						ClaimSize: "10Gi",
-						VolumeMount: testsuites.VolumeMountDetails{
-							NameGenerate:      "test-volume-",
-							MountPathGenerate: "/mnt/test-",
-						},
-					},
-				},
-				IsWindows: isWindowsCluster,
-			},
-			{
-				Cmd: convertToPowershellCommandIfNecessary("while true; do echo $(date -u) >> /mnt/test-1/data; sleep 100; done"),
-				Volumes: []testsuites.VolumeDetails{
-					{
-						ClaimSize: "10Gi",
-						VolumeMount: testsuites.VolumeMountDetails{
-							NameGenerate:      "test-volume-",
-							MountPathGenerate: "/mnt/test-",
-						},
-					},
-				},
-				IsWindows: isWindowsCluster,
-			},
-		}
-		test := testsuites.DynamicallyProvisionedCollocatedPodTest{
-			CSIDriver:              testDriver,
-			Pods:                   pods,
-			ColocatePods:           true,
-			StorageClassParameters: defaultStorageClassParameters,
-		}
-		test.Run(cs, ns)
-	})
-
 	// Track issue https://github.com/kubernetes/kubernetes/issues/70505
 	ginkgo.It("should create a volume on demand and mount it as readOnly in a pod [smb.csi.k8s.io]", func() {
 		// Windows volume does not support readOnly
