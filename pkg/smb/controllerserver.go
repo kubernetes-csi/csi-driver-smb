@@ -359,9 +359,12 @@ func (d *Driver) smbVolToCSI(vol *smbVolume, parameters map[string]string) *csi.
 func getSmbVolFromID(id string) (*smbVolume, error) {
 	segments := strings.Split(id, separator)
 	if len(segments) < 2 {
-		return nil, fmt.Errorf("Could not split %q into server and subDir", id)
+		return nil, fmt.Errorf("could not split %q into server and subDir", id)
 	}
-	source := "//" + segments[0]
+	source := segments[0]
+	if !strings.HasPrefix(segments[0], "//") {
+		source = "//" + source
+	}
 	vol := &smbVolume{
 		id:          id,
 		sourceField: source,

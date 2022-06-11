@@ -458,6 +458,13 @@ func TestGetSmbVolFromID(t *testing.T) {
 			expectErr: false,
 		},
 		{
+			desc:      "correct volume id with //",
+			volumeID:  "//smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			source:    "//smb-server.default.svc.cluster.local/share",
+			subDir:    "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			expectErr: false,
+		},
+		{
 			desc:      "correct volume id with empty uuid",
 			volumeID:  "smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f#",
 			source:    "//smb-server.default.svc.cluster.local/share",
