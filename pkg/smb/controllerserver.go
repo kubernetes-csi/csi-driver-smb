@@ -110,7 +110,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		if err = os.Mkdir(internalVolumePath, 0777); err != nil && !os.IsExist(err) {
 			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
 		}
-		parameters[subDirField] = smbVol.subDir
+		setKeyValueInMap(parameters, subDirField, smbVol.subDir)
 	} else {
 		klog.V(2).Infof("CreateVolume(%s) does not create subdirectory", name)
 	}
