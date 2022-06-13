@@ -4,7 +4,7 @@
  - [install Helm](https://helm.sh/docs/intro/quickstart/#install-helm)
 
 ### Tips
- - make controller only run on master node: `--set controller.runOnMaster=true`
+ - run controller on control plane node: `--set controller.runOnControlPlane=true`
 
 ### install a specific version
 ```console
@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `controller.logLevel`                             | controller driver log level                                                          |`5`                                                           |
 | `controller.workingMountDir`                      | working directory for provisioner to mount smb shares temporarily                  | `/tmp`                                                             |
 | `controller.runOnMaster`                          | run controller on master node                              | `false`                                                             |
+| `controller.runOnControlPlane`                    | run controller on control plane node                                                          |`false`                                                           |
 | `controller.resources.csiProvisioner.limits.memory`   | csi-provisioner memory limits                         | `100Mi`                                                          |
 | `controller.resources.csiProvisioner.requests.cpu`    | csi-provisioner cpu requests limits                   | `10m`                                                            |
 | `controller.resources.csiProvisioner.requests.memory` | csi-provisioner memory requests limits                | `20Mi`                                                           |
