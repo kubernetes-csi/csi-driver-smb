@@ -20,6 +20,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -172,6 +173,60 @@ func TestHasGuestMountOptions(t *testing.T) {
 		result := hasGuestMountOptions(test.options)
 		if result != test.result {
 			t.Errorf("test(%s): unexpected result: %v, expected: %v", test.desc, result, test.result)
+		}
+	}
+}
+
+func TestSetKeyValueInMap(t *testing.T) {
+	tests := []struct {
+		desc     string
+		m        map[string]string
+		key      string
+		value    string
+		expected map[string]string
+	}{
+		{
+			desc:  "nil map",
+			key:   "key",
+			value: "value",
+		},
+		{
+			desc:     "empty map",
+			m:        map[string]string{},
+			key:      "key",
+			value:    "value",
+			expected: map[string]string{"key": "value"},
+		},
+		{
+			desc:  "non-empty map",
+			m:     map[string]string{"k": "v"},
+			key:   "key",
+			value: "value",
+			expected: map[string]string{
+				"k":   "v",
+				"key": "value",
+			},
+		},
+		{
+			desc:     "same key already exists",
+			m:        map[string]string{"subDir": "value2"},
+			key:      "subDir",
+			value:    "value",
+			expected: map[string]string{"subDir": "value"},
+		},
+		{
+			desc:     "case insentive key already exists",
+			m:        map[string]string{"subDir": "value2"},
+			key:      "subdir",
+			value:    "value",
+			expected: map[string]string{"subDir": "value"},
+		},
+	}
+
+	for _, test := range tests {
+		setKeyValueInMap(test.m, test.key, test.value)
+		if !reflect.DeepEqual(test.m, test.expected) {
+			t.Errorf("test[%s]: unexpected output: %v, expected result: %v", test.desc, test.m, test.expected)
 		}
 	}
 }

@@ -458,6 +458,13 @@ func TestGetSmbVolFromID(t *testing.T) {
 			expectErr: false,
 		},
 		{
+			desc:      "correct volume id with //",
+			volumeID:  "//smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			source:    "//smb-server.default.svc.cluster.local/share",
+			subDir:    "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			expectErr: false,
+		},
+		{
 			desc:      "correct volume id with empty uuid",
 			volumeID:  "smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f#",
 			source:    "//smb-server.default.svc.cluster.local/share",
@@ -493,7 +500,7 @@ func TestGetSmbVolFromID(t *testing.T) {
 			smbVolume, err := getSmbVolFromID(test.volumeID)
 
 			if !test.expectErr {
-				assert.Equal(t, smbVolume.sourceField, test.source)
+				assert.Equal(t, smbVolume.source, test.source)
 				assert.Equal(t, smbVolume.subDir, test.subDir)
 				assert.Equal(t, smbVolume.uuid, test.uuid)
 				assert.Nil(t, err)
@@ -513,24 +520,24 @@ func TestGetVolumeIDFromSmbVol(t *testing.T) {
 		{
 			desc: "volume without uuid",
 			vol: &smbVolume{
-				sourceField: "//smb-server.default.svc.cluster.local/share",
-				subDir:      "subdir",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "subdir",
 			},
 			result: "smb-server.default.svc.cluster.local/share#subdir#",
 		},
 		{
 			desc: "volume with uuid",
 			vol: &smbVolume{
-				sourceField: "//smb-server.default.svc.cluster.local/share",
-				subDir:      "subdir",
-				uuid:        "uuid",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "subdir",
+				uuid:   "uuid",
 			},
 			result: "smb-server.default.svc.cluster.local/share#subdir#uuid",
 		},
 		{
 			desc: "volume without subdir",
 			vol: &smbVolume{
-				sourceField: "//smb-server.default.svc.cluster.local/share",
+				source: "//smb-server.default.svc.cluster.local/share",
 			},
 			result: "smb-server.default.svc.cluster.local/share##",
 		},
@@ -539,6 +546,44 @@ func TestGetVolumeIDFromSmbVol(t *testing.T) {
 	for _, test := range cases {
 		volumeID := getVolumeIDFromSmbVol(test.vol)
 		assert.Equal(t, volumeID, test.result)
+	}
+}
+
+func TestGetInternalMountPath(t *testing.T) {
+	cases := []struct {
+		desc            string
+		workingMountDir string
+		vol             *smbVolume
+		result          string
+	}{
+		{
+			desc:            "nil volume",
+			workingMountDir: "/tmp",
+			result:          "",
+		},
+		{
+			desc:            "uuid not empty",
+			workingMountDir: "/tmp",
+			vol: &smbVolume{
+				subDir: "subdir",
+				uuid:   "uuid",
+			},
+			result: filepath.Join("/tmp", "uuid"),
+		},
+		{
+			desc:            "uuid empty",
+			workingMountDir: "/tmp",
+			vol: &smbVolume{
+				subDir: "subdir",
+				uuid:   "",
+			},
+			result: filepath.Join("/tmp", "subdir"),
+		},
+	}
+
+	for _, test := range cases {
+		path := getInternalMountPath(test.workingMountDir, test.vol)
+		assert.Equal(t, path, test.result)
 	}
 }
 
@@ -560,11 +605,11 @@ func TestNewSMBVolume(t *testing.T) {
 				"subDir": "subdir",
 			},
 			expectVol: &smbVolume{
-				id:          "smb-server.default.svc.cluster.local/share#subdir#pv-name",
-				sourceField: "//smb-server.default.svc.cluster.local/share",
-				subDir:      "subdir",
-				size:        100,
-				uuid:        "pv-name",
+				id:     "smb-server.default.svc.cluster.local/share#subdir#pv-name",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "subdir",
+				size:   100,
+				uuid:   "pv-name",
 			},
 		},
 		{
@@ -575,11 +620,11 @@ func TestNewSMBVolume(t *testing.T) {
 				"source": "//smb-server.default.svc.cluster.local/share",
 			},
 			expectVol: &smbVolume{
-				id:          "smb-server.default.svc.cluster.local/share#pv-name#",
-				sourceField: "//smb-server.default.svc.cluster.local/share",
-				subDir:      "pv-name",
-				size:        200,
-				uuid:        "",
+				id:     "smb-server.default.svc.cluster.local/share#pv-name#",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "pv-name",
+				size:   200,
+				uuid:   "",
 			},
 		},
 		{
