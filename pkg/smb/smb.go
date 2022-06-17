@@ -29,14 +29,20 @@ import (
 )
 
 const (
-	DefaultDriverName = "smb.csi.k8s.io"
-	usernameField     = "username"
-	passwordField     = "password"
-	sourceField       = "source"
-	subDirField       = "subdir"
-	domainField       = "domain"
-	mountOptionsField = "mountoptions"
-	defaultDomainName = "AZURE"
+	DefaultDriverName    = "smb.csi.k8s.io"
+	usernameField        = "username"
+	passwordField        = "password"
+	sourceField          = "source"
+	subDirField          = "subdir"
+	domainField          = "domain"
+	mountOptionsField    = "mountoptions"
+	defaultDomainName    = "AZURE"
+	pvcNameKey           = "csi.storage.k8s.io/pvc/name"
+	pvcNamespaceKey      = "csi.storage.k8s.io/pvc/namespace"
+	pvNameKey            = "csi.storage.k8s.io/pv/name"
+	pvcNameMetadata      = "${pvc.metadata.name}"
+	pvcNamespaceMetadata = "${pvc.metadata.namespace}"
+	pvNameMetadata       = "${pv.metadata.name}"
 )
 
 // DriverOptions defines driver parameters specified in driver deployment
@@ -155,4 +161,14 @@ func setKeyValueInMap(m map[string]string, key, value string) {
 		}
 	}
 	m[key] = value
+}
+
+// replaceWithMap replace key with value for str
+func replaceWithMap(str string, m map[string]string) string {
+	for k, v := range m {
+		if k != "" {
+			str = strings.ReplaceAll(str, k, v)
+		}
+	}
+	return str
 }

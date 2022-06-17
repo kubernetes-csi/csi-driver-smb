@@ -302,6 +302,7 @@ func getInternalMountPath(workingMountDir string, vol *smbVolume) string {
 // Convert VolumeCreate parameters to an smbVolume
 func newSMBVolume(name string, size int64, params map[string]string) (*smbVolume, error) {
 	var source, subDir string
+	subDirReplaceMap := map[string]string{}
 
 	// validate parameters (case-insensitive).
 	for k, v := range params {
@@ -310,6 +311,12 @@ func newSMBVolume(name string, size int64, params map[string]string) (*smbVolume
 			source = v
 		case subDirField:
 			subDir = v
+		case pvcNamespaceKey:
+			subDirReplaceMap[pvcNamespaceMetadata] = v
+		case pvcNameKey:
+			subDirReplaceMap[pvcNameMetadata] = v
+		case pvNameKey:
+			subDirReplaceMap[pvNameMetadata] = v
 		default:
 			return nil, fmt.Errorf("invalid parameter %s in storage class", k)
 		}
@@ -327,7 +334,8 @@ func newSMBVolume(name string, size int64, params map[string]string) (*smbVolume
 		// use pv name by default if not specified
 		vol.subDir = name
 	} else {
-		vol.subDir = subDir
+		// replace pv/pvc name namespace metadata in subDir
+		vol.subDir = replaceWithMap(subDir, subDirReplaceMap)
 		// make volume id unique if subDir is provided
 		vol.uuid = name
 	}

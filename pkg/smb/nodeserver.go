@@ -130,12 +130,19 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	gidPresent := checkGidPresentInMountFlags(mountFlags)
 
 	var source, subDir string
+	subDirReplaceMap := map[string]string{}
 	for k, v := range context {
 		switch strings.ToLower(k) {
 		case sourceField:
 			source = v
 		case subDirField:
 			subDir = v
+		case pvcNamespaceKey:
+			subDirReplaceMap[pvcNamespaceMetadata] = v
+		case pvcNameKey:
+			subDirReplaceMap[pvcNameMetadata] = v
+		case pvNameKey:
+			subDirReplaceMap[pvNameMetadata] = v
 		}
 	}
 
@@ -205,6 +212,9 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			return nil, fmt.Errorf("prepare stage path failed for %s with error: %v", targetPath, err)
 		}
 		if subDir != "" {
+			// replace pv/pvc name namespace metadata in subDir
+			subDir = replaceWithMap(subDir, subDirReplaceMap)
+
 			source = strings.TrimRight(source, "/")
 			source = fmt.Sprintf("%s/%s", source, subDir)
 		}
