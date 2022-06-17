@@ -40,6 +40,7 @@ controller:
   livenessProbe:
     healthPort: 29642
   runOnMaster: false
+  runOnControlPlane: false
   logLevel: 5
   workingMountDir: "/tmp"
   resources:
