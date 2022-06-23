@@ -613,6 +613,25 @@ func TestNewSMBVolume(t *testing.T) {
 			},
 		},
 		{
+			desc: "subDir with pv/pvc metadata is specified",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source":        "//smb-server.default.svc.cluster.local/share",
+				"subDir":        fmt.Sprintf("subdir-%s-%s-%s", pvcNameMetadata, pvcNamespaceMetadata, pvNameMetadata),
+				pvcNameKey:      "pvcname",
+				pvcNamespaceKey: "pvcnamespace",
+				pvNameKey:       "pvname",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#subdir-pvcname-pvcnamespace-pvname#pv-name",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "subdir-pvcname-pvcnamespace-pvname",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
 			desc: "subDir not specified",
 			name: "pv-name",
 			size: 200,

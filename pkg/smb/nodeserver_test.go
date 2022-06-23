@@ -63,6 +63,12 @@ func TestNodeStageVolume(t *testing.T) {
 	volContext := map[string]string{
 		sourceField: "test_source",
 	}
+	volContextWithMetadata := map[string]string{
+		sourceField:     "test_source",
+		pvcNameKey:      "pvcname",
+		pvcNamespaceKey: "pvcnamespace",
+		pvNameKey:       "pvname",
+	}
 	secrets := map[string]string{
 		usernameField: "test_username",
 		passwordField: "test_password",
@@ -161,6 +167,17 @@ func TestNodeStageVolume(t *testing.T) {
 			req: csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
+				Secrets:          secrets},
+			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"test_source\" on %#v failed with "+
+				"smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
+				sourceTest),
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc: "[Success] Valid request with pv/pvc metadata",
+			req: csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
+				VolumeCapability: &stdVolCap,
+				VolumeContext:    volContextWithMetadata,
 				Secrets:          secrets},
 			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"test_source\" on %#v failed with "+
 				"smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
