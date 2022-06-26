@@ -28,7 +28,7 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 ```
 
 ### Tips
-#### `subDir` parameter supports following pv/pvc metadata convension
+#### `subDir` parameter supports following pv/pvc metadata conversion
 > if `subDir` value contains following string, it would be converted into corresponding pv/pvc name or namespace
  - `${pvc.metadata.name}`
  - `${pvc.metadata.namespace}`
