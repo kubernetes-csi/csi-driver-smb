@@ -12,9 +12,9 @@ This driver allows Kubernetes to access [SMB](https://wiki.wireshark.org/SMB) se
 |Driver Version | supported k8s version | supported [Windows csi-proxy](https://github.com/kubernetes-csi/csi-proxy) version |
 |---------------|-----------------------|-------------------------------------|
 |master branch  | 1.20+                 | v0.2.2+                             |
+|v1.8.0         | 1.20+                 | v0.2.2+                             |
 |v1.7.0         | 1.20+                 | v0.2.2+                             |
 |v1.6.0         | 1.20+                 | v0.2.2+                             |
-|v1.5.0         | 1.19+                 | v0.2.2+                             |
 
 ### Driver parameters
 Please refer to `smb.csi.k8s.io` [driver parameters](./docs/driver-parameters.md)
