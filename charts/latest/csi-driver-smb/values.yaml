@@ -1,8 +1,8 @@
 image:
   baseRepo: registry.k8s.io/sig-storage
   smb:
-    repository: registry.k8s.io/sig-storage/smbplugin
-    tag: v1.8.0
+    repository: gcr.io/k8s-staging-sig-storage/smbplugin
+    tag: canary
     pullPolicy: IfNotPresent
   csiProvisioner:
     repository: registry.k8s.io/sig-storage/csi-provisioner
