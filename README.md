@@ -36,7 +36,8 @@ Please refer to `smb.csi.k8s.io` [driver parameters](./docs/driver-parameters.md
 Please refer to [development guide](./docs/csi-dev.md)
 
 ### View CI Results
-Check testgrid [sig-storage-csi-smb](https://testgrid.k8s.io/sig-storage-csi-other) dashboard.
+ - testgrid [sig-storage-csi-smb](https://testgrid.k8s.io/sig-storage-csi-other) dashboard.
+ - Driver image build pipeline: [post-csi-driver-smb-push-images](https://k8s-testgrid.appspot.com/sig-storage-image-build#post-csi-driver-smb-push-images)
 
 ### Links
  - [SMB FlexVolume driver](https://github.com/Azure/kubernetes-volume-drivers/tree/master/flexvolume/smb)
