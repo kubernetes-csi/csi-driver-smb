@@ -155,14 +155,14 @@ spec:
             path: \\.\pipe\csi-proxy-smb-v1beta1
         - name: registration-dir
           hostPath:
-            path: {{ .Values.windows.kubelet }}\plugins_registry\
+            path: {{ .Values.windows.kubelet }}\\plugins_registry\\
             type: Directory
         - name: kubelet-dir
           hostPath:
-            path: {{ .Values.windows.kubelet }}\
+            path: {{ .Values.windows.kubelet }}\\
             type: Directory
         - name: plugin-dir
           hostPath:
-            path: {{ .Values.windows.kubelet }}\plugins\{{ .Values.driver.name }}\
+            path: {{ .Values.windows.kubelet }}\\plugins\\{{ .Values.driver.name }}\
             type: DirectoryOrCreate
 {{- end -}}
