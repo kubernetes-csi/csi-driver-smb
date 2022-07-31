@@ -345,8 +345,8 @@ func newSMBVolume(name string, size int64, params map[string]string) (*smbVolume
 
 // Get internal path where the volume is created
 // The reason why the internal path is "workingDir/subDir/subDir" is because:
-//   * the semantic is actually "workingDir/volId/subDir" and volId == subDir.
-//   * we need a mount directory per volId because you can have multiple
+//   - the semantic is actually "workingDir/volId/subDir" and volId == subDir.
+//   - we need a mount directory per volId because you can have multiple
 //     CreateVolume calls in parallel and they may use the same underlying share.
 //     Instead of refcounting how many CreateVolume calls are using the same
 //     share, it's simpler to just do a mount per request.
@@ -365,8 +365,9 @@ func (d *Driver) smbVolToCSI(vol *smbVolume, parameters map[string]string) *csi.
 
 // Given a CSI volume id, return a smbVolume
 // sample volume Id:
-//		smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f
-//		smb-server.default.svc.cluster.local/share#subdir#pvc-4729891a-f57e-4982-9c60-e9884af1be2f
+//
+//	smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f
+//	smb-server.default.svc.cluster.local/share#subdir#pvc-4729891a-f57e-4982-9c60-e9884af1be2f
 func getSmbVolFromID(id string) (*smbVolume, error) {
 	segments := strings.Split(id, separator)
 	if len(segments) < 2 {

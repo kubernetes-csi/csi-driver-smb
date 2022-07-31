@@ -118,8 +118,9 @@ func (mounter *csiProxyMounterV1Beta) Mount(source string, target string, fstype
 
 // Rmdir - delete the given directory
 // TODO: Call separate rmdir for pod context and plugin context. v1alpha1 for CSI
-//       proxy does a relaxed check for prefix as c:\var\lib\kubelet, so we can do
-//       rmdir with either pod or plugin context.
+//
+//	proxy does a relaxed check for prefix as c:\var\lib\kubelet, so we can do
+//	rmdir with either pod or plugin context.
 func (mounter *csiProxyMounterV1Beta) Rmdir(path string) error {
 	klog.V(4).Infof("Remove directory: %s", path)
 	rmdirRequest := &fs.RmdirRequest{
@@ -149,8 +150,9 @@ func (mounter *csiProxyMounterV1Beta) IsMountPointMatch(mp mount.MountPoint, dir
 }
 
 // IsLikelyMountPoint - If the directory does not exists, the function will return os.ErrNotExist error.
-//   If the path exists, call to CSI proxy will check if its a link, if its a link then existence of target
-//   path is checked.
+//
+//	If the path exists, call to CSI proxy will check if its a link, if its a link then existence of target
+//	path is checked.
 func (mounter *csiProxyMounterV1Beta) IsLikelyNotMountPoint(path string) (bool, error) {
 	klog.V(4).Infof("IsLikelyNotMountPoint: %s", path)
 	isExists, err := mounter.ExistsPath(path)
