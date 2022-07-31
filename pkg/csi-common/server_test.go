@@ -19,6 +19,7 @@ package csicommon
 import (
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
@@ -31,6 +32,8 @@ func TestNewNonBlockingGRPCServer(t *testing.T) {
 
 func TestStart(t *testing.T) {
 	s := NewNonBlockingGRPCServer()
+	// sleep a while to avoid race condition in unit test
+	time.Sleep(time.Millisecond * 2000)
 	s.Start("tcp://127.0.0.1:0", nil, nil, nil, true)
 }
 
