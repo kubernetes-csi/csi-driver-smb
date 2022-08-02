@@ -76,7 +76,7 @@ spec:
             - name: CSI_ENDPOINT
               value: unix://C:\\csi\\csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: {{ .Values.windows.kubelet }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
+              value: {{ .Values.windows.kubelet | replace "\\" "\\\\" }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
             - name: KUBE_NODE_NAME
               valueFrom:
                 fieldRef:
