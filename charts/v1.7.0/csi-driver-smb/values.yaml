@@ -121,13 +121,13 @@ windows:
   resources:
     livenessProbe:
       limits:
-        memory: 100Mi
+        memory: 150Mi
       requests:
         cpu: 10m
         memory: 40Mi
     nodeDriverRegistrar:
       limits:
-        memory: 100Mi
+        memory: 150Mi
       requests:
         cpu: 10m
         memory: 40Mi

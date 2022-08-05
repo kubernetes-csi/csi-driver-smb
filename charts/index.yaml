@@ -3,18 +3,18 @@ entries:
   csi-driver-smb:
   - apiVersion: v1
     appVersion: v1.8.0
-    created: "2022-08-01T05:11:18.791512904Z"
+    created: "2022-08-04T13:11:29.191051166Z"
     description: SMB CSI Driver for Kubernetes
-    digest: ef810381260a44c95d7b880e7553b34e5c83c15cde6922d7c85de501880b3eba
+    digest: d19d156c2143d753085bcbcb32506f8ebd7ebdee275e726f9c8d774a1f0b9f34
     name: csi-driver-smb
     urls:
     - https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/v1.8.0/csi-driver-smb-v1.8.0.tgz
     version: v1.8.0
   - apiVersion: v1
     appVersion: v1.7.0
-    created: "2022-08-01T05:11:36.867597709Z"
+    created: "2022-08-04T13:11:29.155050947Z"
     description: SMB CSI Driver for Kubernetes
-    digest: 6c8d73131f3d9019d44b74730ec3a217f48b1a1bf280711df2307a7e853062c5
+    digest: 65594a1ff09d912a33ee0674bba1fad1f7c717638a281fb68bcfa2c98c288453
     name: csi-driver-smb
     urls:
     - https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/v1.7.0/csi-driver-smb-v1.7.0.tgz
@@ -129,11 +129,11 @@ entries:
     version: v0.2.0
   - apiVersion: v1
     appVersion: latest
-    created: "2022-08-01T05:10:52.803395353Z"
+    created: "2022-08-04T113:12:54.007566614Z"
     description: SMB CSI Driver for Kubernetes
-    digest: 568eec17c795701366b827d99e82a8b504da7728f8c52e3176bdf311b8263f5d
+    digest: b7479364f1283da159355acb1b7740592badade3b7e48300c1793b3b09b3f003
     name: csi-driver-smb
     urls:
     - https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/latest/csi-driver-smb-v0.0.0.tgz
     version: v0.0.0
-generated: "2022-08-01T05:10:52.803395353Z"
+generated: "2022-08-04T113:12:54.007566614Z"
