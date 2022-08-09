@@ -60,11 +60,12 @@ func TestNodeStageVolume(t *testing.T) {
 	smbFile := testutil.GetWorkDirPath("smb.go", t)
 	sourceTest := testutil.GetWorkDirPath("source_test", t)
 
+	testSource := "\\\\hostname\\share\\test"
 	volContext := map[string]string{
-		sourceField: "test_source",
+		sourceField: testSource,
 	}
 	volContextWithMetadata := map[string]string{
-		sourceField:     "test_source",
+		sourceField:     testSource,
 		pvcNameKey:      "pvcname",
 		pvcNamespaceKey: "pvcnamespace",
 		pvNameKey:       "pvname",
@@ -152,14 +153,14 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"test_source\" on %#v failed "+
+			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"%s\" on %#v failed "+
 				"with smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				errorMountSensSource),
+				strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource),
 			expectedErr: testutil.TestError{
 				DefaultError: status.Errorf(codes.Internal,
-					fmt.Sprintf("volume(vol_1##) mount \"test_source\" on \"%s\" failed with fake "+
+					fmt.Sprintf("volume(vol_1##) mount \"%s\" on \"%s\" failed with fake "+
 						"MountSensitive: target error",
-						errorMountSensSource)),
+						strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource)),
 			},
 		},
 		{
@@ -168,9 +169,9 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"test_source\" on %#v failed with "+
+			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				sourceTest),
+				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest),
 			expectedErr: testutil.TestError{},
 		},
 		{
@@ -179,9 +180,9 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContextWithMetadata,
 				Secrets:          secrets},
-			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"test_source\" on %#v failed with "+
+			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				sourceTest),
+				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest),
 			expectedErr: testutil.TestError{},
 		},
 	}

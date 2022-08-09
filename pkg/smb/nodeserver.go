@@ -98,7 +98,7 @@ func (d *Driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublish
 	}
 
 	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s on %s", volumeID, targetPath)
-	err := CleanupSMBMountPoint(d.mounter, targetPath, true /*extensiveMountPointCheck*/)
+	err := CleanupMountPoint(d.mounter, targetPath, true /*extensiveMountPointCheck*/)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount target %q: %v", targetPath, err)
 	}
