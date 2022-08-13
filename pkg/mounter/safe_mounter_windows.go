@@ -101,6 +101,17 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 	}
 
 	source = strings.Replace(source, "/", "\\", -1)
+	if strings.HasSuffix(source, "\\") {
+		source = strings.TrimSuffix(source, "\\")
+	}
+
+	mappingPath, err := getRootMappingPath(source)
+	if err != nil {
+		return fmt.Errorf("getRootMappingPath(%s) failed with error: %v", source, err)
+	}
+	unlock := lock(mappingPath)
+	defer unlock()
+
 	normalizedTarget := normalizeWindowsPath(target)
 	smbMountRequest := &smb.NewSmbGlobalMappingRequest{
 		LocalPath:  normalizedTarget,
@@ -113,13 +124,53 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 		return fmt.Errorf("smb mapping failed with error: %v", err)
 	}
 	klog.V(2).Infof("mount %s on %s successfully", source, normalizedTarget)
+
+	if err = incementRemotePathReferencesCount(mappingPath, source); err != nil {
+		klog.Warningf("incementMappingPathCount(%s, %s) failed with error: %v", mappingPath, source, err)
+	}
+
 	return nil
 }
 
 func (mounter *csiProxyMounter) SMBUnmount(target string) error {
 	klog.V(4).Infof("SMBUnmount: local path: %s", target)
-	// TODO: We need to remove the SMB mapping. The change to remove the
-	// directory brings the CSI code in parity with the in-tree.
+
+	if remotePath, err := os.Readlink(target); err != nil {
+		klog.Warningf("SMBUnmount: can't get remote path: %v", err)
+	} else {
+		if strings.HasSuffix(remotePath, "\\") {
+			remotePath = strings.TrimSuffix(remotePath, "\\")
+		}
+		mappingPath, err := getRootMappingPath(remotePath)
+		if err != nil {
+			klog.Warningf("getRootMappingPath(%s) failed with error: %v", remotePath, err)
+		} else {
+			klog.V(4).Infof("SMBUnmount: remote path: %s, mapping path: %s", remotePath, mappingPath)
+
+			unlock := lock(mappingPath)
+			defer unlock()
+
+			if err := decrementRemotePathReferencesCount(mappingPath, remotePath); err != nil {
+				klog.Warningf("decrementMappingPathCount(%s, %d) failed with error: %v", mappingPath, remotePath, err)
+			} else {
+				count := getRemotePathReferencesCount(mappingPath)
+				if count == 0 {
+					smbUnmountRequest := &smb.RemoveSmbGlobalMappingRequest{
+						RemotePath: remotePath,
+					}
+					klog.V(2).Infof("begin to unmount %s on %s", remotePath, target)
+					if _, err := mounter.SMBClient.RemoveSmbGlobalMapping(context.Background(), smbUnmountRequest); err != nil {
+						return fmt.Errorf("smb unmapping failed with error: %v", err)
+					} else {
+						klog.V(2).Infof("unmount %s on %s successfully", remotePath, target)
+					}
+				} else {
+					klog.Infof("SMBUnmount: found %f links to %s", count, mappingPath)
+				}
+			}
+		}
+	}
+
 	return mounter.Rmdir(target)
 }
 
