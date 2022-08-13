@@ -50,7 +50,9 @@ type DriverOptions struct {
 	NodeID               string
 	DriverName           string
 	EnableGetVolumeStats bool
-	WorkingMountDir      string
+	// this only applies to Windows node
+	RemoveSMBMappingDuringUnmount bool
+	WorkingMountDir               string
 }
 
 // Driver implements all interfaces of CSI drivers
@@ -62,6 +64,8 @@ type Driver struct {
 	volumeLocks          *volumeLocks
 	workingMountDir      string
 	enableGetVolumeStats bool
+	// this only applies to Windows node
+	removeSMBMappingDuringUnmount bool
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -72,6 +76,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.Version = driverVersion
 	driver.NodeID = options.NodeID
 	driver.enableGetVolumeStats = options.EnableGetVolumeStats
+	driver.removeSMBMappingDuringUnmount = options.RemoveSMBMappingDuringUnmount
 	driver.workingMountDir = options.WorkingMountDir
 	driver.volumeLocks = newVolumeLocks()
 	return &driver
@@ -85,7 +90,7 @@ func (d *Driver) Run(endpoint, kubeconfig string, testMode bool) {
 	}
 	klog.V(2).Infof("\nDRIVER INFORMATION:\n-------------------\n%s\n\nStreaming logs below:", versionMeta)
 
-	d.mounter, err = mounter.NewSafeMounter()
+	d.mounter, err = mounter.NewSafeMounter(d.removeSMBMappingDuringUnmount)
 	if err != nil {
 		klog.Fatalf("Failed to get safe mounter. Error: %v", err)
 	}

@@ -115,6 +115,7 @@ windows:
   enabled: false
   dsName: csi-smb-node-win # daemonset name
   kubelet: 'C:\var\lib\kubelet'
+  removeSMBMappingDuringUnmount: true
   tolerations:
     - key: "node.kubernetes.io/os"
       operator: "Exists"

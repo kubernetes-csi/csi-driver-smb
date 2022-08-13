@@ -153,9 +153,9 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"%s\" on %#v failed "+
-				"with smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource),
+			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed "+
+				"with NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
+				strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource, testSource, errorMountSensSource),
 			expectedErr: testutil.TestError{
 				DefaultError: status.Errorf(codes.Internal,
 					fmt.Sprintf("volume(vol_1##) mount \"%s\" on \"%s\" failed with fake "+
@@ -169,9 +169,9 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"%s\" on %#v failed with "+
-				"smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest),
+			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
+				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
+				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
 			expectedErr: testutil.TestError{},
 		},
 		{
@@ -180,9 +180,9 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContextWithMetadata,
 				Secrets:          secrets},
-			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"%s\" on %#v failed with "+
-				"smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest),
+			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
+				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
+				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
 			expectedErr: testutil.TestError{},
 		},
 	}
