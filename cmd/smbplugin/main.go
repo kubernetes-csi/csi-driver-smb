@@ -36,14 +36,15 @@ func init() {
 }
 
 var (
-	endpoint             = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
-	nodeID               = flag.String("nodeid", "", "node id")
-	driverName           = flag.String("drivername", smb.DefaultDriverName, "name of the driver")
-	ver                  = flag.Bool("ver", false, "Print the version and exit.")
-	metricsAddress       = flag.String("metrics-address", "0.0.0.0:29644", "export the metrics")
-	kubeconfig           = flag.String("kubeconfig", "", "Absolute path to the kubeconfig file. Required only when running out of cluster.")
-	enableGetVolumeStats = flag.Bool("enable-get-volume-stats", true, "allow GET_VOLUME_STATS on agent node")
-	workingMountDir      = flag.String("working-mount-dir", "/tmp", "working directory for provisioner to mount smb shares temporarily")
+	endpoint                      = flag.String("endpoint", "unix://tmp/csi.sock", "CSI endpoint")
+	nodeID                        = flag.String("nodeid", "", "node id")
+	driverName                    = flag.String("drivername", smb.DefaultDriverName, "name of the driver")
+	ver                           = flag.Bool("ver", false, "Print the version and exit.")
+	metricsAddress                = flag.String("metrics-address", "0.0.0.0:29644", "export the metrics")
+	kubeconfig                    = flag.String("kubeconfig", "", "Absolute path to the kubeconfig file. Required only when running out of cluster.")
+	enableGetVolumeStats          = flag.Bool("enable-get-volume-stats", true, "allow GET_VOLUME_STATS on agent node")
+	removeSMBMappingDuringUnmount = flag.Bool("remove-smb-mapping-during-unmount", true, "remove SMBMapping during unmount on Windows node")
+	workingMountDir               = flag.String("working-mount-dir", "/tmp", "working directory for provisioner to mount smb shares temporarily")
 )
 
 func main() {
@@ -67,10 +68,11 @@ func main() {
 
 func handle() {
 	driverOptions := smb.DriverOptions{
-		NodeID:               *nodeID,
-		DriverName:           *driverName,
-		EnableGetVolumeStats: *enableGetVolumeStats,
-		WorkingMountDir:      *workingMountDir,
+		NodeID:                        *nodeID,
+		DriverName:                    *driverName,
+		EnableGetVolumeStats:          *enableGetVolumeStats,
+		RemoveSMBMappingDuringUnmount: *removeSMBMappingDuringUnmount,
+		WorkingMountDir:               *workingMountDir,
 	}
 	driver := smb.NewDriver(&driverOptions)
 	driver.Run(*endpoint, *kubeconfig, false)

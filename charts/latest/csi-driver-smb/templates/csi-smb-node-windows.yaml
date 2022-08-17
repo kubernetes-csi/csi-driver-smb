@@ -102,6 +102,7 @@ spec:
             - --nodeid=$(KUBE_NODE_NAME)
             - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
             - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
+            - "--remove-smb-mapping-during-unmount={{ .Values.windows.removeSMBMappingDuringUnmount }}"
           ports:
             - containerPort: {{ .Values.node.livenessProbe.healthPort }}
               name: healthz

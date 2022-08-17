@@ -65,7 +65,7 @@ func (f *fakeMounter) IsLikelyNotMountPoint(file string) (bool, error) {
 
 func NewFakeMounter() (*mount.SafeFormatAndMount, error) {
 	if runtime.GOOS == "windows" {
-		return mounter.NewSafeMounter()
+		return mounter.NewSafeMounter(true)
 	}
 	return &mount.SafeFormatAndMount{
 		Interface: &fakeMounter{},

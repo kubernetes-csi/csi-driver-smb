@@ -103,6 +103,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `linux.resources.smb.requests.memory`                  | smb-csi-driver memory requests limits                | `20Mi`                                               
 | `windows.enabled`                                 | whether enable windows feature                             | `false`                                              |
 | `windows.dsName`                                  | name of driver daemonset on windows                             | `csi-smb-node-win`                                   |
+| `windows.removeSMBMappingDuringUnmount`           | remove SMBMapping during unmount on Windows node windows                             | `true`                                   |
 | `windows.resources.livenessProbe.limits.memory`          | liveness-probe memory limits                          | `200Mi`                                              |
 | `windows.resources.livenessProbe.requests.cpu`           | liveness-probe cpu requests limits                    | `10m`                                                |
 | `windows.resources.livenessProbe.requests.memory`        | liveness-probe memory requests limits                 | `20Mi`                                               |

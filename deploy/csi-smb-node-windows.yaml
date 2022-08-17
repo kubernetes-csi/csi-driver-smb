@@ -89,6 +89,7 @@ spec:
             - --endpoint=$(CSI_ENDPOINT)
             - --nodeid=$(KUBE_NODE_NAME)
             - "--metrics-address=0.0.0.0:29645"
+            - "--remove-smb-mapping-during-unmount=true"
           ports:
             - containerPort: 29643
               name: healthz

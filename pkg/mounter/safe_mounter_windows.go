@@ -55,8 +55,9 @@ type CSIProxyMounter interface {
 var _ CSIProxyMounter = &csiProxyMounter{}
 
 type csiProxyMounter struct {
-	FsClient  *fsclient.Client
-	SMBClient *smbclient.Client
+	FsClient                      *fsclient.Client
+	SMBClient                     *smbclient.Client
+	RemoveSMBMappingDuringUnmount bool
 }
 
 func normalizeWindowsPath(path string) string {
@@ -101,12 +102,9 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 	}
 
 	source = strings.Replace(source, "/", "\\", -1)
-	if strings.HasSuffix(source, "\\") {
-		source = strings.TrimSuffix(source, "\\")
-	}
-
+	source = strings.TrimSuffix(source, "\\")
 	mappingPath, err := getRootMappingPath(source)
-	if err != nil {
+	if mounter.RemoveSMBMappingDuringUnmount && err != nil {
 		return fmt.Errorf("getRootMappingPath(%s) failed with error: %v", source, err)
 	}
 	unlock := lock(mappingPath)
@@ -119,16 +117,17 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 		Username:   mountOptions[0],
 		Password:   sensitiveMountOptions[0],
 	}
-	klog.V(2).Infof("begin to mount %s on %s", source, normalizedTarget)
+	klog.V(2).Infof("begin to NewSmbGlobalMapping %s on %s", source, normalizedTarget)
 	if _, err := mounter.SMBClient.NewSmbGlobalMapping(context.Background(), smbMountRequest); err != nil {
-		return fmt.Errorf("smb mapping failed with error: %v", err)
+		return fmt.Errorf("NewSmbGlobalMapping(%s, %s) failed with error: %v", source, normalizedTarget, err)
 	}
-	klog.V(2).Infof("mount %s on %s successfully", source, normalizedTarget)
+	klog.V(2).Infof("NewSmbGlobalMapping %s on %s successfully", source, normalizedTarget)
 
-	if err = incementRemotePathReferencesCount(mappingPath, source); err != nil {
-		klog.Warningf("incementMappingPathCount(%s, %s) failed with error: %v", mappingPath, source, err)
+	if mounter.RemoveSMBMappingDuringUnmount {
+		if err := incementRemotePathReferencesCount(mappingPath, source); err != nil {
+			return fmt.Errorf("incementMappingPathCount(%s, %s) failed with error: %v", mappingPath, source, err)
+		}
 	}
-
 	return nil
 }
 
@@ -138,35 +137,32 @@ func (mounter *csiProxyMounter) SMBUnmount(target string) error {
 	if remotePath, err := os.Readlink(target); err != nil {
 		klog.Warningf("SMBUnmount: can't get remote path: %v", err)
 	} else {
-		if strings.HasSuffix(remotePath, "\\") {
-			remotePath = strings.TrimSuffix(remotePath, "\\")
-		}
+		remotePath = strings.TrimSuffix(remotePath, "\\")
 		mappingPath, err := getRootMappingPath(remotePath)
-		if err != nil {
-			klog.Warningf("getRootMappingPath(%s) failed with error: %v", remotePath, err)
-		} else {
-			klog.V(4).Infof("SMBUnmount: remote path: %s, mapping path: %s", remotePath, mappingPath)
+		if mounter.RemoveSMBMappingDuringUnmount && err != nil {
+			return fmt.Errorf("getRootMappingPath(%s) failed with error: %v", remotePath, err)
+		}
+		klog.V(4).Infof("SMBUnmount: remote path: %s, mapping path: %s", remotePath, mappingPath)
 
-			unlock := lock(mappingPath)
-			defer unlock()
+		unlock := lock(mappingPath)
+		defer unlock()
 
+		if mounter.RemoveSMBMappingDuringUnmount {
 			if err := decrementRemotePathReferencesCount(mappingPath, remotePath); err != nil {
-				klog.Warningf("decrementMappingPathCount(%s, %d) failed with error: %v", mappingPath, remotePath, err)
-			} else {
-				count := getRemotePathReferencesCount(mappingPath)
-				if count == 0 {
-					smbUnmountRequest := &smb.RemoveSmbGlobalMappingRequest{
-						RemotePath: remotePath,
-					}
-					klog.V(2).Infof("begin to unmount %s on %s", remotePath, target)
-					if _, err := mounter.SMBClient.RemoveSmbGlobalMapping(context.Background(), smbUnmountRequest); err != nil {
-						return fmt.Errorf("smb unmapping failed with error: %v", err)
-					} else {
-						klog.V(2).Infof("unmount %s on %s successfully", remotePath, target)
-					}
-				} else {
-					klog.Infof("SMBUnmount: found %f links to %s", count, mappingPath)
+				return fmt.Errorf("decrementMappingPathCount(%s, %s) failed with error: %v", mappingPath, remotePath, err)
+			}
+			count := getRemotePathReferencesCount(mappingPath)
+			if count == 0 {
+				smbUnmountRequest := &smb.RemoveSmbGlobalMappingRequest{
+					RemotePath: remotePath,
 				}
+				klog.V(2).Infof("begin to RemoveSmbGlobalMapping %s on %s", remotePath, target)
+				if _, err := mounter.SMBClient.RemoveSmbGlobalMapping(context.Background(), smbUnmountRequest); err != nil {
+					return fmt.Errorf("RemoveSmbGlobalMapping failed with error: %v", err)
+				}
+				klog.V(2).Infof("RemoveSmbGlobalMapping %s on %s successfully", remotePath, target)
+			} else {
+				klog.Infof("SMBUnmount: found %d links to %s", count, mappingPath)
 			}
 		}
 	}
@@ -342,7 +338,7 @@ func (mounter *csiProxyMounter) MountSensitiveWithoutSystemdWithMountFlags(sourc
 
 // NewCSIProxyMounter - creates a new CSI Proxy mounter struct which encompassed all the
 // clients to the CSI proxy - filesystem, disk and volume clients.
-func NewCSIProxyMounter() (*csiProxyMounter, error) {
+func NewCSIProxyMounter(removeSMBMappingDuringUnmount bool) (*csiProxyMounter, error) {
 	fsClient, err := fsclient.NewClient()
 	if err != nil {
 		return nil, err
@@ -353,13 +349,14 @@ func NewCSIProxyMounter() (*csiProxyMounter, error) {
 	}
 
 	return &csiProxyMounter{
-		FsClient:  fsClient,
-		SMBClient: smbClient,
+		FsClient:                      fsClient,
+		SMBClient:                     smbClient,
+		RemoveSMBMappingDuringUnmount: removeSMBMappingDuringUnmount,
 	}, nil
 }
 
-func NewSafeMounter() (*mount.SafeFormatAndMount, error) {
-	csiProxyMounter, err := NewCSIProxyMounter()
+func NewSafeMounter(removeSMBMappingDuringUnmount bool) (*mount.SafeFormatAndMount, error) {
+	csiProxyMounter, err := NewCSIProxyMounter(removeSMBMappingDuringUnmount)
 	if err == nil {
 		klog.V(2).Infof("using CSIProxyMounterV1, %s", csiProxyMounter.GetAPIVersions())
 		return &mount.SafeFormatAndMount{
