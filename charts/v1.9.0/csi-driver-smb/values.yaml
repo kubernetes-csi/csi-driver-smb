@@ -1,0 +1,154 @@
+image:
+  baseRepo: registry.k8s.io/sig-storage
+  smb:
+    repository: registry.k8s.io/sig-storage/smbplugin
+    tag: v1.9.0
+    pullPolicy: IfNotPresent
+  csiProvisioner:
+    repository: registry.k8s.io/sig-storage/csi-provisioner
+    tag: v3.2.0
+    pullPolicy: IfNotPresent
+  livenessProbe:
+    repository: registry.k8s.io/sig-storage/livenessprobe
+    tag: v2.7.0
+    pullPolicy: IfNotPresent
+  nodeDriverRegistrar:
+    repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
+    tag: v2.5.1
+    pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true # When true, service accounts will be created for you. Set to false if you want to use your own.
+  controller: csi-smb-controller-sa
+  node: csi-smb-node-sa
+
+rbac:
+  create: true
+  name: smb
+
+driver:
+  name: smb.csi.k8s.io
+
+feature:
+  enableGetVolumeStats: true
+
+controller:
+  name: csi-smb-controller
+  replicas: 1
+  dnsPolicy: Default  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
+  metricsPort: 29644
+  livenessProbe:
+    healthPort: 29642
+  runOnMaster: false
+  runOnControlPlane: false
+  logLevel: 5
+  workingMountDir: "/tmp"
+  resources:
+    csiProvisioner:
+      limits:
+        memory: 300Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    livenessProbe:
+      limits:
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    smb:
+      limits:
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+  affinity: {}
+  nodeSelector: {}
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "node-role.kubernetes.io/controlplane"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+node:
+  maxUnavailable: 1
+  metricsPort: 29645
+  logLevel: 5
+  livenessProbe:
+    healthPort: 29643
+  affinity: {}
+  nodeSelector: {}
+
+linux:
+  enabled: true
+  dsName: csi-smb-node # daemonset name
+  dnsPolicy: Default  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
+  kubelet: /var/lib/kubelet
+  tolerations:
+    - operator: "Exists"
+  resources:
+    livenessProbe:
+      limits:
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    nodeDriverRegistrar:
+      limits:
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    smb:
+      limits:
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+
+windows:
+  enabled: false
+  dsName: csi-smb-node-win # daemonset name
+  kubelet: 'C:\var\lib\kubelet'
+  removeSMBMappingDuringUnmount: true
+  tolerations:
+    - key: "node.kubernetes.io/os"
+      operator: "Exists"
+      effect: "NoSchedule"
+  resources:
+    livenessProbe:
+      limits:
+        memory: 150Mi
+      requests:
+        cpu: 10m
+        memory: 40Mi
+    nodeDriverRegistrar:
+      limits:
+        memory: 150Mi
+      requests:
+        cpu: 10m
+        memory: 40Mi
+    smb:
+      limits:
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 40Mi
+
+customLabels: {}
+## Collection of annotations to add to all the pods
+podAnnotations: {}
+## Collection of labels to add to all the pods
+podLabels: {}
+## Leverage a PriorityClass to ensure your pods survive resource shortages
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+priorityClassName: system-cluster-critical
+## Security context give the opportunity to run container as nonroot by setting a securityContext
+## by example :
+## securityContext: { runAsUser: 1001 }
+securityContext: {}
