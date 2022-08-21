@@ -11,7 +11,7 @@ csi-smb-controller-56bfddd689-sl4ll      5/5     Running   0          35s     10
 ```
  - get pod description and logs
 ```console
-$ kubectl describe csi-smb-controller-56bfddd689-dh5tk -n kube-system > csi-smb-controller-description.log
+$ kubectl describe po csi-smb-controller-56bfddd689-dh5tk -n kube-system > csi-smb-controller-description.log
 $ kubectl logs csi-smb-controller-56bfddd689-dh5tk -c smb -n kube-system > csi-smb-controller.log
 ```
 
@@ -26,7 +26,7 @@ csi-smb-node-dr4s4                        3/3     Running   0          7m4s    1
 
  - get pod description and logs
 ```console
-$ kubectl describe csi-smb-node-cvgbs -n kube-system > csi-smb-node-description.log
+$ kubectl describe po csi-smb-node-cvgbs -n kube-system > csi-smb-node-description.log
 $ kubectl logs csi-smb-node-cvgbs -c smb -n kube-system > csi-smb-node.log
 ```
 
