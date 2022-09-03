@@ -4,13 +4,17 @@
     "properties": {
         "orchestratorProfile": {
             "orchestratorType": "Kubernetes",
-            "orchestratorRelease": "1.20",
+            "orchestratorRelease": "1.22",
             "kubernetesConfig": {
                 "useManagedIdentity": false,
                 "useCloudControllerManager": true,
                 "networkPlugin": "azure",
+                "containerRuntime": "containerd",
                 "cloudProviderRateLimitQPS": 6,
                 "cloudProviderRateLimitBucket": 20,
+                "kubeletConfig": {
+                    "--feature-gates": "DelegateFSGroupToCSIDriver=true"
+                },
                 "apiServerConfig": {
                     "--enable-admission-plugins": "NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota,AlwaysPullImages"
                 },
@@ -35,9 +39,8 @@
             {
                 "name": "agentpool1",
                 "count": 2,
-                "vmSize": "Standard_DS2_v2",
                 "availabilityProfile": "VirtualMachineScaleSets",
-                "distro": "aks-ubuntu-18.04"
+                "vmSize": "Standard_DS2_v2"
             }
         ],
         "linuxProfile": {
