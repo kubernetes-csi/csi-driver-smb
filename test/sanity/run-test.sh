@@ -77,6 +77,9 @@ else
   sudo _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 fi
 
+# sleep a while waiting for azurefileplugin start up
+sleep 1
+
 echo 'Begin to run sanity test...'
 CSI_SANITY_BIN=$GOPATH/bin/csi-sanity
 skipTests='create a volume with already existing name and different capacity|should fail when requesting to create a volume with already existing name and different capacity|should fail when the requested volume does not exist'
