@@ -39,7 +39,7 @@ function install_csi_sanity_bin {
   mkdir -p $GOPATH/src/github.com/kubernetes-csi
   pushd $GOPATH/src/github.com/kubernetes-csi
   export GO111MODULE=off
-  git clone https://github.com/kubernetes-csi/csi-test.git -b v4.3.0
+  git clone https://github.com/kubernetes-csi/csi-test.git -b v5.0.0
   pushd csi-test/cmd/csi-sanity
   make install
   popd
@@ -76,6 +76,9 @@ else
   # if running on github actions, use sudo
   sudo _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
 fi
+
+# sleep a while waiting for azurefileplugin start up
+sleep 1
 
 echo 'Begin to run sanity test...'
 CSI_SANITY_BIN=$GOPATH/bin/csi-sanity

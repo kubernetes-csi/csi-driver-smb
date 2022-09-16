@@ -341,7 +341,7 @@ golang.org/x/crypto/pkcs12/internal/rc2
 golang.org/x/crypto/poly1305
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
-# golang.org/x/net v0.0.0-20220225172249-27dd8689420f
+# golang.org/x/net v0.0.0-20220906165146-f3363e06e74c
 ## explicit; go 1.17
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
@@ -361,7 +361,7 @@ golang.org/x/oauth2/google
 golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
-# golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e => golang.org/x/sys v0.0.0-20220412211240-33da011f77ad
+# golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 => golang.org/x/sys v0.0.0-20220412211240-33da011f77ad
 ## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
