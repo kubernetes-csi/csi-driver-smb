@@ -29,7 +29,7 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}    
-      hostNetwork: true
+      hostNetwork: {{ .Values.linux.hostNetwork }}
       dnsPolicy: {{ .Values.linux.dnsPolicy }}
       serviceAccountName: {{ .Values.serviceAccount.node }}
       nodeSelector:

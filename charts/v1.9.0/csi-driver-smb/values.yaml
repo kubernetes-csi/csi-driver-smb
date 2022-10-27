@@ -89,6 +89,7 @@ linux:
   dsName: csi-smb-node # daemonset name
   dnsPolicy: Default  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
   kubelet: /var/lib/kubelet
+  hostNetwork: true
   tolerations:
     - operator: "Exists"
   resources:
