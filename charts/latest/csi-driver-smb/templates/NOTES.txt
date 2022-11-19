@@ -2,4 +2,4 @@ The CSI SMB Driver is getting deployed to your cluster.
 
 To check CSI SMB Driver pods status, please run:
 
-  kubectl --namespace={{ .Release.Namespace }} get pods --selector="release={{ .Release.Name }}" --watch
+  kubectl --namespace={{ .Release.Namespace }} get pods --selector="app.kubernetes.io/name={{ .Release.Name }}" --watch
