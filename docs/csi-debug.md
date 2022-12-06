@@ -58,7 +58,6 @@ change below deployment config, e.g.
 
 ### troubleshooting connection failure on agent node
  - On Linux node
-> get `/var/log/messages` and `dmesg` output when there is mount failure on Linux node
 ```console
 mkdir /tmp/test
 sudo mount -v -t cifs //smb-server/fileshare /tmp/test -o vers=3.0,username=accountname,password=accountkey,dir_mode=0777,file_mode=0777,cache=strict,actimeo=30
@@ -68,6 +67,21 @@ sudo mount -v -t cifs //smb-server/fileshare /tmp/test -o vers=3.0,username=acco
 ```console
 sudo mount | grep cifs
 ```
+
+<details><summary>
+Get client-side logs on Linux node if there is mount error 
+</summary>
+
+```console
+kubectl debug node/node-name --image=nginx
+kubectl cp node-debugger-node-name-xxxx:/host/var/log/messages /tmp/messages
+kubectl cp node-debugger-node-name-xxxx:/host/var/log/syslog /tmp/syslog
+kubectl cp node-debugger-node-name-xxxx:/host/var/log/kern.log /tmp/kern.log
+#after log collected, delete the debug pod by:
+kubectl delete po node-debugger-node-name-xxxx
+```
+ 
+</details>
 
  - On Windows node
 ```console
@@ -79,6 +93,17 @@ Get-SmbGlobalMapping
 cd x:
 dir
 ```
+
+<details><summary>
+Get client-side logs on Windows node if there is mount error 
+</summary>
+
+```console
+Get SMBClient events from Event Viewer under following path:
+Application and Services Logs -> Microsoft -> Windows -> SMBClient
+```
+
+</details>
 
 ### Configure [csi-proxy](https://github.com/kubernetes-csi/csi-proxy#installation) on Windows node
 > Start a Powershell window as admin
