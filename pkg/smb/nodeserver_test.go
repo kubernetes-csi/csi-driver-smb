@@ -426,11 +426,6 @@ func TestNodeUnpublishVolume(t *testing.T) {
 			},
 		},
 		{
-			desc: "[Error] Unmount error mocked by IsLikelyNotMountPoint",
-			req:  csi.NodeUnpublishVolumeRequest{TargetPath: errorTarget, VolumeId: "vol_1"},
-			expectedErr: testutil.TestError{},
-		},
-		{
 			desc:        "[Success] Valid request",
 			req:         csi.NodeUnpublishVolumeRequest{TargetPath: targetFile, VolumeId: "vol_1"},
 			expectedErr: testutil.TestError{},
@@ -505,11 +500,6 @@ func TestNodeUnstageVolume(t *testing.T) {
 			cleanup: func(d *Driver) {
 				d.volumeLocks.Release("vol_1")
 			},
-		},
-		{
-			desc:          "[Error] CleanupMountPoint error mocked by IsLikelyNotMountPoint",
-			req:           csi.NodeUnstageVolumeRequest{StagingTargetPath: errorTarget, VolumeId: "vol_1"},
-			expectedErr: testutil.TestError{},
 		},
 		{
 			desc:        "[Success] Valid request",
