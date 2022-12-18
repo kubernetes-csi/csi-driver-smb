@@ -434,7 +434,6 @@ replace (
 	gonum.org/v1/plot => gonum.org/v1/plot v0.0.0-20190515093506-e2840ee46a6b
 	google.golang.org/api => google.golang.org/api v0.6.1-0.20190607001116-5213b8090861
 	google.golang.org/appengine => google.golang.org/appengine v1.5.0
-	google.golang.org/genproto => google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55
 	gopkg.in/airbrake/gobrake.v2 => gopkg.in/airbrake/gobrake.v2 v2.0.9
 	gopkg.in/alecthomas/kingpin.v2 => gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/check.v1 => gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127
@@ -479,7 +478,7 @@ replace (
 	k8s.io/kubelet => k8s.io/kubelet v0.26.0
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.26.0
 	k8s.io/metrics => k8s.io/metrics v0.26.0
-	k8s.io/mount-utils => k8s.io/mount-utils v0.26.0
+	k8s.io/mount-utils => k8s.io/mount-utils v0.0.0-20221216112627-49433b159e95
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.26.0
 	k8s.io/repo-infra => k8s.io/repo-infra v0.0.1-alpha.1
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.26.0

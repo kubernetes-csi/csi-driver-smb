@@ -438,8 +438,8 @@ google.golang.org/appengine/internal/log
 google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
-# google.golang.org/genproto v0.0.0-20220502173005-c8bf987b8c21 => google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55
-## explicit
+# google.golang.org/genproto v0.0.0-20220502173005-c8bf987b8c21
+## explicit; go 1.15
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/googleapis/rpc/errdetails
 google.golang.org/genproto/googleapis/rpc/status
@@ -528,6 +528,7 @@ google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/descriptorpb
 google.golang.org/protobuf/types/known/anypb
 google.golang.org/protobuf/types/known/durationpb
+google.golang.org/protobuf/types/known/fieldmaskpb
 google.golang.org/protobuf/types/known/timestamppb
 google.golang.org/protobuf/types/known/wrapperspb
 # gopkg.in/fsnotify.v1 v1.4.7 => gopkg.in/fsnotify.v1 v1.4.7
@@ -1070,7 +1071,7 @@ k8s.io/kubernetes/test/e2e/testing-manifests
 k8s.io/kubernetes/test/utils
 k8s.io/kubernetes/test/utils/image
 k8s.io/kubernetes/test/utils/kubeconfig
-# k8s.io/mount-utils v0.26.0 => k8s.io/mount-utils v0.26.0
+# k8s.io/mount-utils v0.26.0 => k8s.io/mount-utils v0.0.0-20221216112627-49433b159e95
 ## explicit; go 1.19
 k8s.io/mount-utils
 # k8s.io/pod-security-admission v0.0.0 => k8s.io/pod-security-admission v0.26.0
@@ -1427,7 +1428,6 @@ sigs.k8s.io/yaml
 # gonum.org/v1/plot => gonum.org/v1/plot v0.0.0-20190515093506-e2840ee46a6b
 # google.golang.org/api => google.golang.org/api v0.6.1-0.20190607001116-5213b8090861
 # google.golang.org/appengine => google.golang.org/appengine v1.5.0
-# google.golang.org/genproto => google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55
 # gopkg.in/airbrake/gobrake.v2 => gopkg.in/airbrake/gobrake.v2 v2.0.9
 # gopkg.in/alecthomas/kingpin.v2 => gopkg.in/alecthomas/kingpin.v2 v2.2.6
 # gopkg.in/check.v1 => gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127
@@ -1472,7 +1472,7 @@ sigs.k8s.io/yaml
 # k8s.io/kubelet => k8s.io/kubelet v0.26.0
 # k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.26.0
 # k8s.io/metrics => k8s.io/metrics v0.26.0
-# k8s.io/mount-utils => k8s.io/mount-utils v0.26.0
+# k8s.io/mount-utils => k8s.io/mount-utils v0.0.0-20221216112627-49433b159e95
 # k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.26.0
 # k8s.io/repo-infra => k8s.io/repo-infra v0.0.1-alpha.1
 # k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.26.0

@@ -256,7 +256,7 @@ func (mounter *csiProxyMounter) IsMountPoint(file string) (bool, error) {
 }
 
 // CanSafelySkipMountPointCheck always returns false on Windows
-func (mounter *csiProxyMounter) canSafelySkipMountPointCheck() bool {
+func (mounter *csiProxyMounter) CanSafelySkipMountPointCheck() bool {
 	return false
 }
 
