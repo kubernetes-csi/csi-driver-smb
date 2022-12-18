@@ -246,6 +246,20 @@ func (mounter *csiProxyMounter) IsLikelyNotMountPoint(path string) (bool, error)
 	return !response.IsSymlink, nil
 }
 
+// IsMountPoint: determines if a directory is a mountpoint.
+func (mounter *csiProxyMounter) IsMountPoint(file string) (bool, error) {
+	isNotMnt, err := mounter.IsLikelyNotMountPoint(file)
+	if err != nil {
+		return false, err
+	}
+	return !isNotMnt, nil
+}
+
+// CanSafelySkipMountPointCheck always returns false on Windows
+func (mounter *csiProxyMounter) canSafelySkipMountPointCheck() bool {
+	return false
+}
+
 func (mounter *csiProxyMounter) PathIsDevice(pathname string) (bool, error) {
 	return false, fmt.Errorf("PathIsDevice not implemented for CSIProxyMounter")
 }

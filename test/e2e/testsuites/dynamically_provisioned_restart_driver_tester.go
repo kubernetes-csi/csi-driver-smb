@@ -48,7 +48,7 @@ func (t *DynamicallyProvisionedRestartDriverTest) Run(client clientset.Interface
 
 	if t.PodCheck != nil {
 		ginkgo.By("checking if pod is able to access volume")
-		tDeployment.Exec(t.PodCheck.Cmd, t.PodCheck.ExpectedString)
+		tDeployment.PollForStringInPodsExec(t.PodCheck.Cmd, t.PodCheck.ExpectedString)
 	}
 
 	// restart the driver
@@ -58,6 +58,6 @@ func (t *DynamicallyProvisionedRestartDriverTest) Run(client clientset.Interface
 	// check if original pod could still access volume
 	if t.PodCheck != nil {
 		ginkgo.By("checking if pod still has access to volume after driver restart")
-		tDeployment.Exec(t.PodCheck.Cmd, t.PodCheck.ExpectedString)
+		tDeployment.PollForStringInPodsExec(t.PodCheck.Cmd, t.PodCheck.ExpectedString)
 	}
 }

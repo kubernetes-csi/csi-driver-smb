@@ -57,7 +57,7 @@ func (t *DynamicallyProvisionedDeletePodTest) Run(client clientset.Interface, na
 	if t.PodCheck != nil {
 		ginkgo.By("sleep 5s and then check pod exec")
 		time.Sleep(5 * time.Second)
-		tDeployment.Exec(t.PodCheck.Cmd, t.PodCheck.ExpectedString)
+		tDeployment.PollForStringInPodsExec(t.PodCheck.Cmd, t.PodCheck.ExpectedString)
 	}
 
 	ginkgo.By("deleting the pod for deployment")
@@ -70,6 +70,6 @@ func (t *DynamicallyProvisionedDeletePodTest) Run(client clientset.Interface, na
 		ginkgo.By("sleep 5s and then check pod exec after pod restart again")
 		time.Sleep(5 * time.Second)
 		// pod will be restarted so expect to see 2 instances of string
-		tDeployment.Exec(t.PodCheck.Cmd, t.PodCheck.ExpectedString+t.PodCheck.ExpectedString)
+		tDeployment.PollForStringInPodsExec(t.PodCheck.Cmd, t.PodCheck.ExpectedString+t.PodCheck.ExpectedString)
 	}
 }
