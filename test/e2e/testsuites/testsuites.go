@@ -27,7 +27,7 @@ import (
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	apps "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -52,14 +52,12 @@ import (
 )
 
 const (
-	execTimeout = 10 * time.Second
 	// Some pods can take much longer to get ready due to volume attach/detach latency.
 	slowPodStartTimeout = 15 * time.Minute
 	// Description that will printed during tests
 	failedConditionDescription = "Error status code"
 	poll                       = 2 * time.Second
 	pollLongTimeout            = 5 * time.Minute
-	pollTimeout                = 10 * time.Minute
 	pollForStringTimeout       = 1 * time.Minute
 )
 
@@ -476,11 +474,9 @@ func (t *TestDeployment) DeletePodAndWait() {
 		return
 	}
 	framework.Logf("Waiting for pod %q in namespace %q to be fully deleted", t.podName, t.namespace.Name)
-	err = e2epod.WaitForPodNoLongerRunningInNamespace(t.client, t.podName, t.namespace.Name)
+	err = e2epod.WaitForPodNotFoundInNamespace(t.client, t.podName, t.namespace.Name, e2epod.DefaultPodDeletionTimeout)
 	if err != nil {
-		if !apierrs.IsNotFound(err) {
-			framework.ExpectNoError(fmt.Errorf("pod %q error waiting for delete: %v", t.podName, err))
-		}
+		framework.ExpectNoError(fmt.Errorf("pod %q error waiting for delete: %w", t.podName, err))
 	}
 }
 

@@ -194,7 +194,7 @@ func TestCreateVolume(t *testing.T) {
 
 			// separate assertion for flaky error messages
 			if test.flakyWindowsErrorMessage != "" && runtime.GOOS == "windows" {
-				fmt.Println("Skipping checks on Windows ENV")
+				fmt.Println("Skipping checks on Windows ENV") // nolint
 			} else {
 				if !test.expectErr && err != nil {
 					t.Errorf("test %q failed: %v", test.name, err)
@@ -270,7 +270,7 @@ func TestDeleteVolume(t *testing.T) {
 			// Verify
 			if runtime.GOOS == "windows" {
 				// skip checks
-				fmt.Println("Skipping checks on Windows ENV")
+				fmt.Println("Skipping checks on Windows ENV") // nolint
 			} else {
 				if test.expectedErr == nil && err != nil {
 					t.Errorf("test %q failed: %v", test.desc, err)
