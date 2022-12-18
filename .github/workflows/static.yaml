@@ -7,10 +7,13 @@ jobs:
         name: Go Lint
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout code
-              uses: actions/checkout@master
+            - name: Set up Go 1.x
+              uses: actions/setup-go@v3
+              with:
+                go-version: ^1.19
+            - uses: actions/checkout@master
             - name: Run linter
               uses: golangci/golangci-lint-action@v3
               with:
-                  version: v1.45
-                  args: -E=gofmt,deadcode,unused,varcheck,ineffassign,revive,misspell,exportloopref,asciicheck,bodyclose,contextcheck --timeout=30m0s
+                  version: v1.48
+                  args: -E=gofmt,deadcode,unused,varcheck,ineffassign,revive,misspell,exportloopref,asciicheck,bodyclose,depguard,dogsled,durationcheck,errname,forbidigo -D=staticcheck --timeout=30m0s
