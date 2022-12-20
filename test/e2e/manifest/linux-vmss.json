@@ -16,7 +16,8 @@
                     "--feature-gates": "DelegateFSGroupToCSIDriver=true"
                 },
                 "apiServerConfig": {
-                    "--enable-admission-plugins": "NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota,AlwaysPullImages"
+                    "--enable-admission-plugins": "NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota,AlwaysPullImages",
+                    "--disable-admission-plugins": "PodSecurity"
                 },
                 "addons": [
                     {
