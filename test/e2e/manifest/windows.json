@@ -10,7 +10,7 @@
             "kubernetesConfig": {
                 "apiServerConfig": {
                     "--disable-admission-plugins": "PodSecurity"
-                },
+                }
             }
         },
         "masterProfile": {
