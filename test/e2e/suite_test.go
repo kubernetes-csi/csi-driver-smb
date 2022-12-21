@@ -29,8 +29,8 @@ import (
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 	"github.com/kubernetes-csi/csi-driver-smb/test/utils/testutil"
-	"github.com/onsi/ginkgo"
-	"github.com/onsi/ginkgo/reporters"
+	"github.com/onsi/ginkgo/v2"
+	"github.com/onsi/ginkgo/v2/reporters"
 	"github.com/onsi/gomega"
 	"github.com/pborman/uuid"
 	"k8s.io/kubernetes/test/e2e/framework"

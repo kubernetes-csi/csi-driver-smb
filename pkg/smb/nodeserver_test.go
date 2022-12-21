@@ -426,16 +426,6 @@ func TestNodeUnpublishVolume(t *testing.T) {
 			},
 		},
 		{
-			desc: "[Error] Unmount error mocked by IsLikelyNotMountPoint",
-			req:  csi.NodeUnpublishVolumeRequest{TargetPath: errorTarget, VolumeId: "vol_1"},
-			// todo: This test does not return any error on windows
-			// Once the issue is figured out, we'll remove this field
-			skipOnWindows: true,
-			expectedErr: testutil.TestError{
-				DefaultError: status.Error(codes.Internal, fmt.Sprintf("failed to unmount target \"%s\": fake IsLikelyNotMountPoint: fake error", errorTarget)),
-			},
-		},
-		{
 			desc:        "[Success] Valid request",
 			req:         csi.NodeUnpublishVolumeRequest{TargetPath: targetFile, VolumeId: "vol_1"},
 			expectedErr: testutil.TestError{},
@@ -509,14 +499,6 @@ func TestNodeUnstageVolume(t *testing.T) {
 			},
 			cleanup: func(d *Driver) {
 				d.volumeLocks.Release("vol_1")
-			},
-		},
-		{
-			desc:          "[Error] CleanupMountPoint error mocked by IsLikelyNotMountPoint",
-			req:           csi.NodeUnstageVolumeRequest{StagingTargetPath: errorTarget, VolumeId: "vol_1"},
-			skipOnWindows: true,
-			expectedErr: testutil.TestError{
-				DefaultError: status.Error(codes.Internal, fmt.Sprintf("failed to unmount staging target %#v: fake IsLikelyNotMountPoint: fake error", errorTarget)),
 			},
 		},
 		{

@@ -22,15 +22,17 @@ import (
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/testsuites"
 
-	"github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo/v2"
 	v1 "k8s.io/api/core/v1"
 	clientset "k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"k8s.io/kubernetes/test/e2e/framework"
+	admissionapi "k8s.io/pod-security-admission/api"
 )
 
 var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	f := framework.NewDefaultFramework("smb")
+	f.NamespacePodSecurityEnforceLevel = admissionapi.LevelPrivileged
 
 	var (
 		cs         clientset.Interface

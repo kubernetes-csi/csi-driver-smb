@@ -31,8 +31,8 @@ limitations under the License.
  * Note that the server containers are for testing purposes only and should not
  * be used in production.
  *
- * 2) With server outside of Kubernetes (Cinder, ...)
- * Appropriate server (e.g. OpenStack Cinder) must exist somewhere outside
+ * 2) With server outside of Kubernetes
+ * Appropriate server must exist somewhere outside
  * the tested Kubernetes cluster. The test itself creates a new volume,
  * and checks, that Kubernetes can use it as a volume.
  */
@@ -41,6 +41,7 @@ package volume
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"path/filepath"
 	"strconv"
@@ -51,14 +52,17 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/util/wait"
 	clientset "k8s.io/client-go/kubernetes"
 	clientexec "k8s.io/client-go/util/exec"
 	"k8s.io/kubernetes/test/e2e/framework"
+	e2ekubectl "k8s.io/kubernetes/test/e2e/framework/kubectl"
 	e2epod "k8s.io/kubernetes/test/e2e/framework/pod"
+	e2epodoutput "k8s.io/kubernetes/test/e2e/framework/pod/output"
 	imageutils "k8s.io/kubernetes/test/utils/image"
 	uexec "k8s.io/utils/exec"
 
-	"github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 )
 
@@ -164,65 +168,6 @@ func NewNFSServer(cs clientset.Interface, namespace string, args []string) (conf
 	return config, pod, host
 }
 
-// NewGlusterfsServer is a GlusterFS-specific wrapper for CreateStorageServer. Also creates the gluster endpoints object.
-func NewGlusterfsServer(cs clientset.Interface, namespace string) (config TestConfig, pod *v1.Pod, ip string) {
-	config = TestConfig{
-		Namespace:   namespace,
-		Prefix:      "gluster",
-		ServerImage: imageutils.GetE2EImage(imageutils.VolumeGlusterServer),
-		ServerPorts: []int{24007, 24008, 49152},
-	}
-	pod, ip = CreateStorageServer(cs, config)
-
-	service := &v1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: config.Prefix + "-server",
-		},
-		Spec: v1.ServiceSpec{
-			Ports: []v1.ServicePort{
-				{
-					Protocol: v1.ProtocolTCP,
-					Port:     24007,
-				},
-			},
-		},
-	}
-
-	_, err := cs.CoreV1().Services(namespace).Create(context.TODO(), service, metav1.CreateOptions{})
-	framework.ExpectNoError(err, "failed to create service for Gluster server")
-
-	ginkgo.By("creating Gluster endpoints")
-	endpoints := &v1.Endpoints{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "Endpoints",
-			APIVersion: "v1",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: config.Prefix + "-server",
-		},
-		Subsets: []v1.EndpointSubset{
-			{
-				Addresses: []v1.EndpointAddress{
-					{
-						IP: ip,
-					},
-				},
-				Ports: []v1.EndpointPort{
-					{
-						Name:     "gluster",
-						Port:     24007,
-						Protocol: v1.ProtocolTCP,
-					},
-				},
-			},
-		},
-	}
-	_, err = cs.CoreV1().Endpoints(namespace).Create(context.TODO(), endpoints, metav1.CreateOptions{})
-	framework.ExpectNoError(err, "failed to create endpoints for Gluster server")
-
-	return config, pod, ip
-}
-
 // CreateStorageServer is a wrapper for startVolumeServer(). A storage server config is passed in, and a pod pointer
 // and ip address string are returned.
 // Note: Expect() is called so no error is returned.
@@ -233,6 +178,73 @@ func CreateStorageServer(cs clientset.Interface, config TestConfig) (pod *v1.Pod
 	gomega.Expect(len(ip)).NotTo(gomega.BeZero(), fmt.Sprintf("pod %s's IP should not be empty", pod.Name))
 	framework.Logf("%s server pod IP address: %s", config.Prefix, ip)
 	return pod, ip
+}
+
+// GetVolumeAttachmentName returns the hash value of the provisioner, the config ClientNodeSelection name,
+// and the VolumeAttachment name of the PV that is bound to the PVC with the passed in claimName and claimNamespace.
+func GetVolumeAttachmentName(cs clientset.Interface, config TestConfig, provisioner string, claimName string, claimNamespace string) string {
+	var nodeName string
+	// For provisioning tests, ClientNodeSelection is not set so we do not know the NodeName of the VolumeAttachment of the PV that is
+	// bound to the PVC with the passed in claimName and claimNamespace. We need this NodeName because it is used to generate the
+	// attachmentName that is returned, and used to look up a certain VolumeAttachment in WaitForVolumeAttachmentTerminated.
+	// To get the nodeName of the VolumeAttachment, we get all the VolumeAttachments, look for the VolumeAttachment with a
+	// PersistentVolumeName equal to the PV that is bound to the passed in PVC, and then we get the NodeName from that VolumeAttachment.
+	if config.ClientNodeSelection.Name == "" {
+		claim, _ := cs.CoreV1().PersistentVolumeClaims(claimNamespace).Get(context.TODO(), claimName, metav1.GetOptions{})
+		pvName := claim.Spec.VolumeName
+		volumeAttachments, _ := cs.StorageV1().VolumeAttachments().List(context.TODO(), metav1.ListOptions{})
+		for _, volumeAttachment := range volumeAttachments.Items {
+			if *volumeAttachment.Spec.Source.PersistentVolumeName == pvName {
+				nodeName = volumeAttachment.Spec.NodeName
+				break
+			}
+		}
+	} else {
+		nodeName = config.ClientNodeSelection.Name
+	}
+	handle := getVolumeHandle(cs, claimName, claimNamespace)
+	attachmentHash := sha256.Sum256([]byte(fmt.Sprintf("%s%s%s", handle, provisioner, nodeName)))
+	return fmt.Sprintf("csi-%x", attachmentHash)
+}
+
+// getVolumeHandle returns the VolumeHandle of the PV that is bound to the PVC with the passed in claimName and claimNamespace.
+func getVolumeHandle(cs clientset.Interface, claimName string, claimNamespace string) string {
+	// re-get the claim to the latest state with bound volume
+	claim, err := cs.CoreV1().PersistentVolumeClaims(claimNamespace).Get(context.TODO(), claimName, metav1.GetOptions{})
+	if err != nil {
+		framework.ExpectNoError(err, "Cannot get PVC")
+		return ""
+	}
+	pvName := claim.Spec.VolumeName
+	pv, err := cs.CoreV1().PersistentVolumes().Get(context.TODO(), pvName, metav1.GetOptions{})
+	if err != nil {
+		framework.ExpectNoError(err, "Cannot get PV")
+		return ""
+	}
+	if pv.Spec.CSI == nil {
+		gomega.Expect(pv.Spec.CSI).NotTo(gomega.BeNil())
+		return ""
+	}
+	return pv.Spec.CSI.VolumeHandle
+}
+
+// WaitForVolumeAttachmentTerminated waits for the VolumeAttachment with the passed in attachmentName to be terminated.
+func WaitForVolumeAttachmentTerminated(attachmentName string, cs clientset.Interface, timeout time.Duration) error {
+	waitErr := wait.PollImmediate(10*time.Second, timeout, func() (bool, error) {
+		_, err := cs.StorageV1().VolumeAttachments().Get(context.TODO(), attachmentName, metav1.GetOptions{})
+		if err != nil {
+			// if the volumeattachment object is not found, it means it has been terminated.
+			if apierrors.IsNotFound(err) {
+				return true, nil
+			}
+			return false, err
+		}
+		return false, nil
+	})
+	if waitErr != nil {
+		return fmt.Errorf("error waiting volume attachment %v to terminate: %v", attachmentName, waitErr)
+	}
+	return nil
 }
 
 // startVolumeServer starts a container specified by config.serverImage and exports all
@@ -344,7 +356,7 @@ func startVolumeServer(client clientset.Interface, config TestConfig) *v1.Pod {
 		}
 	}
 	if config.ServerReadyMessage != "" {
-		_, err := framework.LookForStringInLog(pod.Namespace, pod.Name, serverPodName, config.ServerReadyMessage, VolumeServerPodStartupTimeout)
+		_, err := e2epodoutput.LookForStringInLog(pod.Namespace, pod.Name, serverPodName, config.ServerReadyMessage, VolumeServerPodStartupTimeout)
 		framework.ExpectNoError(err, "Failed to find %q in pod logs: %s", config.ServerReadyMessage, err)
 	}
 	return pod
@@ -465,7 +477,7 @@ func testVolumeContent(f *framework.Framework, pod *v1.Pod, containerName string
 			// Block: check content
 			deviceName := fmt.Sprintf("/opt/%d", i)
 			commands := GenerateReadBlockCmd(deviceName, len(test.ExpectedContent))
-			_, err := framework.LookForStringInPodExecToContainer(pod.Namespace, pod.Name, containerName, commands, test.ExpectedContent, time.Minute)
+			_, err := e2epodoutput.LookForStringInPodExecToContainer(pod.Namespace, pod.Name, containerName, commands, test.ExpectedContent, time.Minute)
 			framework.ExpectNoError(err, "failed: finding the contents of the block device %s.", deviceName)
 
 			// Check that it's a real block device
@@ -474,7 +486,7 @@ func testVolumeContent(f *framework.Framework, pod *v1.Pod, containerName string
 			// Filesystem: check content
 			fileName := fmt.Sprintf("/opt/%d/%s", i, test.File)
 			commands := GenerateReadFileCmd(fileName)
-			_, err := framework.LookForStringInPodExecToContainer(pod.Namespace, pod.Name, containerName, commands, test.ExpectedContent, time.Minute)
+			_, err := e2epodoutput.LookForStringInPodExecToContainer(pod.Namespace, pod.Name, containerName, commands, test.ExpectedContent, time.Minute)
 			framework.ExpectNoError(err, "failed: finding the contents of the mounted file %s.", fileName)
 
 			// Check that a directory has been mounted
@@ -485,14 +497,14 @@ func testVolumeContent(f *framework.Framework, pod *v1.Pod, containerName string
 				// Filesystem: check fsgroup
 				if fsGroup != nil {
 					ginkgo.By("Checking fsGroup is correct.")
-					_, err = framework.LookForStringInPodExecToContainer(pod.Namespace, pod.Name, containerName, []string{"ls", "-ld", dirName}, strconv.Itoa(int(*fsGroup)), time.Minute)
+					_, err = e2epodoutput.LookForStringInPodExecToContainer(pod.Namespace, pod.Name, containerName, []string{"ls", "-ld", dirName}, strconv.Itoa(int(*fsGroup)), time.Minute)
 					framework.ExpectNoError(err, "failed: getting the right privileges in the file %v", int(*fsGroup))
 				}
 
 				// Filesystem: check fsType
 				if fsType != "" {
 					ginkgo.By("Checking fsType is correct.")
-					_, err = framework.LookForStringInPodExecToContainer(pod.Namespace, pod.Name, containerName, []string{"grep", " " + dirName + " ", "/proc/mounts"}, fsType, time.Minute)
+					_, err = e2epodoutput.LookForStringInPodExecToContainer(pod.Namespace, pod.Name, containerName, []string{"grep", " " + dirName + " ", "/proc/mounts"}, fsType, time.Minute)
 					framework.ExpectNoError(err, "failed: getting the right fsType %s", fsType)
 				}
 			}
@@ -537,15 +549,10 @@ func testVolumeClient(f *framework.Framework, config TestConfig, fsGroup *int64,
 	ec := &v1.EphemeralContainer{
 		EphemeralContainerCommon: v1.EphemeralContainerCommon(clientPod.Spec.Containers[0]),
 	}
+	ec.Resources = v1.ResourceRequirements{}
 	ec.Name = "volume-ephemeral-container"
-	err = f.PodClient().AddEphemeralContainerSync(clientPod, ec, timeouts.PodStart)
+	err = e2epod.NewPodClient(f).AddEphemeralContainerSync(clientPod, ec, timeouts.PodStart)
 	// The API server will return NotFound for the subresource when the feature is disabled
-	// BEGIN TODO: remove after EphemeralContainers feature gate is retired
-	if apierrors.IsNotFound(err) {
-		framework.Logf("Skipping ephemeral container re-test because feature is disabled (error: %q)", err)
-		return
-	}
-	// END TODO: remove after EphemeralContainers feature gate is retired
 	framework.ExpectNoError(err, "failed to add ephemeral container for re-test")
 	testVolumeContent(f, clientPod, ec.Name, fsGroup, fsType, tests)
 }
@@ -582,7 +589,7 @@ func InjectContent(f *framework.Framework, config TestConfig, fsGroup *int64, fs
 			fileName := fmt.Sprintf("/opt/%d/%s", i, test.File)
 			commands = append(commands, generateWriteFileCmd(test.ExpectedContent, fileName)...)
 		}
-		out, err := framework.RunKubectl(injectorPod.Namespace, commands...)
+		out, err := e2ekubectl.RunKubectl(injectorPod.Namespace, commands...)
 		framework.ExpectNoError(err, "failed: writing the contents: %s", out)
 	}
 
@@ -594,7 +601,7 @@ func InjectContent(f *framework.Framework, config TestConfig, fsGroup *int64, fs
 // generateWriteCmd is used by generateWriteBlockCmd and generateWriteFileCmd
 func generateWriteCmd(content, path string) []string {
 	var commands []string
-	commands = []string{"/bin/sh", "-c", "echo '" + content + "' > " + path}
+	commands = []string{"/bin/sh", "-c", "echo '" + content + "' > " + path + "; sync"}
 	return commands
 }
 
@@ -643,7 +650,7 @@ func CheckVolumeModeOfPath(f *framework.Framework, pod *v1.Pod, volMode v1.Persi
 // TODO: put this under e2epod once https://github.com/kubernetes/kubernetes/issues/81245
 // is resolved. Otherwise there will be dependency issue.
 func PodExec(f *framework.Framework, pod *v1.Pod, shExec string) (string, string, error) {
-	return f.ExecCommandInContainerWithFullOutput(pod.Name, pod.Spec.Containers[0].Name, "/bin/sh", "-c", shExec)
+	return e2epod.ExecCommandInContainerWithFullOutput(f, pod.Name, pod.Spec.Containers[0].Name, "/bin/sh", "-c", shExec)
 }
 
 // VerifyExecInPodSucceed verifies shell cmd in target pod succeed
@@ -652,7 +659,6 @@ func PodExec(f *framework.Framework, pod *v1.Pod, shExec string) (string, string
 func VerifyExecInPodSucceed(f *framework.Framework, pod *v1.Pod, shExec string) {
 	stdout, stderr, err := PodExec(f, pod, shExec)
 	if err != nil {
-
 		if exiterr, ok := err.(uexec.CodeExitError); ok {
 			exitCode := exiterr.ExitStatus()
 			framework.ExpectNoError(err,

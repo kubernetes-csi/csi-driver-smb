@@ -26,8 +26,7 @@ import (
 	"strings"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
-
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"k8s.io/component-base/metrics/legacyregistry"
 	"k8s.io/klog/v2"
 )
 
@@ -54,7 +53,7 @@ func main() {
 		if err != nil {
 			klog.Fatalln(err)
 		}
-		fmt.Println(info)
+		fmt.Println(info) // nolint
 		os.Exit(0)
 	}
 	if *nodeID == "" {
@@ -100,7 +99,7 @@ func serve(ctx context.Context, l net.Listener, serveFunc func(net.Listener) err
 
 func serveMetrics(l net.Listener) error {
 	m := http.NewServeMux()
-	m.Handle("/metrics", promhttp.Handler())
+	m.Handle("/metrics", legacyregistry.Handler())
 	return trapClosedConnErr(http.Serve(l, m))
 }
 
