@@ -6,12 +6,7 @@
         },
         "orchestratorProfile": {
             "orchestratorType": "Kubernetes",
-            "orchestratorRelease": "",
-            "kubernetesConfig": {
-                "apiServerConfig": {
-                    "--disable-admission-plugins": "PodSecurity"
-                }
-            }
+            "orchestratorRelease": ""
         },
         "masterProfile": {
             "count": 1,
