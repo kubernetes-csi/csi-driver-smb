@@ -30,9 +30,6 @@ func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options, 
 }
 
 func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
-	// unmount first since if remote SMB directory is not found, linked path cannot be deleted with CleanupMountPoint
-	// https://github.com/kubernetes/kubernetes/issues/97031
-	_ = m.Unmount(target)
 	return mount.CleanupMountPoint(target, m, extensiveMountCheck)
 }
 
