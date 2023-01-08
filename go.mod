@@ -473,7 +473,7 @@ replace (
 	k8s.io/kubelet => k8s.io/kubelet v0.26.0
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.26.0
 	k8s.io/metrics => k8s.io/metrics v0.26.0
-	k8s.io/mount-utils => k8s.io/mount-utils v0.0.0-20221216112627-49433b159e95
+	k8s.io/mount-utils => k8s.io/mount-utils v0.0.0-20230103133730-1df1a57439e2
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.26.0
 	k8s.io/repo-infra => k8s.io/repo-infra v0.0.1-alpha.1
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.26.0
