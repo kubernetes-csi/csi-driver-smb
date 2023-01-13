@@ -12,11 +12,18 @@ csi.storage.k8s.io/provisioner-secret-namespace | namespace where the secret is 
 csi.storage.k8s.io/node-stage-secret-name | secret name that stores `username`, `password`(`domain` is optional) | existing secret name |  Yes  |
 csi.storage.k8s.io/node-stage-secret-namespace | namespace where the secret is | existing secret namespace   |  Yes  |
 
+ - VolumeID(`volumeHandle`) is the identifier of the volume handled by the driver, format of VolumeID: 
+```
+{smb-server-address}#{sub-dir-name}#{share-name}
+```
+> `sub-dir-name` could be empty if not provided
+
 ### PV/PVC Usage
 > get an [example](../deploy/example/pv-smb.yaml)
 
 Name | Meaning | Available Value | Mandatory | Default value
 --- | --- | --- | --- | ---
+volumeHandle | Specify a value the driver can use to uniquely identify the share in the cluster. | A recommended way to produce a unique value is to combine the smb-server address, sub directory name and share name: `{smb-server-address}#{sub-dir-name}#{share-name}`. | Yes |
 volumeAttributes.source | Samba Server address | `//smb-server-address/sharename` </br>([Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) format: `//accountname.file.core.windows.net/filesharename`) | Yes |
 volumeAttributes.subDir | existing sub directory under smb share |  | No | sub directory must exist otherwise mount would fail
 nodeStageSecretRef.name | secret name that stores `username`, `password`(`domain` is optional) | existing secret name |  Yes  |
