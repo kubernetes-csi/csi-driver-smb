@@ -16,7 +16,7 @@ csi.storage.k8s.io/node-stage-secret-namespace | namespace where the secret is |
 ```
 {smb-server-address}#{sub-dir-name}#{share-name}
 ```
-> `sub-dir-name` could be empty if not provided
+> example: `smb-server.default.svc.cluster.local/share#subdir#`
 
 ### PV/PVC Usage
 > get an [example](../deploy/example/pv-smb.yaml)
