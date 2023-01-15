@@ -89,6 +89,8 @@ Filesystem                                    Size  Used Avail Use% Mounted on
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
   name: pv-smb
 spec:
   capacity:
@@ -103,7 +105,9 @@ spec:
   csi:
     driver: smb.csi.k8s.io
     readOnly: false
-    volumeHandle: unique-volumeid  # make sure it's a unique id in the cluster
+    # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
+    # make sure this value is unique for every share in the cluster
+    volumeHandle: smb-server.default.svc.cluster.local/share##
     volumeAttributes:
       source: "//smb-server-address/sharename"
     nodeStageSecretRef:
