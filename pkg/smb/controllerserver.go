@@ -107,7 +107,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		// Create subdirectory under base-dir
 		// TODO: revisit permissions
 		internalVolumePath := getInternalVolumePath(d.workingMountDir, smbVol)
-		if err = os.Mkdir(internalVolumePath, 0777); err != nil && !os.IsExist(err) {
+		if err = os.MkdirAll(internalVolumePath, 0777); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
 		}
 		setKeyValueInMap(parameters, subDirField, smbVol.subDir)
