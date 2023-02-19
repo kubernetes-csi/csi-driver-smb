@@ -20,13 +20,8 @@ limitations under the License.
 package smb
 
 import (
-	"fmt"
 	"os"
-	"os/exec"
-	"strings"
-	"time"
 
-	"k8s.io/klog/v2"
 	mount "k8s.io/mount-utils"
 )
 
@@ -39,21 +34,7 @@ func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveM
 }
 
 func CleanupMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
-	var err error
-	extensiveMountPointCheck := true
-	forceUnmounter, ok := m.Interface.(mount.MounterForceUnmounter)
-	if ok {
-		klog.V(2).Infof("force unmount on %s", target)
-		err = mount.CleanupMountWithForce(target, forceUnmounter, extensiveMountPointCheck, 30*time.Second)
-	} else {
-		err = mount.CleanupMountPoint(target, m.Interface, extensiveMountPointCheck)
-	}
-
-	if err != nil && strings.Contains(err.Error(), "target is busy") {
-		klog.Warningf("unmount on %s failed with %v, try lazy unmount", target, err)
-		err = forceUmount(target)
-	}
-	return err
+	return mount.CleanupMountPoint(target, m, extensiveMountCheck)
 }
 
 func preparePublishPath(path string, m *mount.SafeFormatAndMount) error {
@@ -66,13 +47,4 @@ func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
 
 func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
 	return os.Mkdir(name, perm)
-}
-
-func forceUmount(path string) error {
-	cmd := exec.Command("umount", "-lf", path)
-	out, cmderr := cmd.CombinedOutput()
-	if cmderr != nil {
-		return fmt.Errorf("lazy unmount on %s failed with %v, output: %s", path, cmderr, string(out))
-	}
-	return nil
 }
