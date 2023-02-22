@@ -39,7 +39,7 @@ var (
 	nodeID                        = flag.String("nodeid", "", "node id")
 	driverName                    = flag.String("drivername", smb.DefaultDriverName, "name of the driver")
 	ver                           = flag.Bool("ver", false, "Print the version and exit.")
-	metricsAddress                = flag.String("metrics-address", "0.0.0.0:29644", "export the metrics")
+	metricsAddress                = flag.String("metrics-address", "", "export the metrics")
 	kubeconfig                    = flag.String("kubeconfig", "", "Absolute path to the kubeconfig file. Required only when running out of cluster.")
 	enableGetVolumeStats          = flag.Bool("enable-get-volume-stats", true, "allow GET_VOLUME_STATS on agent node")
 	removeSMBMappingDuringUnmount = flag.Bool("remove-smb-mapping-during-unmount", true, "remove SMBMapping during unmount on Windows node")
@@ -78,6 +78,9 @@ func handle() {
 }
 
 func exportMetrics() {
+	if *metricsAddress == "" {
+		return
+	}
 	l, err := net.Listen("tcp", *metricsAddress)
 	if err != nil {
 		klog.Warningf("failed to get listener for metrics endpoint: %v", err)

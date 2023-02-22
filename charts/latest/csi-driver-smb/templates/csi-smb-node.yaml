@@ -102,7 +102,6 @@ spec:
             - "--drivername={{ .Values.driver.name }}"
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
-            - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
             - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
           ports:
             - containerPort: {{ .Values.node.livenessProbe.healthPort }}
