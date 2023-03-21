@@ -60,6 +60,8 @@ spec:
             - --v=2
           imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
           resources: {{- toYaml .Values.linux.resources.livenessProbe | nindent 12 }}
+          securityContext:
+            readOnlyRootFilesystem: true
         - name: node-driver-registrar
 {{- if hasPrefix "/" .Values.image.nodeDriverRegistrar.repository }}
           image: "{{ .Values.image.baseRepo }}{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
@@ -124,6 +126,7 @@ spec:
                   apiVersion: v1
                   fieldPath: spec.nodeName
           securityContext:
+            readOnlyRootFilesystem: true
             privileged: true
           volumeMounts:
             - mountPath: /csi
