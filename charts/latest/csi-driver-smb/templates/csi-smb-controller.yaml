@@ -39,7 +39,10 @@ spec:
         {{- if .Values.controller.runOnControlPlane}}
         node-role.kubernetes.io/control-plane: ""
         {{- end}}
-      priorityClassName: system-cluster-critical
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- if .Values.securityContext }}
+      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
 {{- with .Values.controller.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
@@ -131,6 +134,3 @@ spec:
           emptyDir: {}
         - name: tmp-dir
           emptyDir: {}
-      {{- if .Values.securityContext }}
-      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
-      {{- end }}

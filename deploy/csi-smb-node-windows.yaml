@@ -24,6 +24,9 @@ spec:
       nodeSelector:
         kubernetes.io/os: windows
       priorityClassName: system-node-critical
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: csi-smb-node-sa
       containers:
         - name: liveness-probe

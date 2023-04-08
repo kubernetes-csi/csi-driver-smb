@@ -31,7 +31,10 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-      priorityClassName: system-node-critical
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- if .Values.securityContext }}
+      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.node }}
       {{- include "smb.pullSecrets" . | indent 6 }}
       containers:

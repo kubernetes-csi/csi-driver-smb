@@ -19,6 +19,9 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
       priorityClassName: system-cluster-critical
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       tolerations:
         - key: "node-role.kubernetes.io/master"
           operator: "Exists"
