@@ -38,6 +38,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- if .Values.securityContext }}
+      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
 {{- with .Values.linux.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
@@ -148,7 +151,4 @@ spec:
             path: {{ .Values.linux.kubelet }}/plugins_registry/
             type: DirectoryOrCreate
           name: registration-dir
-      {{- if .Values.securityContext }}
-      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
-      {{- end }}
 {{- end -}}
