@@ -37,9 +37,8 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: persistent-storage
-        annotations:
-          volume.beta.kubernetes.io/storage-class: smb
       spec:
+        storageClassName: smb
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
