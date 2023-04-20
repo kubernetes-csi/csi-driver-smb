@@ -17,7 +17,6 @@ limitations under the License.
 package smb
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -50,7 +49,7 @@ func TestNewFakeDriver(t *testing.T) {
 }
 
 func TestIsCorruptedDir(t *testing.T) {
-	existingMountPath, err := ioutil.TempDir(os.TempDir(), "csi-mount-test")
+	existingMountPath, err := os.MkdirTemp(os.TempDir(), "csi-mount-test")
 	if err != nil {
 		t.Fatalf("failed to create tmp dir: %v", err)
 	}

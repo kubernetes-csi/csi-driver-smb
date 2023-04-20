@@ -19,7 +19,6 @@ package credentials
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -159,7 +158,7 @@ func DeleteAzureCredentialFile() error {
 // getCredentialsFromAzureCredentials parses the azure credentials toml (AZURE_CREDENTIALS)
 // in Prow and returns the credential information usable to Azure File CSI driver
 func getCredentialsFromAzureCredentials(azureCredentialsPath string) (*FromProw, error) {
-	content, err := ioutil.ReadFile(azureCredentialsPath)
+	content, err := os.ReadFile(azureCredentialsPath)
 	log.Printf("Reading credentials file %v", azureCredentialsPath)
 	if err != nil {
 		return nil, fmt.Errorf("error reading credentials file %v %v", azureCredentialsPath, err)
