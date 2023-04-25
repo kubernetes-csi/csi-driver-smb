@@ -47,8 +47,10 @@ type VolumeDetails struct {
 	VolumeDevice          VolumeDeviceDetails
 	// Optional, used with pre-provisioned volumes
 	VolumeID string
-	// Optional, used with PVCs created from snapshots
-	DataSource         *DataSource
+	// Optional, used with PVCs created from snapshots or PVCs
+	DataSource *DataSource
+	// Optional, used with specified StorageClass
+	StorageClass       *storagev1.StorageClass
 	ShareName          string
 	NodeStageSecretRef string
 }
@@ -77,6 +79,7 @@ type VolumeDeviceDetails struct {
 }
 
 type DataSource struct {
+	Kind string
 	Name string
 }
 
@@ -171,6 +174,7 @@ func (volume *VolumeDetails) SetupDynamicPersistentVolumeClaim(client clientset.
 	if volume.DataSource != nil {
 		dataSource := &v1.TypedLocalObjectReference{
 			Name: volume.DataSource.Name,
+			Kind: volume.DataSource.Kind,
 		}
 		tpvc = NewTestPersistentVolumeClaimWithDataSource(client, namespace, volume.ClaimSize, volume.VolumeMode, &createdStorageClass, dataSource)
 	} else {
@@ -207,4 +211,12 @@ func (volume *VolumeDetails) SetupPreProvisionedPersistentVolumeClaim(client cli
 	tpvc.ValidateProvisionedPersistentVolume()
 
 	return tpvc, cleanupFuncs
+}
+
+func (volume *VolumeDetails) CreateStorageClass(client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver, storageClassParameters map[string]string) (*TestStorageClass, func()) {
+	ginkgo.By("setting up the StorageClass")
+	storageClass := csiDriver.GetDynamicProvisionStorageClass(storageClassParameters, volume.MountOptions, volume.ReclaimPolicy, volume.VolumeBindingMode, volume.AllowedTopologyValues, namespace.Name)
+	tsc := NewTestStorageClass(client, namespace, storageClass)
+	tsc.Create()
+	return tsc, tsc.Cleanup
 }
