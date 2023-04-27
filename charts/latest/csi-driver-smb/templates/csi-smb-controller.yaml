@@ -26,6 +26,7 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
+      hostNetwork: true
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       serviceAccountName: {{ .Values.serviceAccount.controller }}
       nodeSelector:
