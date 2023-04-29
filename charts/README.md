@@ -8,8 +8,6 @@
 
 - run smb-controller on control plane node: `--set controller.runOnControlPlane=true`
 - Microk8s based kubernetes recommended settings:
-    - `--set linux.dnsPolicy=ClusterFirstWithHostNet` with `--set controller.dnsPolicy=ClusterFirstWithHostNet` -
-      external smb server cannot be found based on Default dns.
     - `--set linux.kubelet="/var/snap/microk8s/common/var/lib/kubelet"` - sets correct path to microk8s kubelet even
       though a user has a folder link to it.
 
@@ -73,7 +71,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `securityContext`                                       | security context to be added to pods                                                                       | `{ seccompProfile: {type: RuntimeDefault} }`                                                    |
 | `controller.name`                                       | name of driver deployment                                                                                  | `csi-smb-controller`                                    |
 | `controller.replicas`                                   | replica num of csi-smb-controller                                                                          | `1`                                                     |
-| `controller.dnsPolicy`                                  | dnsPolicy of driver node daemonset, available values: `Default`, `ClusterFirstWithHostNet`, `ClusterFirst` |                                                         |
+| `controller.dnsPolicy`                                  | dnsPolicy of driver node daemonset, available values: `Default`, `ClusterFirstWithHostNet`, `ClusterFirst` |     `ClusterFirstWithHostNet`                            |
 | `controller.metricsPort`                                | metrics port of csi-smb-controller                                                                         | `29644`                                                 |
 | `controller.livenessProbe.healthPort `                  | health check port for liveness probe                                                                       | `29642`                                                 |
 | `controller.logLevel`                                   | controller driver log level                                                                                | `5`                                                     |
@@ -102,7 +100,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `node.nodeSelector`                                     | node pod node selector                                                                                     | `{}`                                                    |
 | `linux.enabled`                                         | whether enable linux feature                                                                               | `true`                                                  |
 | `linux.dsName`                                          | name of driver daemonset on linux                                                                          | `csi-smb-node`                                          |
-| `linux.dnsPolicy`                                       | dnsPolicy of driver node daemonset, available values: `Default`, `ClusterFirstWithHostNet`, `ClusterFirst` |                                                         |
+| `linux.dnsPolicy`                                       | dnsPolicy of driver node daemonset, available values: `Default`, `ClusterFirstWithHostNet`, `ClusterFirst` |     `ClusterFirstWithHostNet`                               |
 | `linux.kubelet`                                         | configure kubelet directory path on Linux agent node node                                                  | `/var/lib/kubelet`                                      |
 | `linux.resources.livenessProbe.limits.memory`           | liveness-probe memory limits                                                                               | `100Mi`                                                 |
 | `linux.resources.livenessProbe.requests.cpu`            | liveness-probe cpu requests limits                                                                         | `10m`                                                   |
