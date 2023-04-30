@@ -13,3 +13,4 @@ DriverInfo:
     RWX: true
     fsGroup: true
     volumeMountGroup: true
+    pvcDataSource: true

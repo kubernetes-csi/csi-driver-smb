@@ -713,3 +713,120 @@ func TestIsValidVolumeCapabilities(t *testing.T) {
 		}
 	}
 }
+
+func TestCopyFromVolume(t *testing.T) {
+	d := NewFakeDriver()
+
+	// Setup workingMountDir
+	workingMountDir, err := os.Getwd()
+	if err != nil {
+		t.Errorf("failed to get current working directory")
+	}
+	d.workingMountDir = workingMountDir
+
+	// Setup mounter
+	mounter, err := NewFakeMounter()
+	if err != nil {
+		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
+	}
+	d.mounter = mounter
+
+	cases := []struct {
+		desc      string
+		req       *csi.CreateVolumeRequest
+		dstVol    *smbVolume
+		expectErr error
+	}{
+		{
+			desc: "getInternalVolumePath failed",
+			req: &csi.CreateVolumeRequest{
+				Name: testCSIVolume,
+				VolumeCapabilities: []*csi.VolumeCapability{
+					{
+						AccessType: &csi.VolumeCapability_Mount{
+							Mount: &csi.VolumeCapability_MountVolume{},
+						},
+						AccessMode: &csi.VolumeCapability_AccessMode{
+							Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER,
+						},
+					},
+				},
+				Parameters: map[string]string{
+					sourceField: testServer,
+				},
+				Secrets: map[string]string{
+					usernameField: "test",
+					passwordField: "test",
+					domainField:   "test_doamin",
+				},
+				VolumeContentSource: &csi.VolumeContentSource{
+					Type: &csi.VolumeContentSource_Volume{
+						Volume: &csi.VolumeContentSource_VolumeSource{
+							VolumeId: "unit-test",
+						},
+					},
+				},
+			},
+			dstVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			},
+			expectErr: status.Error(codes.NotFound, "could not split \"unit-test\" into server and subDir"),
+		},
+		{
+			desc: "valid copy",
+			req: &csi.CreateVolumeRequest{
+				Name: testCSIVolume,
+				VolumeCapabilities: []*csi.VolumeCapability{
+					{
+						AccessType: &csi.VolumeCapability_Mount{
+							Mount: &csi.VolumeCapability_MountVolume{},
+						},
+						AccessMode: &csi.VolumeCapability_AccessMode{
+							Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER,
+						},
+					},
+				},
+				Parameters: map[string]string{
+					sourceField: testServer,
+				},
+				Secrets: map[string]string{
+					usernameField: "test",
+					passwordField: "test",
+					domainField:   "test_doamin",
+				},
+				VolumeContentSource: &csi.VolumeContentSource{
+					Type: &csi.VolumeContentSource_Volume{
+						Volume: &csi.VolumeContentSource_VolumeSource{
+							VolumeId: testVolumeID,
+						},
+					},
+				},
+			},
+			dstVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			},
+			expectErr: nil,
+		},
+	}
+
+	for _, test := range cases {
+		test := test //pin
+		t.Run(test.desc, func(t *testing.T) {
+			// Setup
+			_ = os.MkdirAll(filepath.Join(d.workingMountDir, testCSIVolume, testCSIVolume), os.ModePerm)
+
+			err := d.copyFromVolume(context.TODO(), test.req, test.dstVol)
+			if runtime.GOOS == "windows" {
+				fmt.Println("Skipping checks on Windows ENV") // nolint
+			} else {
+				if !reflect.DeepEqual(err, test.expectErr) {
+					t.Errorf("[test: %s] Unexpected error: %v, expected error: %v", test.desc, err, test.expectErr)
+				}
+			}
+		})
+	}
+}

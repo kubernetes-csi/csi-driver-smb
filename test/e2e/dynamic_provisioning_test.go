@@ -314,4 +314,40 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		}
 		test.Run(cs, ns)
 	})
+
+	ginkgo.It("should clone a volume from an existing volume [smb.csi.k8s.io]", func() {
+		skipIfTestingInWindowsCluster()
+
+		pod := testsuites.PodDetails{
+			Cmd: "echo 'hello world' > /mnt/test-1/data",
+			Volumes: []testsuites.VolumeDetails{
+				{
+					ClaimSize: "10Gi",
+					MountOptions: []string{
+						"dir_mode=0777",
+						"file_mode=0777",
+						"uid=0",
+						"gid=0",
+						"mfsymlinks",
+						"cache=strict",
+						"nosharesock",
+					},
+					VolumeMount: testsuites.VolumeMountDetails{
+						NameGenerate:      "test-volume-",
+						MountPathGenerate: "/mnt/test-",
+					},
+				},
+			},
+		}
+		podWithClonedVolume := testsuites.PodDetails{
+			Cmd: "grep 'hello world' /mnt/test-1/data",
+		}
+		test := testsuites.DynamicallyProvisionedVolumeCloningTest{
+			CSIDriver:              testDriver,
+			Pod:                    pod,
+			PodWithClonedVolume:    podWithClonedVolume,
+			StorageClassParameters: defaultStorageClassParameters,
+		}
+		test.Run(cs, ns)
+	})
 })

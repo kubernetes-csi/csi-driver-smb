@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -110,11 +111,24 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		if err = os.MkdirAll(internalVolumePath, 0777); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
 		}
+
+		if req.GetVolumeContentSource() != nil {
+			if err := d.copyVolume(ctx, req, smbVol); err != nil {
+				return nil, err
+			}
+		}
+
 		setKeyValueInMap(parameters, subDirField, smbVol.subDir)
 	} else {
 		klog.V(2).Infof("CreateVolume(%s) does not create subdirectory", name)
+
+		if req.GetVolumeContentSource() != nil {
+			if err := d.copyVolume(ctx, req, smbVol); err != nil {
+				return nil, err
+			}
+		}
 	}
-	return &csi.CreateVolumeResponse{Volume: d.smbVolToCSI(smbVol, parameters)}, nil
+	return &csi.CreateVolumeResponse{Volume: d.smbVolToCSI(smbVol, req, parameters)}, nil
 }
 
 // DeleteVolume only supports static provisioning, no delete volume action
@@ -278,6 +292,61 @@ func (d *Driver) internalUnmount(ctx context.Context, vol *smbVolume) error {
 	return err
 }
 
+// copyFromVolume create a copied volume from a volume
+func (d *Driver) copyFromVolume(ctx context.Context, req *csi.CreateVolumeRequest, dstVol *smbVolume) error {
+	srcVol, err := getSmbVolFromID(req.GetVolumeContentSource().GetVolume().GetVolumeId())
+	if err != nil {
+		return status.Error(codes.NotFound, err.Error())
+	}
+	// Note that the source path must include trailing '/.', can't use 'filepath.Join()' as it performs path cleaning
+	srcPath := fmt.Sprintf("%v/.", getInternalVolumePath(d.workingMountDir, srcVol))
+	dstPath := getInternalVolumePath(d.workingMountDir, dstVol)
+	klog.V(2).Infof("copy volume from volume %v -> %v", srcPath, dstPath)
+
+	var volCap *csi.VolumeCapability
+	if len(req.GetVolumeCapabilities()) > 0 {
+		volCap = req.GetVolumeCapabilities()[0]
+	}
+
+	secrets := req.GetSecrets()
+	if err = d.internalMount(ctx, srcVol, volCap, secrets); err != nil {
+		return status.Errorf(codes.Internal, "failed to mount src nfs server: %v", err)
+	}
+	defer func() {
+		if err = d.internalUnmount(ctx, srcVol); err != nil {
+			klog.Warningf("failed to unmount nfs server: %v", err)
+		}
+	}()
+	if err = d.internalMount(ctx, dstVol, volCap, secrets); err != nil {
+		return status.Errorf(codes.Internal, "failed to mount dst nfs server: %v", err)
+	}
+	defer func() {
+		if err = d.internalUnmount(ctx, dstVol); err != nil {
+			klog.Warningf("failed to unmount dst nfs server: %v", err)
+		}
+	}()
+
+	// recursive 'cp' with '-a' to handle symlinks
+	out, err := exec.Command("cp", "-a", srcPath, dstPath).CombinedOutput()
+	if err != nil {
+		return status.Errorf(codes.Internal, "failed to copy volume %v: %v", err, string(out))
+	}
+	klog.V(2).Infof("copied %s -> %s", srcPath, dstPath)
+	return nil
+}
+
+func (d *Driver) copyVolume(ctx context.Context, req *csi.CreateVolumeRequest, vol *smbVolume) error {
+	vs := req.VolumeContentSource
+	switch vs.Type.(type) {
+	case *csi.VolumeContentSource_Snapshot:
+		return status.Errorf(codes.InvalidArgument, "copy volume from volumeSnapshot is not supported")
+	case *csi.VolumeContentSource_Volume:
+		return d.copyFromVolume(ctx, req, vol)
+	default:
+		return status.Errorf(codes.InvalidArgument, "%v is not a proper volume source", vs)
+	}
+}
+
 // Given a smbVolume, return a CSI volume id
 func getVolumeIDFromSmbVol(vol *smbVolume) string {
 	idElements := make([]string, totalIDElements)
@@ -355,11 +424,12 @@ func getInternalVolumePath(workingMountDir string, vol *smbVolume) string {
 }
 
 // Convert into smbVolume into a csi.Volume
-func (d *Driver) smbVolToCSI(vol *smbVolume, parameters map[string]string) *csi.Volume {
+func (d *Driver) smbVolToCSI(vol *smbVolume, req *csi.CreateVolumeRequest, parameters map[string]string) *csi.Volume {
 	return &csi.Volume{
 		CapacityBytes: 0, // by setting it to zero, Provisioner will use PVC requested size as PV size
 		VolumeId:      vol.id,
 		VolumeContext: parameters,
+		ContentSource: req.GetVolumeContentSource(),
 	}
 }
 
