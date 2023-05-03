@@ -35,6 +35,8 @@ const (
 	sourceField          = "source"
 	subDirField          = "subdir"
 	domainField          = "domain"
+	krb5Prefix           = "krb5cc_"
+	krb5CacheDirectory   = "/var/lib/kubelet/kerberos/"
 	mountOptionsField    = "mountoptions"
 	defaultDomainName    = "AZURE"
 	pvcNameKey           = "csi.storage.k8s.io/pvc/name"
