@@ -34,6 +34,45 @@ nodeStageSecretRef.namespace | namespace where the secret is | k8s namespace  | 
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
 
+### Kerberos ticket support for Linux
+
+
+
+
+#### These are the conditions that must be met:
+ - Kerberos support should be set up and cifs-utils must be installed on every node.
+ - The directory /var/lib/kubelet/kerberos/ needs to exist, and it will hold kerberos credential cache files for various users.
+ - This directory is shared between the host and the smb container.
+ - The admin is responsible for cleaning up the directory on each node as they deem appropriate. It's important to note that unmounting doesn't delete the cache file.
+ - Each node should know to look up in that directory, here's example script for that, expected to be run on node provision:
+```console
+mkdir -p /etc/krb5.conf.d/
+echo "[libdefaults]
+default_ccache_name = FILE:/var/lib/kubelet/kerberos/krb5cc_%{uid}" > /etc/krb5.conf.d/ccache.conf
+   ```
+ - Mount flags should include **sec=krb5,cruid=1000**
+   - sec=krb5 enables using credential cache
+   - cruid=1000 provides information for what user credential cache will be looked up. This should match the secret entry.
+
+#### Pass kerberos ticket in kubernetes secret 
+To pass a ticket through secret, it needs to be acquired. Here's example how it can be done:
+
+```console
+export KRB5CCNAME=/tmp/ccache # Use temporary file for the cache 
+kinit USERNAME # Log in into domain
+kvno cifs/lowercase_server_name # Acquire ticket for the needed share, it'll be written to the cache file
+CCACHE=$(base64 -w 0 $KRB5CCNAME) # Get Base64-encoded cache
+```
+
+And passing the actual ticket to the secret, instead of the password.
+Note that key for the ticket has included credential id, that must match exactly `cruid=` mount flag.
+In theory, nothing prevents from having more than single ticket cache in the same secret.
+```console
+kubectl create secret generic smbcreds-krb5 --from-literal krb5cc_1000=$CCACHE
+```
+
+> See example of the [StorageClass](../deploy/example/storageclass-smb-krb5.yaml)
+
 ### Tips
 #### `subDir` parameter supports following pv/pvc metadata conversion
 > if `subDir` value contains following string, it would be converted into corresponding pv/pvc name or namespace

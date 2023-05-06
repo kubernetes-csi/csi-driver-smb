@@ -18,12 +18,14 @@ package smb
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strconv"
 	"strings"
 	"syscall"
 	"testing"
@@ -688,6 +690,161 @@ func TestCheckGidPresentInMountFlags(t *testing.T) {
 			t.Errorf("[%s]: Expected result : %t, Actual result: %t", test.desc, test.result, gIDPresent)
 		}
 	}
+}
+
+func TestHasKerberosMountOption(t *testing.T) {
+	tests := []struct {
+		desc       string
+		MountFlags []string
+		result     bool
+	}{
+		{
+			desc:       "[Success] Sec kerberos present in mount flags",
+			MountFlags: []string{"sec=krb5"},
+			result:     true,
+		},
+		{
+			desc:       "[Success] Sec kerberos present in mount flags",
+			MountFlags: []string{"sec=krb5i"},
+			result:     true,
+		},
+		{
+			desc:       "[Success] Sec kerberos not present in mount flags",
+			MountFlags: []string{},
+			result:     false,
+		},
+		{
+			desc:       "[Success] Sec kerberos not present in mount flags",
+			MountFlags: []string{"sec=ntlm"},
+			result:     false,
+		},
+	}
+
+	for _, test := range tests {
+		securityIsKerberos := hasKerberosMountOption(test.MountFlags)
+		if securityIsKerberos != test.result {
+			t.Errorf("[%s]: Expected result : %t, Actual result: %t", test.desc, test.result, securityIsKerberos)
+		}
+	}
+}
+
+func TestGetCredUID(t *testing.T) {
+	_, convertErr := strconv.Atoi("foo")
+	tests := []struct {
+		desc        string
+		MountFlags  []string
+		result      int
+		expectedErr error
+	}{
+		{
+			desc:        "[Success] Got correct credUID",
+			MountFlags:  []string{"cruid=1000"},
+			result:      1000,
+			expectedErr: nil,
+		},
+		{
+			desc:        "[Success] Got correct credUID",
+			MountFlags:  []string{"cruid=0"},
+			result:      0,
+			expectedErr: nil,
+		},
+		{
+			desc:        "[Error] Got error when no CredUID",
+			MountFlags:  []string{},
+			result:      -1,
+			expectedErr: fmt.Errorf("Can't find credUid in mount flags"),
+		},
+		{
+			desc:        "[Error] Got error when CredUID is not an int",
+			MountFlags:  []string{"cruid=foo"},
+			result:      0,
+			expectedErr: convertErr,
+		},
+	}
+
+	for _, test := range tests {
+		credUID, err := getCredUID(test.MountFlags)
+		if credUID != test.result {
+			t.Errorf("[%s]: Expected result : %d, Actual result: %d", test.desc, test.result, credUID)
+		}
+		if !reflect.DeepEqual(err, test.expectedErr) {
+			t.Errorf("[%s]: Expected error : %v, Actual error: %v", test.desc, test.expectedErr, err)
+		}
+	}
+}
+
+func TestGetKerberosCache(t *testing.T) {
+	ticket := []byte{'G', 'O', 'L', 'A', 'N', 'G'}
+	base64Ticket := base64.StdEncoding.EncodeToString(ticket)
+	credUID := 1000
+	goodFileName := fmt.Sprintf("%s%s%d", krb5CacheDirectory, krb5Prefix, credUID)
+	krb5CcacheName := "krb5cc_1000"
+
+	_, base64DecError := base64.StdEncoding.DecodeString("123")
+	tests := []struct {
+		desc             string
+		credUID          int
+		secrets          map[string]string
+		expectedFileName string
+		expectedContent  []byte
+		expectedErr      error
+	}{
+		{
+			desc:    "[Success] Got correct filename and content",
+			credUID: 1000,
+			secrets: map[string]string{
+				krb5CcacheName: base64Ticket,
+			},
+			expectedFileName: goodFileName,
+			expectedContent:  ticket,
+			expectedErr:      nil,
+		},
+		{
+			desc:    "[Error] Throw error if credUID mismatch",
+			credUID: 1001,
+			secrets: map[string]string{
+				krb5CcacheName: base64Ticket,
+			},
+			expectedFileName: "",
+			expectedContent:  nil,
+			expectedErr:      status.Error(codes.InvalidArgument, fmt.Sprintf("Empty kerberos cache in key %s", "krb5cc_1001")),
+		},
+		{
+			desc:    "[Error] Throw error if ticket is empty in secret",
+			credUID: 1000,
+			secrets: map[string]string{
+				krb5CcacheName: "",
+			},
+			expectedFileName: "",
+			expectedContent:  nil,
+			expectedErr:      status.Error(codes.InvalidArgument, fmt.Sprintf("Empty kerberos cache in key %s", krb5CcacheName)),
+		},
+		{
+			desc:    "[Error] Throw error if ticket is invalid base64",
+			credUID: 1000,
+			secrets: map[string]string{
+				krb5CcacheName: "123",
+			},
+			expectedFileName: "",
+			expectedContent:  nil,
+			expectedErr:      status.Error(codes.InvalidArgument, fmt.Sprintf("Malformed kerberos cache in key %s, expected to be in base64 form: %v", krb5CcacheName, base64DecError)),
+		},
+	}
+
+	for _, test := range tests {
+		fileName, content, err := getKerberosCache(test.credUID, test.secrets)
+		if !reflect.DeepEqual(err, test.expectedErr) {
+			t.Errorf("[%s]: Expected error : %v, Actual error: %v", test.desc, test.expectedErr, err)
+		} else {
+			if fileName != test.expectedFileName {
+				t.Errorf("[%s]: Expected filename : %s, Actual result: %s", test.desc, test.expectedFileName, fileName)
+			}
+			if !reflect.DeepEqual(content, test.expectedContent) {
+				t.Errorf("[%s]: Expected content : %s, Actual content: %s", test.desc, test.expectedContent, content)
+			}
+		}
+	}
+
 }
 
 func TestNodePublishVolumeIdempotentMount(t *testing.T) {

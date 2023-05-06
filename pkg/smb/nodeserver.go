@@ -17,10 +17,12 @@ limitations under the License.
 package smb
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -182,10 +184,14 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			sensitiveMountOptions = []string{password}
 		}
 	} else {
+		var useKerberosCache, err = ensureKerberosCache(mountFlags, secrets)
+		if err != nil {
+			return nil, status.Error(codes.Internal, fmt.Sprintf("Error writing kerberos cache: %v", err))
+		}
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
-		if requireUsernamePwdOption {
+		if requireUsernamePwdOption && !useKerberosCache {
 			sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
 		}
 		mountOptions = mountFlags
@@ -421,4 +427,89 @@ func checkGidPresentInMountFlags(mountFlags []string) bool {
 		}
 	}
 	return false
+}
+
+func hasKerberosMountOption(mountFlags []string) bool {
+	for _, mountFlag := range mountFlags {
+		if strings.HasPrefix(mountFlag, "sec=krb5") {
+			return true
+		}
+	}
+	return false
+}
+
+func getCredUID(mountFlags []string) (int, error) {
+	var cruidPrefix = "cruid="
+	for _, mountFlag := range mountFlags {
+		if strings.HasPrefix(mountFlag, cruidPrefix) {
+			return strconv.Atoi(strings.TrimPrefix(mountFlag, cruidPrefix))
+		}
+	}
+	return -1, fmt.Errorf("Can't find credUid in mount flags")
+}
+
+func getKrb5CcacheName(credUID int) string {
+	return fmt.Sprintf("%s%d", krb5Prefix, credUID)
+}
+
+func getKrb5CacheFileName(credUID int) string {
+	return fmt.Sprintf("%s%s%d", krb5CacheDirectory, krb5Prefix, credUID)
+}
+func kerberosCacheDirectoryExists() (bool, error) {
+	_, err := os.Stat(krb5CacheDirectory)
+	if os.IsNotExist(err) {
+		return false, status.Error(codes.Internal, fmt.Sprintf("Directory for kerberos caches must exist, it will not be created: %s: %v", krb5CacheDirectory, err))
+	} else if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func getKerberosCache(credUID int, secrets map[string]string) (string, []byte, error) {
+	var krb5CcacheName = getKrb5CcacheName(credUID)
+	var krb5CcacheContent string
+	for k, v := range secrets {
+		switch strings.ToLower(k) {
+		case krb5CcacheName:
+			krb5CcacheContent = v
+		}
+	}
+	if krb5CcacheContent == "" {
+		return "", nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Empty kerberos cache in key %s", krb5CcacheName))
+	}
+	content, err := base64.StdEncoding.DecodeString(krb5CcacheContent)
+	if err != nil {
+		return "", nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Malformed kerberos cache in key %s, expected to be in base64 form: %v", krb5CcacheName, err))
+	}
+	var krb5CacheFileName = getKrb5CacheFileName(credUID)
+
+	return krb5CacheFileName, content, nil
+}
+
+func ensureKerberosCache(mountFlags []string, secrets map[string]string) (bool, error) {
+	var securityIsKerberos = hasKerberosMountOption(mountFlags)
+	if securityIsKerberos {
+		_, err := kerberosCacheDirectoryExists()
+		if err != nil {
+			return false, err
+		}
+		credUID, err := getCredUID(mountFlags)
+		if err != nil {
+			return false, err
+		}
+		krb5CacheFileName, content, err := getKerberosCache(credUID, secrets)
+		if err != nil {
+			return false, err
+		}
+		err = os.WriteFile(krb5CacheFileName, content, os.FileMode(0700))
+		if err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", krb5CacheFileName, err))
+		}
+		err = os.Chown(krb5CacheFileName, credUID, credUID)
+		if err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't chown kerberos cache %s to user %d: %v", krb5CacheFileName, credUID, err))
+		}
+		return true, nil
+	}
+	return false, nil
 }
