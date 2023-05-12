@@ -19,7 +19,7 @@ KUBECONFIG=$HOME/.kube/config
 
 # Setup and download kind
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.9.0/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
-curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+curl -Lo kubectl https://dl.k8s.io/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
 
 sudo kind create cluster --image kindest/node:$KUBERNETES_VERSION
 mkdir -p $HOME/.kube

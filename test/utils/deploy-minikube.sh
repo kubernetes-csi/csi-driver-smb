@@ -22,7 +22,7 @@ KUBECONFIG=$HOME/.kube/config
 KUBERNETES_VERSION=v1.18.1
 
 # install and start minikube cluster
-curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.18.1/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+curl -Lo kubectl https://dl.k8s.io/release/v1.18.1/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.8.1/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
 mkdir -p $HOME/.kube $HOME/.minikube
 touch $KUBECONFIG
