@@ -184,7 +184,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			sensitiveMountOptions = []string{password}
 		}
 	} else {
-		var useKerberosCache, err = ensureKerberosCache(mountFlags, secrets)
+		var useKerberosCache, err = ensureKerberosCache(volumeID, mountFlags, secrets)
 		if err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("Error writing kerberos cache: %v", err))
 		}
@@ -260,6 +260,10 @@ func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint on %s with volume %s", stagingTargetPath, volumeID)
 	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, true /*extensiveMountPointCheck*/); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
+	}
+
+	if err := deleteKerberosCache(volumeID); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete kerberos cache: %v", err)
 	}
 
 	klog.V(2).Infof("NodeUnstageVolume: unmount volume %s on %s successfully", volumeID, stagingTargetPath)
@@ -452,9 +456,16 @@ func getKrb5CcacheName(credUID int) string {
 	return fmt.Sprintf("%s%d", krb5Prefix, credUID)
 }
 
-func getKrb5CacheFileName(credUID int) string {
-	return fmt.Sprintf("%s%s%d", krb5CacheDirectory, krb5Prefix, credUID)
+// returns absolute path for name of file inside krb5CacheDirectory
+func getKerberosFilePath(fileName string) string {
+	return fmt.Sprintf("%s%s", krb5CacheDirectory, fileName)
 }
+
+func volumeKerberosCacheName(volumeID string) string {
+	encoded := base64.StdEncoding.EncodeToString([]byte(volumeID))
+	return strings.ReplaceAll(strings.ReplaceAll(encoded, "/", "-"), "+", "_")
+}
+
 func kerberosCacheDirectoryExists() (bool, error) {
 	_, err := os.Stat(krb5CacheDirectory)
 	if os.IsNotExist(err) {
@@ -481,12 +492,15 @@ func getKerberosCache(credUID int, secrets map[string]string) (string, []byte, e
 	if err != nil {
 		return "", nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Malformed kerberos cache in key %s, expected to be in base64 form: %v", krb5CcacheName, err))
 	}
-	var krb5CacheFileName = getKrb5CacheFileName(credUID)
+	var krb5CacheFileName = getKerberosFilePath(getKrb5CcacheName(credUID))
 
 	return krb5CacheFileName, content, nil
 }
 
-func ensureKerberosCache(mountFlags []string, secrets map[string]string) (bool, error) {
+// Create kerberos cache in the file based on the VolumeID, so it can be cleaned up during unstage
+// At the same time, kerberos expects to find cache in file named "krb5cc_*", so creating symlink
+// will allow both clean up and serving proper cache to the kerberos.
+func ensureKerberosCache(volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
 	var securityIsKerberos = hasKerberosMountOption(mountFlags)
 	if securityIsKerberos {
 		_, err := kerberosCacheDirectoryExists()
@@ -501,15 +515,77 @@ func ensureKerberosCache(mountFlags []string, secrets map[string]string) (bool, 
 		if err != nil {
 			return false, err
 		}
-		err = os.WriteFile(krb5CacheFileName, content, os.FileMode(0700))
-		if err != nil {
-			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", krb5CacheFileName, err))
+		// Write cache into volumeId-based filename, so it can be cleaned up later
+		volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
+
+		volumeIDCacheAbsolutePath := getKerberosFilePath(volumeIDCacheFileName)
+		if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0700)); err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", volumeIDCacheAbsolutePath, err))
 		}
-		err = os.Chown(krb5CacheFileName, credUID, credUID)
-		if err != nil {
-			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't chown kerberos cache %s to user %d: %v", krb5CacheFileName, credUID, err))
+		if err := os.Chown(volumeIDCacheAbsolutePath, credUID, credUID); err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't chown kerberos cache %s to user %d: %v", volumeIDCacheAbsolutePath, credUID, err))
 		}
+
+		if _, err := os.Stat(krb5CacheFileName); os.IsNotExist(err) {
+			klog.Warningf("symlink file doesn't exist, it'll be created [%s]", krb5CacheFileName)
+		} else {
+			if err := os.Remove(krb5CacheFileName); err != nil {
+				klog.Warningf("couldn't delete the file [%s]", krb5CacheFileName)
+			}
+		}
+
+		// Create symlink to the cache file with expected name
+		if err := os.Symlink(volumeIDCacheAbsolutePath, krb5CacheFileName); err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't create symlink to a cache file %s->%s to user %d: %v", krb5CacheFileName, volumeIDCacheFileName, credUID, err))
+		}
+
 		return true, nil
 	}
 	return false, nil
+}
+
+func deleteKerberosCache(volumeID string) error {
+	exists, err := kerberosCacheDirectoryExists()
+	// If not supported, simply return
+	if !exists {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+
+	volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
+
+	var volumeIDCacheAbsolutePath = getKerberosFilePath(volumeIDCacheFileName)
+	_, err = os.Stat(volumeIDCacheAbsolutePath)
+	// Not created or already removed
+	if os.IsNotExist(err) {
+		return nil
+	} else if err != nil {
+		return err
+	}
+
+	// If file with cache exists, full clean means removing symlinks to the file.
+	dirEntries, _ := os.ReadDir(krb5CacheDirectory)
+	for _, dirEntry := range dirEntries {
+		filePath := getKerberosFilePath(dirEntry.Name())
+		lStat, _ := os.Lstat(filePath)
+		// If it's a symlink, checking if it's pointing to the volume file in question
+		if lStat != nil {
+			target, _ := os.Readlink(filePath)
+			if target == volumeIDCacheAbsolutePath {
+				err = os.Remove(filePath)
+				if err != nil {
+					klog.Errorf("Error removing symlink to kerberos ticket cache: %s (%v)", filePath, err)
+				}
+			}
+		}
+	}
+
+	err = os.Remove(volumeIDCacheAbsolutePath)
+	if err != nil {
+		klog.Errorf("Error removing symlink to kerberos ticket cache: %s (%v)", volumeIDCacheAbsolutePath, err)
+	}
+
+	return nil
 }

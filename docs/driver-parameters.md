@@ -43,16 +43,17 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
  - Kerberos support should be set up and cifs-utils must be installed on every node.
  - The directory /var/lib/kubelet/kerberos/ needs to exist, and it will hold kerberos credential cache files for various users.
  - This directory is shared between the host and the smb container.
- - The admin is responsible for cleaning up the directory on each node as they deem appropriate. It's important to note that unmounting doesn't delete the cache file.
+ - The kerberos cache files are created for each volume and cleaned up during UnstageVolume phase
  - Each node should know to look up in that directory, here's example script for that, expected to be run on node provision:
 ```console
 mkdir -p /etc/krb5.conf.d/
 echo "[libdefaults]
 default_ccache_name = FILE:/var/lib/kubelet/kerberos/krb5cc_%{uid}" > /etc/krb5.conf.d/ccache.conf
    ```
- - Mount flags should include **sec=krb5,cruid=1000**
+ - Mount flags should include **sec=krb5,uid=1000,cruid=1000**
    - sec=krb5 enables using credential cache
    - cruid=1000 provides information for what user credential cache will be looked up. This should match the secret entry.
+   - uid=1000 is the owner of mounted files. This doesn't have to be the same as cruid.
 
 #### Pass kerberos ticket in kubernetes secret 
 To pass a ticket through secret, it needs to be acquired. Here's example how it can be done:

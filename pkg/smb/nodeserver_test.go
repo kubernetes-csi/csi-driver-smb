@@ -692,6 +692,29 @@ func TestCheckGidPresentInMountFlags(t *testing.T) {
 	}
 }
 
+func TestVolumeKerberosCacheName(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		{
+			name: "s", // short name
+		},
+		{
+			name: "Volume Handle##unique suffix",
+		},
+		{
+			name: "Volume With Spaces and Slashes // and symbols that produce /+ after base64 ???????~~~~~~~~",
+		},
+	}
+
+	for _, test := range tests {
+		fileName := volumeKerberosCacheName(test.name)
+		if strings.Contains(fileName, "/") || strings.Contains(fileName, "+") {
+			t.Errorf("[%s]: Expected result should not contain / or +, Actual result: %s", test.name, fileName)
+		}
+	}
+}
+
 func TestHasKerberosMountOption(t *testing.T) {
 	tests := []struct {
 		desc       string
