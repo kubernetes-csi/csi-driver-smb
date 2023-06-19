@@ -30,7 +30,7 @@ import (
 	admissionapi "k8s.io/pod-security-admission/api"
 )
 
-var _ = ginkgo.Describe("Dynamic Provisioning", func(ctx ginkgo.SpecContext) {
+var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	f := framework.NewDefaultFramework("smb")
 	f.NamespacePodSecurityEnforceLevel = admissionapi.LevelPrivileged
 

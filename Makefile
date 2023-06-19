@@ -14,7 +14,7 @@
 
 CMDS=smbplugin
 PKG = github.com/kubernetes-csi/csi-driver-smb
-GINKGO_FLAGS = -ginkgo.v
+GINKGO_FLAGS = -ginkgo.v -ginkgo.timeout=2h
 GO111MODULE = on
 GOPATH ?= $(shell go env GOPATH)
 GOBIN ?= $(GOPATH)/bin
