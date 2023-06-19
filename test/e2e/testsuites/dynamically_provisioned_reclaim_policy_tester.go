@@ -17,6 +17,7 @@ limitations under the License.
 package testsuites
 
 import (
+	"context"
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
 
@@ -33,18 +34,18 @@ type DynamicallyProvisionedReclaimPolicyTest struct {
 	StorageClassParameters map[string]string
 }
 
-func (t *DynamicallyProvisionedReclaimPolicyTest) Run(client clientset.Interface, namespace *v1.Namespace) {
+func (t *DynamicallyProvisionedReclaimPolicyTest) Run(ctx context.Context, client clientset.Interface, namespace *v1.Namespace) {
 	for _, volume := range t.Volumes {
-		tpvc, _ := volume.SetupDynamicPersistentVolumeClaim(client, namespace, t.CSIDriver, t.StorageClassParameters)
+		tpvc, _ := volume.SetupDynamicPersistentVolumeClaim(ctx, client, namespace, t.CSIDriver, t.StorageClassParameters)
 
 		// will delete the PVC
 		// will also wait for PV to be deleted when reclaimPolicy=Delete
-		tpvc.Cleanup()
+		tpvc.Cleanup(ctx)
 		// first check PV stills exists, then manually delete it
 		if tpvc.ReclaimPolicy() == v1.PersistentVolumeReclaimRetain {
-			tpvc.WaitForPersistentVolumePhase(v1.VolumeReleased)
-			tpvc.DeleteBoundPersistentVolume()
-			tpvc.DeleteBackingVolume(t.Driver)
+			tpvc.WaitForPersistentVolumePhase(ctx, v1.VolumeReleased)
+			tpvc.DeleteBoundPersistentVolume(ctx)
+			tpvc.DeleteBackingVolume(ctx, t.Driver)
 		}
 	}
 }
