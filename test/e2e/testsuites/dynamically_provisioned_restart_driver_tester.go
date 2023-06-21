@@ -17,6 +17,7 @@ limitations under the License.
 package testsuites
 
 import (
+	"context"
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
 	"github.com/onsi/ginkgo/v2"
 	v1 "k8s.io/api/core/v1"
@@ -33,18 +34,18 @@ type DynamicallyProvisionedRestartDriverTest struct {
 	RestartDriverFunc      func()
 }
 
-func (t *DynamicallyProvisionedRestartDriverTest) Run(client clientset.Interface, namespace *v1.Namespace) {
-	tDeployment, cleanup := t.Pod.SetupDeployment(client, namespace, t.CSIDriver, t.StorageClassParameters)
+func (t *DynamicallyProvisionedRestartDriverTest) Run(ctx context.Context, client clientset.Interface, namespace *v1.Namespace) {
+	tDeployment, cleanup := t.Pod.SetupDeployment(ctx, client, namespace, t.CSIDriver, t.StorageClassParameters)
 	// defer must be called here for resources not get removed before using them
 	for i := range cleanup {
-		defer cleanup[i]()
+		defer cleanup[i](ctx)
 	}
 
 	ginkgo.By("creating the deployment for the pod")
-	tDeployment.Create()
+	tDeployment.Create(ctx)
 
 	ginkgo.By("checking that the pod is running")
-	tDeployment.WaitForPodReady()
+	tDeployment.WaitForPodReady(ctx)
 
 	if t.PodCheck != nil {
 		ginkgo.By("checking if pod is able to access volume")

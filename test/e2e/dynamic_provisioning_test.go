@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		testDriver driver.PVTestDriver
 	)
 
-	ginkgo.BeforeEach(func() {
+	ginkgo.BeforeEach(func(ctx ginkgo.SpecContext) {
 		checkPodsRestart := testCmd{
 			command:  "sh",
 			args:     []string{"test/utils/check_driver_pods_restart.sh"},
@@ -54,7 +54,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	})
 
 	testDriver = driver.InitSMBDriver()
-	ginkgo.It("should create a volume after driver restart [smb.csi.k8s.io]", func() {
+	ginkgo.It("should create a volume after driver restart [smb.csi.k8s.io]", func(ctx ginkgo.SpecContext) {
 		ginkgo.Skip("test case is disabled since node logs would be lost after driver restart")
 		pod := testsuites.PodDetails{
 			Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' >> /mnt/test-1/data && while true; do sleep 3600; done"),
@@ -94,10 +94,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 				execTestCmd([]testCmd{restartDriver})
 			},
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It("should create a volume on demand with mount options [smb.csi.k8s.io] [Windows]", func() {
+	ginkgo.It("should create a volume on demand with mount options [smb.csi.k8s.io] [Windows]", func(ctx ginkgo.SpecContext) {
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
@@ -128,10 +128,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			StorageClassParameters: defaultStorageClassParameters,
 		}
 
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [smb.csi.k8s.io] [Windows]", func() {
+	ginkgo.It("should create multiple PV objects, bind to PVCs and attach all to different pods on the same node [smb.csi.k8s.io] [Windows]", func(ctx ginkgo.SpecContext) {
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: convertToPowershellCommandIfNecessary("while true; do echo $(date -u) >> /mnt/test-1/data; sleep 100; done"),
@@ -166,11 +166,11 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			ColocatePods:           true,
 			StorageClassParameters: defaultStorageClassParameters,
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
 	// Track issue https://github.com/kubernetes/kubernetes/issues/70505
-	ginkgo.It("should create a volume on demand and mount it as readOnly in a pod [smb.csi.k8s.io]", func() {
+	ginkgo.It("should create a volume on demand and mount it as readOnly in a pod [smb.csi.k8s.io]", func(ctx ginkgo.SpecContext) {
 		// Windows volume does not support readOnly
 		skipIfTestingInWindowsCluster()
 		pods := []testsuites.PodDetails{
@@ -194,10 +194,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			Pods:                   pods,
 			StorageClassParameters: defaultStorageClassParameters,
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It("should create a deployment object, write and read to it, delete the pod and write and read to it again [smb.csi.k8s.io] [Windows]", func() {
+	ginkgo.It("should create a deployment object, write and read to it, delete the pod and write and read to it again [smb.csi.k8s.io] [Windows]", func(ctx ginkgo.SpecContext) {
 		pod := testsuites.PodDetails{
 			Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' >> /mnt/test-1/data && while true; do sleep 100; done"),
 			Volumes: []testsuites.VolumeDetails{
@@ -227,10 +227,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			},
 			StorageClassParameters: defaultStorageClassParameters,
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimDelete), func() {
+	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimDelete), func(ctx ginkgo.SpecContext) {
 		reclaimPolicy := v1.PersistentVolumeReclaimDelete
 		volumes := []testsuites.VolumeDetails{
 			{
@@ -243,10 +243,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			Volumes:                volumes,
 			StorageClassParameters: defaultStorageClassParameters,
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It(fmt.Sprintf("should retain PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimRetain), func() {
+	ginkgo.It(fmt.Sprintf("should retain PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimRetain), func(ctx ginkgo.SpecContext) {
 		reclaimPolicy := v1.PersistentVolumeReclaimRetain
 		volumes := []testsuites.VolumeDetails{
 			{
@@ -260,10 +260,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			Driver:                 smbDriver,
 			StorageClassParameters: defaultStorageClassParameters,
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It("should create a pod with multiple volumes [smb.csi.k8s.io] [Windows]", func() {
+	ginkgo.It("should create a pod with multiple volumes [smb.csi.k8s.io] [Windows]", func(ctx ginkgo.SpecContext) {
 		volumes := []testsuites.VolumeDetails{}
 		for i := 1; i <= 6; i++ {
 			volume := testsuites.VolumeDetails{
@@ -288,10 +288,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			Pods:                   pods,
 			StorageClassParameters: subDirStorageClassParameters,
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It("should create a pod with volume mount subpath [smb.csi.k8s.io] [Windows]", func() {
+	ginkgo.It("should create a pod with volume mount subpath [smb.csi.k8s.io] [Windows]", func(ctx ginkgo.SpecContext) {
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
@@ -312,10 +312,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			Pods:                   pods,
 			StorageClassParameters: noProvisionerSecretStorageClassParameters,
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It("should clone a volume from an existing volume [smb.csi.k8s.io]", func() {
+	ginkgo.It("should clone a volume from an existing volume [smb.csi.k8s.io]", func(ctx ginkgo.SpecContext) {
 		skipIfTestingInWindowsCluster()
 
 		pod := testsuites.PodDetails{
@@ -348,6 +348,6 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			PodWithClonedVolume:    podWithClonedVolume,
 			StorageClassParameters: defaultStorageClassParameters,
 		}
-		test.Run(cs, ns)
+		test.Run(ctx, cs, ns)
 	})
 })

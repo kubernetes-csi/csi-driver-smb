@@ -17,6 +17,7 @@ limitations under the License.
 package testsuites
 
 import (
+	"context"
 	"time"
 
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
@@ -41,18 +42,18 @@ type PodExecCheck struct {
 	ExpectedString string
 }
 
-func (t *DynamicallyProvisionedDeletePodTest) Run(client clientset.Interface, namespace *v1.Namespace) {
-	tDeployment, cleanup := t.Pod.SetupDeployment(client, namespace, t.CSIDriver, t.StorageClassParameters)
+func (t *DynamicallyProvisionedDeletePodTest) Run(ctx context.Context, client clientset.Interface, namespace *v1.Namespace) {
+	tDeployment, cleanup := t.Pod.SetupDeployment(ctx, client, namespace, t.CSIDriver, t.StorageClassParameters)
 	// defer must be called here for resources not get removed before using them
 	for i := range cleanup {
-		defer cleanup[i]()
+		defer cleanup[i](ctx)
 	}
 
 	ginkgo.By("deploying the deployment")
-	tDeployment.Create()
+	tDeployment.Create(ctx)
 
 	ginkgo.By("checking that the pod is running")
-	tDeployment.WaitForPodReady()
+	tDeployment.WaitForPodReady(ctx)
 
 	if t.PodCheck != nil {
 		ginkgo.By("sleep 5s and then check pod exec")
@@ -61,10 +62,10 @@ func (t *DynamicallyProvisionedDeletePodTest) Run(client clientset.Interface, na
 	}
 
 	ginkgo.By("deleting the pod for deployment")
-	tDeployment.DeletePodAndWait()
+	tDeployment.DeletePodAndWait(ctx)
 
 	ginkgo.By("checking again that the pod is running")
-	tDeployment.WaitForPodReady()
+	tDeployment.WaitForPodReady(ctx)
 
 	if t.PodCheck != nil {
 		ginkgo.By("sleep 5s and then check pod exec after pod restart again")
