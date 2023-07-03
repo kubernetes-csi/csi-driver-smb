@@ -24,4 +24,4 @@ spec:
       hostNetwork: true
       containers:
         - name: csi-proxy
-          image: ghcr.io/kubernetes-sigs/sig-windows/csi-proxy:v1.0.2
+          image: ghcr.io/kubernetes-sigs/sig-windows/csi-proxy:v1.1.2
