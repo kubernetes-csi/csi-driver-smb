@@ -58,7 +58,7 @@ For self-hosted Kubernetes clusters there is no default name resolution to solve
 
 ### Name resolution solution
 
-A simple _hack_ workaround is to use a fixed ClusterIP for the smb service, and use the ip in the storageClass.
+A simple _hack_ workaround is to use a fixed ClusterIP for the smb service, and use the IP in the storageClass.
 
 It is VERY VERY much not recommended to use fixed IPs inside Kubernetes, but in this very specific case it make for a simple workaround.
 
