@@ -125,6 +125,24 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `windows.resources.smb.requests.memory`                 | smb-csi-driver memory requests limits                                                                      | `20Mi`                                                  |
 | `windows.kubelet`                                       | configure kubelet directory path on Windows agent node                                                     | `'C:\var\lib\kubelet'`                                  |
 
+### Csi Proxy support on windows
+
+The helm can setup the host-process deamonset for the csi proxy, by setting windows.csiproxy.enabled to true.
+
+The following table lists the configurable parameters of the latest CSI-proxy Driver chart and default values.
+
+| Parameter                                               | Description                                                                                                | Default                                                 |
+|---------------------------------------------------------|------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| `windows.csiproxy.enabled`                              | whether enable csi-proxy daemonset                                                                         | `false`                                                 |
+| `windows.csiproxy.dsName`                               | name of driver csi-proxy daemonset on windows                                                              | `csi-proxy-win`                                         |
+| `windows.csiproxy.username`                             | name of windows user on the host machine to run the proxy as                                               | `NT AUTHORITY\\SYSTEM`                                      |
+| `windows.csiproxy.affinity`                             | controller pod affinity                                                                                    | `{}`                                                       |
+| `windows.csiproxy.nodeSelector`                         | controller pod node selector                                                                               | `{"kubernetes.io/os": windows}`                                                       |
+| `windows.csiproxy.tolerations`                          | controller pod tolerations                                                                                 | `[]`                                                       |
+| `image.csiproxy.repository`                             | csiproxy docker image                                                                                      | `ghcr.io/kubernetes-sigs/sig-windows/csi-provisioner`                            |
+| `image.csiproxy.tag`                                    | csiproxy docker image tag                                                                                  | `v1.1.2`                                                      |
+| `image.csiproxy.pullPolicy`                             | csiproxy image pull policy                                                                                 | `IfNotPresent`                                          |
+
 ## troubleshooting
 
 - Add `--wait -v=5 --debug` in `helm install` command to get detailed error

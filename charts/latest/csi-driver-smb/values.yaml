@@ -16,6 +16,10 @@ image:
     repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
     tag: v2.8.0
     pullPolicy: IfNotPresent
+  csiproxy:
+    repository: ghcr.io/kubernetes-sigs/sig-windows/csi-provisioner
+    tag: v1.1.2
+    pullPolicy: IfNotPresent
 
 serviceAccount:
   create: true # When true, service accounts will be created for you. Set to false if you want to use your own.
@@ -111,7 +115,7 @@ linux:
         memory: 20Mi
 
 windows:
-  enabled: false
+  enabled: false # Unless you already had csi proxy installed, windows.csiproxy.enabled=true is required
   dsName: csi-smb-node-win # daemonset name
   kubelet: 'C:\var\lib\kubelet'
   removeSMBMappingDuringUnmount: true
@@ -138,6 +142,13 @@ windows:
       requests:
         cpu: 10m
         memory: 40Mi
+  csiproxy:
+    enabled: false # required if windows.enabled is true, but may be installed manually also
+    dsName: csi-proxy-win # daemonset name
+    tolerations: {}
+    affinity: {}
+    nodeSelector:
+      "kubernetes.io/os": windows
 
 customLabels: {}
 ## Collection of annotations to add to all the pods
