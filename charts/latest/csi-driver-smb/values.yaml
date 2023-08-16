@@ -17,7 +17,7 @@ image:
     tag: v2.8.0
     pullPolicy: IfNotPresent
   csiproxy:
-    repository: ghcr.io/kubernetes-sigs/sig-windows/csi-provisioner
+    repository: ghcr.io/kubernetes-sigs/sig-windows/csi-proxy
     tag: v1.1.2
     pullPolicy: IfNotPresent
 
@@ -147,6 +147,7 @@ windows:
     dsName: csi-proxy-win # daemonset name
     tolerations: {}
     affinity: {}
+    username: "NT AUTHORITY\\SYSTEM"
     nodeSelector:
       "kubernetes.io/os": windows
 
