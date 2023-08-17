@@ -6,6 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
 {{ include "smb.labels" . | indent 2 }}
 spec:
+  strategy:
+    type: Recreate
   replicas: {{ .Values.controller.replicas }}
   selector:
     matchLabels:
