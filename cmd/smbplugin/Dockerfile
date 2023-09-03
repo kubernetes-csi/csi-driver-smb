@@ -15,6 +15,8 @@
 FROM registry.k8s.io/build-image/debian-base:bullseye-v1.4.3
 
 RUN apt update && apt upgrade -y && apt-mark unhold libcap2 && clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
+# remove unused packages which have CVEs
+RUN apt remove libwbclient0 -y
 
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
