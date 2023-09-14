@@ -64,6 +64,16 @@ const (
 	ProbeRemove
 )
 
+var (
+	deprecatedVolumeProviders = map[string]string{
+		"kubernetes.io/cinder":    "The Cinder volume provider is deprecated and will be removed in a future release",
+		"kubernetes.io/storageos": "The StorageOS volume provider is deprecated and will be removed in a future release",
+		"kubernetes.io/quobyte":   "The Quobyte volume provider is deprecated and will be removed in a future release",
+		"kubernetes.io/flocker":   "The Flocker volume provider is deprecated and will be removed in a future release",
+		"kubernetes.io/glusterfs": "The GlusterFS volume provider is deprecated and will be removed soon after in a subsequent release",
+	}
+)
+
 // VolumeOptions contains option information about a volume.
 type VolumeOptions struct {
 	// The attributes below are required by volume.Provisioner
@@ -166,7 +176,7 @@ type VolumePlugin interface {
 	// and volumePath. The spec may have incomplete information due to limited
 	// information from input. This function is used by volume manager to reconstruct
 	// volume spec by reading the volume directories from disk
-	ConstructVolumeSpec(volumeName, volumePath string) (ReconstructedVolume, error)
+	ConstructVolumeSpec(volumeName, volumePath string) (*Spec, error)
 
 	// SupportsMountOption returns true if volume plugins supports Mount options
 	// Specifying mount options in a volume plugin that doesn't support
@@ -213,7 +223,7 @@ type DeletableVolumePlugin interface {
 	// NewDeleter creates a new volume.Deleter which knows how to delete this
 	// resource in accordance with the underlying storage provider after the
 	// volume's release from a claim
-	NewDeleter(logger klog.Logger, spec *Spec) (Deleter, error)
+	NewDeleter(spec *Spec) (Deleter, error)
 }
 
 // ProvisionableVolumePlugin is an extended interface of VolumePlugin and is
@@ -223,7 +233,7 @@ type ProvisionableVolumePlugin interface {
 	// NewProvisioner creates a new volume.Provisioner which knows how to
 	// create PersistentVolumes in accordance with the plugin's underlying
 	// storage provider
-	NewProvisioner(logger klog.Logger, options VolumeOptions) (Provisioner, error)
+	NewProvisioner(options VolumeOptions) (Provisioner, error)
 }
 
 // AttachableVolumePlugin is an extended interface of VolumePlugin and is used for volumes that require attachment
@@ -334,6 +344,13 @@ type KubeletVolumeHost interface {
 	WaitForCacheSync() error
 	// Returns hostutil.HostUtils
 	GetHostUtil() hostutil.HostUtils
+	// GetHostIDsForPod if the pod uses user namespaces, takes the uid and
+	// gid inside the container and returns the host UID and GID those are
+	// mapped to on the host. If containerUID/containerGID is nil, then it
+	// returns the host UID/GID for ID 0 inside the container.
+	// If the pod is not using user namespaces, as there is no mapping needed, the
+	// same containerUID and containerGID params are returned.
+	GetHostIDsForPod(pod *v1.Pod, containerUID, containerGID *int64) (hostUID, hostGID *int64, err error)
 }
 
 // AttachDetachVolumeHost is a AttachDetach Controller specific interface that plugins can use
@@ -563,16 +580,6 @@ type VolumeConfig struct {
 	ProvisioningEnabled bool
 }
 
-// ReconstructedVolume contains information about a volume reconstructed by
-// ConstructVolumeSpec().
-type ReconstructedVolume struct {
-	// Spec is the volume spec of a mounted volume
-	Spec *Spec
-	// SELinuxMountContext is value of -o context=XYZ mount option.
-	// If empty, no such mount option is used.
-	SELinuxMountContext string
-}
-
 // NewSpecFromVolume creates an Spec from an v1.Volume
 func NewSpecFromVolume(vs *v1.Volume) *Spec {
 	return &Spec{
@@ -691,6 +698,8 @@ func (pm *VolumePluginMgr) FindPluginBySpec(spec *Spec) (VolumePlugin, error) {
 		return nil, fmt.Errorf("multiple volume plugins matched: %s", strings.Join(matchedPluginNames, ","))
 	}
 
+	// Issue warning if the matched provider is deprecated
+	pm.logDeprecation(match.GetPluginName())
 	return match, nil
 }
 
@@ -717,7 +726,20 @@ func (pm *VolumePluginMgr) FindPluginByName(name string) (VolumePlugin, error) {
 	if match == nil {
 		return nil, fmt.Errorf("no volume plugin matched name: %s", name)
 	}
+
+	// Issue warning if the matched provider is deprecated
+	pm.logDeprecation(match.GetPluginName())
 	return match, nil
+}
+
+// logDeprecation logs warning when a deprecated plugin is used.
+func (pm *VolumePluginMgr) logDeprecation(plugin string) {
+	if detail, ok := deprecatedVolumeProviders[plugin]; ok && !pm.loggedDeprecationWarnings.Has(plugin) {
+		klog.Warningf("WARNING: %s built-in volume provider is now deprecated. %s", plugin, detail)
+		// Make sure the message is logged only once. It has Warning severity
+		// and we don't want to spam the log too much.
+		pm.loggedDeprecationWarnings.Insert(plugin)
+	}
 }
 
 // Check if probedPlugin cache update is required.
