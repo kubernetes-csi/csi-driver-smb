@@ -27,7 +27,7 @@ import (
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/util/wait"
 	clientset "k8s.io/client-go/kubernetes"
-	"k8s.io/kubernetes/test/e2e/framework"
+	e2elog "k8s.io/kubernetes/test/e2e/framework/log"
 )
 
 const sleepTime = 20 * time.Second
@@ -40,21 +40,21 @@ var requiredPerNodePods = []*regexp.Regexp{
 
 // WaitForReadyNodes waits up to timeout for cluster to has desired size and
 // there is no not-ready nodes in it. By cluster size we mean number of schedulable Nodes.
-func WaitForReadyNodes(ctx context.Context, c clientset.Interface, size int, timeout time.Duration) error {
-	_, err := CheckReady(ctx, c, size, timeout)
+func WaitForReadyNodes(c clientset.Interface, size int, timeout time.Duration) error {
+	_, err := CheckReady(c, size, timeout)
 	return err
 }
 
 // WaitForTotalHealthy checks whether all registered nodes are ready and all required Pods are running on them.
-func WaitForTotalHealthy(ctx context.Context, c clientset.Interface, timeout time.Duration) error {
-	framework.Logf("Waiting up to %v for all nodes to be ready", timeout)
+func WaitForTotalHealthy(c clientset.Interface, timeout time.Duration) error {
+	e2elog.Logf("Waiting up to %v for all nodes to be ready", timeout)
 
 	var notReady []v1.Node
 	var missingPodsPerNode map[string][]string
-	err := wait.PollImmediateWithContext(ctx, poll, timeout, func(ctx context.Context) (bool, error) {
+	err := wait.PollImmediate(poll, timeout, func() (bool, error) {
 		notReady = nil
 		// It should be OK to list unschedulable Nodes here.
-		nodes, err := c.CoreV1().Nodes().List(ctx, metav1.ListOptions{ResourceVersion: "0"})
+		nodes, err := c.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{ResourceVersion: "0"})
 		if err != nil {
 			return false, err
 		}
@@ -63,7 +63,7 @@ func WaitForTotalHealthy(ctx context.Context, c clientset.Interface, timeout tim
 				notReady = append(notReady, node)
 			}
 		}
-		pods, err := c.CoreV1().Pods(metav1.NamespaceAll).List(ctx, metav1.ListOptions{ResourceVersion: "0"})
+		pods, err := c.CoreV1().Pods(metav1.NamespaceAll).List(context.TODO(), metav1.ListOptions{ResourceVersion: "0"})
 		if err != nil {
 			return false, err
 		}
@@ -114,12 +114,12 @@ func WaitForTotalHealthy(ctx context.Context, c clientset.Interface, timeout tim
 // within timeout. If wantTrue is true, it will ensure the node condition status
 // is ConditionTrue; if it's false, it ensures the node condition is in any state
 // other than ConditionTrue (e.g. not true or unknown).
-func WaitConditionToBe(ctx context.Context, c clientset.Interface, name string, conditionType v1.NodeConditionType, wantTrue bool, timeout time.Duration) bool {
-	framework.Logf("Waiting up to %v for node %s condition %s to be %t", timeout, name, conditionType, wantTrue)
+func WaitConditionToBe(c clientset.Interface, name string, conditionType v1.NodeConditionType, wantTrue bool, timeout time.Duration) bool {
+	e2elog.Logf("Waiting up to %v for node %s condition %s to be %t", timeout, name, conditionType, wantTrue)
 	for start := time.Now(); time.Since(start) < timeout; time.Sleep(poll) {
-		node, err := c.CoreV1().Nodes().Get(ctx, name, metav1.GetOptions{})
+		node, err := c.CoreV1().Nodes().Get(context.TODO(), name, metav1.GetOptions{})
 		if err != nil {
-			framework.Logf("Couldn't get node %s", name)
+			e2elog.Logf("Couldn't get node %s", name)
 			continue
 		}
 
@@ -127,46 +127,29 @@ func WaitConditionToBe(ctx context.Context, c clientset.Interface, name string, 
 			return true
 		}
 	}
-	framework.Logf("Node %s didn't reach desired %s condition status (%t) within %v", name, conditionType, wantTrue, timeout)
+	e2elog.Logf("Node %s didn't reach desired %s condition status (%t) within %v", name, conditionType, wantTrue, timeout)
 	return false
 }
 
 // WaitForNodeToBeNotReady returns whether node name is not ready (i.e. the
 // readiness condition is anything but ready, e.g false or unknown) within
 // timeout.
-func WaitForNodeToBeNotReady(ctx context.Context, c clientset.Interface, name string, timeout time.Duration) bool {
-	return WaitConditionToBe(ctx, c, name, v1.NodeReady, false, timeout)
+func WaitForNodeToBeNotReady(c clientset.Interface, name string, timeout time.Duration) bool {
+	return WaitConditionToBe(c, name, v1.NodeReady, false, timeout)
 }
 
 // WaitForNodeToBeReady returns whether node name is ready within timeout.
-func WaitForNodeToBeReady(ctx context.Context, c clientset.Interface, name string, timeout time.Duration) bool {
-	return WaitConditionToBe(ctx, c, name, v1.NodeReady, true, timeout)
-}
-
-func WaitForNodeSchedulable(ctx context.Context, c clientset.Interface, name string, timeout time.Duration, wantSchedulable bool) bool {
-	framework.Logf("Waiting up to %v for node %s to be schedulable: %t", timeout, name, wantSchedulable)
-	for start := time.Now(); time.Since(start) < timeout; time.Sleep(poll) {
-		node, err := c.CoreV1().Nodes().Get(ctx, name, metav1.GetOptions{})
-		if err != nil {
-			framework.Logf("Couldn't get node %s", name)
-			continue
-		}
-
-		if IsNodeSchedulable(node) == wantSchedulable {
-			return true
-		}
-	}
-	framework.Logf("Node %s didn't reach desired schedulable status (%t) within %v", name, wantSchedulable, timeout)
-	return false
+func WaitForNodeToBeReady(c clientset.Interface, name string, timeout time.Duration) bool {
+	return WaitConditionToBe(c, name, v1.NodeReady, true, timeout)
 }
 
 // CheckReady waits up to timeout for cluster to has desired size and
 // there is no not-ready nodes in it. By cluster size we mean number of schedulable Nodes.
-func CheckReady(ctx context.Context, c clientset.Interface, size int, timeout time.Duration) ([]v1.Node, error) {
+func CheckReady(c clientset.Interface, size int, timeout time.Duration) ([]v1.Node, error) {
 	for start := time.Now(); time.Since(start) < timeout; time.Sleep(sleepTime) {
-		nodes, err := waitListSchedulableNodes(ctx, c)
+		nodes, err := waitListSchedulableNodes(c)
 		if err != nil {
-			framework.Logf("Failed to list nodes: %v", err)
+			e2elog.Logf("Failed to list nodes: %v", err)
 			continue
 		}
 		numNodes := len(nodes.Items)
@@ -180,20 +163,20 @@ func CheckReady(ctx context.Context, c clientset.Interface, size int, timeout ti
 		numReady := len(nodes.Items)
 
 		if numNodes == size && numReady == size {
-			framework.Logf("Cluster has reached the desired number of ready nodes %d", size)
+			e2elog.Logf("Cluster has reached the desired number of ready nodes %d", size)
 			return nodes.Items, nil
 		}
-		framework.Logf("Waiting for ready nodes %d, current ready %d, not ready nodes %d", size, numReady, numNodes-numReady)
+		e2elog.Logf("Waiting for ready nodes %d, current ready %d, not ready nodes %d", size, numReady, numNodes-numReady)
 	}
 	return nil, fmt.Errorf("timeout waiting %v for number of ready nodes to be %d", timeout, size)
 }
 
 // waitListSchedulableNodes is a wrapper around listing nodes supporting retries.
-func waitListSchedulableNodes(ctx context.Context, c clientset.Interface) (*v1.NodeList, error) {
+func waitListSchedulableNodes(c clientset.Interface) (*v1.NodeList, error) {
 	var nodes *v1.NodeList
 	var err error
-	if wait.PollImmediateWithContext(ctx, poll, singleCallTimeout, func(ctx context.Context) (bool, error) {
-		nodes, err = c.CoreV1().Nodes().List(ctx, metav1.ListOptions{FieldSelector: fields.Set{
+	if wait.PollImmediate(poll, singleCallTimeout, func() (bool, error) {
+		nodes, err = c.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{FieldSelector: fields.Set{
 			"spec.unschedulable": "false",
 		}.AsSelector().String()})
 		if err != nil {
@@ -207,8 +190,8 @@ func waitListSchedulableNodes(ctx context.Context, c clientset.Interface) (*v1.N
 }
 
 // checkWaitListSchedulableNodes is a wrapper around listing nodes supporting retries.
-func checkWaitListSchedulableNodes(ctx context.Context, c clientset.Interface) (*v1.NodeList, error) {
-	nodes, err := waitListSchedulableNodes(ctx, c)
+func checkWaitListSchedulableNodes(c clientset.Interface) (*v1.NodeList, error) {
+	nodes, err := waitListSchedulableNodes(c)
 	if err != nil {
 		return nil, fmt.Errorf("error: %s. Non-retryable failure or timed out while listing nodes for e2e cluster", err)
 	}
@@ -216,9 +199,9 @@ func checkWaitListSchedulableNodes(ctx context.Context, c clientset.Interface) (
 }
 
 // CheckReadyForTests returns a function which will return 'true' once the number of ready nodes is above the allowedNotReadyNodes threshold (i.e. to be used as a global gate for starting the tests).
-func CheckReadyForTests(ctx context.Context, c clientset.Interface, nonblockingTaints string, allowedNotReadyNodes, largeClusterThreshold int) func(ctx context.Context) (bool, error) {
+func CheckReadyForTests(c clientset.Interface, nonblockingTaints string, allowedNotReadyNodes, largeClusterThreshold int) func() (bool, error) {
 	attempt := 0
-	return func(ctx context.Context) (bool, error) {
+	return func() (bool, error) {
 		if allowedNotReadyNodes == -1 {
 			return true, nil
 		}
@@ -229,10 +212,10 @@ func CheckReadyForTests(ctx context.Context, c clientset.Interface, nonblockingT
 			// remove uncordoned nodes from our calculation, TODO refactor if node v2 API removes that semantic.
 			FieldSelector: fields.Set{"spec.unschedulable": "false"}.AsSelector().String(),
 		}
-		allNodes, err := c.CoreV1().Nodes().List(ctx, opts)
+		allNodes, err := c.CoreV1().Nodes().List(context.TODO(), opts)
 		if err != nil {
 			var terminalListNodesErr error
-			framework.Logf("Unexpected error listing nodes: %v", err)
+			e2elog.Logf("Unexpected error listing nodes: %v", err)
 			if attempt >= 3 {
 				terminalListNodesErr = err
 			}
@@ -253,9 +236,9 @@ func CheckReadyForTests(ctx context.Context, c clientset.Interface, nonblockingT
 		if len(nodesNotReadyYet) > 0 {
 			// In large clusters, log them only every 10th pass.
 			if len(nodesNotReadyYet) < largeClusterThreshold || attempt%10 == 0 {
-				framework.Logf("Unschedulable nodes= %v, maximum value for starting tests= %v", len(nodesNotReadyYet), allowedNotReadyNodes)
+				e2elog.Logf("Unschedulable nodes= %v, maximum value for starting tests= %v", len(nodesNotReadyYet), allowedNotReadyNodes)
 				for _, node := range nodesNotReadyYet {
-					framework.Logf("	-> Node %s [[[ Ready=%t, Network(available)=%t, Taints=%v, NonblockingTaints=%v ]]]",
+					e2elog.Logf("	-> Node %s [[[ Ready=%t, Network(available)=%t, Taints=%v, NonblockingTaints=%v ]]]",
 						node.Name,
 						IsConditionSetAsExpectedSilent(&node, v1.NodeReady, true),
 						IsConditionSetAsExpectedSilent(&node, v1.NodeNetworkUnavailable, false),
@@ -267,7 +250,7 @@ func CheckReadyForTests(ctx context.Context, c clientset.Interface, nonblockingT
 				if len(nodesNotReadyYet) > allowedNotReadyNodes {
 					ready := len(allNodes.Items) - len(nodesNotReadyYet)
 					remaining := len(nodesNotReadyYet) - allowedNotReadyNodes
-					framework.Logf("==== node wait: %v out of %v nodes are ready, max notReady allowed %v.  Need %v more before starting.", ready, len(allNodes.Items), allowedNotReadyNodes, remaining)
+					e2elog.Logf("==== node wait: %v out of %v nodes are ready, max notReady allowed %v.  Need %v more before starting.", ready, len(allNodes.Items), allowedNotReadyNodes, remaining)
 				}
 			}
 		}
