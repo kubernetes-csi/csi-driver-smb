@@ -42,8 +42,8 @@ import (
 type CSIProxyMounter interface {
 	mount.Interface
 
-	SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string) error
-	SMBUnmount(target string) error
+	SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string, volumeID string) error
+	SMBUnmount(target string, volumeID string) error
 	MakeDir(path string) error
 	Rmdir(path string) error
 	IsMountPointMatch(mp mount.MountPoint, dir string) bool
@@ -68,7 +68,7 @@ func normalizeWindowsPath(path string) string {
 	return normalizedPath
 }
 
-func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {
+func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string, volumeID string) error {
 	klog.V(2).Infof("SMBMount: remote path: %s local path: %s", source, target)
 
 	if len(mountOptions) == 0 || len(sensitiveMountOptions) == 0 {
@@ -124,14 +124,14 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 	klog.V(2).Infof("NewSmbGlobalMapping %s on %s successfully", source, normalizedTarget)
 
 	if mounter.RemoveSMBMappingDuringUnmount {
-		if err := incementRemotePathReferencesCount(mappingPath, source); err != nil {
-			return fmt.Errorf("incementMappingPathCount(%s, %s) failed with error: %v", mappingPath, source, err)
+		if err := incementVolumeIDReferencesCount(mappingPath, source, volumeID); err != nil {
+			return fmt.Errorf("incementRemotePathReferencesCount(%s, %s, %s) failed with error: %v", mappingPath, source, volumeID, err)
 		}
 	}
 	return nil
 }
 
-func (mounter *csiProxyMounter) SMBUnmount(target string) error {
+func (mounter *csiProxyMounter) SMBUnmount(target string, volumeID string) error {
 	klog.V(4).Infof("SMBUnmount: local path: %s", target)
 
 	if remotePath, err := os.Readlink(target); err != nil {
@@ -144,14 +144,14 @@ func (mounter *csiProxyMounter) SMBUnmount(target string) error {
 		}
 		klog.V(4).Infof("SMBUnmount: remote path: %s, mapping path: %s", remotePath, mappingPath)
 
-		unlock := lock(mappingPath)
-		defer unlock()
-
 		if mounter.RemoveSMBMappingDuringUnmount {
-			if err := decrementRemotePathReferencesCount(mappingPath, remotePath); err != nil {
-				return fmt.Errorf("decrementMappingPathCount(%s, %s) failed with error: %v", mappingPath, remotePath, err)
+			unlock := lock(mappingPath)
+			defer unlock()
+
+			if err := decrementVolumeIDReferencesCount(mappingPath, volumeID); err != nil {
+				return fmt.Errorf("decrementRemotePathReferencesCount(%s, %s) failed with error: %v", mappingPath, volumeID, err)
 			}
-			count := getRemotePathReferencesCount(mappingPath)
+			count := getVolumeIDReferencesCount(mappingPath)
 			if count == 0 {
 				smbUnmountRequest := &smb.RemoveSmbGlobalMappingRequest{
 					RemotePath: remotePath,

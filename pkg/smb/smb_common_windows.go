@@ -28,9 +28,9 @@ import (
 	mount "k8s.io/mount-utils"
 )
 
-func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {
+func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOptions, sensitiveMountOptions []string, volumeID string) error {
 	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
-		return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions)
+		return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions, volumeID)
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
 }
@@ -38,9 +38,9 @@ func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOpti
 // CleanupSMBMountPoint - In windows CSI proxy call to umount is used to unmount the SMB.
 // The clean up mount point point calls is supposed for fix the corrupted directories as well.
 // For alpha CSI proxy integration, we only do an unmount.
-func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
+func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool, volumeID string) error {
 	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
-		return proxy.SMBUnmount(target)
+		return proxy.SMBUnmount(target, volumeID)
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
 }

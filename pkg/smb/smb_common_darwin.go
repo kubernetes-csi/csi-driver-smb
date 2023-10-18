@@ -25,11 +25,11 @@ import (
 	mount "k8s.io/mount-utils"
 )
 
-func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string, sensitiveMountOptions []string) error {
+func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string, sensitiveMountOptions []string, volumeID string) error {
 	return m.MountSensitive(source, target, fsType, options, sensitiveMountOptions)
 }
 
-func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool) error {
+func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool, volumeID string) error {
 	return mount.CleanupMountPoint(target, m, extensiveMountCheck)
 }
 

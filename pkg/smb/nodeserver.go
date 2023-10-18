@@ -225,7 +225,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 		mountComplete := false
 		err = wait.PollImmediate(1*time.Second, 2*time.Minute, func() (bool, error) {
-			err := Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions)
+			err := Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
 			mountComplete = true
 			return true, err
 		})
@@ -258,7 +258,7 @@ func (d *Driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 	defer d.volumeLocks.Release(volumeID)
 
 	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint on %s with volume %s", stagingTargetPath, volumeID)
-	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, true /*extensiveMountPointCheck*/); err != nil {
+	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, true /*extensiveMountPointCheck*/, volumeID); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
 	}
 
