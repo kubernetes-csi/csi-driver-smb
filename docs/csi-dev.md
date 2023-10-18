@@ -80,7 +80,7 @@ CSINode
 
 ## How to test CSI driver in a Kubernetes cluster
 
- - Build continer image and push image to dockerhub
+ - Build container image and push image to dockerhub
 ```console
 # run `docker login` first
 export REGISTRY=<dockerhub-alias>
