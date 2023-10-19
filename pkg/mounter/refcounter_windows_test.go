@@ -169,7 +169,7 @@ func TestIncementVolumeIDReferencesCount(t *testing.T) {
 		t.Error("mapping file container does not exist")
 	}
 
-	reference := mappingPathContainer + "\\" + "vol1"
+	reference := mappingPathContainer + "\\" + getMd5("vol1")
 	if file, err := os.Stat(reference); os.IsNotExist(err) || file.IsDir() {
 		t.Error("reference file does not exist")
 	}
@@ -195,7 +195,7 @@ func TestDecrementVolumeIDReferencesCount(t *testing.T) {
 		t.Error("mapping file container does not exist")
 	}
 
-	reference := mappingPathContainer + "\\" + "vol1"
+	reference := mappingPathContainer + "\\" + getMd5("vol1")
 	if _, err := os.Stat(reference); os.IsExist(err) {
 		t.Error("reference file exists")
 	}
