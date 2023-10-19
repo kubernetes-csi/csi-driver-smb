@@ -44,7 +44,7 @@ type csiProxyMounterV1Beta struct {
 	SMBClient *smbclient.Client
 }
 
-func (mounter *csiProxyMounterV1Beta) SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string) error {
+func (mounter *csiProxyMounterV1Beta) SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string, volumeID string) error {
 	klog.V(4).Infof("SMBMount: remote path: %s. local path: %s", source, target)
 
 	if len(mountOptions) == 0 || len(sensitiveMountOptions) == 0 {
@@ -93,7 +93,7 @@ func (mounter *csiProxyMounterV1Beta) SMBMount(source, target, fsType string, mo
 	return nil
 }
 
-func (mounter *csiProxyMounterV1Beta) SMBUnmount(target string) error {
+func (mounter *csiProxyMounterV1Beta) SMBUnmount(target string, volumeID string) error {
 	klog.V(4).Infof("SMBUnmount: local path: %s", target)
 	// TODO: We need to remove the SMB mapping. The change to remove the
 	// directory brings the CSI code in parity with the in-tree.
