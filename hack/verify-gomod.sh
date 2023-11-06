@@ -29,3 +29,5 @@ if [[ -n "${diff}" ]]; then
   exit 1
 fi
 echo "Done"
+
+go list -mod readonly -m all

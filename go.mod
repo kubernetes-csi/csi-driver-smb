@@ -154,6 +154,7 @@ replace (
 	k8s.io/controller-manager => k8s.io/controller-manager v0.27.7
 	k8s.io/cri-api => k8s.io/cri-api v0.27.7
 	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.27.7
+	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.27.7
 	k8s.io/gengo => k8s.io/gengo v0.0.0-20200114144118-36b2048a9120
 	k8s.io/heapster => k8s.io/heapster v1.2.0-beta.1
 	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.27.7
