@@ -19,7 +19,7 @@ about: Create a report to help us improve this project
 **Environment**:
 <!-- 
 Run following command to get CSI driver version:
-kubectl get po -n kube-system -o yaml | grep gcr | grep smb
+kubectl get po -n kube-system -o yaml | grep registry.k8s | grep smb
 -->
 - CSI Driver version:
 - Kubernetes version (use `kubectl version`):
