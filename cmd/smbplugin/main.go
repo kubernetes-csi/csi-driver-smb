@@ -89,7 +89,7 @@ func exportMetrics() {
 	serve(context.Background(), l, serveMetrics)
 }
 
-func serve(ctx context.Context, l net.Listener, serveFunc func(net.Listener) error) {
+func serve(_ context.Context, l net.Listener, serveFunc func(net.Listener) error) {
 	path := l.Addr().String()
 	klog.V(2).Infof("set up prometheus server on %v", path)
 	go func() {

@@ -25,11 +25,11 @@ import (
 	mount "k8s.io/mount-utils"
 )
 
-func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options, sensitiveMountOptions []string, volumeID string) error {
+func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options, sensitiveMountOptions []string, _ string) error {
 	return m.MountSensitive(source, target, fsType, options, sensitiveMountOptions)
 }
 
-func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool, volumeID string) error {
+func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool, _ string) error {
 	return mount.CleanupMountPoint(target, m, extensiveMountCheck)
 }
 
@@ -37,14 +37,14 @@ func CleanupMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMoun
 	return mount.CleanupMountPoint(target, m, extensiveMountCheck)
 }
 
-func preparePublishPath(path string, m *mount.SafeFormatAndMount) error {
+func preparePublishPath(_ string, _ *mount.SafeFormatAndMount) error {
 	return nil
 }
 
-func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
+func prepareStagePath(_ string, _ *mount.SafeFormatAndMount) error {
 	return nil
 }
 
-func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
+func Mkdir(_ *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
 	return os.Mkdir(name, perm)
 }

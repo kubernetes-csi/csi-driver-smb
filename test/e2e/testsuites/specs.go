@@ -84,6 +84,7 @@ type DataSource struct {
 	Name string
 }
 
+//nolint:dupl
 func (pod *PodDetails) SetupWithDynamicVolumes(ctx context.Context, client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver, storageClassParameters map[string]string) (*TestPod, []func(ctx context.Context)) {
 	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows)
 	cleanupFuncs := make([]func(ctx context.Context), 0)
@@ -100,6 +101,8 @@ func (pod *PodDetails) SetupWithDynamicVolumes(ctx context.Context, client clien
 }
 
 // SetupWithDynamicMultipleVolumes each pod will be mounted with multiple volumes
+//
+//nolint:dupl
 func (pod *PodDetails) SetupWithDynamicMultipleVolumes(ctx context.Context, client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver, storageClassParameters map[string]string) (*TestPod, []func(ctx context.Context)) {
 	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows)
 	cleanupFuncs := make([]func(ctx context.Context), 0)

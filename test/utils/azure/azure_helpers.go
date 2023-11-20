@@ -48,7 +48,7 @@ func GetAzureClient(cloud, subscriptionID, clientID, tenantID, clientSecret stri
 		return nil, err
 	}
 
-	oauthConfig, err := getOAuthConfig(env, subscriptionID, tenantID)
+	oauthConfig, err := getOAuthConfig(env, tenantID)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func GetAzureClient(cloud, subscriptionID, clientID, tenantID, clientSecret stri
 		return nil, err
 	}
 
-	return getClient(env, subscriptionID, tenantID, armSpt), nil
+	return getClient(env, subscriptionID, armSpt), nil
 }
 
 func (az *Client) EnsureResourceGroup(ctx context.Context, name, location string, managedBy *string) (resourceGroup *resources.Group, err error) {
@@ -241,7 +241,7 @@ func (az *Client) GetVirtualNetworkSubnet(ctx context.Context, groupName, vnetNa
 	return az.subnetsClient.Get(ctx, groupName, vnetName, subnetName, "")
 }
 
-func getOAuthConfig(env azure.Environment, subscriptionID, tenantID string) (*adal.OAuthConfig, error) {
+func getOAuthConfig(env azure.Environment, tenantID string) (*adal.OAuthConfig, error) {
 	oauthConfig, err := adal.NewOAuthConfig(env.ActiveDirectoryEndpoint, tenantID)
 	if err != nil {
 		return nil, err
@@ -250,7 +250,7 @@ func getOAuthConfig(env azure.Environment, subscriptionID, tenantID string) (*ad
 	return oauthConfig, nil
 }
 
-func getClient(env azure.Environment, subscriptionID, tenantID string, armSpt *adal.ServicePrincipalToken) *Client {
+func getClient(env azure.Environment, subscriptionID string, armSpt *adal.ServicePrincipalToken) *Client {
 	c := &Client{
 		environment:    env,
 		subscriptionID: subscriptionID,

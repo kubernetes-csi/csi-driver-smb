@@ -85,7 +85,7 @@ func NewDriver(options *DriverOptions) *Driver {
 }
 
 // Run driver initialization
-func (d *Driver) Run(endpoint, kubeconfig string, testMode bool) {
+func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	versionMeta, err := GetVersionYAML(d.Name)
 	if err != nil {
 		klog.Fatalf("%v", err)
