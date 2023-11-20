@@ -24,7 +24,7 @@ import (
 	utilexec "k8s.io/utils/exec"
 )
 
-func NewSafeMounter(removeSMBMappingDuringUnmount bool) (*mount.SafeFormatAndMount, error) {
+func NewSafeMounter(_ bool) (*mount.SafeFormatAndMount, error) {
 	return &mount.SafeFormatAndMount{
 		Interface: mount.New(""),
 		Exec:      utilexec.New(),

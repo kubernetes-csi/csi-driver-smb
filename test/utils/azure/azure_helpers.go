@@ -241,7 +241,7 @@ func (az *Client) GetVirtualNetworkSubnet(ctx context.Context, groupName, vnetNa
 	return az.subnetsClient.Get(ctx, groupName, vnetName, subnetName, "")
 }
 
-func getOAuthConfig(env azure.Environment, subscriptionID, tenantID string) (*adal.OAuthConfig, error) {
+func getOAuthConfig(env azure.Environment, _, tenantID string) (*adal.OAuthConfig, error) {
 	oauthConfig, err := adal.NewOAuthConfig(env.ActiveDirectoryEndpoint, tenantID)
 	if err != nil {
 		return nil, err
@@ -250,7 +250,7 @@ func getOAuthConfig(env azure.Environment, subscriptionID, tenantID string) (*ad
 	return oauthConfig, nil
 }
 
-func getClient(env azure.Environment, subscriptionID, tenantID string, armSpt *adal.ServicePrincipalToken) *Client {
+func getClient(env azure.Environment, subscriptionID, _ string, armSpt *adal.ServicePrincipalToken) *Client {
 	c := &Client{
 		environment:    env,
 		subscriptionID: subscriptionID,

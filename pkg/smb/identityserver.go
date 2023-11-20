@@ -27,7 +27,7 @@ import (
 )
 
 // GetPluginInfo return the version and name of the plugin
-func (f *Driver) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
+func (f *Driver) GetPluginInfo(_ context.Context, _ *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
 	if f.Name == "" {
 		return nil, status.Error(codes.Unavailable, "Driver name not configured")
 	}
@@ -46,12 +46,12 @@ func (f *Driver) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoReques
 // This method does not need to return anything.
 // Currently the spec does not dictate what you should return either.
 // Hence, return an empty response
-func (f *Driver) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeResponse, error) {
+func (f *Driver) Probe(_ context.Context, _ *csi.ProbeRequest) (*csi.ProbeResponse, error) {
 	return &csi.ProbeResponse{Ready: &wrappers.BoolValue{Value: true}}, nil
 }
 
 // GetPluginCapabilities returns the capabilities of the plugin
-func (f *Driver) GetPluginCapabilities(ctx context.Context, req *csi.GetPluginCapabilitiesRequest) (*csi.GetPluginCapabilitiesResponse, error) {
+func (f *Driver) GetPluginCapabilities(_ context.Context, _ *csi.GetPluginCapabilitiesRequest) (*csi.GetPluginCapabilitiesResponse, error) {
 	return &csi.GetPluginCapabilitiesResponse{
 		Capabilities: []*csi.PluginCapability{
 			{
