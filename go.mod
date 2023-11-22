@@ -1,6 +1,8 @@
 module github.com/kubernetes-csi/csi-driver-smb
 
-go 1.20
+go 1.21
+
+toolchain go1.21.3
 
 require (
 	github.com/Azure/azure-sdk-for-go v68.0.0+incompatible
@@ -15,18 +17,18 @@ require (
 	github.com/onsi/gomega v1.27.4
 	github.com/pborman/uuid v1.2.1
 	github.com/pelletier/go-toml v1.7.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.4
 	golang.org/x/net v0.17.0
 	google.golang.org/grpc v1.59.0
 	k8s.io/api v0.27.8
 	k8s.io/apimachinery v0.27.8
 	k8s.io/client-go v0.27.8
 	k8s.io/component-base v0.27.8
-	k8s.io/klog/v2 v2.90.1
+	k8s.io/klog/v2 v2.110.1
 	k8s.io/kubernetes v1.27.8
 	k8s.io/mount-utils v0.27.8
 	k8s.io/pod-security-admission v0.0.0
-	k8s.io/utils v0.0.0-20230209194617-a36077c30491
+	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -52,7 +54,7 @@ require (
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-logr/logr v1.2.3 // indirect
+	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/jsonreference v0.20.1 // indirect
@@ -165,6 +167,7 @@ replace (
 	k8s.io/kubelet => k8s.io/kubelet v0.27.8
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.27.8
 	k8s.io/metrics => k8s.io/metrics v0.27.8
+	k8s.io/mount-utils => k8s.io/mount-utils v0.0.0-20231116185301-00b898b94b20
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.27.8
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.27.8
 	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.27.8
