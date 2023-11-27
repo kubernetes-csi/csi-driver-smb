@@ -104,7 +104,6 @@ spec:
     - file_mode=0777
   csi:
     driver: smb.csi.k8s.io
-    readOnly: false
     # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
     # make sure this value is unique for every share in the cluster
     volumeHandle: smb-server.default.svc.cluster.local/share##
