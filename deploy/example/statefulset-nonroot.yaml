@@ -29,6 +29,7 @@ spec:
           volumeMounts:
             - name: persistent-storage
               mountPath: /mnt/smb
+              readOnly: false
   updateStrategy:
     type: RollingUpdate
   selector:
