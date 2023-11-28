@@ -28,6 +28,7 @@ Please refer to `smb.csi.k8s.io` [driver parameters](./docs/driver-parameters.md
  - [Set up a Samba Server on a Kubernetes cluster](./deploy/example/smb-provisioner/)
  - [Basic usage](./deploy/example/e2e_usage.md)
  - [Windows](./deploy/example/windows)
+ - [Volume cloning](./deploy/example/cloning)
 
 ### Troubleshooting
  - [CSI driver troubleshooting guide](./docs/csi-debug.md) 
