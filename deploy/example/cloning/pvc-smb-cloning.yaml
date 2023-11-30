@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-smb-clone
+  name: pvc-smb-cloning
   namespace: default
 spec:
   accessModes:
