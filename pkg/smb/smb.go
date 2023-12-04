@@ -128,7 +128,7 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	}
 	klog.V(2).Infof("\nDRIVER INFORMATION:\n-------------------\n%s\n\nStreaming logs below:", versionMeta)
 
-	d.mounter, err = mounter.NewSafeMounter(d.removeSMBMappingDuringUnmount)
+	d.mounter, err = mounter.NewSafeMounter(false, d.removeSMBMappingDuringUnmount)
 	if err != nil {
 		klog.Fatalf("Failed to get safe mounter. Error: %v", err)
 	}

@@ -42,8 +42,8 @@ import (
 type CSIProxyMounter interface {
 	mount.Interface
 
-	SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string, volumeID string) error
-	SMBUnmount(target string, volumeID string) error
+	SMBMount(source, target, fsType, volumeID string, mountOptions, sensitiveMountOptions []string) error
+	SMBUnmount(target, volumeID string) error
 	MakeDir(path string) error
 	Rmdir(path string) error
 	IsMountPointMatch(mp mount.MountPoint, dir string) bool
@@ -68,7 +68,7 @@ func normalizeWindowsPath(path string) string {
 	return normalizedPath
 }
 
-func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOptions, sensitiveMountOptions []string, volumeID string) error {
+func (mounter *csiProxyMounter) SMBMount(source, target, fsType, volumeID string, mountOptions, sensitiveMountOptions []string) error {
 	klog.V(2).Infof("SMBMount: remote path: %s local path: %s", source, target)
 
 	if len(mountOptions) == 0 || len(sensitiveMountOptions) == 0 {
@@ -131,7 +131,7 @@ func (mounter *csiProxyMounter) SMBMount(source, target, fsType string, mountOpt
 	return nil
 }
 
-func (mounter *csiProxyMounter) SMBUnmount(target string, volumeID string) error {
+func (mounter *csiProxyMounter) SMBUnmount(target, volumeID string) error {
 	klog.V(4).Infof("SMBUnmount: local path: %s", target)
 
 	if remotePath, err := os.Readlink(target); err != nil {
@@ -369,7 +369,15 @@ func NewCSIProxyMounter(removeSMBMappingDuringUnmount bool) (*csiProxyMounter, e
 	}, nil
 }
 
-func NewSafeMounter(removeSMBMappingDuringUnmount bool) (*mount.SafeFormatAndMount, error) {
+func NewSafeMounter(enableWindowsHostProcess, removeSMBMappingDuringUnmount bool) (*mount.SafeFormatAndMount, error) {
+	if enableWindowsHostProcess {
+		klog.V(2).Infof("using windows host process mounter")
+		return &mount.SafeFormatAndMount{
+			Interface: NewWinMounter(removeSMBMappingDuringUnmount),
+			Exec:      utilexec.New(),
+		}, nil
+	}
+
 	csiProxyMounter, err := NewCSIProxyMounter(removeSMBMappingDuringUnmount)
 	if err == nil {
 		klog.V(2).Infof("using CSIProxyMounterV1, %s", csiProxyMounter.GetAPIVersions())

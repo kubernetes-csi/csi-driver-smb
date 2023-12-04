@@ -18,7 +18,10 @@ package csicommon
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
 	"strings"
+	"sync"
 
 	"context"
 
@@ -27,6 +30,10 @@ import (
 	"google.golang.org/grpc"
 	"k8s.io/klog/v2"
 )
+
+const MaxPathLengthWindows = 260
+
+var mutex = &sync.Mutex{}
 
 func ParseEndpoint(ep string) (string, string, error) {
 	if strings.HasPrefix(strings.ToLower(ep), "unix://") || strings.HasPrefix(strings.ToLower(ep), "tcp://") {
@@ -83,4 +90,15 @@ func logGRPC(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, h
 		klog.V(level).Infof("GRPC response: %s", protosanitizer.StripSecrets(resp))
 	}
 	return resp, err
+}
+
+func RunPowershellCmd(command string, envs ...string) ([]byte, error) {
+	// only one powershell command can be executed at a time to avoid OOM
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	cmd := exec.Command("powershell", "-Mta", "-NoProfile", "-Command", command)
+	cmd.Env = append(os.Environ(), envs...)
+	klog.V(8).Infof("Executing command: %q", cmd.String())
+	return cmd.CombinedOutput()
 }
