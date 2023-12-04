@@ -30,7 +30,7 @@ import (
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, mountOptions, sensitiveMountOptions []string, volumeID string) error {
 	if proxy, ok := m.Interface.(mounter.CSIProxyMounter); ok {
-		return proxy.SMBMount(source, target, fsType, mountOptions, sensitiveMountOptions, volumeID)
+		return proxy.SMBMount(source, target, fsType, volumeID, mountOptions, sensitiveMountOptions)
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
 }
