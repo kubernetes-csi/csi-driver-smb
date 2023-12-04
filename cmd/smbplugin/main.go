@@ -44,6 +44,7 @@ var (
 	enableGetVolumeStats          = flag.Bool("enable-get-volume-stats", true, "allow GET_VOLUME_STATS on agent node")
 	removeSMBMappingDuringUnmount = flag.Bool("remove-smb-mapping-during-unmount", true, "remove SMBMapping during unmount on Windows node")
 	workingMountDir               = flag.String("working-mount-dir", "/tmp", "working directory for provisioner to mount smb shares temporarily")
+	volStatsCacheExpireInMinutes  = flag.Int("vol-stats-cache-expire-in-minutes", 10, "The cache expire time in minutes for volume stats cache")
 )
 
 func main() {
@@ -72,6 +73,7 @@ func handle() {
 		EnableGetVolumeStats:          *enableGetVolumeStats,
 		RemoveSMBMappingDuringUnmount: *removeSMBMappingDuringUnmount,
 		WorkingMountDir:               *workingMountDir,
+		VolStatsCacheExpireInMinutes:  *volStatsCacheExpireInMinutes,
 	}
 	driver := smb.NewDriver(&driverOptions)
 	driver.Run(*endpoint, *kubeconfig, false)

@@ -18,6 +18,7 @@ package smb
 
 import (
 	"strings"
+	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 
@@ -26,6 +27,8 @@ import (
 
 	csicommon "github.com/kubernetes-csi/csi-driver-smb/pkg/csi-common"
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/mounter"
+
+	azcache "sigs.k8s.io/cloud-provider-azure/pkg/cache"
 )
 
 const (
@@ -55,6 +58,7 @@ type DriverOptions struct {
 	// this only applies to Windows node
 	RemoveSMBMappingDuringUnmount bool
 	WorkingMountDir               string
+	VolStatsCacheExpireInMinutes  int
 }
 
 // Driver implements all interfaces of CSI drivers
@@ -66,6 +70,8 @@ type Driver struct {
 	volumeLocks          *volumeLocks
 	workingMountDir      string
 	enableGetVolumeStats bool
+	// a timed cache storing volume stats <volumeID, volumeStats>
+	volStatsCache azcache.Resource
 	// this only applies to Windows node
 	removeSMBMappingDuringUnmount bool
 }
@@ -81,6 +87,15 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.removeSMBMappingDuringUnmount = options.RemoveSMBMappingDuringUnmount
 	driver.workingMountDir = options.WorkingMountDir
 	driver.volumeLocks = newVolumeLocks()
+
+	if options.VolStatsCacheExpireInMinutes <= 0 {
+		options.VolStatsCacheExpireInMinutes = 10 // default expire in 10 minutes
+	}
+	var err error
+	getter := func(key string) (interface{}, error) { return nil, nil }
+	if driver.volStatsCache, err = azcache.NewTimedCache(time.Duration(options.VolStatsCacheExpireInMinutes)*time.Minute, getter, false); err != nil {
+		klog.Fatalf("%v", err)
+	}
 	return &driver
 }
 
