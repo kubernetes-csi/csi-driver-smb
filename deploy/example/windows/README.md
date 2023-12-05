@@ -40,7 +40,7 @@ metadata:
   name: smb
 provisioner: smb.csi.k8s.io
 parameters:
-  source: "//smb-server.default.svc.cluster.local/share"
+  source: //smb-server.default.svc.cluster.local/share
 ...
 ```
 
@@ -82,7 +82,7 @@ metadata:
   name: smb
 provisioner: smb.csi.k8s.io
 parameters:
-  source: "//10.111.254.254/share"
+  source: //10.111.254.254/share
 ...
 ```
 

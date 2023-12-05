@@ -21,7 +21,7 @@ spec:
     # make sure this value is unique for every share in the cluster
     volumeHandle: smb-server.default.svc.cluster.local/share##
     volumeAttributes:
-      source: "//smb-server.default.svc.cluster.local/share"
+      source: //smb-server.default.svc.cluster.local/share
     nodeStageSecretRef:
       name: smbcreds
       namespace: default

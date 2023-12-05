@@ -20,13 +20,13 @@ metadata:
   name: smb
 provisioner: smb.csi.k8s.io
 parameters:
-  source: "//smb-server.default.svc.cluster.local/share"
+  source: //smb-server.default.svc.cluster.local/share
   # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
   # with PV name under source
-  csi.storage.k8s.io/provisioner-secret-name: "smbcreds"
-  csi.storage.k8s.io/provisioner-secret-namespace: "default"
-  csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
-  csi.storage.k8s.io/node-stage-secret-namespace: "default"
+  csi.storage.k8s.io/provisioner-secret-name: smbcreds
+  csi.storage.k8s.io/provisioner-secret-namespace: default
+  csi.storage.k8s.io/node-stage-secret-name: smbcreds
+  csi.storage.k8s.io/node-stage-secret-namespace: default
 reclaimPolicy: Delete  # available values: Delete, Retain
 volumeBindingMode: Immediate
 mountOptions:
@@ -51,13 +51,13 @@ metadata:
 provisioner: smb.csi.k8s.io
 parameters:
   # On Windows, "*.default.svc.cluster.local" could not be recognized by csi-proxy
-  source: "//smb-server.default.svc.cluster.local/share"
+  source: //smb-server.default.svc.cluster.local/share
   # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
   # with PV name under source
-  csi.storage.k8s.io/provisioner-secret-name: "smbcreds"
-  csi.storage.k8s.io/provisioner-secret-namespace: "default"
-  csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
-  csi.storage.k8s.io/node-stage-secret-namespace: "default"
+  csi.storage.k8s.io/provisioner-secret-name: smbcreds
+  csi.storage.k8s.io/provisioner-secret-namespace: default
+  csi.storage.k8s.io/node-stage-secret-name: smbcreds
+  csi.storage.k8s.io/node-stage-secret-namespace: default
 volumeBindingMode: Immediate
 mountOptions:
   - dir_mode=0777
@@ -108,7 +108,7 @@ spec:
     # make sure this value is unique for every share in the cluster
     volumeHandle: smb-server.default.svc.cluster.local/share##
     volumeAttributes:
-      source: "//smb-server-address/sharename"
+      source: //smb-server-address/sharename
     nodeStageSecretRef:
       name: smbcreds
       namespace: default
