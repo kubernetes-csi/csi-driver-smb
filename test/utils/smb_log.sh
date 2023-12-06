@@ -14,7 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+cleanup() {
+    echo "hit unexpected error during log print, exit 0"
+    exit 0
+}
+
+trap cleanup ERR
 
 NS=kube-system
 CONTAINER=smb
