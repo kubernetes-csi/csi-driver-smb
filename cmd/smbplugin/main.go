@@ -47,6 +47,7 @@ var (
 	volStatsCacheExpireInMinutes  = flag.Int("vol-stats-cache-expire-in-minutes", 10, "The cache expire time in minutes for volume stats cache")
 	krb5CacheDirectory            = flag.String("krb5-cache-directory", smb.DefaultKrb5CacheDirectory, "The directory for kerberos cache")
 	krb5Prefix                    = flag.String("krb5-prefix", smb.DefaultKrb5CCName, "The prefix for kerberos cache")
+	enableWindowsHostProcess      = flag.Bool("enable-windows-host-process", false, "enable windows host process")
 )
 
 func main() {
@@ -78,6 +79,7 @@ func handle() {
 		VolStatsCacheExpireInMinutes:  *volStatsCacheExpireInMinutes,
 		Krb5CacheDirectory:            *krb5CacheDirectory,
 		Krb5Prefix:                    *krb5Prefix,
+		EnableWindowsHostProcess:      *enableWindowsHostProcess,
 	}
 	driver := smb.NewDriver(&driverOptions)
 	driver.Run(*endpoint, *kubeconfig, false)

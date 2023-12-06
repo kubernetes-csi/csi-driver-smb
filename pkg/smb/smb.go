@@ -61,6 +61,7 @@ type DriverOptions struct {
 	VolStatsCacheExpireInMinutes  int
 	Krb5CacheDirectory            string
 	Krb5Prefix                    string
+	EnableWindowsHostProcess      bool
 }
 
 // Driver implements all interfaces of CSI drivers
@@ -78,6 +79,7 @@ type Driver struct {
 	removeSMBMappingDuringUnmount bool
 	krb5CacheDirectory            string
 	krb5Prefix                    string
+	enableWindowsHostProcess      bool
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -89,6 +91,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.NodeID = options.NodeID
 	driver.enableGetVolumeStats = options.EnableGetVolumeStats
 	driver.removeSMBMappingDuringUnmount = options.RemoveSMBMappingDuringUnmount
+	driver.enableWindowsHostProcess = options.EnableWindowsHostProcess
 	driver.workingMountDir = options.WorkingMountDir
 	driver.volumeLocks = newVolumeLocks()
 
@@ -120,7 +123,7 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	}
 	klog.V(2).Infof("\nDRIVER INFORMATION:\n-------------------\n%s\n\nStreaming logs below:", versionMeta)
 
-	d.mounter, err = mounter.NewSafeMounter(false, d.removeSMBMappingDuringUnmount)
+	d.mounter, err = mounter.NewSafeMounter(d.enableWindowsHostProcess, d.removeSMBMappingDuringUnmount)
 	if err != nil {
 		klog.Fatalf("Failed to get safe mounter. Error: %v", err)
 	}
