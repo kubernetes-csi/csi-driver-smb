@@ -152,6 +152,7 @@ $(CMDS:%=push-multiarch-%): push-multiarch-%: check-pull-base-ref build-%
 	trap "docker buildx rm multiarchimage-buildertest" EXIT; \
 	dockerfile_linux=$$(if [ -e ./$(CMDS_DIR)/$*/Dockerfile ]; then echo ./$(CMDS_DIR)/$*/Dockerfile; else echo Dockerfile; fi); \
 	dockerfile_windows=$$(if [ -e ./$(CMDS_DIR)/$*/Dockerfile.Windows ]; then echo ./$(CMDS_DIR)/$*/Dockerfile.Windows; else echo Dockerfile.Windows; fi); \
+	dockerfile_windows_hp=$$(if [ -e ./$(CMDS_DIR)/$*/Dockerfile.Windows.hostprocess ]; then echo ./$(CMDS_DIR)/$*/Dockerfile.Windows.hostprocess; else echo Dockerfile.Windows.hostprocess; fi); \
 	if [ '$(BUILD_PLATFORMS)' ]; then build_platforms='$(BUILD_PLATFORMS)'; else build_platforms="linux amd64"; fi; \
 	if ! [ -f "$$dockerfile_windows" ]; then \
 		build_platforms="$$(echo "$$build_platforms" | sed -e 's/windows *[^ ]* *[^ ]* *.exe *[^ ]* *[^ ]*//g' -e 's/; *;/;/g' -e 's/;[ ]*$$//')"; \
@@ -173,6 +174,18 @@ $(CMDS:%=push-multiarch-%): push-multiarch-%: check-pull-base-ref build-%
 				--label revision=$(REV) \
 				.; \
 		done; \
+		if ! [ -f "$$dockerfile_windows_hp" ]; then \
+			docker buildx build --push \
+				--tag $(IMAGE_NAME):$$escaped_buildx_platform-$$os-$$escaped_base_image$$tag-windows-hp \
+				--platform=$$os/$$buildx_platform \
+				--file $$(eval echo \$${dockerfile_$$os}) \
+				--build-arg binary=./bin/$*$$suffix \
+				--build-arg ARCH=$$arch \
+				--label revision=$(REV) \
+				.; \
+                        docker manifest create --amend $(IMAGE_NAME):$$tag-windows-hp; \
+                        docker manifest push -p $(IMAGE_NAME):$$tag-windows-hp; \
+		fi; \
 		images=$$(echo "$$build_platforms" | tr ';' '\n' | while read -r os arch buildx_platform suffix base_image addon_image; do \
 			escaped_base_image=$${base_image/:/-}; \
 			escaped_buildx_platform=$${buildx_platform//\//-}; \
