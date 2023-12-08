@@ -156,8 +156,11 @@ container-linux-armv7:
 container-windows:
 	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="windows/$(ARCH)" \
 		 -t $(IMAGE_TAG)-windows-$(OSVERSION)-$(ARCH) --build-arg OSVERSION=$(OSVERSION) \
-		--provenance=false --sbom=false \
-		 --build-arg ARCH=$(ARCH) -f ./cmd/smbplugin/Dockerfile.Windows .
+		 --provenance=false --sbom=false \
+		 --build-arg ARCH=$(ARCH) \
+		 --build-arg ADDON_IMAGE=servercore:$(OSVERSION) \
+		 --build-arg BASE_IMAGE=nanoserver:$(OSVERSION) \
+	         -f ./cmd/smbplugin/Dockerfile.Windows .
 
 .PHONY: container-all
 container-all: smb-windows
