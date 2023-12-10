@@ -30,6 +30,13 @@ spec:
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
+      tolerations:
+        - key: "node-role.kubernetes.io/controlplane"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: smb-server
           image: andyzhangx/samba:win-fix
