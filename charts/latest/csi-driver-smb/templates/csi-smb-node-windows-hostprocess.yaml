@@ -69,7 +69,7 @@ spec:
             - --plugin-registration-path=$(PLUGIN_REG_DIR)
           env:
             - name: CSI_ENDPOINT
-              value: unix://C:\\csi\\csi.sock
+              value: unix://{{ .Values.windows.kubelet | replace "\\" "\\\\" }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
             - name: DRIVER_REG_SOCK_PATH
               value: {{ .Values.windows.kubelet | replace "\\" "\\\\" }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
             - name: PLUGIN_REG_DIR
@@ -96,21 +96,9 @@ spec:
             - --nodeid=$(KUBE_NODE_NAME)
             - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
             - "--remove-smb-mapping-during-unmount={{ .Values.windows.removeSMBMappingDuringUnmount }}"
-          ports:
-            - containerPort: {{ .Values.node.livenessProbe.healthPort }}
-              name: healthz
-              protocol: TCP
-          livenessProbe:
-            failureThreshold: 5
-            httpGet:
-              path: /healthz
-              port: healthz
-            initialDelaySeconds: 30
-            timeoutSeconds: 10
-            periodSeconds: 30
           env:
             - name: CSI_ENDPOINT
-              value: unix://C:\\csi\\csi.sock
+              value: unix://{{ .Values.windows.kubelet | replace "\\" "\\\\" }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
             - name: KUBE_NODE_NAME
               valueFrom:
                 fieldRef:
