@@ -26,7 +26,7 @@ require (
 	k8s.io/component-base v0.28.4
 	k8s.io/klog/v2 v2.110.1
 	k8s.io/kubernetes v1.28.4
-	k8s.io/mount-utils v0.28.4
+	k8s.io/mount-utils v0.29.0
 	k8s.io/pod-security-admission v0.28.4
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
 	sigs.k8s.io/cloud-provider-azure v1.28.4
@@ -157,6 +157,5 @@ replace (
 	k8s.io/kubectl => k8s.io/kubectl v0.28.4
 	k8s.io/kubelet => k8s.io/kubelet v0.28.4
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.28.4
-	k8s.io/mount-utils => k8s.io/mount-utils v0.0.0-20231116185301-00b898b94b20
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.28.4
 )
