@@ -87,7 +87,7 @@ spec:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}/csi.sock
+              value: /var/lib/kubelet/plugins/{{ .Values.driver.name }}/csi.sock
           imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: socket-dir
@@ -136,7 +136,7 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-            - mountPath: {{ .Values.linux.kubelet }}/
+            - mountPath: /var/lib/kubelet/
               mountPropagation: Bidirectional
               name: mountpoint-dir
           resources: {{- toYaml .Values.linux.resources.smb | nindent 12 }}
