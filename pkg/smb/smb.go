@@ -38,8 +38,6 @@ const (
 	sourceField          = "source"
 	subDirField          = "subdir"
 	domainField          = "domain"
-	krb5Prefix           = "krb5cc_"
-	krb5CacheDirectory   = "/var/lib/kubelet/kerberos/"
 	mountOptionsField    = "mountoptions"
 	defaultDomainName    = "AZURE"
 	pvcNameKey           = "csi.storage.k8s.io/pvc/name"
@@ -59,6 +57,8 @@ type DriverOptions struct {
 	RemoveSMBMappingDuringUnmount bool
 	WorkingMountDir               string
 	VolStatsCacheExpireInMinutes  int
+	Krb5CacheDirectory            string
+	Krb5Prefix                    string
 }
 
 // Driver implements all interfaces of CSI drivers
@@ -74,6 +74,8 @@ type Driver struct {
 	volStatsCache azcache.Resource
 	// this only applies to Windows node
 	removeSMBMappingDuringUnmount bool
+	krb5CacheDirectory            string
+	krb5Prefix                    string
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -86,6 +88,8 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.enableGetVolumeStats = options.EnableGetVolumeStats
 	driver.removeSMBMappingDuringUnmount = options.RemoveSMBMappingDuringUnmount
 	driver.workingMountDir = options.WorkingMountDir
+	driver.krb5CacheDirectory = options.Krb5CacheDirectory
+	driver.krb5Prefix = options.Krb5Prefix
 	driver.volumeLocks = newVolumeLocks()
 
 	if options.VolStatsCacheExpireInMinutes <= 0 {

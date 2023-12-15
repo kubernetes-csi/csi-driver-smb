@@ -108,6 +108,8 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
             - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
+            - "--krb5-cache-directory={{ .Values.linux.krb5CacheDirectory }}"
+            - "--krb5-prefix={{ .Values.linux.krb5Prefix }}"
           ports:
             - containerPort: {{ .Values.node.livenessProbe.healthPort }}
               name: healthz

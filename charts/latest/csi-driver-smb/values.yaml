@@ -92,6 +92,8 @@ linux:
   dsName: csi-smb-node # daemonset name
   dnsPolicy: ClusterFirstWithHostNet  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
   kubelet: /var/lib/kubelet
+  krb5CacheDirectory: /var/lib/kubelet/kerberos/ # directory for kerberos credential cache
+  krb5Prefix: "krb5cc_" # prefix for kerberos credential cache
   tolerations:
     - operator: "Exists"
   resources:

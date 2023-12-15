@@ -186,7 +186,7 @@ func (d *Driver) NodeStageVolume(_ context.Context, req *csi.NodeStageVolumeRequ
 			sensitiveMountOptions = []string{password}
 		}
 	} else {
-		var useKerberosCache, err = ensureKerberosCache(volumeID, mountFlags, secrets)
+		var useKerberosCache, err = ensureKerberosCache(d.krb5CacheDirectory, d.krb5Prefix, volumeID, mountFlags, secrets)
 		if err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("Error writing kerberos cache: %v", err))
 		}
@@ -264,7 +264,7 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
 	}
 
-	if err := deleteKerberosCache(volumeID); err != nil {
+	if err := deleteKerberosCache(d.krb5CacheDirectory, volumeID); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete kerberos cache: %v", err)
 	}
 
@@ -469,12 +469,12 @@ func getCredUID(mountFlags []string) (int, error) {
 	return -1, fmt.Errorf("Can't find credUid in mount flags")
 }
 
-func getKrb5CcacheName(credUID int) string {
+func getKrb5CcacheName(krb5Prefix string, credUID int) string {
 	return fmt.Sprintf("%s%d", krb5Prefix, credUID)
 }
 
 // returns absolute path for name of file inside krb5CacheDirectory
-func getKerberosFilePath(fileName string) string {
+func getKerberosFilePath(krb5CacheDirectory, fileName string) string {
 	return fmt.Sprintf("%s%s", krb5CacheDirectory, fileName)
 }
 
@@ -483,7 +483,7 @@ func volumeKerberosCacheName(volumeID string) string {
 	return strings.ReplaceAll(strings.ReplaceAll(encoded, "/", "-"), "+", "_")
 }
 
-func kerberosCacheDirectoryExists() (bool, error) {
+func kerberosCacheDirectoryExists(krb5CacheDirectory string) (bool, error) {
 	_, err := os.Stat(krb5CacheDirectory)
 	if os.IsNotExist(err) {
 		return false, status.Error(codes.Internal, fmt.Sprintf("Directory for kerberos caches must exist, it will not be created: %s: %v", krb5CacheDirectory, err))
@@ -493,8 +493,8 @@ func kerberosCacheDirectoryExists() (bool, error) {
 	return true, nil
 }
 
-func getKerberosCache(credUID int, secrets map[string]string) (string, []byte, error) {
-	var krb5CcacheName = getKrb5CcacheName(credUID)
+func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secrets map[string]string) (string, []byte, error) {
+	var krb5CcacheName = getKrb5CcacheName(krb5Prefix, credUID)
 	var krb5CcacheContent string
 	for k, v := range secrets {
 		switch strings.ToLower(k) {
@@ -509,7 +509,7 @@ func getKerberosCache(credUID int, secrets map[string]string) (string, []byte, e
 	if err != nil {
 		return "", nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Malformed kerberos cache in key %s, expected to be in base64 form: %v", krb5CcacheName, err))
 	}
-	var krb5CacheFileName = getKerberosFilePath(getKrb5CcacheName(credUID))
+	var krb5CacheFileName = getKerberosFilePath(krb5CacheDirectory, getKrb5CcacheName(krb5Prefix, credUID))
 
 	return krb5CacheFileName, content, nil
 }
@@ -517,10 +517,10 @@ func getKerberosCache(credUID int, secrets map[string]string) (string, []byte, e
 // Create kerberos cache in the file based on the VolumeID, so it can be cleaned up during unstage
 // At the same time, kerberos expects to find cache in file named "krb5cc_*", so creating symlink
 // will allow both clean up and serving proper cache to the kerberos.
-func ensureKerberosCache(volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
+func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
 	var securityIsKerberos = hasKerberosMountOption(mountFlags)
 	if securityIsKerberos {
-		_, err := kerberosCacheDirectoryExists()
+		_, err := kerberosCacheDirectoryExists(krb5CacheDirectory)
 		if err != nil {
 			return false, err
 		}
@@ -528,14 +528,14 @@ func ensureKerberosCache(volumeID string, mountFlags []string, secrets map[strin
 		if err != nil {
 			return false, err
 		}
-		krb5CacheFileName, content, err := getKerberosCache(credUID, secrets)
+		krb5CacheFileName, content, err := getKerberosCache(krb5CacheDirectory, krb5Prefix, credUID, secrets)
 		if err != nil {
 			return false, err
 		}
 		// Write cache into volumeId-based filename, so it can be cleaned up later
 		volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
 
-		volumeIDCacheAbsolutePath := getKerberosFilePath(volumeIDCacheFileName)
+		volumeIDCacheAbsolutePath := getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
 		if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0700)); err != nil {
 			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", volumeIDCacheAbsolutePath, err))
 		}
@@ -561,8 +561,8 @@ func ensureKerberosCache(volumeID string, mountFlags []string, secrets map[strin
 	return false, nil
 }
 
-func deleteKerberosCache(volumeID string) error {
-	exists, err := kerberosCacheDirectoryExists()
+func deleteKerberosCache(krb5CacheDirectory, volumeID string) error {
+	exists, err := kerberosCacheDirectoryExists(krb5CacheDirectory)
 	// If not supported, simply return
 	if !exists {
 		return nil
@@ -573,7 +573,7 @@ func deleteKerberosCache(volumeID string) error {
 
 	volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
 
-	var volumeIDCacheAbsolutePath = getKerberosFilePath(volumeIDCacheFileName)
+	var volumeIDCacheAbsolutePath = getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
 	_, err = os.Stat(volumeIDCacheAbsolutePath)
 	// Not created or already removed
 	if os.IsNotExist(err) {
@@ -585,7 +585,7 @@ func deleteKerberosCache(volumeID string) error {
 	// If file with cache exists, full clean means removing symlinks to the file.
 	dirEntries, _ := os.ReadDir(krb5CacheDirectory)
 	for _, dirEntry := range dirEntries {
-		filePath := getKerberosFilePath(dirEntry.Name())
+		filePath := getKerberosFilePath(krb5CacheDirectory, dirEntry.Name())
 		lStat, _ := os.Lstat(filePath)
 		// If it's a symlink, checking if it's pointing to the volume file in question
 		if lStat != nil {

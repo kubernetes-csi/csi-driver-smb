@@ -800,6 +800,8 @@ func TestGetKerberosCache(t *testing.T) {
 	ticket := []byte{'G', 'O', 'L', 'A', 'N', 'G'}
 	base64Ticket := base64.StdEncoding.EncodeToString(ticket)
 	credUID := 1000
+	krb5CacheDirectory := "/var/lib/kubelet/kerberos/"
+	krb5Prefix := "krb5cc_"
 	goodFileName := fmt.Sprintf("%s%s%d", krb5CacheDirectory, krb5Prefix, credUID)
 	krb5CcacheName := "krb5cc_1000"
 
@@ -855,7 +857,7 @@ func TestGetKerberosCache(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		fileName, content, err := getKerberosCache(test.credUID, test.secrets)
+		fileName, content, err := getKerberosCache(krb5CacheDirectory, krb5Prefix, test.credUID, test.secrets)
 		if !reflect.DeepEqual(err, test.expectedErr) {
 			t.Errorf("[%s]: Expected error : %v, Actual error: %v", test.desc, test.expectedErr, err)
 		} else {
