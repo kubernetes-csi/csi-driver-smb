@@ -139,6 +139,11 @@ spec:
             - mountPath: /var/lib/kubelet/
               mountPropagation: Bidirectional
               name: mountpoint-dir
+{{- if ne .Values.linux.krb5CacheDirectory "" }}
+            - mountPath: {{ .Values.linux.krb5CacheDirectory }}
+              mountPropagation: Bidirectional
+              name: krb5Cache-dir
+{{- end }}
           resources: {{- toYaml .Values.linux.resources.smb | nindent 12 }}
       volumes:
         - hostPath:
@@ -153,4 +158,10 @@ spec:
             path: {{ .Values.linux.kubelet }}/plugins_registry/
             type: DirectoryOrCreate
           name: registration-dir
+{{- if ne .Values.linux.krb5CacheDirectory "" }}
+        - hostPath:
+            path: {{ .Values.linux.krb5CacheDirectory }}
+            type: DirectoryOrCreate
+          name: krb5Cache-dir
+{{- end }}
 {{- end -}}
