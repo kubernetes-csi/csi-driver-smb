@@ -32,20 +32,22 @@ import (
 )
 
 const (
-	DefaultDriverName    = "smb.csi.k8s.io"
-	usernameField        = "username"
-	passwordField        = "password"
-	sourceField          = "source"
-	subDirField          = "subdir"
-	domainField          = "domain"
-	mountOptionsField    = "mountoptions"
-	defaultDomainName    = "AZURE"
-	pvcNameKey           = "csi.storage.k8s.io/pvc/name"
-	pvcNamespaceKey      = "csi.storage.k8s.io/pvc/namespace"
-	pvNameKey            = "csi.storage.k8s.io/pv/name"
-	pvcNameMetadata      = "${pvc.metadata.name}"
-	pvcNamespaceMetadata = "${pvc.metadata.namespace}"
-	pvNameMetadata       = "${pv.metadata.name}"
+	DefaultDriverName         = "smb.csi.k8s.io"
+	usernameField             = "username"
+	passwordField             = "password"
+	sourceField               = "source"
+	subDirField               = "subdir"
+	domainField               = "domain"
+	mountOptionsField         = "mountoptions"
+	defaultDomainName         = "AZURE"
+	pvcNameKey                = "csi.storage.k8s.io/pvc/name"
+	pvcNamespaceKey           = "csi.storage.k8s.io/pvc/namespace"
+	pvNameKey                 = "csi.storage.k8s.io/pv/name"
+	pvcNameMetadata           = "${pvc.metadata.name}"
+	pvcNamespaceMetadata      = "${pvc.metadata.namespace}"
+	pvNameMetadata            = "${pv.metadata.name}"
+	DefaultKrb5CCName         = "krb5cc_"
+	DefaultKrb5CacheDirectory = "/var/lib/kubelet/kerberos/"
 )
 
 // DriverOptions defines driver parameters specified in driver deployment
@@ -88,9 +90,16 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.enableGetVolumeStats = options.EnableGetVolumeStats
 	driver.removeSMBMappingDuringUnmount = options.RemoveSMBMappingDuringUnmount
 	driver.workingMountDir = options.WorkingMountDir
-	driver.krb5CacheDirectory = options.Krb5CacheDirectory
-	driver.krb5Prefix = options.Krb5Prefix
 	driver.volumeLocks = newVolumeLocks()
+
+	driver.krb5CacheDirectory = options.Krb5CacheDirectory
+	if driver.krb5CacheDirectory == "" {
+		driver.krb5CacheDirectory = DefaultKrb5CacheDirectory
+	}
+	driver.krb5Prefix = options.Krb5Prefix
+	if driver.krb5Prefix == "" {
+		driver.krb5Prefix = DefaultKrb5CCName
+	}
 
 	if options.VolStatsCacheExpireInMinutes <= 0 {
 		options.VolStatsCacheExpireInMinutes = 10 // default expire in 10 minutes

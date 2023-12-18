@@ -45,8 +45,8 @@ var (
 	removeSMBMappingDuringUnmount = flag.Bool("remove-smb-mapping-during-unmount", true, "remove SMBMapping during unmount on Windows node")
 	workingMountDir               = flag.String("working-mount-dir", "/tmp", "working directory for provisioner to mount smb shares temporarily")
 	volStatsCacheExpireInMinutes  = flag.Int("vol-stats-cache-expire-in-minutes", 10, "The cache expire time in minutes for volume stats cache")
-	krb5CacheDirectory            = flag.String("krb5-cache-directory", "/var/lib/kubelet/kerberos/", "The directory for kerberos cache")
-	krb5Prefix                    = flag.String("krb5-prefix", "krb5cc_", "The prefix for kerberos cache")
+	krb5CacheDirectory            = flag.String("krb5-cache-directory", smb.DefaultKrb5CacheDirectory, "The directory for kerberos cache")
+	krb5Prefix                    = flag.String("krb5-prefix", smb.DefaultKrb5CCName, "The prefix for kerberos cache")
 )
 
 func main() {
