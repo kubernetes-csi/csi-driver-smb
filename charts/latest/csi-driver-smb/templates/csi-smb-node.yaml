@@ -108,7 +108,6 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(KUBE_NODE_NAME)"
             - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
-            - "--krb5-cache-directory={{ .Values.linux.krb5CacheDirectory }}"
             - "--krb5-prefix={{ .Values.linux.krb5Prefix }}"
           ports:
             - containerPort: {{ .Values.node.livenessProbe.healthPort }}
@@ -140,7 +139,7 @@ spec:
               mountPropagation: Bidirectional
               name: mountpoint-dir
 {{- if ne .Values.linux.krb5CacheDirectory "" }}
-            - mountPath: {{ .Values.linux.krb5CacheDirectory }}
+            - mountPath: /var/lib/kubelet/kerberos/
               mountPropagation: Bidirectional
               name: krb5Cache-dir
 {{- end }}
