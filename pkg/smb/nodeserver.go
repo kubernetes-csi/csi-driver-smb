@@ -153,10 +153,11 @@ func (d *Driver) NodeStageVolume(_ context.Context, req *csi.NodeStageVolumeRequ
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("%s field is missing, current context: %v", sourceField, context))
 	}
 
-	if acquired := d.volumeLocks.TryAcquire(volumeID); !acquired {
+	lockKey := fmt.Sprintf("%s-%s", volumeID, targetPath)
+	if acquired := d.volumeLocks.TryAcquire(lockKey); !acquired {
 		return nil, status.Errorf(codes.Aborted, volumeOperationAlreadyExistsFmt, volumeID)
 	}
-	defer d.volumeLocks.Release(volumeID)
+	defer d.volumeLocks.Release(lockKey)
 
 	var username, password, domain string
 	for k, v := range secrets {
@@ -254,10 +255,11 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
 	}
 
-	if acquired := d.volumeLocks.TryAcquire(volumeID); !acquired {
+	lockKey := fmt.Sprintf("%s-%s", volumeID, stagingTargetPath)
+	if acquired := d.volumeLocks.TryAcquire(lockKey); !acquired {
 		return nil, status.Errorf(codes.Aborted, volumeOperationAlreadyExistsFmt, volumeID)
 	}
-	defer d.volumeLocks.Release(volumeID)
+	defer d.volumeLocks.Release(lockKey)
 
 	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint on %s with volume %s", stagingTargetPath, volumeID)
 	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, true /*extensiveMountPointCheck*/, volumeID); err != nil {
