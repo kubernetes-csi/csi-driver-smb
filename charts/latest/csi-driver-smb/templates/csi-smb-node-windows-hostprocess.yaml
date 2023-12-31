@@ -96,6 +96,7 @@ spec:
             - --nodeid=$(KUBE_NODE_NAME)
             - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
             - "--remove-smb-mapping-during-unmount={{ .Values.windows.removeSMBMappingDuringUnmount }}"
+            - "--enable-windows-host-process=true"
           env:
             - name: CSI_ENDPOINT
               value: unix://{{ .Values.windows.kubelet | replace "\\" "\\\\" }}\\plugins\\{{ .Values.driver.name }}\\csi.sock

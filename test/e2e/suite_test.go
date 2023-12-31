@@ -47,6 +47,7 @@ const (
 var (
 	smbDriver                     *smb.Driver
 	isWindowsCluster              = os.Getenv(testWindowsEnvVar) != ""
+	isUsingHostProcessDeployment  = os.Getenv("WINDOWS_USE_HOST_PROCESS_CONTAINERS") == "true"
 	defaultStorageClassParameters = map[string]string{
 		"source": "//smb-server.default.svc.cluster.local/share",
 		"csi.storage.k8s.io/provisioner-secret-name":      "smbcreds",
