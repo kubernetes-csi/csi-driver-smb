@@ -19,6 +19,7 @@ package e2e
 import (
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -57,8 +58,17 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		ns = f.Namespace
 
 		if isUsingHostProcessDeployment {
-			log.Printf("trying to get smb-server service IP address since it's using host process deployment...")
-			cmd := exec.Command("kubectl", "get svc smb-server | grep smb | awk '{print $4}'")
+			err := os.Chdir("../..")
+			gomega.Expect(err).NotTo(gomega.HaveOccurred())
+			defer func() {
+				err := os.Chdir("test/e2e")
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
+			}()
+
+			getSMBPublicIPScript := "test/utils/get_smb_svc_public_ip.sh"
+			log.Printf("run script: %s\n", getSMBPublicIPScript)
+
+			cmd := exec.Command("bash", getSMBPublicIPScript)
 			output, err := cmd.CombinedOutput()
 			log.Printf("got output: %v, error: %v\n", string(output), err)
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
