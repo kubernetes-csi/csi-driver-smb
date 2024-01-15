@@ -62,6 +62,22 @@ var (
 		"csi.storage.k8s.io/node-stage-secret-name":       "smbcreds",
 		"csi.storage.k8s.io/node-stage-secret-namespace":  "default",
 	}
+	retainStorageClassParameters = map[string]string{
+		"source": "//smb-server.default.svc.cluster.local/share",
+		"csi.storage.k8s.io/provisioner-secret-name":      "smbcreds",
+		"csi.storage.k8s.io/provisioner-secret-namespace": "default",
+		"csi.storage.k8s.io/node-stage-secret-name":       "smbcreds",
+		"csi.storage.k8s.io/node-stage-secret-namespace":  "default",
+		"onDelete": "retain",
+	}
+	archiveStorageClassParameters = map[string]string{
+		"source": "//smb-server.default.svc.cluster.local/share",
+		"csi.storage.k8s.io/provisioner-secret-name":      "smbcreds",
+		"csi.storage.k8s.io/provisioner-secret-namespace": "default",
+		"csi.storage.k8s.io/node-stage-secret-name":       "smbcreds",
+		"csi.storage.k8s.io/node-stage-secret-namespace":  "default",
+		"onDelete": "archive",
+	}
 	noProvisionerSecretStorageClassParameters = map[string]string{
 		"source": "//smb-server.default.svc.cluster.local/share",
 		"csi.storage.k8s.io/node-stage-secret-name":      "smbcreds",

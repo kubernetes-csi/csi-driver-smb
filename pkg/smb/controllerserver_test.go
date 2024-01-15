@@ -35,7 +35,7 @@ import (
 const (
 	testServer    = "test-server/baseDir"
 	testCSIVolume = "test-csi"
-	testVolumeID  = "test-server/baseDir#test-csi#"
+	testVolumeID  = "test-server/baseDir#test-csi##"
 )
 
 func TestControllerGetCapabilities(t *testing.T) {
@@ -448,6 +448,7 @@ func TestGetSmbVolFromID(t *testing.T) {
 		source    string
 		subDir    string
 		uuid      string
+		onDelete  string
 		expectErr bool
 	}{
 		{
@@ -487,6 +488,24 @@ func TestGetSmbVolFromID(t *testing.T) {
 			expectErr: false,
 		},
 		{
+			desc:      "valid request nested ondelete retain",
+			volumeID:  "smb-server.default.svc.cluster.local/share#subdir#pvc-4729891a-f57e-4982-9c60-e9884af1be2f#retain",
+			source:    "//smb-server.default.svc.cluster.local/share",
+			subDir:    "subdir",
+			uuid:      "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			onDelete:  "retain",
+			expectErr: false,
+		},
+		{
+			desc:      "valid request nested ondelete archive",
+			volumeID:  "smb-server.default.svc.cluster.local/share#subdir#pvc-4729891a-f57e-4982-9c60-e9884af1be2f#archive",
+			source:    "//smb-server.default.svc.cluster.local/share",
+			subDir:    "subdir",
+			uuid:      "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			onDelete:  "archive",
+			expectErr: false,
+		},
+		{
 			desc:      "incorrect volume id",
 			volumeID:  "smb-server.default.svc.cluster.local/share",
 			source:    "//smb-server.default.svc.cluster.local/share",
@@ -503,6 +522,7 @@ func TestGetSmbVolFromID(t *testing.T) {
 				assert.Equal(t, smbVolume.source, test.source)
 				assert.Equal(t, smbVolume.subDir, test.subDir)
 				assert.Equal(t, smbVolume.uuid, test.uuid)
+				assert.Equal(t, smbVolume.onDelete, test.onDelete)
 				assert.Nil(t, err)
 			} else {
 				assert.NotNil(t, err)
@@ -523,7 +543,7 @@ func TestGetVolumeIDFromSmbVol(t *testing.T) {
 				source: "//smb-server.default.svc.cluster.local/share",
 				subDir: "subdir",
 			},
-			result: "smb-server.default.svc.cluster.local/share#subdir#",
+			result: "smb-server.default.svc.cluster.local/share#subdir##",
 		},
 		{
 			desc: "volume with uuid",
@@ -532,14 +552,24 @@ func TestGetVolumeIDFromSmbVol(t *testing.T) {
 				subDir: "subdir",
 				uuid:   "uuid",
 			},
-			result: "smb-server.default.svc.cluster.local/share#subdir#uuid",
+			result: "smb-server.default.svc.cluster.local/share#subdir#uuid#",
 		},
 		{
 			desc: "volume without subdir",
 			vol: &smbVolume{
 				source: "//smb-server.default.svc.cluster.local/share",
 			},
-			result: "smb-server.default.svc.cluster.local/share##",
+			result: "smb-server.default.svc.cluster.local/share###",
+		},
+		{
+			desc: "volume with nested onDelete retain",
+			vol: &smbVolume{
+				source:   "//smb-server.default.svc.cluster.local/share",
+				subDir:   "subdir",
+				uuid:     "uuid",
+				onDelete: "retain",
+			},
+			result: "smb-server.default.svc.cluster.local/share#subdir#uuid#retain",
 		},
 	}
 
@@ -605,7 +635,7 @@ func TestNewSMBVolume(t *testing.T) {
 				"subDir": "subdir",
 			},
 			expectVol: &smbVolume{
-				id:     "smb-server.default.svc.cluster.local/share#subdir#pv-name",
+				id:     "smb-server.default.svc.cluster.local/share#subdir#pv-name#",
 				source: "//smb-server.default.svc.cluster.local/share",
 				subDir: "subdir",
 				size:   100,
@@ -624,7 +654,7 @@ func TestNewSMBVolume(t *testing.T) {
 				pvNameKey:       "pvname",
 			},
 			expectVol: &smbVolume{
-				id:     "smb-server.default.svc.cluster.local/share#subdir-pvcname-pvcnamespace-pvname#pv-name",
+				id:     "smb-server.default.svc.cluster.local/share#subdir-pvcname-pvcnamespace-pvname#pv-name#",
 				source: "//smb-server.default.svc.cluster.local/share",
 				subDir: "subdir-pvcname-pvcnamespace-pvname",
 				size:   100,
@@ -639,7 +669,7 @@ func TestNewSMBVolume(t *testing.T) {
 				"source": "//smb-server.default.svc.cluster.local/share",
 			},
 			expectVol: &smbVolume{
-				id:     "smb-server.default.svc.cluster.local/share#pv-name#",
+				id:     "smb-server.default.svc.cluster.local/share#pv-name##",
 				source: "//smb-server.default.svc.cluster.local/share",
 				subDir: "pv-name",
 				size:   200,
@@ -661,7 +691,7 @@ func TestNewSMBVolume(t *testing.T) {
 	}
 
 	for _, test := range cases {
-		vol, err := newSMBVolume(test.name, test.size, test.params)
+		vol, err := newSMBVolume(test.name, test.size, test.params, "")
 		if !reflect.DeepEqual(err, test.expectErr) {
 			t.Errorf("[test: %s] Unexpected error: %v, expected error: %v", test.desc, err, test.expectErr)
 		}

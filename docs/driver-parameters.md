@@ -7,6 +7,7 @@ Name | Meaning | Available Value | Mandatory | Default value
 --- | --- | --- | --- | ---
 source | Samba Server address | `//smb-server-address/sharename` </br>([Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) format: `//accountname.file.core.windows.net/filesharename`) | Yes |
 subDir | sub directory under smb share |  | No | if sub directory does not exist, this driver would create a new one
+onDelete | when volume is deleted, keep the directory if it's `retain` | `delete`(default), `retain`, `archive`  | No | `delete`
 csi.storage.k8s.io/provisioner-secret-name | secret name that stores `username`, `password`(`domain` is optional); if secret is provided, driver will create a sub directory with PV name under `source` | existing secret name |  No  |
 csi.storage.k8s.io/provisioner-secret-namespace | namespace where the secret is | existing secret namespace |  No  |
 csi.storage.k8s.io/node-stage-secret-name | secret name that stores `username`, `password`(`domain` is optional) | existing secret name |  Yes  |
@@ -35,10 +36,6 @@ kubectl create secret generic smbcreds --from-literal username=USERNAME --from-l
 ```
 
 ### Kerberos ticket support for Linux
-
-
-
-
 #### These are the conditions that must be met:
  - Kerberos support should be set up and cifs-utils must be installed on every node.
  - The directory /var/lib/kubelet/kerberos/ needs to exist, and it will hold kerberos credential cache files for various users.

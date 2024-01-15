@@ -47,6 +47,8 @@ type smbVolume struct {
 	size int64
 	// pv name when subDir is not empty
 	uuid string
+	// on delete action
+	onDelete string
 }
 
 // Ordering of elements in the CSI volume id.
@@ -55,6 +57,7 @@ const (
 	idSource = iota
 	idSubDir
 	idUUID
+	idOnDelete
 	totalIDElements // Always last
 )
 
@@ -74,7 +77,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	if parameters == nil {
 		parameters = make(map[string]string)
 	}
-	smbVol, err := newSMBVolume(name, reqCapacity, parameters)
+	smbVol, err := newSMBVolume(name, reqCapacity, parameters, d.defaultOnDeletePolicy)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -158,9 +161,13 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 		}
 	}
 
-	if len(req.GetSecrets()) > 0 {
-		klog.V(2).Infof("begin to delete subdirectory since secret is provided")
-		// Mount smb base share so we can delete the subdirectory
+	if smbVol.onDelete == "" {
+		smbVol.onDelete = d.defaultOnDeletePolicy
+	}
+
+	if len(req.GetSecrets()) > 0 && !strings.EqualFold(smbVol.onDelete, retain) {
+		klog.V(2).Infof("begin to delete or archive subdirectory since secret is provided")
+		// mount smb base share so we can delete or archive the subdirectory
 		if err = d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
 		}
@@ -170,11 +177,20 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 			}
 		}()
 
-		// Delete subdirectory under base-dir
 		internalVolumePath := getInternalVolumePath(d.workingMountDir, smbVol)
-		klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
-		if err = os.RemoveAll(internalVolumePath); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
+		if strings.EqualFold(smbVol.onDelete, archive) {
+			archivedInternalVolumePath := filepath.Join(getInternalMountPath(d.workingMountDir, smbVol), "archived-"+smbVol.subDir)
+
+			// archive subdirectory under base-dir
+			klog.V(2).Infof("archiving subdirectory %s --> %s", internalVolumePath, archivedInternalVolumePath)
+			if err = os.Rename(internalVolumePath, archivedInternalVolumePath); err != nil {
+				return nil, status.Errorf(codes.Internal, "archive subdirectory(%s, %s) failed with %v", internalVolumePath, archivedInternalVolumePath, err.Error())
+			}
+		} else {
+			klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
+			if err = os.RemoveAll(internalVolumePath); err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
+			}
 		}
 	} else {
 		klog.V(2).Infof("DeleteVolume(%s) does not delete subdirectory", volumeID)
@@ -345,6 +361,9 @@ func getVolumeIDFromSmbVol(vol *smbVolume) string {
 	idElements[idSource] = strings.Trim(vol.source, "/")
 	idElements[idSubDir] = strings.Trim(vol.subDir, "/")
 	idElements[idUUID] = vol.uuid
+	if strings.EqualFold(vol.onDelete, retain) || strings.EqualFold(vol.onDelete, archive) {
+		idElements[idOnDelete] = vol.onDelete
+	}
 	return strings.Join(idElements, separator)
 }
 
@@ -361,8 +380,8 @@ func getInternalMountPath(workingMountDir string, vol *smbVolume) string {
 }
 
 // Convert VolumeCreate parameters to an smbVolume
-func newSMBVolume(name string, size int64, params map[string]string) (*smbVolume, error) {
-	var source, subDir string
+func newSMBVolume(name string, size int64, params map[string]string, defaultOnDeletePolicy string) (*smbVolume, error) {
+	var source, subDir, onDelete string
 	subDirReplaceMap := map[string]string{}
 
 	// validate parameters (case-insensitive).
@@ -372,6 +391,8 @@ func newSMBVolume(name string, size int64, params map[string]string) (*smbVolume
 			source = v
 		case subDirField:
 			subDir = v
+		case paramOnDelete:
+			onDelete = v
 		case pvcNamespaceKey:
 			subDirReplaceMap[pvcNamespaceMetadata] = v
 		case pvcNameKey:
@@ -400,6 +421,16 @@ func newSMBVolume(name string, size int64, params map[string]string) (*smbVolume
 		// make volume id unique if subDir is provided
 		vol.uuid = name
 	}
+
+	if err := validateOnDeleteValue(onDelete); err != nil {
+		return nil, err
+	}
+
+	vol.onDelete = defaultOnDeletePolicy
+	if onDelete != "" {
+		vol.onDelete = onDelete
+	}
+
 	vol.id = getVolumeIDFromSmbVol(vol)
 	return vol, nil
 }
@@ -446,6 +477,9 @@ func getSmbVolFromID(id string) (*smbVolume, error) {
 	}
 	if len(segments) >= 3 {
 		vol.uuid = segments[2]
+	}
+	if len(segments) >= 4 {
+		vol.onDelete = segments[3]
 	}
 	return vol, nil
 }
