@@ -17,6 +17,7 @@ limitations under the License.
 package smb
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -277,6 +278,62 @@ func TestReplaceWithMap(t *testing.T) {
 	for _, test := range tests {
 		result := replaceWithMap(test.str, test.m)
 		if result != test.expected {
+			t.Errorf("test[%s]: unexpected output: %v, expected result: %v", test.desc, result, test.expected)
+		}
+	}
+}
+
+func TestValidateOnDeleteValue(t *testing.T) {
+	tests := []struct {
+		desc     string
+		onDelete string
+		expected error
+	}{
+		{
+			desc:     "empty value",
+			onDelete: "",
+			expected: nil,
+		},
+		{
+			desc:     "delete value",
+			onDelete: "delete",
+			expected: nil,
+		},
+		{
+			desc:     "retain value",
+			onDelete: "retain",
+			expected: nil,
+		},
+		{
+			desc:     "Retain value",
+			onDelete: "Retain",
+			expected: nil,
+		},
+		{
+			desc:     "Delete value",
+			onDelete: "Delete",
+			expected: nil,
+		},
+		{
+			desc:     "Archive value",
+			onDelete: "Archive",
+			expected: nil,
+		},
+		{
+			desc:     "archive value",
+			onDelete: "archive",
+			expected: nil,
+		},
+		{
+			desc:     "invalid value",
+			onDelete: "invalid",
+			expected: fmt.Errorf("invalid value %s for OnDelete, supported values are %v", "invalid", supportedOnDeleteValues),
+		},
+	}
+
+	for _, test := range tests {
+		result := validateOnDeleteValue(test.onDelete)
+		if !reflect.DeepEqual(result, test.expected) {
 			t.Errorf("test[%s]: unexpected output: %v, expected result: %v", test.desc, result, test.expected)
 		}
 	}

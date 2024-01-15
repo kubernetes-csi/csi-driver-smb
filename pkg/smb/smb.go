@@ -17,6 +17,7 @@ limitations under the License.
 package smb
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -39,6 +40,7 @@ const (
 	subDirField               = "subdir"
 	domainField               = "domain"
 	mountOptionsField         = "mountoptions"
+	paramOnDelete             = "ondelete"
 	defaultDomainName         = "AZURE"
 	pvcNameKey                = "csi.storage.k8s.io/pvc/name"
 	pvcNamespaceKey           = "csi.storage.k8s.io/pvc/namespace"
@@ -48,7 +50,11 @@ const (
 	pvNameMetadata            = "${pv.metadata.name}"
 	DefaultKrb5CCName         = "krb5cc_"
 	DefaultKrb5CacheDirectory = "/var/lib/kubelet/kerberos/"
+	retain                    = "retain"
+	archive                   = "archive"
 )
+
+var supportedOnDeleteValues = []string{"", "delete", retain, archive}
 
 // DriverOptions defines driver parameters specified in driver deployment
 type DriverOptions struct {
@@ -61,6 +67,7 @@ type DriverOptions struct {
 	VolStatsCacheExpireInMinutes  int
 	Krb5CacheDirectory            string
 	Krb5Prefix                    string
+	DefaultOnDeletePolicy         string
 }
 
 // Driver implements all interfaces of CSI drivers
@@ -78,6 +85,7 @@ type Driver struct {
 	removeSMBMappingDuringUnmount bool
 	krb5CacheDirectory            string
 	krb5Prefix                    string
+	defaultOnDeletePolicy         string
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -207,4 +215,14 @@ func replaceWithMap(str string, m map[string]string) string {
 		}
 	}
 	return str
+}
+
+func validateOnDeleteValue(onDelete string) error {
+	for _, v := range supportedOnDeleteValues {
+		if strings.EqualFold(v, onDelete) {
+			return nil
+		}
+	}
+
+	return fmt.Errorf("invalid value %s for OnDelete, supported values are %v", onDelete, supportedOnDeleteValues)
 }
