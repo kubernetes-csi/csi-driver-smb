@@ -18,10 +18,10 @@ require (
 	github.com/pborman/uuid v1.2.1
 	github.com/pelletier/go-toml v1.7.0
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/net v0.17.0
+	golang.org/x/net v0.19.0
 	google.golang.org/grpc v1.59.0
 	k8s.io/api v0.28.5
-	k8s.io/apimachinery v0.28.5
+	k8s.io/apimachinery v0.28.6
 	k8s.io/client-go v0.28.5
 	k8s.io/component-base v0.28.5
 	k8s.io/klog/v2 v2.110.1
@@ -111,14 +111,14 @@ require (
 	go.uber.org/zap v1.19.0 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
-	golang.org/x/mod v0.12.0 // indirect
+	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/oauth2 v0.11.0 // indirect
-	golang.org/x/sync v0.4.0 // indirect
+	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
-	golang.org/x/tools v0.12.0 // indirect
+	golang.org/x/tools v0.16.1 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231012201019-e917dd12ba7a // indirect
