@@ -87,7 +87,7 @@ spec:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: /var/lib/kubelet/plugins/{{ .Values.driver.name }}/csi.sock
+              value: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}/csi.sock
           imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
           volumeMounts:
             - name: socket-dir
@@ -135,11 +135,11 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-            - mountPath: /var/lib/kubelet/
+            - mountPath: {{ .Values.linux.kubelet }}
               mountPropagation: Bidirectional
               name: mountpoint-dir
 {{- if ne .Values.linux.krb5CacheDirectory "" }}
-            - mountPath: /var/lib/kubelet/kerberos/
+            - mountPath: {{ .Values.linux.kubelet }}/kerberos/
               mountPropagation: Bidirectional
               name: krb5Cache-dir
 {{- end }}
