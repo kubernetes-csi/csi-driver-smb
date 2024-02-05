@@ -384,7 +384,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(ctx, cs, ns)
 	})
 
-	ginkgo.It("should create a volume on demand with archive subdir on archive [smb.csi.k8s.io]", func(ctx ginkgo.SpecContext) {
+	ginkgo.It("should create a volume on demand with archive on archive [smb.csi.k8s.io]", func(ctx ginkgo.SpecContext) {
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
@@ -413,6 +413,39 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			CSIDriver:              testDriver,
 			Pods:                   pods,
 			StorageClassParameters: archiveStorageClassParameters,
+		}
+		test.Run(ctx, cs, ns)
+	})
+
+	ginkgo.It("should create a volume on demand with archive on archive subDir [smb.csi.k8s.io]", func(ctx ginkgo.SpecContext) {
+		pods := []testsuites.PodDetails{
+			{
+				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
+				Volumes: []testsuites.VolumeDetails{
+					{
+						ClaimSize: "10Gi",
+						MountOptions: []string{
+							"dir_mode=0777",
+							"file_mode=0777",
+							"uid=0",
+							"gid=0",
+							"mfsymlinks",
+							"cache=strict",
+							"nosharesock",
+						},
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+				IsWindows: isWindowsCluster,
+			},
+		}
+		test := testsuites.DynamicallyProvisionedCmdVolumeTest{
+			CSIDriver:              testDriver,
+			Pods:                   pods,
+			StorageClassParameters: archiveSubDirStorageClassParameters,
 		}
 		test.Run(ctx, cs, ns)
 	})
