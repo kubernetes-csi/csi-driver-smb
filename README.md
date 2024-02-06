@@ -2,6 +2,7 @@
 ![linux build status](https://github.com/kubernetes-csi/csi-driver-smb/actions/workflows/linux.yaml/badge.svg)
 ![windows build status](https://github.com/kubernetes-csi/csi-driver-smb/actions/workflows/windows.yaml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/kubernetes-csi/csi-driver-smb/badge.svg?branch=master)](https://coveralls.io/github/kubernetes-csi/csi-driver-smb?branch=master)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/csi-driver-smb)](https://artifacthub.io/packages/search?repo=csi-driver-smb)
 
 ### About
 This driver allows Kubernetes to access [SMB](https://wiki.wireshark.org/SMB) server on both Linux and Windows nodes, csi plugin name: `smb.csi.k8s.io`. The driver requires existing and already configured SMB server, it supports dynamic provisioning of Persistent Volumes via Persistent Volume Claims by creating a new sub directory under SMB server.
