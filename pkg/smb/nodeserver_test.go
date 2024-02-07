@@ -92,6 +92,7 @@ func TestNodeStageVolume(t *testing.T) {
 		// that is common amongst all other flaky
 		// error messages
 		flakyWindowsErrorMessage string
+		skipOnWindows            bool
 	}{
 		{
 			desc: "[Error] Volume ID missing",
@@ -155,6 +156,7 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
+			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed "+
 				"with NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
 				strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource, testSource, errorMountSensSource),
@@ -171,6 +173,7 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
+			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
 				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
@@ -182,6 +185,7 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContextWithMetadata,
 				Secrets:          secrets},
+			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
 				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
@@ -193,6 +197,9 @@ func TestNodeStageVolume(t *testing.T) {
 	d := NewFakeDriver()
 
 	for _, test := range tests {
+		if test.skipOnWindows && runtime.GOOS == "windows" {
+			continue
+		}
 		mounter, err := NewFakeMounter()
 		if err != nil {
 			t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))

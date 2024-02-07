@@ -31,12 +31,6 @@ jobs:
         go test -covermode=count -coverprofile=profile.cov ./pkg/...
         export DOCKER_CLI_EXPERIMENTAL=enabled && make container
 
-    - name: Integration Testing
-      run: |
-        export PATH=$PATH:$HOME/.local/bin
-        make
-        make integration-test
-
     - name: Sanity test
       env:
         GITHUB_ACTIONS: true

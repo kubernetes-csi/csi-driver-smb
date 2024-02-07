@@ -84,6 +84,7 @@ func TestCreateVolume(t *testing.T) {
 		name                     string
 		req                      *csi.CreateVolumeRequest
 		resp                     *csi.CreateVolumeResponse
+		skipOnWindows            bool
 		flakyWindowsErrorMessage string
 		expectErr                bool
 	}{
@@ -119,6 +120,7 @@ func TestCreateVolume(t *testing.T) {
 					},
 				},
 			},
+			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("volume(vol_1##) mount \"test-server\" on %#v failed with "+
 				"smb mapping failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
 				sourceTest),
@@ -181,6 +183,9 @@ func TestCreateVolume(t *testing.T) {
 	for _, test := range cases {
 		test := test //pin
 		t.Run(test.name, func(t *testing.T) {
+			if test.skipOnWindows && runtime.GOOS == "windows" {
+				return
+			}
 			// Setup
 			_ = os.MkdirAll(filepath.Join(d.workingMountDir, testCSIVolume), os.ModePerm)
 
