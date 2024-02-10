@@ -22,8 +22,7 @@ jobs:
     - name: Install packages
       run: |
         sudo apt update
-        sudo apt install cifs-utils procps conntrack -y
-        GO111MODULE=off go get github.com/rexray/gocsi/csc
+        sudo apt install cifs-utils procps -y
 
     - name: Build Test
       run: |
