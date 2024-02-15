@@ -27,7 +27,7 @@ jobs:
     - name: Build Test
       run: |
         export PATH=$PATH:$HOME/.local/bin
-        go test -covermode=count -coverprofile=profile.cov ./pkg/...
+        go test -race -covermode=atomic -coverprofile=profile.cov ./pkg/...
         export DOCKER_CLI_EXPERIMENTAL=enabled && make container
 
     - name: Sanity test
@@ -39,9 +39,10 @@ jobs:
         echo "is running in github actions: $GITHUB_ACTIONS"
         make sanity-test
 
+    - name: Install goveralls
+      run: go install github.com/mattn/goveralls@latest
+
     - name: Send coverage
       env:
         COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        GO111MODULE=off go get github.com/mattn/goveralls
-        $(go env GOPATH)/bin/goveralls -coverprofile=profile.cov -service=github
+      run: goveralls -coverprofile=profile.cov -service=github
