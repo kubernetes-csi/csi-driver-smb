@@ -56,7 +56,7 @@ default_ccache_name = FILE:/var/lib/kubelet/kerberos/krb5cc_%{uid}" > /etc/krb5.
 To pass a ticket through secret, it needs to be acquired. Here's example how it can be done:
 
 ```console
-export KRB5CCNAME=/tmp/ccache # Use temporary file for the cache 
+export KRB5CCNAME="/var/lib/kubelet/kerberos/krb5cc_1000"
 kinit USERNAME # Log in into domain
 kvno cifs/lowercase_server_name # Acquire ticket for the needed share, it'll be written to the cache file
 CCACHE=$(base64 -w 0 $KRB5CCNAME) # Get Base64-encoded cache
