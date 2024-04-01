@@ -37,7 +37,7 @@ spec:
           args:
             - --csi-address=$(CSI_ENDPOINT)
             - --probe-timeout=3s
-            - --health-port=29643
+            - --http-endpoint=localhost:29643
             - --v=2
           env:
             - name: CSI_ENDPOINT
@@ -92,15 +92,12 @@ spec:
             - --endpoint=$(CSI_ENDPOINT)
             - --nodeid=$(KUBE_NODE_NAME)
             - "--remove-smb-mapping-during-unmount=true"
-          ports:
-            - containerPort: 29643
-              name: healthz
-              protocol: TCP
           livenessProbe:
             failureThreshold: 5
             httpGet:
+              host: localhost
               path: /healthz
-              port: healthz
+              port: 29643
             initialDelaySeconds: 30
             timeoutSeconds: 10
             periodSeconds: 30

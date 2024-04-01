@@ -60,7 +60,7 @@ spec:
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
-            - --health-port=29642
+            - --http-endpoint=localhost:29642
             - --v=2
           volumeMounts:
             - name: socket-dir
@@ -80,17 +80,15 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--metrics-address=0.0.0.0:29644"
           ports:
-            - containerPort: 29642
-              name: healthz
-              protocol: TCP
             - containerPort: 29644
               name: metrics
               protocol: TCP
           livenessProbe:
             failureThreshold: 5
             httpGet:
+              host: localhost
               path: /healthz
-              port: healthz
+              port: 29642
             initialDelaySeconds: 30
             timeoutSeconds: 10
             periodSeconds: 30
