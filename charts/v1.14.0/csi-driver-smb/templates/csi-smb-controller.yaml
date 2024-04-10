@@ -114,7 +114,7 @@ spec:
             httpGet:
               host: localhost
               path: /healthz
-              port: {{ .Values.node.livenessProbe.healthPort }}
+              port: {{ .Values.controller.livenessProbe.healthPort }}
             initialDelaySeconds: 30
             timeoutSeconds: 10
             periodSeconds: 30
