@@ -72,10 +72,10 @@ fi
 if [ -z "$GITHUB_ACTIONS" ]
 then
   # if not running on github actions, do not use sudo
-  _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+  _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=15 &
 else
   # if running on github actions, use sudo
-  sudo _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+  sudo _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=15 &
 fi
 
 # sleep a while waiting for azurefileplugin start up
