@@ -48,7 +48,7 @@ function install_csi_sanity_bin {
 
 function provision_samba_server {
   echo 'Running samba server on localhost'
-  docker run -e PERMISSIONS=0777 -p 445:445 --name samba -d andyzhangx/samba:win-fix -s "share;/smbshare/;yes;no;no;all;none" -u "sanity;sanitytestpassword" -p
+  docker run -e PERMISSIONS=0777 -p 445:445 -p 139:139 --name samba -d andyzhangx/samba:win-fix -s "share;/smbshare/;yes;no;no;all;none" -u "sanity;sanitytestpassword" -p
 }
 
 provision_samba_server
