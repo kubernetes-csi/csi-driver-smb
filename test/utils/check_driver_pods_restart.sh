@@ -16,8 +16,11 @@
 
 set -e
 
+# Get the value of the environment variable or set a default value if it's empty
+CSI_DRIVER_INSTALLED_NAMESPACE="${CSI_DRIVER_INSTALLED_NAMESPACE:-kube-system}"
+
 echo "check the driver pods if restarts ..."
-restarts=$(kubectl get pods -n kube-system | grep smb | awk '{print $4}')
+restarts=$(kubectl get pods -n "${CSI_DRIVER_INSTALLED_NAMESPACE}" | grep smb | awk '{print $4}')
 for num in $restarts
 do
     if [ "$num" -ne "0" ]

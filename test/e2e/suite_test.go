@@ -38,59 +38,65 @@ import (
 )
 
 const (
-	kubeconfigEnvVar  = "KUBECONFIG"
-	reportDirEnv      = "ARTIFACTS"
-	testWindowsEnvVar = "TEST_WINDOWS"
-	defaultReportDir  = "test/e2e"
+	kubeconfigEnvVar             = "KUBECONFIG"
+	reportDirEnv                 = "ARTIFACTS"
+	testWindowsEnvVar            = "TEST_WINDOWS"
+	defaultReportDir             = "test/e2e"
+	testSmbSourceEnvVar          = "TEST_SMB_SOURCE"
+	testSmbSecretNameEnvVar      = "TEST_SMB_SECRET_NAME"
+	testSmbSecretNamespaceEnvVar = "TEST_SMB_SECRET_NAMESPACE"
+	defaultSmbSource             = "//smb-server.default.svc.cluster.local/share"
+	defaultSmbSecretName         = "smbcreds"
+	defaultSmbSecretNamespace    = "default"
 )
 
 var (
 	smbDriver                     *smb.Driver
 	isWindowsCluster              = os.Getenv(testWindowsEnvVar) != ""
 	defaultStorageClassParameters = map[string]string{
-		"source": "//smb-server.default.svc.cluster.local/share",
-		"csi.storage.k8s.io/provisioner-secret-name":      "smbcreds",
-		"csi.storage.k8s.io/provisioner-secret-namespace": "default",
-		"csi.storage.k8s.io/node-stage-secret-name":       "smbcreds",
-		"csi.storage.k8s.io/node-stage-secret-namespace":  "default",
+		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
+		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/provisioner-secret-namespace": getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
+		"csi.storage.k8s.io/node-stage-secret-name":       getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/node-stage-secret-namespace":  getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
 	}
 	subDirStorageClassParameters = map[string]string{
-		"source": "//smb-server.default.svc.cluster.local/share",
+		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
 		"subDir": "subDirectory-${pvc.metadata.name}",
-		"csi.storage.k8s.io/provisioner-secret-name":      "smbcreds",
-		"csi.storage.k8s.io/provisioner-secret-namespace": "default",
-		"csi.storage.k8s.io/node-stage-secret-name":       "smbcreds",
-		"csi.storage.k8s.io/node-stage-secret-namespace":  "default",
+		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/provisioner-secret-namespace": getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
+		"csi.storage.k8s.io/node-stage-secret-name":       getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/node-stage-secret-namespace":  getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
 	}
 	retainStorageClassParameters = map[string]string{
-		"source": "//smb-server.default.svc.cluster.local/share",
-		"csi.storage.k8s.io/provisioner-secret-name":      "smbcreds",
-		"csi.storage.k8s.io/provisioner-secret-namespace": "default",
-		"csi.storage.k8s.io/node-stage-secret-name":       "smbcreds",
-		"csi.storage.k8s.io/node-stage-secret-namespace":  "default",
+		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
+		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/provisioner-secret-namespace": getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
+		"csi.storage.k8s.io/node-stage-secret-name":       getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/node-stage-secret-namespace":  getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
 		"onDelete": "retain",
 	}
 	archiveStorageClassParameters = map[string]string{
-		"source": "//smb-server.default.svc.cluster.local/share",
-		"csi.storage.k8s.io/provisioner-secret-name":      "smbcreds",
-		"csi.storage.k8s.io/provisioner-secret-namespace": "default",
-		"csi.storage.k8s.io/node-stage-secret-name":       "smbcreds",
-		"csi.storage.k8s.io/node-stage-secret-namespace":  "default",
+		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
+		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/provisioner-secret-namespace": getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
+		"csi.storage.k8s.io/node-stage-secret-name":       getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/node-stage-secret-namespace":  getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
 		"onDelete": "archive",
 	}
 	archiveSubDirStorageClassParameters = map[string]string{
-		"source": "//smb-server.default.svc.cluster.local/share",
+		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
 		"subDir": "${pvc.metadata.namespace}/${pvc.metadata.name}",
-		"csi.storage.k8s.io/provisioner-secret-name":      "smbcreds",
-		"csi.storage.k8s.io/provisioner-secret-namespace": "default",
-		"csi.storage.k8s.io/node-stage-secret-name":       "smbcreds",
-		"csi.storage.k8s.io/node-stage-secret-namespace":  "default",
+		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/provisioner-secret-namespace": getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
+		"csi.storage.k8s.io/node-stage-secret-name":       getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/node-stage-secret-namespace":  getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
 		"onDelete": "archive",
 	}
 	noProvisionerSecretStorageClassParameters = map[string]string{
-		"source": "//smb-server.default.svc.cluster.local/share",
-		"csi.storage.k8s.io/node-stage-secret-name":      "smbcreds",
-		"csi.storage.k8s.io/node-stage-secret-namespace": "default",
+		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
+		"csi.storage.k8s.io/node-stage-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
+		"csi.storage.k8s.io/node-stage-secret-namespace": getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
 	}
 )
 
@@ -110,6 +116,11 @@ var _ = ginkgo.BeforeSuite(func() {
 	}
 	handleFlags()
 	framework.AfterReadingAllFlags(&framework.TestContext)
+
+	kubeconfig := os.Getenv(kubeconfigEnvVar)
+	options := smb.DriverOptions{
+		DriverName: smb.DefaultDriverName,
+	}
 
 	if testutil.IsRunningInProw() {
 		// Install SMB provisioner on cluster
@@ -137,17 +148,16 @@ var _ = ginkgo.BeforeSuite(func() {
 		execTestCmd([]testCmd{installSMBProvisioner, e2eBootstrap, createMetricsSVC})
 
 		nodeid := os.Getenv("nodeid")
-		kubeconfig := os.Getenv(kubeconfigEnvVar)
-		options := smb.DriverOptions{
+		options = smb.DriverOptions{
 			NodeID:               nodeid,
 			DriverName:           smb.DefaultDriverName,
 			EnableGetVolumeStats: false,
 		}
-		smbDriver = smb.NewDriver(&options)
-		go func() {
-			smbDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()), kubeconfig, false)
-		}()
 	}
+	smbDriver = smb.NewDriver(&options)
+	go func() {
+		smbDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()), kubeconfig, false)
+	}()
 
 	if isWindowsCluster {
 		err := os.Chdir("../..")
@@ -269,4 +279,13 @@ func skipIfTestingInWindowsCluster() {
 	if isWindowsCluster {
 		ginkgo.Skip("test case not supported by Windows clusters")
 	}
+}
+
+// getSmbTestEnvVarValue gets the smbTestEnvValue from env var if the var does not set use the defaultVarValue
+func getSmbTestEnvVarValue(envVarName string, defaultVarValue string) (smbTestEnvValue string) {
+	smbTestEnvValue = os.Getenv(envVarName)
+	if smbTestEnvValue == "" {
+		smbTestEnvValue = defaultVarValue
+	}
+	return
 }
