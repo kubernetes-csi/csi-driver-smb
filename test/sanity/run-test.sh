@@ -52,6 +52,7 @@ function provision_samba_server {
 }
 
 provision_samba_server
+sleep 5
 
 if [[ -z "$(command -v csi-sanity)" ]]; then
 	install_csi_sanity_bin
