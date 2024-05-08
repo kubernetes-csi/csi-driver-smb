@@ -61,6 +61,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			Volumes: []testsuites.VolumeDetails{
 				{
 					ClaimSize: "10Gi",
+					MountOptions: []string{
+						"dir_mode=0777",
+						"file_mode=0777",
+					},
 					VolumeMount: testsuites.VolumeMountDetails{
 						NameGenerate:      "test-volume-",
 						MountPathGenerate: "/mnt/test-",
@@ -203,6 +207,10 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			Volumes: []testsuites.VolumeDetails{
 				{
 					ClaimSize: "10Gi",
+					MountOptions: []string{
+						"dir_mode=0777",
+						"file_mode=0777",
+					},
 					VolumeMount: testsuites.VolumeMountDetails{
 						NameGenerate:      "test-volume-",
 						MountPathGenerate: "/mnt/test-",
