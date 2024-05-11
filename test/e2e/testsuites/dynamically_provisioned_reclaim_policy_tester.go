@@ -18,11 +18,14 @@ package testsuites
 
 import (
 	"context"
+
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
 
 	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	clientset "k8s.io/client-go/kubernetes"
+	"k8s.io/kubernetes/test/e2e/framework"
 )
 
 // DynamicallyProvisionedReclaimPolicyTest will provision required PV(s) and PVC(s)
@@ -37,6 +40,11 @@ type DynamicallyProvisionedReclaimPolicyTest struct {
 func (t *DynamicallyProvisionedReclaimPolicyTest) Run(ctx context.Context, client clientset.Interface, namespace *v1.Namespace) {
 	for _, volume := range t.Volumes {
 		tpvc, _ := volume.SetupDynamicPersistentVolumeClaim(ctx, client, namespace, t.CSIDriver, t.StorageClassParameters)
+		// Clean up the storageclass
+		defer func() {
+			err := client.StorageV1().StorageClasses().Delete(ctx, tpvc.storageClass.Name, metav1.DeleteOptions{})
+			framework.Logf("Cleanup storageclass %s, err: %v", tpvc.storageClass.Name, err)
+		}()
 
 		// will delete the PVC
 		// will also wait for PV to be deleted when reclaimPolicy=Delete
