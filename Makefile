@@ -16,7 +16,9 @@ CMDS=smbplugin
 PKG = github.com/kubernetes-csi/csi-driver-smb
 GINKGO_FLAGS = -ginkgo.v -ginkgo.timeout=2h
 GO111MODULE = on
-GOPATH ?= $(shell go env GOPATH)
+ifndef GOPATH
+GOPATH := $(shell go env GOPATH)
+endif
 GOBIN ?= $(GOPATH)/bin
 DOCKER_CLI_EXPERIMENTAL = enabled
 IMAGENAME ?= smb-csi
@@ -24,9 +26,9 @@ export GOPATH GOBIN GO111MODULE DOCKER_CLI_EXPERIMENTAL
 
 include release-tools/build.make
 
-GIT_COMMIT ?= $(shell git rev-parse HEAD)
+GIT_COMMIT := $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
-REGISTRY_NAME = $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
+REGISTRY_NAME := $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
 IMAGE_VERSION ?= v1.15.0
 VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
@@ -37,7 +39,9 @@ endif
 endif
 IMAGE_TAG = $(REGISTRY)/$(IMAGENAME):$(IMAGE_VERSION)
 IMAGE_TAG_LATEST = $(REGISTRY)/$(IMAGENAME):latest
-BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+ifndef BUILD_DATE
+BUILD_DATE := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+endif
 LDFLAGS = -X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE}
 EXT_LDFLAGS = -s -w -extldflags "-static"
 E2E_HELM_OPTIONS ?= --set image.smb.repository=$(REGISTRY)/$(IMAGENAME) --set image.smb.tag=$(IMAGE_VERSION)
