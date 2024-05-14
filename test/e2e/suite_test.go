@@ -53,6 +53,7 @@ const (
 var (
 	smbDriver                     *smb.Driver
 	isWindowsCluster              = os.Getenv(testWindowsEnvVar) != ""
+	isUsingHostProcessDeployment  = os.Getenv("WINDOWS_USE_HOST_PROCESS_CONTAINERS") == "true"
 	defaultStorageClassParameters = map[string]string{
 		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
 		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),

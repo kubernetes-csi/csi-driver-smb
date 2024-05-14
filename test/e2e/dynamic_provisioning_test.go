@@ -18,11 +18,16 @@ package e2e
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/testsuites"
 
 	"github.com/onsi/ginkgo/v2"
+	"github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 	clientset "k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -51,6 +56,30 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 
 		cs = f.ClientSet
 		ns = f.Namespace
+
+		if isUsingHostProcessDeployment {
+			err := os.Chdir("../..")
+			gomega.Expect(err).NotTo(gomega.HaveOccurred())
+			defer func() {
+				err := os.Chdir("test/e2e")
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
+			}()
+
+			getSMBPublicIPScript := "test/utils/get_smb_svc_public_ip.sh"
+			log.Printf("run script: %s\n", getSMBPublicIPScript)
+
+			cmd := exec.Command("bash", getSMBPublicIPScript)
+			output, err := cmd.CombinedOutput()
+			log.Printf("got output: %v, error: %v\n", string(output), err)
+			gomega.Expect(err).NotTo(gomega.HaveOccurred())
+
+			server := strings.TrimSuffix(string(output), "\n")
+			log.Printf("use server on Windows: %s\n", server)
+			newShareAddress := fmt.Sprintf("//%s/share", server)
+			defaultStorageClassParameters["source"] = newShareAddress
+			subDirStorageClassParameters["source"] = newShareAddress
+			noProvisionerSecretStorageClassParameters["source"] = newShareAddress
+		}
 	})
 
 	testDriver = driver.InitSMBDriver()
