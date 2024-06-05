@@ -2,15 +2,6 @@ apiVersion: v1
 entries:
   csi-driver-smb:
   - apiVersion: v1
-    appVersion: v1.15.0
-    created: "2024-05-11T03:32:35.245835486Z"
-    description: SMB CSI Driver for Kubernetes
-    digest: e0e9277ae52e212e05f6749e455d92e78728745be6da485f14bb289e0e555e21
-    name: csi-driver-smb
-    urls:
-    - https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/v1.15.0/csi-driver-smb-v1.15.0.tgz
-    version: v1.15.0
-  - apiVersion: v1
     appVersion: v1.14.0
     created: "2024-05-11T03:32:35.244954507Z"
     description: SMB CSI Driver for Kubernetes
