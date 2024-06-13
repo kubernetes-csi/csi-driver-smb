@@ -55,6 +55,10 @@ spec:
             requests:
               cpu: 10m
               memory: 20Mi
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
         - name: liveness-probe
           image: registry.k8s.io/sig-storage/livenessprobe:v2.11.0
           args:
@@ -72,6 +76,10 @@ spec:
             requests:
               cpu: 10m
               memory: 20Mi
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
         - name: smb
           image: registry.k8s.io/sig-storage/smbplugin:v1.13.0
           imagePullPolicy: IfNotPresent
@@ -99,6 +107,9 @@ spec:
               value: unix:///csi/csi.sock
           securityContext:
             privileged: true
+            capabilities:
+              drop:
+                - ALL
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
