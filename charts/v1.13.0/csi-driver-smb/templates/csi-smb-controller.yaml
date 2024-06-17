@@ -74,6 +74,9 @@ spec:
           resources: {{- toYaml .Values.controller.resources.csiProvisioner | nindent 12 }}
           securityContext:
             readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+              - ALL
         - name: liveness-probe
 {{- if hasPrefix "/" .Values.image.livenessProbe.repository }}
           image: "{{ .Values.image.baseRepo }}{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
@@ -92,6 +95,9 @@ spec:
           resources: {{- toYaml .Values.controller.resources.livenessProbe | nindent 12 }}
           securityContext:
             readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+              - ALL
         - name: smb
 {{- if hasPrefix "/" .Values.image.smb.repository }}
           image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
@@ -126,6 +132,9 @@ spec:
           securityContext:
             privileged: true
             readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+              - ALL
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
