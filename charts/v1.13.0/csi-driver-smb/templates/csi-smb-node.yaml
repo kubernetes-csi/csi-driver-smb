@@ -65,6 +65,9 @@ spec:
           resources: {{- toYaml .Values.linux.resources.livenessProbe | nindent 12 }}
           securityContext:
             readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+              - ALL
         - name: node-driver-registrar
 {{- if hasPrefix "/" .Values.image.nodeDriverRegistrar.repository }}
           image: "{{ .Values.image.baseRepo }}{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
@@ -95,6 +98,10 @@ spec:
             - name: registration-dir
               mountPath: /registration
           resources: {{- toYaml .Values.linux.resources.nodeDriverRegistrar | nindent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
         - name: smb
 {{- if hasPrefix "/" .Values.image.smb.repository }}
           image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
@@ -131,6 +138,9 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
             privileged: true
+            capabilities:
+              drop:
+              - ALL
           volumeMounts:
             - mountPath: /csi
               name: socket-dir

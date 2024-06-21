@@ -48,6 +48,10 @@ spec:
             requests:
               cpu: 10m
               memory: 40Mi
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
         - name: node-driver-registrar
           image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.0
           args:
@@ -84,6 +88,10 @@ spec:
             requests:
               cpu: 10m
               memory: 40Mi
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
         - name: smb
           image: registry.k8s.io/sig-storage/smbplugin:v1.13.0
           imagePullPolicy: IfNotPresent
@@ -133,6 +141,10 @@ spec:
             requests:
               cpu: 10m
               memory: 40Mi
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
       volumes:
         - name: csi-proxy-fs-pipe-v1
           hostPath:
