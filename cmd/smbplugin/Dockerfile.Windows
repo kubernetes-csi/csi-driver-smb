@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # these arguments come from BUILD_PLATFORMS used in release-tools
-ARG ADDON_IMAGE=servercore:1809
+ARG ADDON_IMAGE=servercore:1809@sha256:6fdf140282a2f809dae9b13fe441635867f0a27c33a438771673b8da8f3348a4
 ARG BASE_IMAGE=nanoserver:1809
 ARG REGISTRY=mcr.microsoft.com/windows
 
