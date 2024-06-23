@@ -48,10 +48,11 @@ function install_csi_sanity_bin {
 
 function provision_samba_server {
   echo 'Running samba server on localhost'
-  docker run -e PERMISSIONS=0777 -p 445:445 --name samba -d andyzhangx/samba:win-fix -s "share;/smbshare/;yes;no;no;all;none" -u "sanity;sanitytestpassword" -p
+  docker run -e PERMISSIONS=0777 -p 445:445 -p 139:139 --name samba -d andyzhangx/samba:win-fix -s "share;/smbshare/;yes;no;no;all;none" -u "sanity;sanitytestpassword" -p
 }
 
 provision_samba_server
+sleep 5
 
 if [[ -z "$(command -v csi-sanity)" ]]; then
 	install_csi_sanity_bin
@@ -71,10 +72,10 @@ fi
 if [ -z "$GITHUB_ACTIONS" ]
 then
   # if not running on github actions, do not use sudo
-  _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+  _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=15 &
 else
   # if running on github actions, use sudo
-  sudo _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=5 &
+  sudo _output/${ARCH}/smbplugin --endpoint "$endpoint" --nodeid "$nodeid" -v=15 &
 fi
 
 # sleep a while waiting for azurefileplugin start up
