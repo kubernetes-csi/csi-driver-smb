@@ -849,19 +849,20 @@ func TestCopyFromVolume(t *testing.T) {
 	}
 
 	for _, test := range cases {
-		test := test //pin
-		t.Run(test.desc, func(t *testing.T) {
-			// Setup
-			_ = os.MkdirAll(filepath.Join(d.workingMountDir, testCSIVolume, testCSIVolume), os.ModePerm)
+		if test.desc == "valid copy" && runtime.GOOS == "windows" {
+			t.Skip("Skipping test on Windows")
+		}
 
-			err := d.copyFromVolume(context.TODO(), test.req, test.dstVol)
-			if runtime.GOOS == "windows" {
-				fmt.Println("Skipping checks on Windows ENV") // nolint
-			} else {
-				if !reflect.DeepEqual(err, test.expectErr) {
-					t.Errorf("[test: %s] Unexpected error: %v, expected error: %v", test.desc, err, test.expectErr)
-				}
+		// Setup
+		_ = os.MkdirAll(filepath.Join(d.workingMountDir, testCSIVolume, testCSIVolume), os.ModePerm)
+
+		err := d.copyFromVolume(context.TODO(), test.req, test.dstVol)
+		if runtime.GOOS == "windows" {
+			fmt.Println("Skipping checks on Windows ENV") // nolint
+		} else {
+			if !reflect.DeepEqual(err, test.expectErr) {
+				t.Errorf("[test: %s] Unexpected error: %v, expected error: %v", test.desc, err, test.expectErr)
 			}
-		})
+		}
 	}
 }
