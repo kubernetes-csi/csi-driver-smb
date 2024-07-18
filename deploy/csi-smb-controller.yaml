@@ -81,7 +81,7 @@ spec:
               drop:
                 - ALL
         - name: smb
-          image: registry.k8s.io/sig-storage/smbplugin:v1.15.0
+          image: gcr.io/k8s-staging-sig-storage/smbplugin:canary
           imagePullPolicy: IfNotPresent
           args:
             - "--v=5"
