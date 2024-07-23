@@ -123,15 +123,10 @@ spec:
               value: unix:///csi/csi.sock
           securityContext:
             privileged: true
-            readOnlyRootFilesystem: true
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
-            - mountPath: {{ .Values.controller.workingMountDir }}
-              name: tmp-dir
           resources: {{- toYaml .Values.controller.resources.smb | nindent 12 }}
       volumes:
         - name: socket-dir
-          emptyDir: {}
-        - name: tmp-dir
           emptyDir: {}

@@ -136,7 +136,6 @@ spec:
                   apiVersion: v1
                   fieldPath: spec.nodeName
           securityContext:
-            readOnlyRootFilesystem: true
             privileged: true
             capabilities:
               drop:
