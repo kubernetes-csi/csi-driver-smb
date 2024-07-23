@@ -115,6 +115,8 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
+            - name: tmp-dir
+              mountPath: /tmp
             - mountPath: /var/lib/kubelet/
               mountPropagation: Bidirectional
               name: mountpoint-dir
@@ -129,6 +131,8 @@ spec:
             path: /var/lib/kubelet/plugins/smb.csi.k8s.io
             type: DirectoryOrCreate
           name: socket-dir
+        - name: tmp-dir
+          emptyDir: {}
         - hostPath:
             path: /var/lib/kubelet/
             type: DirectoryOrCreate

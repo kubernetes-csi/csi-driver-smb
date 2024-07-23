@@ -142,6 +142,8 @@ spec:
           volumeMounts:
             - mountPath: /csi
               name: socket-dir
+            - name: tmp-dir
+              mountPath: /tmp
             - mountPath: {{ .Values.linux.kubelet }}
               mountPropagation: Bidirectional
               name: mountpoint-dir
@@ -156,6 +158,8 @@ spec:
             path: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}
             type: DirectoryOrCreate
           name: socket-dir
+        - name: tmp-dir
+          emptyDir: {}
         - hostPath:
             path: {{ .Values.linux.kubelet }}/
             type: DirectoryOrCreate
