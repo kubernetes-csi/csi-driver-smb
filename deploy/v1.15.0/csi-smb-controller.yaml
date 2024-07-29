@@ -41,6 +41,7 @@ spec:
             - "--csi-address=$(ADDRESS)"
             - "--leader-election"
             - "--leader-election-namespace=kube-system"
+            - "--feature-gates=HonorPVReclaimPolicy=true"
             - "--extra-create-metadata=true"
           env:
             - name: ADDRESS
