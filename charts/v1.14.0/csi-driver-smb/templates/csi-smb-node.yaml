@@ -147,7 +147,7 @@ spec:
 {{- if ne .Values.linux.krb5CacheDirectory "" }}
             - mountPath: {{ .Values.linux.kubelet }}/kerberos/
               mountPropagation: Bidirectional
-              name: krb5Cache-dir
+              name: krb5cache-dir
 {{- end }}
           resources: {{- toYaml .Values.linux.resources.smb | nindent 12 }}
       volumes:
@@ -167,6 +167,6 @@ spec:
         - hostPath:
             path: {{ .Values.linux.krb5CacheDirectory }}
             type: DirectoryOrCreate
-          name: krb5Cache-dir
+          name: krb5cache-dir
 {{- end }}
 {{- end -}}
