@@ -3,6 +3,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: smb-server
+  namespace: default
   labels:
     app: smb-server
 spec:
@@ -17,6 +18,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: pvc-networkdisk-smbshare
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
@@ -29,6 +31,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: smb-server
+  namespace: default
 spec:
   replicas: 1
   selector:

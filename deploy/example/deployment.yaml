@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: pvc-smb
+  namespace: default
 spec:
   accessModes:
     - ReadWriteMany
@@ -17,6 +18,7 @@ metadata:
   labels:
     app: nginx
   name: deployment-smb
+  namespace: default
 spec:
   replicas: 1
   selector:
