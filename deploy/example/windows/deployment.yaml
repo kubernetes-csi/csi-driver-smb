@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: pvc-smb
+  namespace: default
 spec:
   accessModes:
     - ReadWriteMany
@@ -15,6 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: busybox-smb
+  namespace: default
   labels:
     app: busybox
 spec:

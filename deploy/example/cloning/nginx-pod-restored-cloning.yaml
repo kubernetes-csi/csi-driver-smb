@@ -3,6 +3,7 @@ kind: Pod
 apiVersion: v1
 metadata:
   name: nginx-smb-restored-cloning
+  namespace: default
 spec:
   containers:
     - image: mcr.microsoft.com/oss/nginx/nginx:1.17.3-alpine
