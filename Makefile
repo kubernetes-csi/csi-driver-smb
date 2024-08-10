@@ -36,8 +36,9 @@ ifdef CI
 ifndef PUBLISH
 ifdef TEST_WINDOWS
 override IMAGE_VERSION := e2e-win-$(GIT_COMMIT)
-else
-override IMAGE_VERSION := e2e-$(GIT_COMMIT)
+endif
+ifdef EXTERNAL_E2E_TEST
+override IMAGE_VERSION := e2e-external-$(GIT_COMMIT)
 endif
 endif
 endif
