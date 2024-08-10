@@ -34,7 +34,11 @@ VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
 ifdef CI
 ifndef PUBLISH
+ifdef TEST_WINDOWS
+override IMAGE_VERSION := e2e-win-$(GIT_COMMIT)
+else
 override IMAGE_VERSION := e2e-$(GIT_COMMIT)
+endif
 endif
 endif
 IMAGE_TAG = $(REGISTRY)/$(IMAGENAME):$(IMAGE_VERSION)
@@ -217,8 +221,8 @@ endif
 
 .PHONY: install-smb-provisioner
 install-smb-provisioner:
-	kubectl delete secret smbcreds --ignore-not-found
-	kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD" --from-literal mountOptions="dir_mode=0777,file_mode=0777,uid=0,gid=0,mfsymlinks"
+	kubectl delete secret smbcreds --ignore-not-found -n default
+	kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD" --from-literal mountOptions="dir_mode=0777,file_mode=0777,uid=0,gid=0,mfsymlinks" -n default
 ifdef TEST_WINDOWS
 	kubectl apply -f deploy/example/smb-provisioner/smb-server-lb.yaml
 else
