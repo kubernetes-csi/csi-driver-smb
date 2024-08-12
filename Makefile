@@ -199,6 +199,7 @@ push-manifest:
 		done; \
 	done
 	docker manifest push --purge $(IMAGE_TAG)
+	docker manifest inspect $(IMAGE_TAG)
 ifdef PUBLISH
 	docker manifest create $(IMAGE_TAG_LATEST) $(foreach osarch, $(ALL_OS_ARCH), $(IMAGE_TAG)-${osarch})
 	set -x; \
