@@ -34,8 +34,8 @@ VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
 ifdef CI
 ifndef PUBLISH
-ifdef TEST_WINDOWS
-override IMAGE_VERSION := e2e-win-$(GIT_COMMIT)
+ifdef WINDOWS_SERVER_VERSION
+override IMAGE_VERSION := e2e-$(WINDOWS_SERVER_VERSION)-$(GIT_COMMIT)
 endif
 ifdef EXTERNAL_E2E_TEST
 override IMAGE_VERSION := e2e-external-$(GIT_COMMIT)
