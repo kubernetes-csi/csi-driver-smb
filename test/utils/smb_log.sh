@@ -66,7 +66,11 @@ kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
 
+echo "print out service logs ..."
+echo "======================================================================================"
+kubectl get service -A
+
 echo "print out metrics ..."
 echo "======================================================================================"
-ip=`kubectl get svc csi-$DRIVER-controller -n kube-system | awk '{print $4}'`
+ip=`kubectl get svc csi-$DRIVER-controller -n kube-system --no-headers | awk '{print $4}'`
 curl http://$ip:29644/metrics

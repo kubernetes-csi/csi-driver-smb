@@ -13,8 +13,9 @@
 # limitations under the License.
 
 # these arguments come from BUILD_PLATFORMS used in release-tools
-ARG ADDON_IMAGE=servercore:1809
-ARG BASE_IMAGE=nanoserver:1809
+ARG OSVERSION
+ARG ADDON_IMAGE=servercore:${OSVERSION}
+ARG BASE_IMAGE=nanoserver:${OSVERSION}
 ARG REGISTRY=mcr.microsoft.com/windows
 
 FROM ${REGISTRY}/${ADDON_IMAGE} AS addon
