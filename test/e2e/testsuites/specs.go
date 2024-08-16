@@ -29,9 +29,10 @@ import (
 )
 
 type PodDetails struct {
-	Cmd       string
-	Volumes   []VolumeDetails
-	IsWindows bool
+	Cmd          string
+	Volumes      []VolumeDetails
+	IsWindows    bool
+	WinServerVer string
 }
 
 type VolumeDetails struct {
@@ -86,7 +87,7 @@ type DataSource struct {
 
 //nolint:dupl
 func (pod *PodDetails) SetupWithDynamicVolumes(ctx context.Context, client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver, storageClassParameters map[string]string) (*TestPod, []func(ctx context.Context)) {
-	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows)
+	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows, pod.WinServerVer)
 	cleanupFuncs := make([]func(ctx context.Context), 0)
 	for n, v := range pod.Volumes {
 		tpvc, funcs := v.SetupDynamicPersistentVolumeClaim(ctx, client, namespace, csiDriver, storageClassParameters)
@@ -104,7 +105,7 @@ func (pod *PodDetails) SetupWithDynamicVolumes(ctx context.Context, client clien
 //
 //nolint:dupl
 func (pod *PodDetails) SetupWithDynamicMultipleVolumes(ctx context.Context, client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver, storageClassParameters map[string]string) (*TestPod, []func(ctx context.Context)) {
-	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows)
+	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows, pod.WinServerVer)
 	cleanupFuncs := make([]func(ctx context.Context), 0)
 	for n, v := range pod.Volumes {
 		tpvc, funcs := v.SetupDynamicPersistentVolumeClaim(ctx, client, namespace, csiDriver, storageClassParameters)
@@ -119,7 +120,7 @@ func (pod *PodDetails) SetupWithDynamicMultipleVolumes(ctx context.Context, clie
 }
 
 func (pod *PodDetails) SetupWithPreProvisionedVolumes(ctx context.Context, client clientset.Interface, namespace *v1.Namespace, csiDriver driver.PreProvisionedVolumeTestDriver) (*TestPod, []func(ctx context.Context)) {
-	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows)
+	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows, pod.WinServerVer)
 	cleanupFuncs := make([]func(ctx context.Context), 0)
 	for n, v := range pod.Volumes {
 		tpvc, funcs := v.SetupPreProvisionedPersistentVolumeClaim(ctx, client, namespace, csiDriver)
@@ -149,14 +150,14 @@ func (pod *PodDetails) SetupDeployment(ctx context.Context, client clientset.Int
 	tpvc.ValidateProvisionedPersistentVolume(ctx)
 	cleanupFuncs = append(cleanupFuncs, tpvc.Cleanup)
 	ginkgo.By("setting up the Deployment")
-	tDeployment := NewTestDeployment(client, namespace, pod.Cmd, tpvc.persistentVolumeClaim, fmt.Sprintf("%s%d", volume.VolumeMount.NameGenerate, 1), fmt.Sprintf("%s%d", volume.VolumeMount.MountPathGenerate, 1), volume.VolumeMount.ReadOnly, pod.IsWindows)
+	tDeployment := NewTestDeployment(client, namespace, pod.Cmd, tpvc.persistentVolumeClaim, fmt.Sprintf("%s%d", volume.VolumeMount.NameGenerate, 1), fmt.Sprintf("%s%d", volume.VolumeMount.MountPathGenerate, 1), volume.VolumeMount.ReadOnly, pod.IsWindows, pod.WinServerVer)
 
 	cleanupFuncs = append(cleanupFuncs, tDeployment.Cleanup)
 	return tDeployment, cleanupFuncs
 }
 
 func (pod *PodDetails) SetupWithDynamicVolumesWithSubpath(ctx context.Context, client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver, storageClassParameters map[string]string) (*TestPod, []func(ctx context.Context)) {
-	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows)
+	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows, pod.WinServerVer)
 	cleanupFuncs := make([]func(ctx context.Context), 0)
 	for n, v := range pod.Volumes {
 		tpvc, funcs := v.SetupDynamicPersistentVolumeClaim(ctx, client, namespace, csiDriver, storageClassParameters)

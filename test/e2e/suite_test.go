@@ -40,6 +40,7 @@ const (
 	kubeconfigEnvVar             = "KUBECONFIG"
 	reportDirEnv                 = "ARTIFACTS"
 	testWindowsEnvVar            = "TEST_WINDOWS"
+	testWinServerVerEnvVar       = "WINDOWS_SERVER_VERSION"
 	defaultReportDir             = "test/e2e"
 	testSmbSourceEnvVar          = "TEST_SMB_SOURCE"
 	testSmbSecretNameEnvVar      = "TEST_SMB_SECRET_NAME"
@@ -52,6 +53,7 @@ const (
 var (
 	smbDriver                     *smb.Driver
 	isWindowsCluster              = os.Getenv(testWindowsEnvVar) != ""
+	winServerVer                  = os.Getenv(testWinServerVerEnvVar)
 	defaultStorageClassParameters = map[string]string{
 		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
 		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
@@ -117,6 +119,7 @@ var _ = ginkgo.BeforeSuite(func() {
 	framework.AfterReadingAllFlags(&framework.TestContext)
 
 	kubeconfig := os.Getenv(kubeconfigEnvVar)
+	log.Println(testWinServerVerEnvVar, os.Getenv(testWinServerVerEnvVar), fmt.Sprintf("%v", winServerVer))
 
 	// Install SMB provisioner on cluster
 	installSMBProvisioner := testCmd{

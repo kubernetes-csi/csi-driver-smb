@@ -31,7 +31,7 @@ spec:
         "kubernetes.io/os": windows
       containers:
         - name: busybox
-          image: e2eteam/busybox:1.29
+          image: mcr.microsoft.com/windows/servercore:ltsc2022
           command:
             - "powershell.exe"
             - "-Command"
