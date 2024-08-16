@@ -335,7 +335,7 @@ type TestDeployment struct {
 	podName    string
 }
 
-func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, pvc *v1.PersistentVolumeClaim, volumeName, mountPath string, readOnly, isWindows bool) *TestDeployment {
+func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, pvc *v1.PersistentVolumeClaim, volumeName, mountPath string, readOnly, isWindows bool, winServerVer string) *TestDeployment {
 	generateName := "smb-volume-tester-"
 	selectorValue := fmt.Sprintf("%s%d", generateName, rand.Int())
 	replicas := int32(1)
@@ -400,7 +400,7 @@ func NewTestDeployment(c clientset.Interface, ns *v1.Namespace, command string, 
 				Value:    "win1809",
 			},
 		}
-		testDeployment.deployment.Spec.Template.Spec.Containers[0].Image = "e2eteam/busybox:1.29"
+		testDeployment.deployment.Spec.Template.Spec.Containers[0].Image = "mcr.microsoft.com/windows/servercore:" + getWinImageTag(winServerVer)
 		testDeployment.deployment.Spec.Template.Spec.Containers[0].Command = []string{"powershell.exe"}
 		testDeployment.deployment.Spec.Template.Spec.Containers[0].Args = []string{"-Command", command}
 	}
@@ -502,7 +502,7 @@ type TestPod struct {
 	namespace *v1.Namespace
 }
 
-func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string, isWindows bool) *TestPod {
+func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string, isWindows bool, winServerVer string) *TestPod {
 	testPod := &TestPod{
 		client:    c,
 		namespace: ns,
@@ -537,12 +537,20 @@ func NewTestPod(c clientset.Interface, ns *v1.Namespace, command string, isWindo
 				Value:    "win1809",
 			},
 		}
-		testPod.pod.Spec.Containers[0].Image = "e2eteam/busybox:1.29"
+		testPod.pod.Spec.Containers[0].Image = "mcr.microsoft.com/windows/servercore:" + getWinImageTag(winServerVer)
 		testPod.pod.Spec.Containers[0].Command = []string{"powershell.exe"}
 		testPod.pod.Spec.Containers[0].Args = []string{"-Command", command}
 	}
 
 	return testPod
+}
+
+func getWinImageTag(winServerVer string) string {
+	testWinImageTag := "ltsc2019"
+	if winServerVer == "windows-2022" {
+		testWinImageTag = "ltsc2022"
+	}
+	return testWinImageTag
 }
 
 func (t *TestPod) Create(ctx context.Context) {
