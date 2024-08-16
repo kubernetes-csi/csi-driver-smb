@@ -34,12 +34,7 @@ VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
 ifdef CI
 ifndef PUBLISH
-ifdef WINDOWS_SERVER_VERSION
-override IMAGE_VERSION := e2e-$(WINDOWS_SERVER_VERSION)-$(GIT_COMMIT)
-endif
-ifdef EXTERNAL_E2E_TEST
-override IMAGE_VERSION := e2e-external-$(GIT_COMMIT)
-endif
+override IMAGE_VERSION := e2e-$(GIT_COMMIT)
 endif
 endif
 IMAGE_TAG = $(REGISTRY)/$(IMAGENAME):$(IMAGE_VERSION)
@@ -151,13 +146,13 @@ container: smb
 
 .PHONY: container-linux
 container-linux:
-	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="linux/$(ARCH)" \
+	docker buildx build --no-cache --pull --output=type=$(OUTPUT_TYPE) --platform="linux/$(ARCH)" \
 		--provenance=false --sbom=false \
 		-t $(IMAGE_TAG)-linux-$(ARCH) --build-arg ARCH=$(ARCH) -f ./cmd/smbplugin/Dockerfile .
 
 .PHONY: container-linux-armv7
 container-linux-armv7:
-	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="linux/arm/v7" \
+	docker buildx build --no-cache --pull --output=type=$(OUTPUT_TYPE) --platform="linux/arm/v7" \
 		--provenance=false --sbom=false \
 		-t $(IMAGE_TAG)-linux-arm-v7 --build-arg ARCH=arm/v7 -f ./cmd/smbplugin/Dockerfile .
 
