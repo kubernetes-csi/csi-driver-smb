@@ -6,7 +6,7 @@ image:
     pullPolicy: IfNotPresent
   csiProvisioner:
     repository: /csi-provisioner
-    tag: v5.0.1
+    tag: v5.0.2
     pullPolicy: IfNotPresent
   livenessProbe:
     repository: /livenessprobe
