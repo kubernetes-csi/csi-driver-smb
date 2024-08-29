@@ -68,6 +68,7 @@ type DriverOptions struct {
 	Krb5CacheDirectory            string
 	Krb5Prefix                    string
 	DefaultOnDeletePolicy         string
+	RemoveArchivedVolumePath      bool
 }
 
 // Driver implements all interfaces of CSI drivers
@@ -86,6 +87,7 @@ type Driver struct {
 	krb5CacheDirectory            string
 	krb5Prefix                    string
 	defaultOnDeletePolicy         string
+	removeArchivedVolumePath      bool
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -97,6 +99,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.NodeID = options.NodeID
 	driver.enableGetVolumeStats = options.EnableGetVolumeStats
 	driver.removeSMBMappingDuringUnmount = options.RemoveSMBMappingDuringUnmount
+	driver.removeArchivedVolumePath = options.RemoveArchivedVolumePath
 	driver.workingMountDir = options.WorkingMountDir
 	driver.volumeLocks = newVolumeLocks()
 

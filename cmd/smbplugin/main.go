@@ -48,6 +48,7 @@ var (
 	krb5CacheDirectory            = flag.String("krb5-cache-directory", smb.DefaultKrb5CacheDirectory, "The directory for kerberos cache")
 	krb5Prefix                    = flag.String("krb5-prefix", smb.DefaultKrb5CCName, "The prefix for kerberos cache")
 	defaultOnDeletePolicy         = flag.String("default-ondelete-policy", "", "default policy for deleting subdirectory when deleting a volume")
+	removeArchivedVolumePath      = flag.Bool("remove-archived-volume-path", true, "remove archived volume path in DeleteVolume")
 )
 
 func main() {
@@ -75,6 +76,7 @@ func handle() {
 		DriverName:                    *driverName,
 		EnableGetVolumeStats:          *enableGetVolumeStats,
 		RemoveSMBMappingDuringUnmount: *removeSMBMappingDuringUnmount,
+		RemoveArchivedVolumePath:      *removeArchivedVolumePath,
 		WorkingMountDir:               *workingMountDir,
 		VolStatsCacheExpireInMinutes:  *volStatsCacheExpireInMinutes,
 		Krb5CacheDirectory:            *krb5CacheDirectory,
