@@ -99,6 +99,11 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		}
 	}
 
+	if acquired := d.volumeLocks.TryAcquire(name); !acquired {
+		return nil, status.Errorf(codes.Aborted, volumeOperationAlreadyExistsFmt, name)
+	}
+	defer d.volumeLocks.Release(name)
+
 	if createSubDir {
 		// Mount smb base share so we can create a subdirectory
 		if err := d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
