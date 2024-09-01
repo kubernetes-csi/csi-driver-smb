@@ -82,6 +82,8 @@ type Driver struct {
 	enableGetVolumeStats bool
 	// a timed cache storing volume stats <volumeID, volumeStats>
 	volStatsCache azcache.Resource
+	// a timed cache storing volume deletion records <volumeID, "">
+	volDeletionCache azcache.Resource
 	// this only applies to Windows node
 	removeSMBMappingDuringUnmount bool
 	krb5CacheDirectory            string
@@ -118,6 +120,9 @@ func NewDriver(options *DriverOptions) *Driver {
 	var err error
 	getter := func(key string) (interface{}, error) { return nil, nil }
 	if driver.volStatsCache, err = azcache.NewTimedCache(time.Duration(options.VolStatsCacheExpireInMinutes)*time.Minute, getter, false); err != nil {
+		klog.Fatalf("%v", err)
+	}
+	if driver.volDeletionCache, err = azcache.NewTimedCache(time.Minute, getter, false); err != nil {
 		klog.Fatalf("%v", err)
 	}
 	return &driver
