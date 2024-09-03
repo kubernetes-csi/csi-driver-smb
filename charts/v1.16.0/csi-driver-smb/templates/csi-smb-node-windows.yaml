@@ -1,0 +1,183 @@
+{{- if .Values.windows.enabled}}
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ .Values.windows.dsName }}
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
+spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.node.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ .Values.windows.dsName }}
+  template:
+    metadata:
+{{ include "smb.labels" . | indent 6 }}
+        app: {{ .Values.windows.dsName }}
+    spec:
+{{- with .Values.windows.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      nodeSelector:
+        kubernetes.io/os: windows
+{{- with .Values.node.nodeSelector }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.node.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- if .Values.securityContext }}
+      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.node }}
+      {{- include "smb.pullSecrets" . | indent 6 }}
+      containers:
+        - name: liveness-probe
+          volumeMounts:
+            - mountPath: C:\csi
+              name: plugin-dir
+{{- if hasPrefix "/" .Values.image.livenessProbe.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
+{{- else }}
+          image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
+{{- end }}
+          args:
+            - --csi-address=$(CSI_ENDPOINT)
+            - --probe-timeout=3s
+            - --health-port={{ .Values.node.livenessProbe.healthPort }}
+            - --v=2
+          env:
+            - name: CSI_ENDPOINT
+              value: unix://C:\\csi\\csi.sock
+          imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
+          resources: {{- toYaml .Values.windows.resources.livenessProbe | nindent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+        - name: node-driver-registrar
+{{- if hasPrefix "/" .Values.image.nodeDriverRegistrar.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
+{{- else }}
+          image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
+{{- end }}
+          args:
+            - --v=2
+            - --csi-address=$(CSI_ENDPOINT)
+            - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+          livenessProbe:
+            exec:
+              command:
+                - /csi-node-driver-registrar.exe
+                - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+                - --mode=kubelet-registration-probe
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
+          env:
+            - name: CSI_ENDPOINT
+              value: unix://C:\\csi\\csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: {{ .Values.windows.kubelet | replace "\\" "\\\\" }}\\plugins\\{{ .Values.driver.name }}\\csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: C:\csi
+            - name: registration-dir
+              mountPath: C:\registration
+          resources: {{- toYaml .Values.windows.resources.nodeDriverRegistrar | nindent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+        - name: smb
+{{- if hasPrefix "/" .Values.image.smb.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+{{- else }}
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+{{- end }}
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
+          args:
+            - "--v={{ .Values.node.logLevel }}"
+            - "--drivername={{ .Values.driver.name }}"
+            - --endpoint=$(CSI_ENDPOINT)
+            - --nodeid=$(KUBE_NODE_NAME)
+            - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
+            - "--remove-smb-mapping-during-unmount={{ .Values.windows.removeSMBMappingDuringUnmount }}"
+          ports:
+            - containerPort: {{ .Values.node.livenessProbe.healthPort }}
+              name: healthz
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /healthz
+              port: healthz
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            periodSeconds: 30
+          env:
+            - name: CSI_ENDPOINT
+              value: unix://C:\\csi\\csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: kubelet-dir
+              mountPath: {{ .Values.windows.kubelet }}\
+            - name: plugin-dir
+              mountPath: C:\csi
+            - name: csi-proxy-fs-pipe-v1
+              mountPath: \\.\pipe\csi-proxy-filesystem-v1
+            - name: csi-proxy-smb-pipe-v1
+              mountPath: \\.\pipe\csi-proxy-smb-v1
+            # these paths are still included for compatibility, they're used
+            # only if the node has still the beta version of the CSI proxy
+            - name: csi-proxy-fs-pipe-v1beta1
+              mountPath: \\.\pipe\csi-proxy-filesystem-v1beta1
+            - name: csi-proxy-smb-pipe-v1beta1
+              mountPath: \\.\pipe\csi-proxy-smb-v1beta1
+          resources: {{- toYaml .Values.windows.resources.smb | nindent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+      volumes:
+        - name: csi-proxy-fs-pipe-v1
+          hostPath:
+            path: \\.\pipe\csi-proxy-filesystem-v1
+        - name: csi-proxy-smb-pipe-v1
+          hostPath:
+            path: \\.\pipe\csi-proxy-smb-v1
+        # these paths are still included for compatibility, they're used
+        # only if the node has still the beta version of the CSI proxy
+        - name: csi-proxy-fs-pipe-v1beta1
+          hostPath:
+            path: \\.\pipe\csi-proxy-filesystem-v1beta1
+        - name: csi-proxy-smb-pipe-v1beta1
+          hostPath:
+            path: \\.\pipe\csi-proxy-smb-v1beta1
+        - name: registration-dir
+          hostPath:
+            path: {{ .Values.windows.kubelet }}\plugins_registry\
+            type: Directory
+        - name: kubelet-dir
+          hostPath:
+            path: {{ .Values.windows.kubelet }}\
+            type: Directory
+        - name: plugin-dir
+          hostPath:
+            path: {{ .Values.windows.kubelet }}\plugins\{{ .Values.driver.name }}\
+            type: DirectoryOrCreate
+{{- end -}}
