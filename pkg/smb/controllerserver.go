@@ -19,6 +19,7 @@ package smb
 import (
 	"context"
 	"fmt"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -223,6 +224,14 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 				return nil, status.Errorf(codes.Internal, "archive subdirectory(%s, %s) failed with %v", internalVolumePath, archivedInternalVolumePath, err.Error())
 			}
 		} else {
+			if _, err2 := os.Lstat(internalVolumePath); err2 == nil {
+				err2 := filepath.WalkDir(internalVolumePath, func(path string, di fs.DirEntry, err error) error {
+					return os.Chmod(path, 0777)
+				})
+				if err2 != nil {
+					klog.Errorf("failed to chmod subdirectory: %v", err2)
+				}
+			}
 			klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
 			if err = os.RemoveAll(internalVolumePath); err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
