@@ -74,7 +74,7 @@ func TestCreateVolume(t *testing.T) {
 	// Setup mounter
 	mounter, err := NewFakeMounter()
 	if err != nil {
-		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
+		t.Fatalf("failed to get fake mounter: %v", err)
 	}
 	d.mounter = mounter
 
@@ -234,7 +234,7 @@ func TestDeleteVolume(t *testing.T) {
 	// Setup mounter
 	mounter, err := NewFakeMounter()
 	if err != nil {
-		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
+		t.Fatalf("failed to get fake mounter: %v", err)
 	}
 	d.mounter = mounter
 
@@ -762,7 +762,7 @@ func TestCopyFromVolume(t *testing.T) {
 	// Setup mounter
 	mounter, err := NewFakeMounter()
 	if err != nil {
-		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
+		t.Fatalf("failed to get fake mounter: %v", err)
 	}
 	d.mounter = mounter
 

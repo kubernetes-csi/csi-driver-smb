@@ -162,9 +162,9 @@ func TestNodeStageVolume(t *testing.T) {
 				strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource, testSource, errorMountSensSource),
 			expectedErr: testutil.TestError{
 				DefaultError: status.Errorf(codes.Internal,
-					fmt.Sprintf("volume(vol_1##) mount \"%s\" on \"%s\" failed with fake "+
+					"volume(vol_1##) mount \"%s\" on \"%s\" failed with fake "+
 						"MountSensitive: target error",
-						strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource)),
+					strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource),
 			},
 		},
 		{
@@ -202,7 +202,7 @@ func TestNodeStageVolume(t *testing.T) {
 		}
 		mounter, err := NewFakeMounter()
 		if err != nil {
-			t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
+			t.Fatalf("failed to get fake mounter: %v", err)
 		}
 		d.mounter = mounter
 
@@ -344,7 +344,7 @@ func TestNodePublishVolume(t *testing.T) {
 			// Once the issue is figured out, we'll remove this field
 			skipOnWindows: true,
 			expectedErr: testutil.TestError{
-				DefaultError: status.Errorf(codes.Internal, fmt.Sprintf("Could not mount \"%s\" at \"%s\": fake Mount: source error", errorMountSource, targetTest)),
+				DefaultError: status.Errorf(codes.Internal, "Could not mount \"%s\" at \"%s\": fake Mount: source error", errorMountSource, targetTest),
 			},
 		},
 		{
@@ -381,7 +381,7 @@ func TestNodePublishVolume(t *testing.T) {
 	d := NewFakeDriver()
 	mounter, err := NewFakeMounter()
 	if err != nil {
-		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
+		t.Fatalf("failed to get fake mounter: %v", err)
 	}
 	d.mounter = mounter
 
@@ -446,7 +446,7 @@ func TestNodeUnpublishVolume(t *testing.T) {
 	d := NewFakeDriver()
 	mounter, err := NewFakeMounter()
 	if err != nil {
-		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
+		t.Fatalf("failed to get fake mounter: %v", err)
 	}
 	d.mounter = mounter
 
@@ -522,7 +522,7 @@ func TestNodeUnstageVolume(t *testing.T) {
 	d := NewFakeDriver()
 	mounter, err := NewFakeMounter()
 	if err != nil {
-		t.Fatalf(fmt.Sprintf("failed to get fake mounter: %v", err))
+		t.Fatalf("failed to get fake mounter: %v", err)
 	}
 	d.mounter = mounter
 
