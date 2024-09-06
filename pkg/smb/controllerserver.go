@@ -108,18 +108,18 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	if createSubDir {
 		// Mount smb base share so we can create a subdirectory
 		if err := d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
+			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err)
 		}
 		defer func() {
 			if err = d.internalUnmount(ctx, smbVol); err != nil {
-				klog.Warningf("failed to unmount smb server: %v", err.Error())
+				klog.Warningf("failed to unmount smb server: %v", err)
 			}
 		}()
 		// Create subdirectory under base-dir
 		// TODO: revisit permissions
 		internalVolumePath := getInternalVolumePath(d.workingMountDir, smbVol)
 		if err = os.MkdirAll(internalVolumePath, 0777); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
+			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err)
 		}
 
 		if req.GetVolumeContentSource() != nil {
@@ -182,7 +182,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 		// check whether volumeID is in the cache
 		cache, err := d.volDeletionCache.Get(volumeID, azcache.CacheReadTypeDefault)
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, err.Error())
+			return nil, status.Errorf(codes.Internal, "%v", err)
 		}
 		if cache != nil {
 			klog.V(2).Infof("DeleteVolume: volume %s is already deleted", volumeID)
@@ -191,11 +191,11 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 
 		// mount smb base share so we can delete or archive the subdirectory
 		if err = d.internalMount(ctx, smbVol, volCap, secrets); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err.Error())
+			return nil, status.Errorf(codes.Internal, "failed to mount smb server: %v", err)
 		}
 		defer func() {
 			if err = d.internalUnmount(ctx, smbVol); err != nil {
-				klog.Warningf("failed to unmount smb server: %v", err.Error())
+				klog.Warningf("failed to unmount smb server: %v", err)
 			}
 		}()
 
@@ -207,7 +207,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 				parentDir := filepath.Dir(archivedInternalVolumePath)
 				klog.V(2).Infof("DeleteVolume: subdirectory(%s) contains '/', make sure the parent directory(%s) exists", smbVol.subDir, parentDir)
 				if err = os.MkdirAll(parentDir, 0777); err != nil {
-					return nil, status.Errorf(codes.Internal, "create parent directory(%s) of %s failed with %v", parentDir, archivedInternalVolumePath, err.Error())
+					return nil, status.Errorf(codes.Internal, "create parent directory(%s) of %s failed with %v", parentDir, archivedInternalVolumePath, err)
 				}
 			}
 
@@ -216,16 +216,16 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 			if d.removeArchivedVolumePath {
 				klog.V(2).Infof("removing archived subdirectory at %v", archivedInternalVolumePath)
 				if err = os.RemoveAll(archivedInternalVolumePath); err != nil {
-					return nil, status.Errorf(codes.Internal, "failed to delete archived subdirectory %s: %v", archivedInternalVolumePath, err.Error())
+					return nil, status.Errorf(codes.Internal, "failed to delete archived subdirectory %s: %v", archivedInternalVolumePath, err)
 				}
 				klog.V(2).Infof("removed archived subdirectory at %v", archivedInternalVolumePath)
 			}
 			if err = os.Rename(internalVolumePath, archivedInternalVolumePath); err != nil {
-				return nil, status.Errorf(codes.Internal, "archive subdirectory(%s, %s) failed with %v", internalVolumePath, archivedInternalVolumePath, err.Error())
+				return nil, status.Errorf(codes.Internal, "archive subdirectory(%s, %s) failed with %v", internalVolumePath, archivedInternalVolumePath, err)
 			}
 		} else {
 			if _, err2 := os.Lstat(internalVolumePath); err2 == nil {
-				err2 := filepath.WalkDir(internalVolumePath, func(path string, di fs.DirEntry, err error) error {
+				err2 := filepath.WalkDir(internalVolumePath, func(path string, _ fs.DirEntry, _ error) error {
 					return os.Chmod(path, 0777)
 				})
 				if err2 != nil {
@@ -234,7 +234,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 			}
 			klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
 			if err = os.RemoveAll(internalVolumePath); err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
+				return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err)
 			}
 		}
 	} else {

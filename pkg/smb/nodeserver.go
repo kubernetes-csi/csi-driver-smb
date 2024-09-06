@@ -300,7 +300,7 @@ func (d *Driver) NodeGetVolumeStats(_ context.Context, req *csi.NodeGetVolumeSta
 	// check if the volume stats is cached
 	cache, err := d.volStatsCache.Get(req.VolumeId, azcache.CacheReadTypeDefault)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, err.Error())
+		return nil, status.Errorf(codes.Internal, "%v", err)
 	}
 	if cache != nil {
 		resp := cache.(csi.NodeGetVolumeStatsResponse)

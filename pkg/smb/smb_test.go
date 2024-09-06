@@ -91,14 +91,14 @@ func TestRun(t *testing.T) {
 	}{
 		{
 			name: "Successful run",
-			testFunc: func(t *testing.T) {
+			testFunc: func(_ *testing.T) {
 				d := NewFakeDriver()
 				d.Run("tcp://127.0.0.1:0", "", true)
 			},
 		},
 		{
 			name: "Successful run with node ID missing",
-			testFunc: func(t *testing.T) {
+			testFunc: func(_ *testing.T) {
 				d := NewFakeDriver()
 				d.NodeID = ""
 				d.Run("tcp://127.0.0.1:0", "", true)

@@ -118,7 +118,7 @@ func NewDriver(options *DriverOptions) *Driver {
 		options.VolStatsCacheExpireInMinutes = 10 // default expire in 10 minutes
 	}
 	var err error
-	getter := func(key string) (interface{}, error) { return nil, nil }
+	getter := func(_ string) (interface{}, error) { return nil, nil }
 	if driver.volStatsCache, err = azcache.NewTimedCache(time.Duration(options.VolStatsCacheExpireInMinutes)*time.Minute, getter, false); err != nil {
 		klog.Fatalf("%v", err)
 	}
