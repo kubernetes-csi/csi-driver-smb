@@ -338,3 +338,50 @@ func TestValidateOnDeleteValue(t *testing.T) {
 		}
 	}
 }
+
+func TestAppendMountOptions(t *testing.T) {
+	tests := []struct {
+		desc     string
+		options  []string
+		newOpts  map[string]string
+		expected []string
+	}{
+		{
+			desc:     "empty options",
+			options:  nil,
+			newOpts:  map[string]string{},
+			expected: nil,
+		},
+		{
+			desc:     "empty newOpts",
+			options:  []string{"a", "b"},
+			newOpts:  map[string]string{},
+			expected: []string{"a", "b"},
+		},
+		{
+			desc:     "empty newOpts",
+			options:  []string{"a", "b"},
+			newOpts:  map[string]string{"c": "d"},
+			expected: []string{"a", "b", "c=d"},
+		},
+		{
+			desc:     "duplicate newOpts",
+			options:  []string{"a", "b", "c=d"},
+			newOpts:  map[string]string{"c": "d"},
+			expected: []string{"a", "b", "c=d"},
+		},
+		{
+			desc:     "normal newOpts",
+			options:  []string{"a", "b"},
+			newOpts:  map[string]string{"c": "d", "e": "f"},
+			expected: []string{"a", "b", "c=d", "e=f"},
+		},
+	}
+
+	for _, test := range tests {
+		result := appendMountOptions(test.options, test.newOpts)
+		if !reflect.DeepEqual(result, test.expected) {
+			t.Errorf("test[%s]: unexpected output: %v, expected result: %v", test.desc, result, test.expected)
+		}
+	}
+}

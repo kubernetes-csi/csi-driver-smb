@@ -19,7 +19,6 @@ package smb
 import (
 	"context"
 	"fmt"
-	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -92,12 +91,17 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	volCap := volumeCapabilities[0]
-	if volCap.GetMount() != nil && !createSubDir {
+	if volCap.GetMount() != nil {
 		options := volCap.GetMount().GetMountFlags()
-		if hasGuestMountOptions(options) {
+		if !createSubDir && hasGuestMountOptions(options) {
 			klog.V(2).Infof("guest mount option(%v) is provided, create subdirectory", options)
 			createSubDir = true
 		}
+		// set default file/dir mode
+		volCap.GetMount().MountFlags = appendMountOptions(options, map[string]string{
+			fileMode: defaultFileMode,
+			dirMode:  defaultDirMode,
+		})
 	}
 
 	if acquired := d.volumeLocks.TryAcquire(name); !acquired {
@@ -159,18 +163,22 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 	}
 	defer d.volumeLocks.Release(volumeID)
 
-	var volCap *csi.VolumeCapability
 	secrets := req.GetSecrets()
 	mountOptions := getMountOptions(secrets)
 	if mountOptions != "" {
 		klog.V(2).Infof("DeleteVolume: found mountOptions(%v) for volume(%s)", mountOptions, volumeID)
-		volCap = &csi.VolumeCapability{
-			AccessType: &csi.VolumeCapability_Mount{
-				Mount: &csi.VolumeCapability_MountVolume{
-					MountFlags: []string{mountOptions},
-				},
+	}
+	// set default file/dir mode
+	volCap := &csi.VolumeCapability{
+		AccessType: &csi.VolumeCapability_Mount{
+			Mount: &csi.VolumeCapability_MountVolume{
+				MountFlags: appendMountOptions([]string{mountOptions},
+					map[string]string{
+						fileMode: defaultFileMode,
+						dirMode:  defaultDirMode,
+					}),
 			},
-		}
+		},
 	}
 
 	if smbVol.onDelete == "" {
@@ -224,14 +232,6 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 				return nil, status.Errorf(codes.Internal, "archive subdirectory(%s, %s) failed with %v", internalVolumePath, archivedInternalVolumePath, err)
 			}
 		} else {
-			if _, err2 := os.Lstat(internalVolumePath); err2 == nil {
-				err2 := filepath.WalkDir(internalVolumePath, func(path string, _ fs.DirEntry, _ error) error {
-					return os.Chmod(path, 0777)
-				})
-				if err2 != nil {
-					klog.Errorf("failed to chmod subdirectory: %v", err2)
-				}
-			}
 			klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
 			if err = os.RemoveAll(internalVolumePath); err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err)
