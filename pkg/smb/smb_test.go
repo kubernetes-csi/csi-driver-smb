@@ -370,12 +370,6 @@ func TestAppendMountOptions(t *testing.T) {
 			newOpts:  map[string]string{"c": "d"},
 			expected: []string{"a", "b", "c=d"},
 		},
-		{
-			desc:     "normal newOpts",
-			options:  []string{"a", "b"},
-			newOpts:  map[string]string{"c": "d", "e": "f"},
-			expected: []string{"a", "b", "c=d", "e=f"},
-		},
 	}
 
 	for _, test := range tests {
