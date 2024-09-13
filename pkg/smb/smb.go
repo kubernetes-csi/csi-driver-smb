@@ -52,6 +52,10 @@ const (
 	DefaultKrb5CacheDirectory = "/var/lib/kubelet/kerberos/"
 	retain                    = "retain"
 	archive                   = "archive"
+	fileMode                  = "file_mode"
+	dirMode                   = "dir_mode"
+	defaultFileMode           = "0777"
+	defaultDirMode            = "0777"
 )
 
 var supportedOnDeleteValues = []string{"", "delete", retain, archive}
@@ -233,4 +237,29 @@ func validateOnDeleteValue(onDelete string) error {
 	}
 
 	return fmt.Errorf("invalid value %s for OnDelete, supported values are %v", onDelete, supportedOnDeleteValues)
+}
+
+// appendMountOptions appends extra mount options to the given mount options
+func appendMountOptions(mountOptions []string, extraMountOptions map[string]string) []string {
+	// stores the mount options already included in mountOptions
+	included := make(map[string]bool)
+	for _, mountOption := range mountOptions {
+		for k := range extraMountOptions {
+			if strings.HasPrefix(mountOption, k) {
+				included[k] = true
+			}
+		}
+	}
+
+	allMountOptions := mountOptions
+	for k, v := range extraMountOptions {
+		if _, isIncluded := included[k]; !isIncluded {
+			if v != "" {
+				allMountOptions = append(allMountOptions, fmt.Sprintf("%s=%s", k, v))
+			} else {
+				allMountOptions = append(allMountOptions, k)
+			}
+		}
+	}
+	return allMountOptions
 }
