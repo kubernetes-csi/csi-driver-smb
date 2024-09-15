@@ -232,7 +232,14 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 				return nil, status.Errorf(codes.Internal, "archive subdirectory(%s, %s) failed with %v", internalVolumePath, archivedInternalVolumePath, err)
 			}
 		} else {
-			klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
+			rootDir := getRootDir(smbVol.subDir)
+			if rootDir != "" {
+				rootDir = filepath.Join(getInternalMountPath(d.workingMountDir, smbVol), rootDir)
+			} else {
+				rootDir = internalVolumePath
+			}
+
+			klog.V(2).Infof("removing subdirectory at %v on internalVolumePath %s", rootDir, internalVolumePath)
 			if err = os.RemoveAll(internalVolumePath); err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err)
 			}
