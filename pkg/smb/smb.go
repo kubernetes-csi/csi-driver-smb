@@ -263,3 +263,9 @@ func appendMountOptions(mountOptions []string, extraMountOptions map[string]stri
 	}
 	return allMountOptions
 }
+
+// getRootDir returns the root directory of the given directory
+func getRootDir(path string) string {
+	parts := strings.Split(path, "/")
+	return parts[0]
+}

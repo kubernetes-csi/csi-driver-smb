@@ -63,7 +63,7 @@ var (
 	}
 	subDirStorageClassParameters = map[string]string{
 		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
-		"subDir": "subDirectory-${pvc.metadata.name}",
+		"subDir": "${pvc.metadata.namespace}/${pvc.metadata.name}",
 		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
 		"csi.storage.k8s.io/provisioner-secret-namespace": getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
 		"csi.storage.k8s.io/node-stage-secret-name":       getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
