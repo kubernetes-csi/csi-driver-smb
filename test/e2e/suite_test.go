@@ -41,6 +41,7 @@ const (
 	reportDirEnv                 = "ARTIFACTS"
 	testWindowsEnvVar            = "TEST_WINDOWS"
 	testWinServerVerEnvVar       = "WINDOWS_SERVER_VERSION"
+	preInstallDriverEnvVar       = "PRE_INSTALL_SMB_PROVISIONER"
 	defaultReportDir             = "test/e2e"
 	testSmbSourceEnvVar          = "TEST_SMB_SOURCE"
 	testSmbSecretNameEnvVar      = "TEST_SMB_SECRET_NAME"
@@ -54,6 +55,7 @@ var (
 	smbDriver                     *smb.Driver
 	isWindowsCluster              = os.Getenv(testWindowsEnvVar) != ""
 	winServerVer                  = os.Getenv(testWinServerVerEnvVar)
+	preInstallDriver              = os.Getenv(preInstallDriverEnvVar) == "true"
 	defaultStorageClassParameters = map[string]string{
 		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
 		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
@@ -142,8 +144,9 @@ var _ = ginkgo.BeforeSuite(func() {
 		startLog: "create metrics service ...",
 		endLog:   "metrics service created",
 	}
-
-	execTestCmd([]testCmd{installSMBProvisioner, e2eBootstrap, createMetricsSVC})
+	if !preInstallDriver {
+		execTestCmd([]testCmd{installSMBProvisioner, e2eBootstrap, createMetricsSVC})
+	}
 
 	nodeid := os.Getenv("nodeid")
 	options := smb.DriverOptions{
@@ -194,7 +197,9 @@ var _ = ginkgo.AfterSuite(func() {
 			startLog: "create example deployments",
 			endLog:   "example deployments created",
 		}
-		execTestCmd([]testCmd{createExampleDeployment})
+		if !preInstallDriver {
+			execTestCmd([]testCmd{createExampleDeployment})
+		}
 	}
 
 	smbLog := testCmd{
@@ -209,7 +214,11 @@ var _ = ginkgo.AfterSuite(func() {
 		startLog: "Uninstalling SMB CSI Driver...",
 		endLog:   "SMB Driver uninstalled",
 	}
-	execTestCmd([]testCmd{smbLog, e2eTeardown})
+	e2eTeardownCmds := []testCmd{smbLog}
+	if !preInstallDriver {
+		e2eTeardownCmds = append(e2eTeardownCmds, e2eTeardown)
+	}
+	execTestCmd(e2eTeardownCmds)
 
 	// install/uninstall CSI Driver deployment scripts test
 	installDriver := testCmd{
@@ -224,7 +233,9 @@ var _ = ginkgo.AfterSuite(func() {
 		startLog: "===================uninstall CSI Driver deployment scripts test===================",
 		endLog:   "===================================================",
 	}
-	execTestCmd([]testCmd{installDriver, uninstallDriver})
+	if !preInstallDriver {
+		execTestCmd([]testCmd{installDriver, uninstallDriver})
+	}
 })
 
 func TestE2E(t *testing.T) {
