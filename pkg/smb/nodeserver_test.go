@@ -57,6 +57,21 @@ func TestNodeStageVolume(t *testing.T) {
 			Mount: &csi.VolumeCapability_MountVolume{},
 		},
 	}
+	mountGroupVolCap := csi.VolumeCapability{
+		AccessType: &csi.VolumeCapability_Mount{
+			Mount: &csi.VolumeCapability_MountVolume{
+				VolumeMountGroup: "1000",
+			},
+		},
+	}
+	mountGroupWithModesVolCap := csi.VolumeCapability{
+		AccessType: &csi.VolumeCapability_Mount{
+			Mount: &csi.VolumeCapability_MountVolume{
+				VolumeMountGroup: "1000",
+				MountFlags:       []string{"file_mode=0111", "dir_mode=0111"},
+			},
+		},
+	}
 
 	errorMountSensSource := testutil.GetWorkDirPath("error_mount_sens_source", t)
 	smbFile := testutil.GetWorkDirPath("smb.go", t)
@@ -184,6 +199,30 @@ func TestNodeStageVolume(t *testing.T) {
 			req: csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContextWithMetadata,
+				Secrets:          secrets},
+			skipOnWindows: true,
+			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
+				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
+				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc: "[Success] Valid request with VolumeMountGroup",
+			req: csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
+				VolumeCapability: &mountGroupVolCap,
+				VolumeContext:    volContext,
+				Secrets:          secrets},
+			skipOnWindows: true,
+			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
+				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
+				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc: "[Success] Valid request with VolumeMountGroup and file/dir modes",
+			req: csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
+				VolumeCapability: &mountGroupWithModesVolCap,
+				VolumeContext:    volContext,
 				Secrets:          secrets},
 			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
