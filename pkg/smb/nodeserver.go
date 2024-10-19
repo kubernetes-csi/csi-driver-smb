@@ -200,6 +200,12 @@ func (d *Driver) NodeStageVolume(_ context.Context, req *csi.NodeStageVolumeRequ
 		mountOptions = mountFlags
 		if !gidPresent && volumeMountGroup != "" {
 			mountOptions = append(mountOptions, fmt.Sprintf("gid=%s", volumeMountGroup))
+			if !raiseGroupRWXInMountFlags(mountOptions, "file_mode") {
+				mountOptions = append(mountOptions, "file_mode=0774")
+			}
+			if !raiseGroupRWXInMountFlags(mountOptions, "dir_mode") {
+				mountOptions = append(mountOptions, "dir_mode=0775")
+			}
 		}
 		if domain != "" {
 			mountOptions = append(mountOptions, fmt.Sprintf("%s=%s", domainField, domain))
@@ -607,4 +613,26 @@ func deleteKerberosCache(krb5CacheDirectory, volumeID string) error {
 	}
 
 	return nil
+}
+
+// Raises RWX bits for group access in the mode arg. If mode is invalid, keep it unchanged.
+func enableGroupRWX(mode string) string {
+	v, e := strconv.ParseInt(mode, 0, 0)
+	if e != nil || v < 0 {
+		return mode
+	}
+	return fmt.Sprintf("0%o", v|070)
+}
+
+// Apply enableGroupRWX() to the option "flag=xyz"
+func raiseGroupRWXInMountFlags(mountFlags []string, flag string) bool {
+	for i, mountFlag := range mountFlags {
+		mountFlagSplit := strings.Split(mountFlag, "=")
+		if len(mountFlagSplit) != 2 || mountFlagSplit[0] != flag {
+			continue
+		}
+		mountFlags[i] = fmt.Sprintf("%s=%s", flag, enableGroupRWX(mountFlagSplit[1]))
+		return true
+	}
+	return false
 }
