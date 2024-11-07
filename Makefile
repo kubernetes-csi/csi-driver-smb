@@ -43,7 +43,7 @@ ifndef BUILD_DATE
 BUILD_DATE := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 endif
 LDFLAGS = -X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE}
-EXT_LDFLAGS = -s -w -extldflags "-static"
+EXT_LDFLAGS = -s -w
 E2E_HELM_OPTIONS ?= --set image.smb.repository=$(REGISTRY)/$(IMAGENAME) --set image.smb.tag=$(IMAGE_VERSION)
 E2E_HELM_OPTIONS += ${EXTRA_HELM_OPTIONS}
 # Generate all combination of all OS, ARCH, and OSVERSIONS for iteration
