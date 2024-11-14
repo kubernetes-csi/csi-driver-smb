@@ -28,7 +28,6 @@ import (
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 
-	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/volume"
 
@@ -37,6 +36,7 @@ import (
 
 	"golang.org/x/net/context"
 
+	volumehelper "github.com/kubernetes-csi/csi-driver-smb/pkg/util"
 	azcache "sigs.k8s.io/cloud-provider-azure/pkg/cache"
 )
 
@@ -232,16 +232,11 @@ func (d *Driver) NodeStageVolume(_ context.Context, req *csi.NodeStageVolumeRequ
 			source = strings.TrimRight(source, "/")
 			source = fmt.Sprintf("%s/%s", source, subDir)
 		}
-		mountComplete := false
-		err = wait.PollImmediate(1*time.Second, 2*time.Minute, func() (bool, error) {
-			err := Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
-			mountComplete = true
-			return true, err
-		})
-		if !mountComplete {
-			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with timeout(10m)", volumeID, source, targetPath))
+		execFunc := func() error {
+			return Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
 		}
-		if err != nil {
+		timeoutFunc := func() error { return fmt.Errorf("time out") }
+		if err := volumehelper.WaitUntilTimeout(90*time.Second, execFunc, timeoutFunc); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, err))
 		}
 		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, targetPath)
