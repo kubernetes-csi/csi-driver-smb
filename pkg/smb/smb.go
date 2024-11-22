@@ -78,6 +78,12 @@ type DriverOptions struct {
 // Driver implements all interfaces of CSI drivers
 type Driver struct {
 	csicommon.CSIDriver
+	// Embed UnimplementedXXXServer to ensure the driver returns Unimplemented for any
+	// new RPC methods that might be introduced in future versions of the spec.
+	csi.UnimplementedControllerServer
+	csi.UnimplementedIdentityServer
+	csi.UnimplementedNodeServer
+
 	mounter *mount.SafeFormatAndMount
 	// A map storing all volumes with ongoing operations so that additional operations
 	// for that same volume (as defined by VolumeID) return an Aborted error
