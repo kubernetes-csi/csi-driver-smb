@@ -304,9 +304,9 @@ func (d *Driver) NodeGetVolumeStats(_ context.Context, req *csi.NodeGetVolumeSta
 		return nil, status.Errorf(codes.Internal, "%v", err)
 	}
 	if cache != nil {
-		resp := cache.(csi.NodeGetVolumeStatsResponse)
+		resp := cache.(*csi.NodeGetVolumeStatsResponse)
 		klog.V(6).Infof("NodeGetVolumeStats: volume stats for volume %s path %s is cached", req.VolumeId, req.VolumePath)
-		return &resp, nil
+		return resp, nil
 	}
 
 	if _, err := os.Lstat(req.VolumePath); err != nil {
@@ -365,7 +365,7 @@ func (d *Driver) NodeGetVolumeStats(_ context.Context, req *csi.NodeGetVolumeSta
 	}
 
 	// cache the volume stats per volume
-	d.volStatsCache.Set(req.VolumeId, resp)
+	d.volStatsCache.Set(req.VolumeId, &resp)
 	return &resp, err
 }
 
