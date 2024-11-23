@@ -317,22 +317,22 @@ func TestValidateVolumeCapabilities(t *testing.T) {
 
 	tests := []struct {
 		desc        string
-		req         csi.ValidateVolumeCapabilitiesRequest
+		req         *csi.ValidateVolumeCapabilitiesRequest
 		expectedErr error
 	}{
 		{
 			desc:        "Volume ID missing",
-			req:         csi.ValidateVolumeCapabilitiesRequest{},
+			req:         &csi.ValidateVolumeCapabilitiesRequest{},
 			expectedErr: status.Error(codes.InvalidArgument, "Volume ID missing in request"),
 		},
 		{
 			desc:        "Volume capabilities missing",
-			req:         csi.ValidateVolumeCapabilitiesRequest{VolumeId: "vol_1"},
+			req:         &csi.ValidateVolumeCapabilitiesRequest{VolumeId: "vol_1"},
 			expectedErr: status.Error(codes.InvalidArgument, "volume capabilities missing in request"),
 		},
 		{
 			desc: "block volume capability not supported",
-			req: csi.ValidateVolumeCapabilitiesRequest{
+			req: &csi.ValidateVolumeCapabilitiesRequest{
 				VolumeId:           "vol_1",
 				VolumeCapabilities: blockVolCap,
 			},
@@ -340,7 +340,7 @@ func TestValidateVolumeCapabilities(t *testing.T) {
 		},
 		{
 			desc: "Valid request",
-			req: csi.ValidateVolumeCapabilitiesRequest{
+			req: &csi.ValidateVolumeCapabilitiesRequest{
 				VolumeId:           "vol_1#f5713de20cde511e8ba4900#fileshare#diskname#",
 				VolumeCapabilities: mountVolCap,
 			},
@@ -349,7 +349,7 @@ func TestValidateVolumeCapabilities(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		_, err := d.ValidateVolumeCapabilities(context.Background(), &test.req)
+		_, err := d.ValidateVolumeCapabilities(context.Background(), test.req)
 		if !reflect.DeepEqual(err, test.expectedErr) {
 			t.Errorf("[test: %s] Unexpected error: %v, expected error: %v", test.desc, err, test.expectedErr)
 		}
