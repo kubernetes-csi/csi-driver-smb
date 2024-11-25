@@ -69,7 +69,7 @@ var (
 	objectCounts = compbasemetrics.NewGaugeVec(
 		&compbasemetrics.GaugeOpts{
 			Name:           "apiserver_storage_objects",
-			Help:           "Number of stored objects at the time of last check split by kind.",
+			Help:           "Number of stored objects at the time of last check split by kind. In case of a fetching error, the value will be -1.",
 			StabilityLevel: compbasemetrics.STABLE,
 		},
 		[]string{"resource"},
@@ -84,7 +84,7 @@ var (
 		},
 		[]string{"endpoint"},
 	)
-	storageSizeDescription   = compbasemetrics.NewDesc("apiserver_storage_size_bytes", "Size of the storage database file physically allocated in bytes.", []string{"storage_cluster_id"}, nil, compbasemetrics.ALPHA, "")
+	storageSizeDescription   = compbasemetrics.NewDesc("apiserver_storage_size_bytes", "Size of the storage database file physically allocated in bytes.", []string{"storage_cluster_id"}, nil, compbasemetrics.STABLE, "")
 	storageMonitor           = &monitorCollector{monitorGetter: func() ([]Monitor, error) { return nil, nil }}
 	etcdEventsReceivedCounts = compbasemetrics.NewCounterVec(
 		&compbasemetrics.CounterOpts{
@@ -167,6 +167,7 @@ func Register() {
 		legacyregistry.MustRegister(objectCounts)
 		legacyregistry.MustRegister(dbTotalSize)
 		legacyregistry.CustomMustRegister(storageMonitor)
+		legacyregistry.MustRegister(etcdEventsReceivedCounts)
 		legacyregistry.MustRegister(etcdBookmarkCounts)
 		legacyregistry.MustRegister(etcdLeaseObjectCounts)
 		legacyregistry.MustRegister(listStorageCount)
@@ -228,7 +229,7 @@ func UpdateEtcdDbSize(ep string, size int64) {
 
 // SetStorageMonitorGetter sets monitor getter to allow monitoring etcd stats.
 func SetStorageMonitorGetter(getter func() ([]Monitor, error)) {
-	storageMonitor.monitorGetter = getter
+	storageMonitor.setGetter(getter)
 }
 
 // UpdateLeaseObjectCount sets the etcd_lease_object_counts metric.
@@ -258,7 +259,20 @@ type StorageMetrics struct {
 type monitorCollector struct {
 	compbasemetrics.BaseStableCollector
 
+	mutex         sync.Mutex
 	monitorGetter func() ([]Monitor, error)
+}
+
+func (m *monitorCollector) setGetter(monitorGetter func() ([]Monitor, error)) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	m.monitorGetter = monitorGetter
+}
+
+func (m *monitorCollector) getGetter() func() ([]Monitor, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.monitorGetter
 }
 
 // DescribeWithStability implements compbasemetrics.StableColletor
@@ -268,7 +282,7 @@ func (c *monitorCollector) DescribeWithStability(ch chan<- *compbasemetrics.Desc
 
 // CollectWithStability implements compbasemetrics.StableColletor
 func (c *monitorCollector) CollectWithStability(ch chan<- compbasemetrics.Metric) {
-	monitors, err := c.monitorGetter()
+	monitors, err := c.getGetter()()
 	if err != nil {
 		return
 	}
