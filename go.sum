@@ -83,7 +83,6 @@ github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSw
 github.com/fsnotify/fsnotify v1.7.0 h1:8JEhPFa5W2WU7YfeZzPNqzMP6Lwt7L2715Ggo0nosvA=
 github.com/fsnotify/fsnotify v1.7.0/go.mod h1:40Bi/Hjc2AVfZrqy+aj+yEI+/bRxZnMJyTJwOpGvigM=
 github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
-github.com/go-logr/logr v1.3.0/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
 github.com/go-logr/logr v1.4.1 h1:pKouT5E8xu9zeFC39JXRDukb6JFQPXM5p5I91188VAQ=
 github.com/go-logr/logr v1.4.1/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
 github.com/go-logr/stdr v1.2.2 h1:hSWxHoqTgW2S2qGc0LTAI563KZ5YKYRhT3MFKZMbjag=
@@ -456,8 +455,8 @@ k8s.io/controller-manager v0.28.12 h1:A/A14ErMuTuBW8myUCSfDr2QG5qS90ZV2DohyueAN8
 k8s.io/controller-manager v0.28.12/go.mod h1:SEIMkdUzB4saf4sdTU2wzST6PU9zHGsTDwhoM/pVoko=
 k8s.io/csi-translation-lib v0.28.12 h1:lrWqfa3AiOg3EIw/q0xPWg1ZqQyDfD1rGe5J4QFx+hA=
 k8s.io/csi-translation-lib v0.28.12/go.mod h1:SXEFryzUH27XNbiI46Qz5IhfG68Pyiah8/zGrnKNrn8=
-k8s.io/klog/v2 v2.110.1 h1:U/Af64HJf7FcwMcXyKm2RPM22WZzyR7OSpYj5tg3cL0=
-k8s.io/klog/v2 v2.110.1/go.mod h1:YGtd1984u+GgbuZ7e08/yBuAfKLSO0+uR1Fhi6ExXjo=
+k8s.io/klog/v2 v2.130.1 h1:n9Xl7H1Xvksem4KFG4PYbdQCQxqc/tTUyrgXaOhHSzk=
+k8s.io/klog/v2 v2.130.1/go.mod h1:3Jpz1GvMt720eyJH1ckRHK1EDfpxISzJ7I9OYgaDtPE=
 k8s.io/kms v0.28.12 h1:YEcJWelR7ChLI7le/slHpeIkx7v6MoPkITo3JyL8s1M=
 k8s.io/kms v0.28.12/go.mod h1:EZtSJo9PoqEe/aB/X5sXPRl5LHukSuXlDrDnY76lJjY=
 k8s.io/kube-openapi v0.0.0-20230717233707-2695361300d9 h1:LyMgNKD2P8Wn1iAwQU5OhxCKlKJy0sHc+PcDwFB24dQ=
