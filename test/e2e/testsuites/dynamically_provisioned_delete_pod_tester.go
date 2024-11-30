@@ -34,6 +34,7 @@ type DynamicallyProvisionedDeletePodTest struct {
 	CSIDriver              driver.DynamicPVTestDriver
 	Pod                    PodDetails
 	PodCheck               *PodExecCheck
+	SkipAfterRestartCheck  bool
 	StorageClassParameters map[string]string
 }
 
@@ -67,7 +68,7 @@ func (t *DynamicallyProvisionedDeletePodTest) Run(ctx context.Context, client cl
 	ginkgo.By("checking again that the pod is running")
 	tDeployment.WaitForPodReady(ctx)
 
-	if t.PodCheck != nil {
+	if t.PodCheck != nil && !t.SkipAfterRestartCheck {
 		ginkgo.By("sleep 5s and then check pod exec after pod restart again")
 		time.Sleep(5 * time.Second)
 		// pod will be restarted so expect to see 2 instances of string

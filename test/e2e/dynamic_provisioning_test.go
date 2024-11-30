@@ -245,6 +245,47 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		test.Run(ctx, cs, ns)
 	})
 
+	// Track issue https://github.com/kubernetes-csi/csi-driver-smb/issues/834
+	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy even if it contains read-only subdir %q [smb.csi.k8s.io]", v1.PersistentVolumeReclaimDelete), func(ctx ginkgo.SpecContext) {
+		skipIfTestingInWindowsCluster()
+		reclaimPolicy := v1.PersistentVolumeReclaimDelete
+		pod := testsuites.PodDetails{
+			Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' >> /mnt/test-1/data && while true; do sleep 100; done"),
+			Volumes: []testsuites.VolumeDetails{
+				{
+					ClaimSize: "10Gi",
+					MountOptions: []string{
+						"dir_mode=0777",
+						"file_mode=0777",
+						"noperm",
+					},
+					ReclaimPolicy: &reclaimPolicy,
+					VolumeMount: testsuites.VolumeMountDetails{
+						NameGenerate:      "test-volume-",
+						MountPathGenerate: "/mnt/test-",
+					},
+				},
+			},
+			IsWindows:    isWindowsCluster,
+			WinServerVer: winServerVer,
+		}
+
+		podCheckCmd := []string{"sh", "-c", "mkdir /mnt/test-1/subdir-test;chmod a-w /mnt/test-1/subdir-test;ls -ld /mnt/test-1/subdir-test"}
+		expectedString := "dr-xr-xr-x"
+
+		test := testsuites.DynamicallyProvisionedDeletePodTest{
+			CSIDriver: testDriver,
+			Pod:       pod,
+			PodCheck: &testsuites.PodExecCheck{
+				Cmd:            podCheckCmd,
+				ExpectedString: expectedString,
+			},
+			SkipAfterRestartCheck:  true,
+			StorageClassParameters: defaultStorageClassParameters,
+		}
+		test.Run(ctx, cs, ns)
+	})
+
 	ginkgo.It(fmt.Sprintf("should delete PV with reclaimPolicy %q [smb.csi.k8s.io] [Windows]", v1.PersistentVolumeReclaimDelete), func(ctx ginkgo.SpecContext) {
 		reclaimPolicy := v1.PersistentVolumeReclaimDelete
 		volumes := []testsuites.VolumeDetails{
