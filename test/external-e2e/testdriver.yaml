@@ -12,5 +12,7 @@ DriverInfo:
     multipods: true
     RWX: true
     fsGroup: true
+    controllerExpansion: true
+    nodeExpansion: true
     volumeMountGroup: true
     pvcDataSource: true
