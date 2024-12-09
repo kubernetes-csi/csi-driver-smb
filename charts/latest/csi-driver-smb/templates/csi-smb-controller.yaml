@@ -40,7 +40,7 @@ spec:
         node-role.kubernetes.io/master: ""
         {{- end}}
         {{- if .Values.controller.runOnControlPlane}}
-        node-role.kubernetes.io/control-plane: ""
+        kubernetes.io/role: control-plane
         {{- end}}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- if .Values.securityContext }}
