@@ -29,6 +29,7 @@ parameters:
   csi.storage.k8s.io/node-stage-secret-namespace: default
 reclaimPolicy: Delete  # available values: Delete, Retain
 volumeBindingMode: Immediate
+allowVolumeExpansion: true
 mountOptions:
   - dir_mode=0777
   - file_mode=0777
@@ -59,6 +60,7 @@ parameters:
   csi.storage.k8s.io/node-stage-secret-name: smbcreds
   csi.storage.k8s.io/node-stage-secret-namespace: default
 volumeBindingMode: Immediate
+allowVolumeExpansion: true
 mountOptions:
   - dir_mode=0777
   - file_mode=0777
