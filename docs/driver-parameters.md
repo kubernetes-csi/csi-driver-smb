@@ -31,6 +31,7 @@ nodeStageSecretRef.name | secret name that stores `username`, `password`(`domain
 nodeStageSecretRef.namespace | namespace where the secret is | k8s namespace  |  Yes  |
 
  - Use `kubectl create secret` to create `smbcreds` secret to store Samba Server username, password
+> append `--from-literal domain="DOMAIN"` if you have a domain
 ```console
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 ```
