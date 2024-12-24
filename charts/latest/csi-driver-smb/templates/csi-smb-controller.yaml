@@ -79,6 +79,7 @@ spec:
             - "--leader-election-namespace={{ .Release.Namespace }}"
             - "--extra-create-metadata=true"
             - "--feature-gates=HonorPVReclaimPolicy=true"
+            - "--retry-interval-max=30m"
           env:
             - name: ADDRESS
               value: /csi/csi.sock

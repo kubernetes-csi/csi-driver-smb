@@ -46,6 +46,7 @@ spec:
             - "--leader-election-namespace=kube-system"
             - "--feature-gates=HonorPVReclaimPolicy=true"
             - "--extra-create-metadata=true"
+            - "--retry-interval-max=30m"
           env:
             - name: ADDRESS
               value: /csi/csi.sock
