@@ -51,6 +51,11 @@ var (
 	removeArchivedVolumePath      = flag.Bool("remove-archived-volume-path", true, "remove archived volume path in DeleteVolume")
 )
 
+// exit is a separate function to handle program termination
+var exit = func(code int) {
+	os.Exit(code)
+}
+
 func main() {
 	flag.Parse()
 	if *ver {
@@ -59,15 +64,15 @@ func main() {
 			klog.Fatalln(err)
 		}
 		fmt.Println(info) // nolint
-		os.Exit(0)
+	} else {
+		if *nodeID == "" {
+			// nodeid is not needed in controller component
+			klog.Warning("nodeid is empty")
+		}
+		exportMetrics()
+		handle()
 	}
-	if *nodeID == "" {
-		// nodeid is not needed in controller component
-		klog.Warning("nodeid is empty")
-	}
-	exportMetrics()
-	handle()
-	os.Exit(0)
+	exit(0)
 }
 
 func handle() {
