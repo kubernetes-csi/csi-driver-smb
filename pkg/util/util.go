@@ -17,8 +17,16 @@ limitations under the License.
 package util
 
 import (
+	"k8s.io/klog/v2"
+	"os"
+	"os/exec"
 	"time"
 )
+
+const MaxPathLengthWindows = 260
+
+// control the number of concurrent powershell commands running on Windows node
+var powershellCmdSem = make(chan struct{}, 3)
 
 // ExecFunc returns a exec function's output and error
 type ExecFunc func() (err error)
@@ -45,4 +53,15 @@ func WaitUntilTimeout(timeout time.Duration, execFunc ExecFunc, timeoutFunc Time
 	case <-time.After(timeout):
 		return timeoutFunc()
 	}
+}
+
+func RunPowershellCmd(command string, envs ...string) ([]byte, error) {
+	// acquire a semaphore to limit the number of concurrent operations
+	powershellCmdSem <- struct{}{}
+	defer func() { <-powershellCmdSem }()
+
+	cmd := exec.Command("powershell", "-Mta", "-NoProfile", "-Command", command)
+	cmd.Env = append(os.Environ(), envs...)
+	klog.V(6).Infof("Executing command: %q", cmd.String())
+	return cmd.CombinedOutput()
 }

@@ -49,6 +49,7 @@ var (
 	krb5Prefix                    = flag.String("krb5-prefix", smb.DefaultKrb5CCName, "The prefix for kerberos cache")
 	defaultOnDeletePolicy         = flag.String("default-ondelete-policy", "", "default policy for deleting subdirectory when deleting a volume")
 	removeArchivedVolumePath      = flag.Bool("remove-archived-volume-path", true, "remove archived volume path in DeleteVolume")
+	enableWindowsHostProcess      = flag.Bool("enable-windows-host-process", false, "enable windows host process")
 )
 
 // exit is a separate function to handle program termination
@@ -87,6 +88,7 @@ func handle() {
 		Krb5CacheDirectory:            *krb5CacheDirectory,
 		Krb5Prefix:                    *krb5Prefix,
 		DefaultOnDeletePolicy:         *defaultOnDeletePolicy,
+		EnableWindowsHostProcess:      *enableWindowsHostProcess,
 	}
 	driver := smb.NewDriver(&driverOptions)
 	driver.Run(*endpoint, *kubeconfig, false)

@@ -23,7 +23,7 @@ import (
 )
 
 func TestNewSafeMounter(t *testing.T) {
-	resp, err := NewSafeMounter(true)
+	resp, err := NewSafeMounter(true, true)
 	assert.NotNil(t, resp)
 	assert.Nil(t, err)
 }

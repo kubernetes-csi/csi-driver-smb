@@ -26,9 +26,10 @@ export REGISTRY=$REGISTRY_NAME.azurecr.io
 export IMAGENAME=public/k8s/csi/smb-csi
 export CI=1
 export PUBLISH=1
+export WINDOWS_USE_HOST_PROCESS_CONTAINERS=true
 
 az acr login --name $REGISTRY_NAME
-make container-all push-manifest push-latest
+make container-all container-windows-hostprocess-latest push-manifest push-latest
 
 echo "sleep 60s ..."
 sleep 60
