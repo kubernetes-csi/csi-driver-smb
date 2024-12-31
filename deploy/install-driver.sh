@@ -22,10 +22,15 @@ if [[ "$#" -gt 0 ]]; then
 fi
 
 repo="https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/$ver/deploy"
+
+windowsMode="csi-proxy"
 if [[ "$#" -gt 1 ]]; then
   if [[ "$2" == *"local"* ]]; then
     echo "use local deploy"
     repo="./deploy"
+  fi
+  if [[ "$2" == *"hostprocess"* ]]; then
+    windowsMode="hostprocess"
   fi
 fi
 
@@ -38,5 +43,11 @@ kubectl apply -f $repo/rbac-csi-smb.yaml
 kubectl apply -f $repo/csi-smb-driver.yaml
 kubectl apply -f $repo/csi-smb-controller.yaml
 kubectl apply -f $repo/csi-smb-node.yaml
-kubectl apply -f $repo/csi-smb-node-windows.yaml
+if [[ "$windowsMode" == *"hostprocess"* ]]; then
+  echo "deploy windows driver with hostprocess mode..."
+  kubectl apply -f $repo/csi-smb-node-windows-hostprocess.yaml
+else
+  echo "deploy windows driver with csi-proxy mode ..."
+  kubectl apply -f $repo/csi-smb-node-windows.yaml
+fi
 echo 'SMB CSI driver installed successfully.'

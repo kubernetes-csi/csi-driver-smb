@@ -102,11 +102,16 @@ e2e-test:
 
 .PHONY: e2e-bootstrap
 e2e-bootstrap: install-helm
+ifdef WINDOWS_USE_HOST_PROCESS_CONTAINERS
+	(docker pull $(IMAGE_TAG) && docker pull $(IMAGE_TAG)-windows-hp) || make container-all push-manifest
+else
 	docker pull $(IMAGE_TAG) || make container-all push-manifest
+endif
 ifdef TEST_WINDOWS
 	helm upgrade csi-driver-smb charts/$(VERSION)/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug --install \
 		${E2E_HELM_OPTIONS} \
 		--set windows.enabled=true \
+		--set windows.useHostProcessContainers=${WINDOWS_USE_HOST_PROCESS_CONTAINERS} \
 		--set linux.enabled=false \
 		--set controller.replicas=1 \
 		--set controller.logLevel=6 \
@@ -162,6 +167,24 @@ container-windows:
 		 -t $(IMAGE_TAG)-windows-$(OSVERSION)-$(ARCH) --build-arg OSVERSION=$(OSVERSION) \
 		--provenance=false --sbom=false \
 		 --build-arg ARCH=$(ARCH) -f ./cmd/smbplugin/Dockerfile.Windows .
+# workaround: only build hostprocess image once
+ifdef WINDOWS_USE_HOST_PROCESS_CONTAINERS
+ifeq ($(OSVERSION),ltsc2022)
+	$(MAKE) container-windows-hostprocess
+	$(MAKE) container-windows-hostprocess-latest
+endif
+endif
+
+# Set --provenance=false to not generate the provenance (which is what causes the multi-platform index to be generated, even for a single platform).
+.PHONY: container-windows-hostprocess
+container-windows-hostprocess:
+	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="windows/$(ARCH)" --provenance=false --sbom=false \
+		-t $(IMAGE_TAG)-windows-hp -f ./cmd/smbplugin/Dockerfile.WindowsHostProcess .
+
+.PHONY: container-windows-hostprocess-latest
+container-windows-hostprocess-latest:
+	docker buildx build --pull --output=type=$(OUTPUT_TYPE) --platform="windows/$(ARCH)" --provenance=false --sbom=false \
+		-t $(IMAGE_TAG_LATEST)-windows-hp -f ./cmd/smbplugin/Dockerfile.WindowsHostProcess .
 
 .PHONY: container-all
 container-all: smb-windows
@@ -206,14 +229,18 @@ ifdef PUBLISH
 		done; \
 	done
 	docker manifest inspect $(IMAGE_TAG_LATEST)
+	docker manifest create --amend $(IMAGE_TAG_LATEST)-windows-hp $(IMAGE_TAG_LATEST)-windows-hp
+	docker manifest inspect $(IMAGE_TAG_LATEST)-windows-hp
 endif
 
 .PHONY: push-latest
 push-latest:
 ifdef CI
 	docker manifest push --purge $(IMAGE_TAG_LATEST)
+	docker manifest push --purge $(IMAGE_TAG_LATEST)-windows-hp
 else
 	docker push $(IMAGE_TAG_LATEST)
+	docker push $(IMAGE_TAG_LATEST)-windows-hp
 endif
 
 .PHONY: install-smb-provisioner

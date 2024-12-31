@@ -1,0 +1,124 @@
+{{- if and .Values.windows.enabled .Values.windows.useHostProcessContainers }}
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ .Values.windows.dsName }}
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
+spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.node.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ .Values.windows.dsName }}
+  template:
+    metadata:
+{{ include "smb.labels" . | indent 6 }}
+        app: {{ .Values.windows.dsName }}
+    spec:
+{{- with .Values.windows.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      nodeSelector:
+        kubernetes.io/os: windows
+{{- with .Values.node.nodeSelector }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.node.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- if .Values.securityContext }}
+      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.node }}
+      {{- include "smb.pullSecrets" . | indent 6 }}
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        windowsOptions:
+          hostProcess: true
+          runAsUserName: "NT AUTHORITY\\SYSTEM"
+      hostNetwork: true
+      initContainers:
+        - name: init
+{{- if hasPrefix "/" .Values.image.smb.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}-windows-hp"
+{{- else }}
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}-windows-hp"
+{{- end }}
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
+          command:
+            - "powershell.exe"
+            - "-c"
+            - "New-Item -ItemType Directory -Path C:\\var\\lib\\kubelet\\plugins\\{{ .Values.driver.name }}\\ -Force"
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+      containers:
+        - name: node-driver-registrar
+{{- if hasPrefix "/" .Values.image.nodeDriverRegistrar.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
+{{- else }}
+          image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
+{{- end }}
+          command:
+            - "csi-node-driver-registrar.exe"
+          args:
+            - "--csi-address=$(CSI_ENDPOINT)"
+            - "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)"
+            - "--plugin-registration-path=$(PLUGIN_REG_DIR)"
+            - "--v=2"
+          env:
+            - name: CSI_ENDPOINT
+              value: unix://{{ .Values.windows.kubelet }}\plugins\{{ .Values.driver.name }}\csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: C:\\var\\lib\\kubelet\\plugins\\{{ .Values.driver.name }}\\csi.sock
+            - name: PLUGIN_REG_DIR
+              value: C:\\var\\lib\\kubelet\\plugins_registry\\
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
+          resources: {{- toYaml .Values.windows.resources.nodeDriverRegistrar | nindent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+        - name: smb
+{{- if hasPrefix "/" .Values.image.smb.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}-windows-hp"
+{{- else }}
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}-windows-hp"
+{{- end }}
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
+          command:
+            - "smbplugin.exe"
+          args:
+            - "--v={{ .Values.node.logLevel }}"
+            - "--drivername={{ .Values.driver.name }}"
+            - --endpoint=$(CSI_ENDPOINT)
+            - --nodeid=$(KUBE_NODE_NAME)
+            - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
+            - "--remove-smb-mapping-during-unmount={{ .Values.windows.removeSMBMappingDuringUnmount }}"
+            - "--enable-windows-host-process=true"
+          env:
+            - name: CSI_ENDPOINT
+              value: unix://{{ .Values.windows.kubelet }}\plugins\{{ .Values.driver.name }}\csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          resources: {{- toYaml .Values.windows.resources.smb | nindent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+{{- end -}}

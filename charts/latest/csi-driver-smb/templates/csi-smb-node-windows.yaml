@@ -1,4 +1,4 @@
-{{- if .Values.windows.enabled}}
+{{- if and .Values.windows.enabled (not .Values.windows.useHostProcessContainers) }}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:

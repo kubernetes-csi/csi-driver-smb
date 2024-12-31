@@ -131,6 +131,7 @@ linux:
 
 windows:
   enabled: false # Unless you already had csi proxy installed, windows.csiproxy.enabled=true is required
+  useHostProcessContainers: false
   dsName: csi-smb-node-win # daemonset name
   kubelet: 'C:\var\lib\kubelet'
   removeSMBMappingDuringUnmount: true
@@ -153,7 +154,7 @@ windows:
         memory: 40Mi
     smb:
       limits:
-        memory: 200Mi
+        memory: 600Mi
       requests:
         cpu: 10m
         memory: 40Mi
