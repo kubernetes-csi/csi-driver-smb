@@ -177,7 +177,7 @@ $(CMDS:%=push-multiarch-%): push-multiarch-%: check-pull-base-ref build-%
 		done; \
 		if [ -f "$$dockerfile_windows_hp" ]; then \
 			docker buildx build --push \
-				--tag $(IMAGE_NAME):$$escaped_buildx_platform-$$os-$$escaped_base_image$$tag-windows-hp \
+				--tag $(IMAGE_NAME):$$tag-windows-hp \
 				--platform=windows/amd64 \
 				--file $$dockerfile_windows_hp \
 				--build-arg binary=./bin/$*.exe \
