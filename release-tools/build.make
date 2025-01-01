@@ -183,7 +183,7 @@ $(CMDS:%=push-multiarch-%): push-multiarch-%: check-pull-base-ref build-%
 				--build-arg binary=./bin/$*.exe \
 				--label revision=$(REV) \
 				.; \
-			docker manifest create --amend $(IMAGE_NAME):$$tag-windows-hp; \
+			docker manifest create --amend $(IMAGE_NAME):$$tag-windows-hp $(IMAGE_NAME):$$tag-windows-hp; \
 			docker manifest push -p $(IMAGE_NAME):$$tag-windows-hp; \
 		fi; \
 		images=$$(echo "$$build_platforms" | tr ';' '\n' | while read -r os arch buildx_platform suffix base_image addon_image; do \
