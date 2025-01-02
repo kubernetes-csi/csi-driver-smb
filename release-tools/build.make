@@ -175,17 +175,6 @@ $(CMDS:%=push-multiarch-%): push-multiarch-%: check-pull-base-ref build-%
 				--label revision=$(REV) \
 				.; \
 		done; \
-		if [ -f "$$dockerfile_windows_hp" ]; then \
-			docker buildx build --push \
-				--tag $(IMAGE_NAME):$$tag-amd64-windows-hp \
-				--platform=windows/amd64 \
-				--file $$dockerfile_windows_hp \
-				--build-arg binary=./bin/$*.exe \
-				--label revision=$(REV) \
-				.; \
-			docker manifest create --amend $(IMAGE_NAME):$$tag-windows-hp $(IMAGE_NAME):$$tag-amd64-windows-hp; \
-			docker manifest push -p $(IMAGE_NAME):$$tag-windows-hp; \
-		fi; \
 		images=$$(echo "$$build_platforms" | tr ';' '\n' | while read -r os arch buildx_platform suffix base_image addon_image; do \
 			escaped_base_image=$${base_image/:/-}; \
 			escaped_buildx_platform=$${buildx_platform//\//-}; \
@@ -203,6 +192,17 @@ $(CMDS:%=push-multiarch-%): push-multiarch-%: check-pull-base-ref build-%
 			fi; \
 		done; \
 		docker manifest push -p $(IMAGE_NAME):$$tag; \
+		if [ -f "$$dockerfile_windows_hp" ]; then \
+			docker buildx build --push \
+				--tag $(IMAGE_NAME):$$tag-amd64-windows-hp \
+				--platform=windows/amd64 \
+				--file $$dockerfile_windows_hp \
+				--build-arg binary=./bin/$*.exe \
+				--label revision=$(REV) \
+				.; \
+			docker manifest create --amend $(IMAGE_NAME):$$tag-windows-hp $(IMAGE_NAME):$$tag-amd64-windows-hp; \
+			docker manifest push -p $(IMAGE_NAME):$$tag-windows-hp; \
+		fi; \
 	}; \
 	if [ $(PULL_BASE_REF) = "master" ] || [ $(PULL_BASE_REF) = "main" ]; then \
 			: "creating or overwriting canary image"; \
