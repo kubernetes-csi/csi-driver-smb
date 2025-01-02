@@ -159,7 +159,7 @@ windows:
         cpu: 10m
         memory: 40Mi
   csiproxy:
-    enabled: false # required if windows.enabled is true, but may be installed manually also
+    enabled: false # required if windows.enabled is true and useHostProcessContainers is false, but may be installed manually also
     dsName: csi-proxy-win # daemonset name
     tolerations: {}
     affinity: {}

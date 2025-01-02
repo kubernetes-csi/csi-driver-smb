@@ -127,6 +127,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `windows.kubelet`                                       | configure kubelet directory path on Windows agent node                                                     | `'C:\var\lib\kubelet'`                                  |
 
 ### Csi Proxy support on windows
+ > if you have set `windows.useHostProcessContainers` as `true`, csi-proxy is not needed by CSI driver.
 
 The helm can setup the host-process deamonset for the csi proxy, by setting windows.csiproxy.enabled to true.
 
