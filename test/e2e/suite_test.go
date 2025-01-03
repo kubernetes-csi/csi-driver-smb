@@ -17,6 +17,7 @@ limitations under the License.
 package e2e
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -28,6 +29,8 @@ import (
 	"testing"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
+	"github.com/kubernetes-csi/csi-driver-smb/test/utils/azure"
+	"github.com/kubernetes-csi/csi-driver-smb/test/utils/credentials"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/ginkgo/v2/reporters"
 	"github.com/onsi/gomega"
@@ -110,7 +113,7 @@ type testCmd struct {
 	endLog   string
 }
 
-var _ = ginkgo.BeforeSuite(func() {
+var _ = ginkgo.BeforeSuite(func(ctx ginkgo.SpecContext) {
 	// k8s.io/kubernetes/test/e2e/framework requires env KUBECONFIG to be set
 	// it does not fall back to defaults
 	if os.Getenv(kubeconfigEnvVar) == "" {
@@ -122,6 +125,8 @@ var _ = ginkgo.BeforeSuite(func() {
 
 	kubeconfig := os.Getenv(kubeconfigEnvVar)
 	log.Println(testWinServerVerEnvVar, os.Getenv(testWinServerVerEnvVar), fmt.Sprintf("%v", winServerVer))
+
+	checkAccountCreationLeak(ctx)
 
 	// Install SMB provisioner on cluster
 	installSMBProvisioner := testCmd{
@@ -314,4 +319,18 @@ func getSmbTestEnvVarValue(envVarName string, defaultVarValue string) (smbTestEn
 		smbTestEnvValue = defaultVarValue
 	}
 	return
+}
+
+func checkAccountCreationLeak(ctx context.Context) {
+	creds, err := credentials.CreateAzureCredentialFile(false)
+	gomega.Expect(err).NotTo(gomega.HaveOccurred())
+	azureClient, err := azure.GetAzureClient(creds.Cloud, creds.SubscriptionID, creds.AADClientID, creds.TenantID, creds.AADClientSecret)
+	gomega.Expect(err).NotTo(gomega.HaveOccurred())
+
+	accountNum, err := azureClient.GetAccountNumByResourceGroup(ctx, creds.ResourceGroup)
+	framework.ExpectNoError(err, fmt.Sprintf("failed to GetAccountNumByResourceGroup(%s): %v", creds.ResourceGroup, err))
+	ginkgo.By(fmt.Sprintf("GetAccountNumByResourceGroup(%s) returns %d accounts", creds.ResourceGroup, accountNum))
+
+	accountLimitInTest := 15
+	gomega.Expect(accountNum >= accountLimitInTest).To(gomega.BeFalse())
 }
