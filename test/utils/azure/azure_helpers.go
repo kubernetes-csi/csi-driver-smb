@@ -26,6 +26,7 @@ import (
 	"github.com/Azure/azure-sdk-for-go/services/compute/mgmt/2019-03-01/compute"
 	"github.com/Azure/azure-sdk-for-go/services/network/mgmt/2018-08-01/network"
 	"github.com/Azure/azure-sdk-for-go/services/resources/mgmt/2018-05-01/resources"
+	"github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2019-06-01/storage"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/Azure/go-autorest/autorest/azure"
@@ -40,6 +41,7 @@ type Client struct {
 	nicClient      network.InterfacesClient
 	subnetsClient  network.SubnetsClient
 	vnetClient     network.VirtualNetworksClient
+	accountsClient storage.AccountsClient
 }
 
 func GetAzureClient(cloud, subscriptionID, clientID, tenantID, clientSecret string) (*Client, error) {
@@ -259,6 +261,7 @@ func getClient(env azure.Environment, subscriptionID string, armSpt *adal.Servic
 		nicClient:      network.NewInterfacesClient(subscriptionID),
 		subnetsClient:  network.NewSubnetsClient(subscriptionID),
 		vnetClient:     network.NewVirtualNetworksClient(subscriptionID),
+		accountsClient: storage.NewAccountsClient(subscriptionID),
 	}
 
 	authorizer := autorest.NewBearerAuthorizer(armSpt)
@@ -267,8 +270,17 @@ func getClient(env azure.Environment, subscriptionID string, armSpt *adal.Servic
 	c.nicClient.Authorizer = authorizer
 	c.subnetsClient.Authorizer = authorizer
 	c.vnetClient.Authorizer = authorizer
+	c.accountsClient.Authorizer = authorizer
 
 	return c
+}
+
+func (az *Client) GetAccountNumByResourceGroup(ctx context.Context, groupName string) (count int, err error) {
+	_, err = az.accountsClient.ListByResourceGroup(ctx, groupName)
+	if err != nil {
+		return -1, err
+	}
+	return 0, nil
 }
 
 func stringPointer(s string) *string {
