@@ -20,7 +20,7 @@ metadata:
   name: smb-server
   namespace: default
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: smb-server
