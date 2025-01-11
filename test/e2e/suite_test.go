@@ -17,6 +17,7 @@ limitations under the License.
 package e2e
 
 import (
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"log"
@@ -52,11 +53,12 @@ const (
 )
 
 var (
-	smbDriver                     *smb.Driver
-	isWindowsCluster              = os.Getenv(testWindowsEnvVar) != ""
-	winServerVer                  = os.Getenv(testWinServerVerEnvVar)
-	preInstallDriver              = os.Getenv(preInstallDriverEnvVar) == "true"
-	defaultStorageClassParameters = map[string]string{
+	smbDriver                      *smb.Driver
+	isWindowsCluster               = os.Getenv(testWindowsEnvVar) != ""
+	isWindowsHostProcessDeployment = os.Getenv("WINDOWS_USE_HOST_PROCESS_CONTAINERS") != ""
+	winServerVer                   = os.Getenv(testWinServerVerEnvVar)
+	preInstallDriver               = os.Getenv(preInstallDriverEnvVar) == "true"
+	defaultStorageClassParameters  = map[string]string{
 		"source": getSmbTestEnvVarValue(testSmbSourceEnvVar, defaultSmbSource),
 		"csi.storage.k8s.io/provisioner-secret-name":      getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName),
 		"csi.storage.k8s.io/provisioner-secret-namespace": getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace),
@@ -160,6 +162,7 @@ var _ = ginkgo.BeforeSuite(func() {
 		smbDriver.Run(fmt.Sprintf("unix:///tmp/csi-%s.sock", uuid.NewUUID().String()), kubeconfig, false)
 	}()
 
+	var source string
 	if isWindowsCluster {
 		err := os.Chdir("../..")
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
@@ -167,7 +170,24 @@ var _ = ginkgo.BeforeSuite(func() {
 			err := os.Chdir("test/e2e")
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		}()
+	}
 
+	if isWindowsHostProcessDeployment {
+		decodedBytes, err := base64.StdEncoding.DecodeString("YW5keXNzZGZpbGUK")
+		if err != nil {
+			log.Printf("Error decoding base64 string: %v\n", err)
+			return
+		}
+		source = fmt.Sprintf("//%s.file.core.windows.net/test", strings.TrimRight(string(decodedBytes), "\n"))
+
+		createSMBCredsScript := "test/utils/create_smbcreds_windows.sh"
+		log.Printf("run script: %s\n", createSMBCredsScript)
+
+		cmd := exec.Command("bash", createSMBCredsScript)
+		output, err := cmd.CombinedOutput()
+		log.Printf("got output: %v, error: %v\n", string(output), err)
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+	} else if isWindowsCluster {
 		getSMBPublicIPScript := "test/utils/get_smb_svc_public_ip.sh"
 		log.Printf("run script: %s\n", getSMBPublicIPScript)
 
@@ -177,8 +197,10 @@ var _ = ginkgo.BeforeSuite(func() {
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 
 		smbPublicIP := strings.TrimSuffix(string(output), "\n")
-		source := fmt.Sprintf("//%s/share", smbPublicIP)
+		source = fmt.Sprintf("//%s/share", smbPublicIP)
+	}
 
+	if isWindowsCluster {
 		log.Printf("use source on Windows: %v\n", source)
 		defaultStorageClassParameters["source"] = source
 		retainStorageClassParameters["source"] = source
