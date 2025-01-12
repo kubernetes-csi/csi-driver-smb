@@ -1,0 +1,27 @@
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx-smb-inline-volume
+spec:
+  nodeSelector:
+    "kubernetes.io/os": linux
+  containers:
+    - image: mcr.microsoft.com/mirror/docker/library/nginx:1.23
+      name: nginx-smb
+      command:
+        - "/bin/bash"
+        - "-c"
+        - set -euo pipefail; while true; do echo $(date) >> /mnt/smb/outfile; sleep 1; done
+      volumeMounts:
+        - name: persistent-storage
+          mountPath: "/mnt/smb"
+          readOnly: false
+  volumes:
+    - name: persistent-storage
+      csi:
+        driver: smb.csi.k8s.io
+        volumeAttributes:
+          source: //smb-server.default.svc.cluster.local/share  # required
+          secretName: smbcreds  # required, secretNamespace is the same as the pod
+          mountOptions: "dir_mode=0777,file_mode=0777,cache=strict,actimeo=30,nosharesock"  # optional

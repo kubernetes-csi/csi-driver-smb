@@ -135,6 +135,15 @@ func (pod *PodDetails) SetupWithPreProvisionedVolumes(ctx context.Context, clien
 	return tpod, cleanupFuncs
 }
 
+func (pod *PodDetails) SetupWithCSIInlineVolumes(client clientset.Interface, namespace *v1.Namespace, source, secretName string, readOnly bool) (*TestPod, []func()) {
+	tpod := NewTestPod(client, namespace, pod.Cmd, pod.IsWindows, pod.WinServerVer)
+	cleanupFuncs := make([]func(), 0)
+	for n, v := range pod.Volumes {
+		tpod.SetupCSIInlineVolume(fmt.Sprintf("%s%d", v.VolumeMount.NameGenerate, n+1), fmt.Sprintf("%s%d", v.VolumeMount.MountPathGenerate, n+1), source, secretName, readOnly)
+	}
+	return tpod, cleanupFuncs
+}
+
 func (pod *PodDetails) SetupDeployment(ctx context.Context, client clientset.Interface, namespace *v1.Namespace, csiDriver driver.DynamicPVTestDriver, storageClassParameters map[string]string) (*TestDeployment, []func(ctx context.Context)) {
 	cleanupFuncs := make([]func(ctx context.Context), 0)
 	volume := pod.Volumes[0]

@@ -87,3 +87,25 @@ roleRef:
   kind: ClusterRole
   name: smb-external-resizer-role
   apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-smb-node-secret-role
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-smb-node-secret-binding
+subjects:
+  - kind: ServiceAccount
+    name: csi-smb-node-sa
+    namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: csi-smb-node-secret-role
+  apiGroup: rbac.authorization.k8s.io

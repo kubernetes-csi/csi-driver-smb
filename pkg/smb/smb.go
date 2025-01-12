@@ -17,12 +17,22 @@ limitations under the License.
 package smb
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"net"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
+	certutil "k8s.io/client-go/util/cert"
 	"k8s.io/klog/v2"
 	mount "k8s.io/mount-utils"
 
@@ -40,8 +50,12 @@ const (
 	subDirField               = "subdir"
 	domainField               = "domain"
 	mountOptionsField         = "mountoptions"
+	secretNameField           = "secretname"
+	secretNamespaceField      = "secretnamespace"
 	paramOnDelete             = "ondelete"
 	defaultDomainName         = "AZURE"
+	ephemeralField            = "csi.storage.k8s.io/ephemeral"
+	podNamespaceField         = "csi.storage.k8s.io/pod.namespace"
 	pvcNameKey                = "csi.storage.k8s.io/pvc/name"
 	pvcNamespaceKey           = "csi.storage.k8s.io/pvc/namespace"
 	pvNameKey                 = "csi.storage.k8s.io/pv/name"
@@ -56,6 +70,7 @@ const (
 	dirMode                   = "dir_mode"
 	defaultFileMode           = "0777"
 	defaultDirMode            = "0777"
+	trueValue                 = "true"
 )
 
 var supportedOnDeleteValues = []string{"", "delete", retain, archive}
@@ -74,6 +89,7 @@ type DriverOptions struct {
 	DefaultOnDeletePolicy         string
 	RemoveArchivedVolumePath      bool
 	EnableWindowsHostProcess      bool
+	Kubeconfig                    string
 }
 
 // Driver implements all interfaces of CSI drivers
@@ -102,6 +118,8 @@ type Driver struct {
 	defaultOnDeletePolicy         string
 	removeArchivedVolumePath      bool
 	enableWindowsHostProcess      bool
+	kubeconfig                    string
+	kubeClient                    kubernetes.Interface
 }
 
 // NewDriver Creates a NewCSIDriver object. Assumes vendor version is equal to driver version &
@@ -116,6 +134,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.removeArchivedVolumePath = options.RemoveArchivedVolumePath
 	driver.workingMountDir = options.WorkingMountDir
 	driver.enableWindowsHostProcess = options.EnableWindowsHostProcess
+	driver.kubeconfig = options.Kubeconfig
 	driver.volumeLocks = newVolumeLocks()
 
 	driver.krb5CacheDirectory = options.Krb5CacheDirectory
@@ -137,6 +156,15 @@ func NewDriver(options *DriverOptions) *Driver {
 	}
 	if driver.volDeletionCache, err = azcache.NewTimedCache(time.Minute, getter, false); err != nil {
 		klog.Fatalf("%v", err)
+	}
+
+	kubeCfg, err := getKubeConfig(driver.kubeconfig, driver.enableWindowsHostProcess)
+	if err == nil && kubeCfg != nil {
+		if driver.kubeClient, err = kubernetes.NewForConfig(kubeCfg); err != nil {
+			klog.Warningf("NewForConfig failed with error: %v", err)
+		}
+	} else {
+		klog.Warningf("get kubeconfig(%s) failed with error: %v", driver.kubeconfig, err)
 	}
 	return &driver
 }
@@ -187,6 +215,24 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	// Driver d act as IdentityServer, ControllerServer and NodeServer
 	s.Start(endpoint, d, d, d, testMode)
 	s.Wait()
+}
+
+// GetUserNamePasswordFromSecret get storage account key from k8s secret
+// return <username, password, domain, error>
+func (d *Driver) GetUserNamePasswordFromSecret(ctx context.Context, secretName, secretNamespace string) (string, string, string, error) {
+	if d.kubeClient == nil {
+		return "", "", "", fmt.Errorf("could not username and password from secret(%s): KubeClient is nil", secretName)
+	}
+
+	secret, err := d.kubeClient.CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
+	if err != nil {
+		return "", "", "", fmt.Errorf("could not get secret(%v): %v", secretName, err)
+	}
+
+	username := strings.TrimSpace(string(secret.Data[usernameField][:]))
+	password := strings.TrimSpace(string(secret.Data[passwordField][:]))
+	domain := strings.TrimSpace(string(secret.Data[domainField][:]))
+	return username, password, domain, nil
 }
 
 func IsCorruptedDir(dir string) bool {
@@ -278,4 +324,62 @@ func appendMountOptions(mountOptions []string, extraMountOptions map[string]stri
 func getRootDir(path string) string {
 	parts := strings.Split(path, "/")
 	return parts[0]
+}
+
+func getKubeConfig(kubeconfig string, enableWindowsHostProcess bool) (config *rest.Config, err error) {
+	if kubeconfig != "" {
+		if config, err = clientcmd.BuildConfigFromFlags("", kubeconfig); err != nil {
+			return nil, err
+		}
+	} else {
+		if config, err = inClusterConfig(enableWindowsHostProcess); err != nil {
+			return nil, err
+		}
+	}
+	return config, err
+}
+
+// inClusterConfig is copied from https://github.com/kubernetes/client-go/blob/b46677097d03b964eab2d67ffbb022403996f4d4/rest/config.go#L507-L541
+// When using Windows HostProcess containers, the path "/var/run/secrets/kubernetes.io/serviceaccount/" is under host, not container.
+// Then the token and ca.crt files would be not found.
+// An environment variable $CONTAINER_SANDBOX_MOUNT_POINT is set upon container creation and provides the absolute host path to the container volume.
+// See https://kubernetes.io/docs/tasks/configure-pod-container/create-hostprocess-pod/#volume-mounts for more details.
+func inClusterConfig(enableWindowsHostProcess bool) (*rest.Config, error) {
+	var (
+		tokenFile  = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+		rootCAFile = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+	)
+	if enableWindowsHostProcess {
+		containerSandboxMountPath := os.Getenv("CONTAINER_SANDBOX_MOUNT_POINT")
+		if len(containerSandboxMountPath) == 0 {
+			return nil, errors.New("unable to load in-cluster configuration, containerSandboxMountPath must be defined")
+		}
+		tokenFile = filepath.Join(containerSandboxMountPath, tokenFile)
+		rootCAFile = filepath.Join(containerSandboxMountPath, rootCAFile)
+	}
+
+	host, port := os.Getenv("KUBERNETES_SERVICE_HOST"), os.Getenv("KUBERNETES_SERVICE_PORT")
+	if len(host) == 0 || len(port) == 0 {
+		return nil, rest.ErrNotInCluster
+	}
+
+	token, err := os.ReadFile(tokenFile)
+	if err != nil {
+		return nil, err
+	}
+
+	tlsClientConfig := rest.TLSClientConfig{}
+
+	if _, err := certutil.NewPool(rootCAFile); err != nil {
+		klog.Errorf("Expected to load root CA config from %s, but got err: %v", rootCAFile, err)
+	} else {
+		tlsClientConfig.CAFile = rootCAFile
+	}
+
+	return &rest.Config{
+		Host:            "https://" + net.JoinHostPort(host, port),
+		TLSClientConfig: tlsClientConfig,
+		BearerToken:     string(token),
+		BearerTokenFile: tokenFile,
+	}, nil
 }
