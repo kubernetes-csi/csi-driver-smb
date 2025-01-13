@@ -413,6 +413,37 @@ func TestNodePublishVolume(t *testing.T) {
 				Readonly:          true},
 			expectedErr: testutil.TestError{},
 		},
+		{
+			desc: "[Error] failed to create ephemeral Volume",
+			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: sourceTest,
+				Readonly:          true,
+				VolumeContext:     map[string]string{ephemeralField: "true"},
+			},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "source field is missing, current context: map[csi.storage.k8s.io/ephemeral:true secretnamespace:]"),
+			},
+		},
+		{
+			desc: "[error] failed request with ephemeral Volume",
+			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: sourceTest,
+				Readonly:          true,
+				VolumeContext: map[string]string{
+					ephemeralField:    "true",
+					sourceField:       "source",
+					podNamespaceField: "podnamespace",
+				},
+			},
+			skipOnWindows: true,
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.Internal, "Error getting username and password from secret  in namespace podnamespace: could not username and password from secret(): KubeClient is nil"),
+			},
+		},
 	}
 
 	// Setup

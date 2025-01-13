@@ -535,6 +535,16 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 	})
 
 	ginkgo.It("should create an CSI inline volume", func(ctx ginkgo.SpecContext) {
+		if winServerVer == "windows-2022" && !isWindowsHostProcessDeployment {
+			ginkgo.Skip("Skip inline volume test on Windows Server 2022")
+		}
+
+		secretName := "smbcreds"
+		ginkgo.By(fmt.Sprintf("creating secret %s in namespace %s", secretName, ns.Name))
+		tsecret := testsuites.CopyTestSecret(ctx, cs, "default", ns, defaultSmbSecretName)
+		tsecret.Create(ctx)
+		defer tsecret.Cleanup(ctx)
+
 		pods := []testsuites.PodDetails{
 			{
 				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),

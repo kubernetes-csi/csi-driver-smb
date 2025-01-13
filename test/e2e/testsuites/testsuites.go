@@ -717,6 +717,25 @@ func NewTestSecret(c clientset.Interface, ns *v1.Namespace, name string, data ma
 	}
 }
 
+func CopyTestSecret(ctx context.Context, c clientset.Interface, sourceNamespace string, targetNamespace *v1.Namespace, secretName string) *TestSecret {
+	secret, err := c.CoreV1().Secrets(sourceNamespace).Get(ctx, secretName, metav1.GetOptions{})
+	framework.ExpectNoError(err)
+
+	return &TestSecret{
+		client:    c,
+		namespace: targetNamespace,
+		secret: &v1.Secret{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      secretName,
+				Namespace: targetNamespace.Name,
+			},
+			StringData: secret.StringData,
+			Data:       secret.Data,
+			Type:       v1.SecretTypeOpaque,
+		},
+	}
+}
+
 func (t *TestSecret) Create(ctx context.Context) {
 	var err error
 	t.secret, err = t.client.CoreV1().Secrets(t.namespace.Name).Create(ctx, t.secret, metav1.CreateOptions{})

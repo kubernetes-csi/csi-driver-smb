@@ -98,6 +98,7 @@ roleRef:
   name: {{ .Values.rbac.name }}-external-resizer-role
   apiGroup: rbac.authorization.k8s.io
 ---
+{{- if .Values.feature.enableInlineVolume }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -107,7 +108,6 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get"]
-
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -122,4 +122,5 @@ roleRef:
   kind: ClusterRole
   name: csi-{{ .Values.rbac.name }}-node-secret-role
   apiGroup: rbac.authorization.k8s.io
+{{- end }}
 {{ end }}

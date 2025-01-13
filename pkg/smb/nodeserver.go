@@ -147,7 +147,8 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	secrets := req.GetSecrets()
 	gidPresent := checkGidPresentInMountFlags(mountFlags)
 
-	var source, subDir, secretName, secretNamespace string
+	var source, subDir, secretName, secretNamespace, ephemeralVolMountOptions string
+	var ephemeralVol bool
 	subDirReplaceMap := map[string]string{}
 	for k, v := range context {
 		switch strings.ToLower(k) {
@@ -165,6 +166,10 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			secretName = v
 		case secretNamespaceField:
 			secretNamespace = v
+		case ephemeralField:
+			ephemeralVol = strings.EqualFold(v, trueValue)
+		case mountOptionsField:
+			ephemeralVolMountOptions = v
 		}
 	}
 
@@ -190,7 +195,13 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		}
 	}
 
-	if (username == "" || password == "") && (secretName != "" && secretNamespace != "") {
+	if ephemeralVol {
+		mountFlags = strings.Split(ephemeralVolMountOptions, ",")
+	}
+
+	// in guest login, username and password options are not needed
+	requireUsernamePwdOption := !hasGuestMountOptions(mountFlags)
+	if ephemeralVol && requireUsernamePwdOption {
 		klog.V(2).Infof("NodeStageVolume: getting username and password from secret %s in namespace %s", secretName, secretNamespace)
 		var err error
 		username, password, domain, err = d.GetUserNamePasswordFromSecret(ctx, secretName, secretNamespace)
@@ -198,9 +209,6 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			return nil, status.Error(codes.Internal, fmt.Sprintf("Error getting username and password from secret %s in namespace %s: %v", secretName, secretNamespace, err))
 		}
 	}
-
-	// in guest login, username and password options are not needed
-	requireUsernamePwdOption := !hasGuestMountOptions(mountFlags)
 
 	var mountOptions, sensitiveMountOptions []string
 	if runtime.GOOS == "windows" {
