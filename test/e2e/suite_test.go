@@ -50,6 +50,7 @@ const (
 	defaultSmbSource             = "//smb-server.default.svc.cluster.local/share"
 	defaultSmbSecretName         = "smbcreds"
 	defaultSmbSecretNamespace    = "default"
+	accountNameForTest           = "YW5keXNzZGZpbGUK"
 )
 
 var (
@@ -173,7 +174,7 @@ var _ = ginkgo.BeforeSuite(func() {
 	}
 
 	if isWindowsHostProcessDeployment {
-		decodedBytes, err := base64.StdEncoding.DecodeString("YW5keXNzZGZpbGUK")
+		decodedBytes, err := base64.StdEncoding.DecodeString(accountNameForTest)
 		if err != nil {
 			log.Printf("Error decoding base64 string: %v\n", err)
 			return

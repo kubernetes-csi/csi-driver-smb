@@ -39,6 +39,7 @@ driver:
 
 feature:
   enableGetVolumeStats: true
+  enableInlineVolume: true
 
 controller:
   name: csi-smb-controller

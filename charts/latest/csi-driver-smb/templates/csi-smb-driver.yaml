@@ -6,3 +6,8 @@ metadata:
 spec:
   attachRequired: false
   podInfoOnMount: true
+  volumeLifecycleModes:
+    - Persistent
+    {{- if .Values.feature.enableInlineVolume }}
+    - Ephemeral
+    {{- end }}

@@ -49,6 +49,7 @@ import (
 	e2epod "k8s.io/kubernetes/test/e2e/framework/pod"
 	e2epv "k8s.io/kubernetes/test/e2e/framework/pv"
 	imageutils "k8s.io/kubernetes/test/utils/image"
+	"k8s.io/utils/ptr"
 )
 
 const (
@@ -637,6 +638,31 @@ func (t *TestPod) SetupRawBlockVolume(pvc *v1.PersistentVolumeClaim, name, devic
 	t.pod.Spec.Volumes = append(t.pod.Spec.Volumes, volume)
 }
 
+func (t *TestPod) SetupCSIInlineVolume(name, mountPath, source, secretName string, readOnly bool) {
+	volumeMount := v1.VolumeMount{
+		Name:      name,
+		MountPath: mountPath,
+		ReadOnly:  readOnly,
+	}
+	t.pod.Spec.Containers[0].VolumeMounts = append(t.pod.Spec.Containers[0].VolumeMounts, volumeMount)
+
+	volume := v1.Volume{
+		Name: name,
+		VolumeSource: v1.VolumeSource{
+			CSI: &v1.CSIVolumeSource{
+				Driver: smb.DefaultDriverName,
+				VolumeAttributes: map[string]string{
+					"source":       source,
+					"secretName":   secretName,
+					"mountOptions": "dir_mode=0777,file_mode=0777,cache=strict,actimeo=30,nosharesock",
+				},
+				ReadOnly: ptr.To(readOnly),
+			},
+		},
+	}
+	t.pod.Spec.Volumes = append(t.pod.Spec.Volumes, volume)
+}
+
 func (t *TestPod) SetNodeSelector(nodeSelector map[string]string) {
 	t.pod.Spec.NodeSelector = nodeSelector
 }
@@ -686,6 +712,25 @@ func NewTestSecret(c clientset.Interface, ns *v1.Namespace, name string, data ma
 				Name: name,
 			},
 			StringData: data,
+			Type:       v1.SecretTypeOpaque,
+		},
+	}
+}
+
+func CopyTestSecret(ctx context.Context, c clientset.Interface, sourceNamespace string, targetNamespace *v1.Namespace, secretName string) *TestSecret {
+	secret, err := c.CoreV1().Secrets(sourceNamespace).Get(ctx, secretName, metav1.GetOptions{})
+	framework.ExpectNoError(err)
+
+	return &TestSecret{
+		client:    c,
+		namespace: targetNamespace,
+		secret: &v1.Secret{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      secretName,
+				Namespace: targetNamespace.Name,
+			},
+			StringData: secret.StringData,
+			Data:       secret.Data,
 			Type:       v1.SecretTypeOpaque,
 		},
 	}

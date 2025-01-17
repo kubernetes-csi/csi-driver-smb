@@ -17,10 +17,12 @@ limitations under the License.
 package util
 
 import (
-	"k8s.io/klog/v2"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
+
+	"k8s.io/klog/v2"
 )
 
 const MaxPathLengthWindows = 260
@@ -64,4 +66,19 @@ func RunPowershellCmd(command string, envs ...string) ([]byte, error) {
 	cmd.Env = append(os.Environ(), envs...)
 	klog.V(6).Infof("Executing command: %q", cmd.String())
 	return cmd.CombinedOutput()
+}
+
+// SetKeyValueInMap set key/value pair in map
+// key in the map is case insensitive, if key already exists, overwrite existing value
+func SetKeyValueInMap(m map[string]string, key, value string) {
+	if m == nil {
+		return
+	}
+	for k := range m {
+		if strings.EqualFold(k, key) {
+			m[k] = value
+			return
+		}
+	}
+	m[key] = value
 }

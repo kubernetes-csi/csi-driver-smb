@@ -533,4 +533,49 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 		}
 		test.Run(ctx, cs, ns)
 	})
+
+	ginkgo.It("should create an CSI inline volume", func(ctx ginkgo.SpecContext) {
+		if winServerVer == "windows-2022" && !isWindowsHostProcessDeployment {
+			ginkgo.Skip("Skip inline volume test on Windows Server 2022")
+		}
+
+		secretName := "smbcreds"
+		ginkgo.By(fmt.Sprintf("creating secret %s in namespace %s", secretName, ns.Name))
+		tsecret := testsuites.CopyTestSecret(ctx, cs, "default", ns, defaultSmbSecretName)
+		tsecret.Create(ctx)
+		defer tsecret.Cleanup(ctx)
+
+		pods := []testsuites.PodDetails{
+			{
+				Cmd: convertToPowershellCommandIfNecessary("echo 'hello world' > /mnt/test-1/data && grep 'hello world' /mnt/test-1/data"),
+				Volumes: []testsuites.VolumeDetails{
+					{
+						ClaimSize: "100Gi",
+						MountOptions: []string{
+							"uid=0",
+							"gid=0",
+							"mfsymlinks",
+							"cache=strict",
+							"nosharesock",
+						},
+						VolumeMount: testsuites.VolumeMountDetails{
+							NameGenerate:      "test-volume-",
+							MountPathGenerate: "/mnt/test-",
+						},
+					},
+				},
+				IsWindows:    isWindowsCluster,
+				WinServerVer: winServerVer,
+			},
+		}
+
+		test := testsuites.DynamicallyProvisionedInlineVolumeTest{
+			CSIDriver:  testDriver,
+			Pods:       pods,
+			Source:     defaultStorageClassParameters["source"],
+			SecretName: defaultSmbSecretName,
+			ReadOnly:   false,
+		}
+		test.Run(ctx, cs, ns)
+	})
 })
