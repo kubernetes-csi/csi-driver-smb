@@ -18,6 +18,7 @@ package smb
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"net"
@@ -49,6 +50,7 @@ const (
 	sourceField               = "source"
 	subDirField               = "subdir"
 	domainField               = "domain"
+	base64PasswordField       = "base64password"
 	mountOptionsField         = "mountoptions"
 	secretNameField           = "secretname"
 	secretNamespaceField      = "secretnamespace"
@@ -232,6 +234,15 @@ func (d *Driver) GetUserNamePasswordFromSecret(ctx context.Context, secretName, 
 	username := strings.TrimSpace(string(secret.Data[usernameField][:]))
 	password := strings.TrimSpace(string(secret.Data[passwordField][:]))
 	domain := strings.TrimSpace(string(secret.Data[domainField][:]))
+	base64Password := strings.TrimSpace(string(secret.Data[base64PasswordField][:]))
+	if base64Password != "" {
+		klog.V(2).Infof("decoding password from base64 string")
+		decodePassword, err := base64.StdEncoding.DecodeString(base64Password)
+		if err != nil {
+			return "", "", "", fmt.Errorf("could not decode password from base64 string: %v", err)
+		}
+		password = string(decodePassword)
+	}
 	return username, password, domain, nil
 }
 
