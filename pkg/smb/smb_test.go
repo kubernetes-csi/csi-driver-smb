@@ -17,6 +17,7 @@ limitations under the License.
 package smb
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -517,6 +518,33 @@ users:
 		if test.expectError != receiveError {
 			t.Errorf("desc: %s,\n input: %q, GetCloudProvider err: %v, expectErr: %v", test.desc, test.kubeconfig, err, test.expectError)
 		}
+	}
+}
+
+func TestGetUserNamePasswordFromSecret(t *testing.T) {
+	tests := []struct {
+		desc             string
+		secretName       string
+		secretNamespace  string
+		expectedUsername string
+		expectedPassword string
+		expectedDomain   string
+		expectedError    error
+	}{
+		{
+			desc:          "kubeclient is nil",
+			secretName:    "secretName",
+			expectedError: fmt.Errorf("could not username and password from secret(secretName): KubeClient is nil"),
+		},
+	}
+
+	d := NewFakeDriver()
+	for _, test := range tests {
+		username, password, domain, err := d.GetUserNamePasswordFromSecret(context.Background(), test.secretName, test.secretNamespace)
+		assert.Equal(t, test.expectedUsername, username, "test[%s]: unexpected username", test.desc)
+		assert.Equal(t, test.expectedPassword, password, "test[%s]: unexpected password", test.desc)
+		assert.Equal(t, test.expectedDomain, domain, "test[%s]: unexpected domain", test.desc)
+		assert.Equal(t, test.expectedError, err, "test[%s]: unexpected error", test.desc)
 	}
 }
 
