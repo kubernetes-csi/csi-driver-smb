@@ -42,7 +42,7 @@ spec:
             - "New-Item -ItemType Directory -Path C:\\var\\lib\\kubelet\\plugins\\smb.csi.k8s.io\\ -Force"
       containers:
         - name: node-driver-registrar
-          image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.10.0
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.13.0
           imagePullPolicy: IfNotPresent
           command:
             - "csi-node-driver-registrar.exe"
