@@ -92,11 +92,6 @@ func TestNodeStageVolume(t *testing.T) {
 		passwordField: "test_password",
 		domainField:   "test_doamin",
 	}
-	secretsWithBase64Password := map[string]string{
-		usernameField: "test_username",
-		passwordField: base64.StdEncoding.EncodeToString([]byte("test_password")),
-		domainField:   "test_doamin",
-	}
 
 	tests := []struct {
 		desc        string
@@ -229,18 +224,6 @@ func TestNodeStageVolume(t *testing.T) {
 				VolumeCapability: &mountGroupWithModesVolCap,
 				VolumeContext:    volContext,
 				Secrets:          secrets},
-			skipOnWindows: true,
-			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
-				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
-			expectedErr: testutil.TestError{},
-		},
-		{
-			desc: "[Success] Valid request with base64 encoded password",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
-				VolumeCapability: &stdVolCap,
-				VolumeContext:    volContext,
-				Secrets:          secretsWithBase64Password},
 			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",

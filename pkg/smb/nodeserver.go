@@ -183,7 +183,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	}
 	defer d.volumeLocks.Release(lockKey)
 
-	var username, password, base64Password, domain string
+	var username, password, domain string
 	for k, v := range secrets {
 		switch strings.ToLower(k) {
 		case usernameField:
@@ -192,18 +192,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			password = strings.TrimSpace(v)
 		case domainField:
 			domain = strings.TrimSpace(v)
-		case base64PasswordField:
-			base64Password = strings.TrimSpace(v)
 		}
-	}
-
-	if base64Password != "" {
-		klog.V(2).Infof("NodeStageVolume: decoding password from base64 string")
-		decodePassword, err := base64.StdEncoding.DecodeString(base64Password)
-		if err != nil {
-			return nil, status.Error(codes.InvalidArgument, "error base64 decoding password")
-		}
-		password = string(decodePassword)
 	}
 
 	if ephemeralVol {
