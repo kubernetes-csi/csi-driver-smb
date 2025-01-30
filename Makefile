@@ -29,7 +29,7 @@ include release-tools/build.make
 GIT_COMMIT := $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
 REGISTRY_NAME := $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
-IMAGE_VERSION ?= v1.17.0
+IMAGE_VERSION ?= v1.18.0
 VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
 ifdef CI
