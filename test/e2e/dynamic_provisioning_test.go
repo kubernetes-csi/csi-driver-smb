@@ -539,9 +539,9 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			ginkgo.Skip("Skip inline volume test on Windows Server 2022")
 		}
 
-		secretName := "smbcreds"
+		secretName := getSmbTestEnvVarValue(testSmbSecretNameEnvVar, defaultSmbSecretName)
 		ginkgo.By(fmt.Sprintf("creating secret %s in namespace %s", secretName, ns.Name))
-		tsecret := testsuites.CopyTestSecret(ctx, cs, "default", ns, defaultSmbSecretName)
+		tsecret := testsuites.CopyTestSecret(ctx, cs, getSmbTestEnvVarValue(testSmbSecretNamespaceEnvVar, defaultSmbSecretNamespace), ns, secretName)
 		tsecret.Create(ctx)
 		defer tsecret.Cleanup(ctx)
 
@@ -573,7 +573,7 @@ var _ = ginkgo.Describe("Dynamic Provisioning", func() {
 			CSIDriver:  testDriver,
 			Pods:       pods,
 			Source:     defaultStorageClassParameters["source"],
-			SecretName: defaultSmbSecretName,
+			SecretName: secretName,
 			ReadOnly:   false,
 		}
 		test.Run(ctx, cs, ns)
