@@ -13,6 +13,6 @@ DriverInfo:
     RWX: true
     fsGroup: true
     controllerExpansion: true
-    nodeExpansion: true
+    nodeExpansion: false
     volumeMountGroup: true
     pvcDataSource: true
