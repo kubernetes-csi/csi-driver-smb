@@ -26,10 +26,12 @@ import (
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options []string, sensitiveMountOptions []string, volumeID string) error {
+	_ = volumeID
 	return m.MountSensitive(source, target, fsType, options, sensitiveMountOptions)
 }
 
 func CleanupSMBMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMountCheck bool, volumeID string) error {
+	_ = volumeID
 	return mount.CleanupMountPoint(target, m, extensiveMountCheck)
 }
 
@@ -38,13 +40,18 @@ func CleanupMountPoint(m *mount.SafeFormatAndMount, target string, extensiveMoun
 }
 
 func preparePublishPath(path string, m *mount.SafeFormatAndMount) error {
+	_ = path
+	_ = m
 	return nil
 }
 
 func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
+	_ = path
+	_ = m
 	return nil
 }
 
 func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
+	_ = m // fixes linting
 	return os.Mkdir(name, perm)
 }
