@@ -120,8 +120,6 @@ var _ = ginkgo.BeforeSuite(func() {
 		kubeconfig := filepath.Join(os.Getenv("HOME"), ".kube", "config")
 		os.Setenv(kubeconfigEnvVar, kubeconfig)
 	}
-	handleFlags()
-	framework.AfterReadingAllFlags(&framework.TestContext)
 
 	kubeconfig := os.Getenv(kubeconfigEnvVar)
 	log.Println(testWinServerVerEnvVar, os.Getenv(testWinServerVerEnvVar), fmt.Sprintf("%v", winServerVer))
@@ -260,6 +258,12 @@ var _ = ginkgo.AfterSuite(func() {
 		execTestCmd([]testCmd{installDriver, uninstallDriver})
 	}
 })
+
+func TestMain(m *testing.M) {
+	handleFlags()
+	framework.AfterReadingAllFlags(&framework.TestContext)
+	os.Exit(m.Run())
+}
 
 func TestE2E(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
