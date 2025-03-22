@@ -44,7 +44,7 @@ BUILD_DATE := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 endif
 LDFLAGS = -X ${PKG}/pkg/smb.driverVersion=${IMAGE_VERSION} -X ${PKG}/pkg/smb.gitCommit=${GIT_COMMIT} -X ${PKG}/pkg/smb.buildDate=${BUILD_DATE}
 EXT_LDFLAGS = -s -w -extldflags "-static"
-E2E_HELM_OPTIONS ?= --set image.smb.repository=$(REGISTRY)/$(IMAGENAME) --set image.smb.tag=$(IMAGE_VERSION)
+E2E_HELM_OPTIONS ?= --set image.smb.repository=mcr.microsoft.com/oss/kubernetes-csi/csi-driver-smb --set image.smb.tag=v1.16.0
 E2E_HELM_OPTIONS += ${EXTRA_HELM_OPTIONS}
 # Generate all combination of all OS, ARCH, and OSVERSIONS for iteration
 ALL_OS = linux windows
@@ -102,7 +102,6 @@ e2e-test:
 
 .PHONY: e2e-bootstrap
 e2e-bootstrap: install-helm
-	docker pull $(IMAGE_TAG) || make container-all push-manifest
 ifdef TEST_WINDOWS
 	helm upgrade csi-driver-smb charts/$(VERSION)/csi-driver-smb --namespace kube-system --wait --timeout=15m -v=5 --debug --install \
 		${E2E_HELM_OPTIONS} \
