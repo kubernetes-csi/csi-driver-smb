@@ -1,8 +1,6 @@
 module github.com/kubernetes-csi/csi-driver-smb
 
-go 1.23.0
-
-toolchain go1.23.1
+go 1.24
 
 godebug winsymlink=0
 
