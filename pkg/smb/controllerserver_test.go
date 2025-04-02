@@ -181,7 +181,6 @@ func TestCreateVolume(t *testing.T) {
 	}
 
 	for _, test := range cases {
-		test := test //pin
 		t.Run(test.name, func(t *testing.T) {
 			if test.skipOnWindows && runtime.GOOS == "windows" {
 				return
@@ -265,7 +264,6 @@ func TestDeleteVolume(t *testing.T) {
 		},
 	}
 	for _, test := range cases {
-		test := test //pin
 		t.Run(test.desc, func(t *testing.T) {
 			// Setup
 			_ = os.MkdirAll(filepath.Join(d.workingMountDir, testCSIVolume), os.ModePerm)
@@ -562,7 +560,6 @@ func TestGetSmbVolFromID(t *testing.T) {
 		},
 	}
 	for _, test := range cases {
-		test := test //pin
 		t.Run(test.desc, func(t *testing.T) {
 			smbVolume, err := getSmbVolFromID(test.volumeID)
 
