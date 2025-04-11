@@ -4,7 +4,7 @@ If you have already installed Helm, you can also use it to install this driver. 
 ### Install by kubectl
  - Option#1. remote install
 ```console
-curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/v1.17.0/deploy/install-driver.sh | bash -s v1.17.0 --
+curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/v1.17.0/deploy/install-driver.sh | bash -s v1.17.0 hostprocess --
 ```
 
  - Option#2. local install
@@ -12,7 +12,7 @@ curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/v1.17
 git clone https://github.com/kubernetes-csi/csi-driver-smb.git
 cd csi-driver-smb
 git checkout v1.17.0
-./deploy/install-driver.sh v1.17.0 local
+./deploy/install-driver.sh v1.17.0 local,hostprocess
 ```
 
  - check pods status:
