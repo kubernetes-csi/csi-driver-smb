@@ -48,3 +48,8 @@ func prepareStagePath(path string, m *mount.SafeFormatAndMount) error {
 func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
 	return os.Mkdir(name, perm)
 }
+
+func HasMountReferences(stagingTargetPath string) (bool, error) {
+	// Stubbed for Windows/macOS — cannot inspect bind mounts
+	return false, nil
+}

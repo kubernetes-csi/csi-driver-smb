@@ -20,6 +20,7 @@ limitations under the License.
 package smb
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
@@ -75,4 +76,24 @@ func prepareStagePath(_ string, _ *mount.SafeFormatAndMount) error {
 
 func Mkdir(_ *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
 	return os.Mkdir(name, perm)
+}
+
+func HasMountReferences(stagingTargetPath string) (bool, error) {
+	f, err := os.Open("/proc/mounts")
+	if err != nil {
+		return false, fmt.Errorf("failed to open /proc/mounts: %v", err)
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		fields := strings.Fields(scanner.Text())
+		if len(fields) >= 2 {
+			mountPoint := fields[1]
+			if strings.HasPrefix(mountPoint, stagingTargetPath) && mountPoint != stagingTargetPath {
+				return true, nil
+			}
+		}
+	}
+	return false, nil
 }

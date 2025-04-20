@@ -17,7 +17,6 @@ limitations under the License.
 package smb
 
 import (
-	"bufio"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -327,27 +326,12 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 	}
 	defer d.volumeLocks.Release(lockKey)
 
-	// Check if any other mounts still reference the staging path
-	f, err := os.Open("/proc/mounts")
+	inUse, err := HasMountReferences(stagingTargetPath)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to open /proc/mounts: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to check mount references: %v", err)
 	}
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
-	refCount := 0
-	for scanner.Scan() {
-		line := scanner.Text()
-		fields := strings.Fields(line)
-		if len(fields) >= 2 {
-			mountPoint := fields[1]
-			if strings.HasPrefix(mountPoint, stagingTargetPath) && mountPoint != stagingTargetPath {
-				refCount++
-			}
-		}
-	}
-	if refCount > 0 {
-		klog.V(2).Infof("NodeUnstageVolume: staging path %s is still in use by %d other mounts", stagingTargetPath, refCount)
+	if inUse {
+		klog.V(2).Infof("NodeUnstageVolume: staging path %s is still in use by other mounts", stagingTargetPath)
 		return &csi.NodeUnstageVolumeResponse{}, nil
 	}
 
