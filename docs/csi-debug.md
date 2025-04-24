@@ -85,7 +85,7 @@ kubectl delete po node-debugger-node-name-xxxx
 
  - On Windows node
 ```console
-$User = "AZURE\USERNAME"
+$User = "DOMAIN\USERNAME"
 $PWord = ConvertTo-SecureString -String "PASSWORD" -AsPlainText -Force
 $Credential = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $User, $Pword
 New-SmbGlobalMapping -LocalPath x: -RemotePath \\smb-server\fileshare -Credential $Credential
