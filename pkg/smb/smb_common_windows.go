@@ -87,3 +87,8 @@ func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
 	}
 	return fmt.Errorf("could not cast to csi proxy class")
 }
+
+func HasMountReferences(stagingTargetPath string) (bool, error) {
+	// Stubbed for Windows/macOS — cannot inspect bind mounts
+	return false, nil
+}
