@@ -6,7 +6,7 @@ image:
     pullPolicy: IfNotPresent
   csiProvisioner:
     repository: /csi-provisioner
-    tag: v5.2.0
+    tag: v5.3.0
     pullPolicy: IfNotPresent
   csiResizer:
     repository: registry.k8s.io/sig-storage/csi-resizer
@@ -14,11 +14,11 @@ image:
     pullPolicy: IfNotPresent
   livenessProbe:
     repository: /livenessprobe
-    tag: v2.15.0
+    tag: v2.16.0
     pullPolicy: IfNotPresent
   nodeDriverRegistrar:
     repository: /csi-node-driver-registrar
-    tag: v2.13.0
+    tag: v2.14.0
     pullPolicy: IfNotPresent
   csiproxy:
     repository: ghcr.io/kubernetes-sigs/sig-windows/csi-proxy
