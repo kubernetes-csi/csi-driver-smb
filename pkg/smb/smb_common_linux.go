@@ -20,12 +20,29 @@ limitations under the License.
 package smb
 
 import (
+	"fmt"
 	"os"
 
 	mount "k8s.io/mount-utils"
 )
 
 func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options, sensitiveMountOptions []string, _ string) error {
+	if len(sensitiveMountOptions) != 0 {
+		file, err := os.CreateTemp("/tmp/", "*.smb.credentials")
+		if err != nil {
+			return err
+		}
+
+		for _, option := range sensitiveMountOptions {
+			if _, err := file.Write([]byte(fmt.Sprintf("%s\n", option))); err != nil {
+				return err
+			}
+		}
+		file.Close()
+		defer os.Remove(file.Name())
+
+		sensitiveMountOptions = []string{fmt.Sprintf("credentials=%s", file.Name())}
+	}
 	return m.MountSensitive(source, target, fsType, options, sensitiveMountOptions)
 }
 
