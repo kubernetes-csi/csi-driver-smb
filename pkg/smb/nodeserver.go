@@ -231,7 +231,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
 		if requireUsernamePwdOption && !useKerberosCache {
-			sensitiveMountOptions = []string{fmt.Sprintf("%s=%s,%s=%s", usernameField, username, passwordField, password)}
+			sensitiveMountOptions = []string{fmt.Sprintf("%s=%s", usernameField, username), fmt.Sprintf("%s=%s", passwordField, password)}
 		}
 		mountOptions = mountFlags
 		if !gidPresent && volumeMountGroup != "" {
