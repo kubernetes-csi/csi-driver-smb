@@ -23,6 +23,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -203,7 +204,11 @@ func TestCreateVolume(t *testing.T) {
 				if !test.expectErr && err != nil {
 					t.Errorf("test %q failed: %v", test.name, err)
 				}
-				if !reflect.DeepEqual(resp, test.resp) {
+				if !test.expectErr && test.name == "valid defaults" {
+					if resp.Volume == nil || !strings.HasPrefix(resp.Volume.VolumeId, "test-server/baseDir#test-csi###cred=") {
+						t.Errorf("test %q failed: got volume ID %q, expected it to start with prefix %q", test.name, resp.Volume.VolumeId, "test-server/baseDir#test-csi###cred=")
+					}
+				} else if !reflect.DeepEqual(resp, test.resp) {
 					t.Errorf("test %q failed: got resp %+v, expected %+v", test.name, resp, test.resp)
 				}
 				if !test.expectErr {
