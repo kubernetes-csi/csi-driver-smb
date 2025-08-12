@@ -41,14 +41,16 @@ func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options, 
 		if err != nil {
 			return err
 		}
+		defer func() {
+			file.Close()
+			os.Remove(file.Name())
+		}()
 
 		for _, option := range sensitiveMountOptions {
 			if _, err := file.Write([]byte(fmt.Sprintf("%s\n", option))); err != nil {
 				return err
 			}
 		}
-		file.Close()
-		defer os.Remove(file.Name())
 
 		sensitiveMountOptions = []string{fmt.Sprintf("credentials=%s", file.Name())}
 	}
