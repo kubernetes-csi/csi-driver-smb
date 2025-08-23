@@ -13,7 +13,8 @@ jobs:
     - name: Set up Go 1.x
       uses: actions/setup-go@v6
       with:
-        go-version: ^1.16
+        go-version: '^1.25'
+        cache: false
       id: go
 
     - name: Check out code into the Go module directory
@@ -27,6 +28,7 @@ jobs:
     - name: Build Test
       run: |
         export PATH=$PATH:$HOME/.local/bin
+        go mod vendor
         go test -race -covermode=atomic -coverprofile=profile.cov ./pkg/...
         export DOCKER_CLI_EXPERIMENTAL=enabled && make container
 

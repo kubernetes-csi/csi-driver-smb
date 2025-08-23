@@ -40,7 +40,8 @@ jobs:
     - name: Set up Go 1.x
       uses: actions/setup-go@v6
       with:
-        go-version: ^1.18
+        go-version: '^1.25'
+        cache: false
       id: go
 
     - name: Checkout repository

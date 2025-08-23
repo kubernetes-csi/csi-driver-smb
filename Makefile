@@ -77,7 +77,7 @@ verify: unit-test
 	hack/verify-all.sh
 
 .PHONY: unit-test
-unit-test:
+unit-test: vendor
 	go test -v -race ./pkg/... ./test/utils/credentials
 
 .PHONY: sanity-test
@@ -93,7 +93,7 @@ deploy-kind:
 	test/utils/deploy-kind.sh
 
 .PHONY: e2e-test
-e2e-test:
+e2e-test: vendor
 	if [ ! -z "$(EXTERNAL_E2E_TEST)" ]; then \
 		bash ./test/external-e2e/run.sh;\
 	else \
@@ -130,15 +130,15 @@ e2e-teardown:
 	helm delete csi-driver-smb --namespace kube-system
 
 .PHONY: smb
-smb:
+smb: vendor
 	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags "${LDFLAGS} ${EXT_LDFLAGS}" -mod vendor -o _output/${ARCH}/smbplugin ./cmd/smbplugin
 
 .PHONY: smb-armv7
-smb-armv7:
+smb-armv7: vendor
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -ldflags "${LDFLAGS} ${EXT_LDFLAGS}" -mod vendor -o _output/arm/v7/smbplugin ./cmd/smbplugin
 
 .PHONY: smb-windows
-smb-windows:
+smb-windows: vendor
 	CGO_ENABLED=0 GOOS=windows go build -a -ldflags "${LDFLAGS} ${EXT_LDFLAGS}" -mod vendor -o _output/${ARCH}/smbplugin.exe ./cmd/smbplugin
 
 .PHONY: smb-darwin
@@ -256,4 +256,8 @@ endif
 .PHONY: create-metrics-svc
 create-metrics-svc:
 	kubectl apply -f deploy/example/metrics/csi-smb-controller-svc.yaml
+
+.PHONY: vendor
+vendor:
+	go mod vendor
 
