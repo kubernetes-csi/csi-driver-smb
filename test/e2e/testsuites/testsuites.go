@@ -186,8 +186,8 @@ func (t *TestPersistentVolumeClaim) ValidateProvisionedPersistentVolume(ctx cont
 	ginkgo.By("checking the PV")
 	expectedAccessModes := t.requestedPersistentVolumeClaim.Spec.AccessModes
 	gomega.Expect(t.persistentVolume.Spec.AccessModes).To(gomega.Equal(expectedAccessModes))
-	gomega.Expect(t.persistentVolume.Spec.ClaimRef.Name).To(gomega.Equal(t.persistentVolumeClaim.ObjectMeta.Name))
-	gomega.Expect(t.persistentVolume.Spec.ClaimRef.Namespace).To(gomega.Equal(t.persistentVolumeClaim.ObjectMeta.Namespace))
+	gomega.Expect(t.persistentVolume.Spec.ClaimRef.Name).To(gomega.Equal(t.persistentVolumeClaim.Name))
+	gomega.Expect(t.persistentVolume.Spec.ClaimRef.Namespace).To(gomega.Equal(t.persistentVolumeClaim.Namespace))
 	// If storageClass is nil, PV was pre-provisioned with these values already set
 	if t.storageClass != nil {
 		gomega.Expect(t.persistentVolume.Spec.PersistentVolumeReclaimPolicy).To(gomega.Equal(*t.storageClass.ReclaimPolicy))
@@ -313,7 +313,7 @@ func (t *TestPersistentVolumeClaim) removeFinalizers(ctx context.Context) {
 	oldData, err := json.Marshal(pvClone)
 	framework.ExpectNoError(err)
 
-	pvClone.ObjectMeta.Finalizers = nil
+	pvClone.Finalizers = nil
 
 	newData, err := json.Marshal(pvClone)
 	framework.ExpectNoError(err)
@@ -450,18 +450,25 @@ func pollForStringInPodsExec(namespace string, pods []string, command []string, 
 
 func pollForStringWorker(namespace string, pod string, command []string, expectedString string, ch chan<- error) {
 	args := append([]string{"exec", pod, "--"}, command...)
-	err := wait.PollImmediate(poll, pollForStringTimeout, func() (bool, error) {
-		stdout, err := e2ekubectl.RunKubectl(namespace, args...)
-		if err != nil {
-			framework.Logf("Error waiting for output %q in pod %q: %v.", expectedString, pod, err)
-			return false, nil
-		}
-		if !strings.Contains(stdout, expectedString) {
-			framework.Logf("The stdout did not contain output %q in pod %q, found: %q.", expectedString, pod, stdout)
-			return false, nil
-		}
-		return true, nil
-	})
+	ctx, cancel := context.WithTimeout(context.Background(), pollForStringTimeout)
+	defer cancel()
+	err := wait.PollUntilContextTimeout(
+		ctx,
+		poll,
+		pollForStringTimeout,
+		true,
+		func(ctx context.Context) (bool, error) {
+			stdout, err := e2ekubectl.RunKubectl(namespace, args...)
+			if err != nil {
+				framework.Logf("Error waiting for output %q in pod %q: %v.", expectedString, pod, err)
+				return false, nil
+			}
+			if !strings.Contains(stdout, expectedString) {
+				framework.Logf("The stdout did not contain output %q in pod %q, found: %q.", expectedString, pod, stdout)
+				return false, nil
+			}
+			return true, nil
+		})
 	ch <- err
 }
 
