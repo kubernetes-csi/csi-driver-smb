@@ -42,7 +42,6 @@ func TestGetVersion(t *testing.T) {
 	if !reflect.DeepEqual(version, expected) {
 		t.Errorf("Unexpected error. \n Expected: %v \n Found: %v", expected, version)
 	}
-
 }
 
 func TestGetVersionYAML(t *testing.T) {

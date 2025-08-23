@@ -1,7 +1,5 @@
-//go:build linux || darwin
-
 /*
-Copyright 2020 The Kubernetes Authors.
+Copyright 2025 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,16 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package mounter
+package securitycontext
 
-import (
-	mount "k8s.io/mount-utils"
-	utilexec "k8s.io/utils/exec"
-)
-
-func NewSafeMounter(_, _ bool) (*mount.SafeFormatAndMount, error) {
-	return &mount.SafeFormatAndMount{
-		Interface: mount.New(""),
-		Exec:      utilexec.New(),
-	}, nil
+func possibleCPUs() []int {
+	return nil
 }

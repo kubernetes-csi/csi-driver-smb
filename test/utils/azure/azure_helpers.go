@@ -224,7 +224,6 @@ func (az *Client) EnsureVirtualNetworkAndSubnet(ctx context.Context, groupName, 
 				},
 			},
 		})
-
 	if err != nil {
 		return vnet, fmt.Errorf("cannot create virtual network: %v", err)
 	}

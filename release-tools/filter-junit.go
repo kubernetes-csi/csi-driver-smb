@@ -142,7 +142,7 @@ func main() {
 			panic(err)
 		}
 	} else {
-		if err := os.WriteFile(*output, data, 0644); err != nil {
+		if err := os.WriteFile(*output, data, 0o644); err != nil {
 			panic(err)
 		}
 	}

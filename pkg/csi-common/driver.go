@@ -48,7 +48,7 @@ func NewCSIDriver(name string, v string, nodeID string) *CSIDriver {
 	// TODO version format and validation
 	if len(v) == 0 {
 		klog.Errorf("Version argument missing, now skip it")
-		//return nil
+		// return nil
 	}
 
 	driver := CSIDriver{

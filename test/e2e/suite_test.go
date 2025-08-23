@@ -30,7 +30,6 @@ import (
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/smb"
 	"github.com/onsi/ginkgo/v2"
-	"github.com/onsi/ginkgo/v2/reporters"
 	"github.com/onsi/gomega"
 	"github.com/pborman/uuid"
 	"k8s.io/kubernetes/test/e2e/framework"
@@ -271,8 +270,10 @@ func TestE2E(t *testing.T) {
 	if reportDir == "" {
 		reportDir = defaultReportDir
 	}
-	r := []ginkgo.Reporter{reporters.NewJUnitReporter(path.Join(reportDir, "junit_01.xml"))}
-	ginkgo.RunSpecsWithDefaultAndCustomReporters(t, "SMB CSI Driver End-to-End Tests", r)
+	// Set the GINKGO_JUNIT_REPORT environment variable to enable JUnit reporting
+	os.Setenv("GINKGO_JUNIT_REPORT", path.Join(reportDir, "junit_01.xml"))
+
+	ginkgo.RunSpecs(t, "SMB CSI Driver End-to-End Tests")
 }
 
 func execTestCmd(cmds []testCmd) {
