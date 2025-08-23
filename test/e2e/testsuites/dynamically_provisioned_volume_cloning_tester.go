@@ -59,7 +59,7 @@ func (t *DynamicallyProvisionedVolumeCloningTest) Run(ctx context.Context, clien
 	ginkgo.By("cloning existing volume")
 	clonedVolume := t.Pod.Volumes[0]
 	clonedVolume.DataSource = &DataSource{
-		Name: tpod.pod.Spec.Volumes[0].VolumeSource.PersistentVolumeClaim.ClaimName,
+		Name: tpod.pod.Spec.Volumes[0].PersistentVolumeClaim.ClaimName,
 		Kind: VolumePVCKind,
 	}
 	clonedVolume.StorageClass = tsc.storageClass
