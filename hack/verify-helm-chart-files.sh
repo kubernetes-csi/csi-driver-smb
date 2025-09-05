@@ -50,12 +50,7 @@ echo "chart tgz files verified."
 
 echo "verify helm chart index ..."
 echo "install helm ..."
-apt-key add hack/helm-signing.asc
-apt-get install apt-transport-https --yes
-echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
-apt-get update
-apt-get install helm
-
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 helm search repo -l csi-driver-smb
 echo "helm chart index verified."
