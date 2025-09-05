@@ -47,7 +47,7 @@ func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options, 
 		}()
 
 		for _, option := range sensitiveMountOptions {
-			if _, err := file.Write([]byte(fmt.Sprintf("%s\n", option))); err != nil {
+			if _, err := fmt.Fprintf(file, "%s\n", option); err != nil {
 				return err
 			}
 		}
