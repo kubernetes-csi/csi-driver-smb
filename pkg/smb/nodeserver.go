@@ -347,6 +347,16 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 		return &csi.NodeUnstageVolumeResponse{}, nil
 	}
 
+	// Final safety check: verify no new references appeared right before unmounting
+	lastCheck, err := HasMountReferences(stagingTargetPath)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed final mount reference check: %v", err)
+	}
+	if lastCheck {
+		klog.V(2).Infof("NodeUnstageVolume: new mount references detected just before unmount, aborting for %s", stagingTargetPath)
+		return &csi.NodeUnstageVolumeResponse{}, nil
+	}
+
 	klog.V(2).Infof("NodeUnstageVolume: unmounting %s for volume %s", stagingTargetPath, volumeID)
 	if err := d.mounter.Unmount(stagingTargetPath); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging path %q: %v", stagingTargetPath, err)

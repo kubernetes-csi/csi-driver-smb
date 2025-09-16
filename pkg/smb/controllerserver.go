@@ -19,7 +19,7 @@ package smb
 import (
 	"context"
 	"crypto/sha256"
-	"encoding/hex"
+	"encoding/base64"
 	"fmt"
 	"io/fs"
 	"os"
@@ -92,7 +92,9 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	if username != "" || password != "" {
 		hashKey := fmt.Sprintf("%s|%s", username, password)
 		hash := sha256.Sum256([]byte(hashKey))
-		hashStr := hex.EncodeToString(hash[:8])
+		// Use first 16 bytes (128 bits) for better collision resistance
+		// Base64 encoding is more compact than hex (22 chars vs 32 chars)
+		hashStr := base64.URLEncoding.EncodeToString(hash[:16])
 		smbVol.id = fmt.Sprintf("%s#cred=%s", getVolumeIDFromSmbVol(smbVol), hashStr)
 	} else {
 		smbVol.id = getVolumeIDFromSmbVol(smbVol)

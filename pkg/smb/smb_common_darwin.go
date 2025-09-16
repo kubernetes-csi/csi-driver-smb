@@ -49,7 +49,11 @@ func Mkdir(m *mount.SafeFormatAndMount, name string, perm os.FileMode) error {
 	return os.Mkdir(name, perm)
 }
 
+// HasMountReferences is stubbed for macOS as bind mount inspection is not implemented.
+// Always returns false to allow unmounting, but this limits the race condition protection
+// available on macOS compared to Linux.
 func HasMountReferences(stagingTargetPath string) (bool, error) {
-	// Stubbed for Windows/macOS — cannot inspect bind mounts
+	// macOS implementation could potentially inspect mount points but is not implemented
+	// This is a known limitation that reduces race condition protection
 	return false, nil
 }
