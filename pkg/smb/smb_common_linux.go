@@ -27,8 +27,8 @@ import (
 	"strings"
 	"time"
 
-	mount "k8s.io/mount-utils"
 	"k8s.io/klog/v2"
+	mount "k8s.io/mount-utils"
 )
 
 // Returns true if the `options` contains password with a special characters, and so "credentials=" needed.
@@ -214,7 +214,7 @@ func isBindMountReference(stagingPath, mountPoint, mountSource string) bool {
 	if err == nil {
 		cleanMountSource = filepath.Clean(cleanMountSource)
 		if (cleanMountSource == stagingPath || isProperSubdirectory(stagingPath, cleanMountSource)) &&
-		   (cleanMountPoint != stagingPath && isProperSubdirectory(stagingPath, cleanMountPoint)) {
+			(cleanMountPoint != stagingPath && isProperSubdirectory(stagingPath, cleanMountPoint)) {
 			klog.V(4).Infof("isBindMountReference: bind mount detected - source %s and target %s both relate to staging path %s",
 				cleanMountSource, cleanMountPoint, stagingPath)
 			return true
