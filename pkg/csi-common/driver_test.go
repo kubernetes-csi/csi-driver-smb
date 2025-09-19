@@ -31,12 +31,9 @@ const (
 	fakeNodeID     = "fakeNodeID"
 )
 
-var (
-	vendorVersion = "0.3.0"
-)
+var vendorVersion = "0.3.0"
 
 func NewFakeDriver() *CSIDriver {
-
 	driver := NewCSIDriver(fakeDriverName, vendorVersion, fakeNodeID)
 
 	return driver
@@ -102,7 +99,6 @@ func TestNewCSIDriver(t *testing.T) {
 }
 
 func TestGetVolumeCapabilityAccessModes(t *testing.T) {
-
 	d := NewFakeDriver()
 
 	// Test no volume access modes.
@@ -159,7 +155,6 @@ func TestValidateControllerServiceRequest(t *testing.T) {
 	// Test controller service clone volumes is supported
 	err = d.ValidateControllerServiceRequest(csi.ControllerServiceCapability_RPC_CLONE_VOLUME)
 	assert.NoError(t, err)
-
 }
 
 func TestValidateNodeServiceRequest(t *testing.T) {

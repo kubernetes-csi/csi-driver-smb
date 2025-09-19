@@ -137,18 +137,22 @@ func TestNodeStageVolume(t *testing.T) {
 		},
 		{
 			desc: "[Error] Source field is missing in context",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1", StagingTargetPath: sourceTest,
-				VolumeCapability: &stdVolCap},
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1", StagingTargetPath: sourceTest,
+				VolumeCapability: &stdVolCap,
+			},
 			expectedErr: testutil.TestError{
 				DefaultError: status.Error(codes.InvalidArgument, "source field is missing, current context: map[]"),
 			},
 		},
 		{
 			desc: "[Error] Not a Directory",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: smbFile,
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1##", StagingTargetPath: smbFile,
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
-				Secrets:          secrets},
+				Secrets:          secrets,
+			},
 			expectedErr: testutil.TestError{
 				DefaultError: status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: mkdir %s: not a directory", smbFile, smbFile)),
 				WindowsError: status.Error(codes.Internal, fmt.Sprintf("Could not mount target %s: mkdir %s: The system cannot find the path specified.", smbFile, smbFile)),
@@ -159,10 +163,12 @@ func TestNodeStageVolume(t *testing.T) {
 			setup: func(d *Driver) {
 				d.volumeLocks.TryAcquire(fmt.Sprintf("%s-%s", "vol_1", sourceTest))
 			},
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1", StagingTargetPath: sourceTest,
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1", StagingTargetPath: sourceTest,
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
-				Secrets:          secrets},
+				Secrets:          secrets,
+			},
 			expectedErr: testutil.TestError{
 				DefaultError: status.Error(codes.Aborted, fmt.Sprintf(volumeOperationAlreadyExistsFmt, "vol_1")),
 			},
@@ -172,84 +178,96 @@ func TestNodeStageVolume(t *testing.T) {
 		},
 		{
 			desc: "[Error] Failed SMB mount mocked by MountSensitive",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: errorMountSensSource,
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1##", StagingTargetPath: errorMountSensSource,
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
-				Secrets:          secrets},
+				Secrets:          secrets,
+			},
 			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed "+
 				"with NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource, testSource, errorMountSensSource),
+				strings.ReplaceAll(testSource, "\\", "\\\\"), errorMountSensSource, testSource, errorMountSensSource),
 			expectedErr: testutil.TestError{
 				DefaultError: status.Errorf(codes.Internal,
 					"volume(vol_1##) mount \"%s\" on \"%s\" failed with fake "+
 						"MountSensitive: target error",
-					strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource),
+					strings.ReplaceAll(testSource, "\\", "\\\\"), errorMountSensSource),
 			},
 		},
 		{
 			desc: "[Error] Failed SMB mount mocked by MountSensitive (password with special characters)",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: errorMountSensSource,
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1##", StagingTargetPath: errorMountSensSource,
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
-				Secrets:          secretsSpecial},
+				Secrets:          secretsSpecial,
+			},
 			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed "+
 				"with NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource, testSource, errorMountSensSource),
+				strings.ReplaceAll(testSource, "\\", "\\\\"), errorMountSensSource, testSource, errorMountSensSource),
 			expectedErr: testutil.TestError{
 				DefaultError: status.Errorf(codes.Internal,
 					"volume(vol_1##) mount \"%s\" on \"%s\" failed with fake "+
 						"MountSensitive: target error",
-					strings.Replace(testSource, "\\", "\\\\", -1), errorMountSensSource),
+					strings.ReplaceAll(testSource, "\\", "\\\\"), errorMountSensSource),
 			},
 		},
 		{
 			desc: "[Success] Valid request",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1##", StagingTargetPath: sourceTest,
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContext,
-				Secrets:          secrets},
+				Secrets:          secrets,
+			},
 			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
+				strings.ReplaceAll(testSource, "\\", "\\\\"), sourceTest, testSource, sourceTest),
 			expectedErr: testutil.TestError{},
 		},
 		{
 			desc: "[Success] Valid request with pv/pvc metadata",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1##", StagingTargetPath: sourceTest,
 				VolumeCapability: &stdVolCap,
 				VolumeContext:    volContextWithMetadata,
-				Secrets:          secrets},
+				Secrets:          secrets,
+			},
 			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
+				strings.ReplaceAll(testSource, "\\", "\\\\"), sourceTest, testSource, sourceTest),
 			expectedErr: testutil.TestError{},
 		},
 		{
 			desc: "[Success] Valid request with VolumeMountGroup",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1##", StagingTargetPath: sourceTest,
 				VolumeCapability: &mountGroupVolCap,
 				VolumeContext:    volContext,
-				Secrets:          secrets},
+				Secrets:          secrets,
+			},
 			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
+				strings.ReplaceAll(testSource, "\\", "\\\\"), sourceTest, testSource, sourceTest),
 			expectedErr: testutil.TestError{},
 		},
 		{
 			desc: "[Success] Valid request with VolumeMountGroup and file/dir modes",
-			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
+			req: &csi.NodeStageVolumeRequest{
+				VolumeId: "vol_1##", StagingTargetPath: sourceTest,
 				VolumeCapability: &mountGroupWithModesVolCap,
 				VolumeContext:    volContext,
-				Secrets:          secrets},
+				Secrets:          secrets,
+			},
 			skipOnWindows: true,
 			flakyWindowsErrorMessage: fmt.Sprintf("rpc error: code = Internal desc = volume(vol_1##) mount \"%s\" on %#v failed with "+
 				"NewSmbGlobalMapping(%s, %s) failed with error: rpc error: code = Unknown desc = NewSmbGlobalMapping failed.",
-				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
+				strings.ReplaceAll(testSource, "\\", "\\\\"), sourceTest, testSource, sourceTest),
 			expectedErr: testutil.TestError{},
 		},
 	}
@@ -292,7 +310,6 @@ func TestNodeStageVolume(t *testing.T) {
 	assert.NoError(t, err)
 	err = os.RemoveAll(errorMountSensSource)
 	assert.NoError(t, err)
-
 }
 
 func TestNodeGetInfo(t *testing.T) {
@@ -366,28 +383,34 @@ func TestNodePublishVolume(t *testing.T) {
 		},
 		{
 			desc: "[Error] Target path missing",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
-				VolumeId: "vol_1"},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+				VolumeId:         "vol_1",
+			},
 			expectedErr: testutil.TestError{
 				DefaultError: status.Error(codes.InvalidArgument, "Target path not provided"),
 			},
 		},
 		{
 			desc: "[Error] Stage target path missing",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
-				VolumeId:   "vol_1",
-				TargetPath: targetTest},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+				VolumeId:         "vol_1",
+				TargetPath:       targetTest,
+			},
 			expectedErr: testutil.TestError{
 				DefaultError: status.Error(codes.InvalidArgument, "Staging target not provided"),
 			},
 		},
 		{
 			desc: "[Error] Not a directory",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        smbFile,
 				StagingTargetPath: sourceTest,
-				Readonly:          true},
+				Readonly:          true,
+			},
 
 			expectedErr: testutil.TestError{
 				DefaultError: status.Errorf(codes.Internal, "Could not mount target \"%s\": mkdir %s: not a directory", smbFile, smbFile),
@@ -396,11 +419,13 @@ func TestNodePublishVolume(t *testing.T) {
 		},
 		{
 			desc: "[Error] Mount error mocked by Mount",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
 				StagingTargetPath: errorMountSource,
-				Readonly:          true},
+				Readonly:          true,
+			},
 			// todo: This test does not return any error on windows
 			// Once the issue is figured out, we'll remove this field
 			skipOnWindows: true,
@@ -410,34 +435,41 @@ func TestNodePublishVolume(t *testing.T) {
 		},
 		{
 			desc: "[Success] Valid request read only",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
 				StagingTargetPath: sourceTest,
-				Readonly:          true},
+				Readonly:          true,
+			},
 			expectedErr: testutil.TestError{},
 		},
 		{
 			desc: "[Success] Valid request already mounted",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        alreadyMountedTarget,
 				StagingTargetPath: sourceTest,
-				Readonly:          true},
+				Readonly:          true,
+			},
 			expectedErr: testutil.TestError{},
 		},
 		{
 			desc: "[Success] Valid request",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
 				StagingTargetPath: sourceTest,
-				Readonly:          true},
+				Readonly:          true,
+			},
 			expectedErr: testutil.TestError{},
 		},
 		{
 			desc: "[Error] failed to create ephemeral Volume",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
 				StagingTargetPath: sourceTest,
@@ -450,7 +482,8 @@ func TestNodePublishVolume(t *testing.T) {
 		},
 		{
 			desc: "[error] failed request with ephemeral Volume",
-			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
 				StagingTargetPath: sourceTest,
@@ -478,7 +511,7 @@ func TestNodePublishVolume(t *testing.T) {
 	d.mounter = mounter
 
 	for _, test := range tests {
-		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+		if !test.skipOnWindows || runtime.GOOS != "windows" {
 			if test.setup != nil {
 				test.setup(d)
 			}
@@ -543,7 +576,7 @@ func TestNodeUnpublishVolume(t *testing.T) {
 	d.mounter = mounter
 
 	for _, test := range tests {
-		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+		if !test.skipOnWindows || runtime.GOOS != "windows" {
 			if test.setup != nil {
 				test.setup(d)
 			}
@@ -619,7 +652,7 @@ func TestNodeUnstageVolume(t *testing.T) {
 	d.mounter = mounter
 
 	for _, test := range tests {
-		if !(test.skipOnWindows && runtime.GOOS == "windows") {
+		if !test.skipOnWindows || runtime.GOOS != "windows" {
 			if test.setup != nil {
 				test.setup(d)
 			}
@@ -703,11 +736,11 @@ func TestEnsureMountPoint(t *testing.T) {
 func TestMakeDir(t *testing.T) {
 	targetTest := "./target_test"
 
-	//Successfully create directory
+	// Successfully create directory
 	err := makeDir(targetTest)
 	assert.NoError(t, err)
 
-	//Failed case
+	// Failed case
 	err = makeDir("./smb.go")
 	var e *os.PathError
 	if !errors.As(err, &e) {
@@ -874,7 +907,7 @@ func TestGetCredUID(t *testing.T) {
 			desc:        "[Error] Got error when no CredUID",
 			MountFlags:  []string{},
 			result:      -1,
-			expectedErr: fmt.Errorf("Can't find credUid in mount flags"),
+			expectedErr: fmt.Errorf("can't find credUid in mount flags"),
 		},
 		{
 			desc:        "[Error] Got error when CredUID is not an int",
@@ -968,7 +1001,6 @@ func TestGetKerberosCache(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func TestNodePublishVolumeIdempotentMount(t *testing.T) {
@@ -990,11 +1022,13 @@ func TestNodePublishVolumeIdempotentMount(t *testing.T) {
 	}
 
 	volumeCap := csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER}
-	req := csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
+	req := csi.NodePublishVolumeRequest{
+		VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
 		VolumeId:          "vol_1",
 		TargetPath:        targetTest,
 		StagingTargetPath: sourceTest,
-		Readonly:          true}
+		Readonly:          true,
+	}
 
 	_, err = d.NodePublishVolume(context.Background(), &req)
 	assert.NoError(t, err)

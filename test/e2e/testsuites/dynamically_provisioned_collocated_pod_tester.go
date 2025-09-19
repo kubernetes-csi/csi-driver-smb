@@ -18,6 +18,7 @@ package testsuites
 
 import (
 	"context"
+
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
 
 	"github.com/onsi/ginkgo/v2"
@@ -55,5 +56,4 @@ func (t *DynamicallyProvisionedCollocatedPodTest) Run(ctx context.Context, clien
 		tpod.WaitForRunning(ctx)
 		nodeName = tpod.pod.Spec.NodeName
 	}
-
 }
