@@ -40,7 +40,6 @@ import (
 	azcache "sigs.k8s.io/cloud-provider-azure/pkg/cache"
 )
 
-// NodePublishVolume mount the volume from staging to target path
 func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
 	volCap := req.GetVolumeCapability()
 	if volCap == nil {
@@ -51,8 +50,11 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
 
-	target := req.GetTargetPath()
-	if len(target) == 0 {
+	// Strip cred hash suffix if present
+	cleanID := strings.SplitN(volumeID, "#cred=", 2)[0]
+
+	targetPath := req.GetTargetPath()
+	if len(targetPath) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Target path not provided")
 	}
 
@@ -60,18 +62,19 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if context != nil && strings.EqualFold(context[ephemeralField], trueValue) {
 		// ephemeral volume
 		util.SetKeyValueInMap(context, secretNamespaceField, context[podNamespaceField])
-		klog.V(2).Infof("NodePublishVolume: ephemeral volume(%s) mount on %s", volumeID, target)
+		klog.V(2).Infof("NodePublishVolume: ephemeral volume(%s) mount on %s", volumeID, targetPath)
 		_, err := d.NodeStageVolume(ctx, &csi.NodeStageVolumeRequest{
-			StagingTargetPath: target,
+			StagingTargetPath: targetPath,
 			VolumeContext:     context,
 			VolumeCapability:  volCap,
-			VolumeId:          volumeID,
+			VolumeId:          cleanID,
 		})
 		return &csi.NodePublishVolumeResponse{}, err
 	}
 
-	source := req.GetStagingTargetPath()
-	if len(source) == 0 {
+	// Get staging path
+	stagingPath := req.GetStagingTargetPath()
+	if len(stagingPath) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
 	}
 
@@ -80,31 +83,31 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		mountOptions = append(mountOptions, "ro")
 	}
 
-	mnt, err := d.ensureMountPoint(target)
+	mnt, err := d.ensureMountPoint(targetPath)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", target, err)
+		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", targetPath, err)
 	}
 	if mnt {
-		klog.V(2).Infof("NodePublishVolume: %s is already mounted", target)
+		klog.V(2).Infof("NodePublishVolume: %s is already mounted", targetPath)
 		return &csi.NodePublishVolumeResponse{}, nil
 	}
 
-	if err = preparePublishPath(target, d.mounter); err != nil {
-		return nil, fmt.Errorf("prepare publish failed for %s with error: %v", target, err)
+	if err = preparePublishPath(targetPath, d.mounter); err != nil {
+		return nil, fmt.Errorf("prepare publish failed for %s with error: %v", targetPath, err)
 	}
 
-	klog.V(2).Infof("NodePublishVolume: mounting %s at %s with mountOptions: %v volumeID(%s)", source, target, mountOptions, volumeID)
-	if err := d.mounter.Mount(source, target, "", mountOptions); err != nil {
-		if removeErr := os.Remove(target); removeErr != nil {
-			return nil, status.Errorf(codes.Internal, "Could not remove mount target %q: %v", target, removeErr)
+	klog.V(2).Infof("NodePublishVolume: bind mounting %s to %s with options: %v", stagingPath, targetPath, mountOptions)
+	if err := d.mounter.Mount(stagingPath, targetPath, "", mountOptions); err != nil {
+		if removeErr := os.Remove(targetPath); removeErr != nil {
+			return nil, status.Errorf(codes.Internal, "Could not remove mount target %q: %v", targetPath, removeErr)
 		}
-		return nil, status.Errorf(codes.Internal, "Could not mount %q at %q: %v", source, target, err)
+		return nil, status.Errorf(codes.Internal, "Could not mount %q at %q: %v", stagingPath, targetPath, err)
 	}
-	klog.V(2).Infof("NodePublishVolume: mount %s at %s volumeID(%s) successfully", source, target, volumeID)
+
+	klog.V(2).Infof("NodePublishVolume: mount %s at %s volumeID(%s) successfully", stagingPath, targetPath, volumeID)
 	return &csi.NodePublishVolumeResponse{}, nil
 }
 
-// NodeUnpublishVolume unmount the volume from the target path
 func (d *Driver) NodeUnpublishVolume(_ context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
 	volumeID := req.GetVolumeId()
 	if len(volumeID) == 0 {
@@ -115,12 +118,28 @@ func (d *Driver) NodeUnpublishVolume(_ context.Context, req *csi.NodeUnpublishVo
 		return nil, status.Error(codes.InvalidArgument, "Target path missing in request")
 	}
 
-	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s on %s", volumeID, targetPath)
-	err := CleanupMountPoint(d.mounter, targetPath, true /*extensiveMountPointCheck*/)
-	if err != nil {
+	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s from %s", volumeID, targetPath)
+
+	notMnt, err := d.mounter.IsLikelyNotMountPoint(targetPath)
+	if err != nil && !os.IsNotExist(err) {
+		return nil, status.Errorf(codes.Internal, "failed to check mount point %q: %v", targetPath, err)
+	}
+	if notMnt {
+		klog.V(2).Infof("NodeUnpublishVolume: target %s is already unmounted", targetPath)
+		if err := os.Remove(targetPath); err != nil && !os.IsNotExist(err) {
+			return nil, status.Errorf(codes.Internal, "failed to remove target path %q: %v", targetPath, err)
+		}
+		return &csi.NodeUnpublishVolumeResponse{}, nil
+	}
+
+	if err := d.mounter.Unmount(targetPath); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount target %q: %v", targetPath, err)
 	}
-	klog.V(2).Infof("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
+	if err := os.Remove(targetPath); err != nil && !os.IsNotExist(err) {
+		return nil, status.Errorf(codes.Internal, "failed to remove target path %q after unmount: %v", targetPath, err)
+	}
+
+	klog.V(2).Infof("NodeUnpublishVolume: successfully unmounted and removed %s for volume %s", targetPath, volumeID)
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }
 
@@ -149,8 +168,8 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	}
 
 	context := req.GetVolumeContext()
-	mountFlags := req.GetVolumeCapability().GetMount().GetMountFlags()
-	volumeMountGroup := req.GetVolumeCapability().GetMount().GetVolumeMountGroup()
+	mountFlags := volumeCapability.GetMount().GetMountFlags()
+	volumeMountGroup := volumeCapability.GetMount().GetVolumeMountGroup()
 	secrets := req.GetSecrets()
 	gidPresent := checkGidPresentInMountFlags(mountFlags)
 
@@ -206,7 +225,6 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		mountFlags = strings.Split(ephemeralVolMountOptions, ",")
 	}
 
-	// in guest login, username and password options are not needed
 	requireUsernamePwdOption := !hasGuestMountOptions(mountFlags)
 	if ephemeralVol && requireUsernamePwdOption {
 		klog.V(2).Infof("NodeStageVolume: getting username and password from secret %s in namespace %s", secretName, secretNamespace)
@@ -275,7 +293,6 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		if subDir != "" {
 			// replace pv/pvc name namespace metadata in subDir
 			subDir = replaceWithMap(subDir, subDirReplaceMap)
-
 			source = strings.TrimRight(source, "/")
 			source = fmt.Sprintf("%s/%s", source, subDir)
 		}
@@ -292,7 +309,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	return &csi.NodeStageVolumeResponse{}, nil
 }
 
-// NodeUnstageVolume unmount the volume from the staging path
+// NodeUnstageVolume unmounts the volume from the staging path
 func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolumeRequest) (*csi.NodeUnstageVolumeResponse, error) {
 	volumeID := req.GetVolumeId()
 	if len(volumeID) == 0 {
@@ -309,16 +326,46 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 	}
 	defer d.volumeLocks.Release(lockKey)
 
-	klog.V(2).Infof("NodeUnstageVolume: CleanupMountPoint on %s with volume %s", stagingTargetPath, volumeID)
-	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, true /*extensiveMountPointCheck*/, volumeID); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
+	inUse, err := HasMountReferences(stagingTargetPath)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to check mount references: %v", err)
+	}
+	if inUse {
+		klog.V(2).Infof("NodeUnstageVolume: staging path %s is still in use by other mounts", stagingTargetPath)
+		return &csi.NodeUnstageVolumeResponse{}, nil
 	}
 
-	if err := deleteKerberosCache(d.krb5CacheDirectory, volumeID); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to delete kerberos cache: %v", err)
+	notMnt, err := d.mounter.IsLikelyNotMountPoint(stagingTargetPath)
+	if err != nil && !os.IsNotExist(err) {
+		return nil, status.Errorf(codes.Internal, "failed to check mount point %q: %v", stagingTargetPath, err)
+	}
+	if notMnt {
+		klog.V(2).Infof("NodeUnstageVolume: staging path %s is already unmounted", stagingTargetPath)
+		if err := os.Remove(stagingTargetPath); err != nil && !os.IsNotExist(err) {
+			return nil, status.Errorf(codes.Internal, "failed to remove staging path %q: %v", stagingTargetPath, err)
+		}
+		return &csi.NodeUnstageVolumeResponse{}, nil
 	}
 
-	klog.V(2).Infof("NodeUnstageVolume: unmount volume %s on %s successfully", volumeID, stagingTargetPath)
+	// Final safety check: verify no new references appeared right before unmounting
+	lastCheck, err := HasMountReferences(stagingTargetPath)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed final mount reference check: %v", err)
+	}
+	if lastCheck {
+		klog.V(2).Infof("NodeUnstageVolume: new mount references detected just before unmount, aborting for %s", stagingTargetPath)
+		return &csi.NodeUnstageVolumeResponse{}, nil
+	}
+
+	klog.V(2).Infof("NodeUnstageVolume: unmounting %s for volume %s", stagingTargetPath, volumeID)
+	if err := d.mounter.Unmount(stagingTargetPath); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to unmount staging path %q: %v", stagingTargetPath, err)
+	}
+	if err := os.Remove(stagingTargetPath); err != nil && !os.IsNotExist(err) {
+		return nil, status.Errorf(codes.Internal, "failed to remove staging path %q after unmount: %v", stagingTargetPath, err)
+	}
+
+	klog.V(2).Infof("NodeUnstageVolume: successfully unmounted and cleaned up %s for volume %s", stagingTargetPath, volumeID)
 	return &csi.NodeUnstageVolumeResponse{}, nil
 }
 
@@ -609,52 +656,6 @@ func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountF
 		return true, nil
 	}
 	return false, nil
-}
-
-func deleteKerberosCache(krb5CacheDirectory, volumeID string) error {
-	exists, err := kerberosCacheDirectoryExists(krb5CacheDirectory)
-	// If not supported, simply return
-	if !exists {
-		return nil
-	}
-	if err != nil {
-		return err
-	}
-
-	volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
-
-	var volumeIDCacheAbsolutePath = getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
-	_, err = os.Stat(volumeIDCacheAbsolutePath)
-	// Not created or already removed
-	if os.IsNotExist(err) {
-		return nil
-	} else if err != nil {
-		return err
-	}
-
-	// If file with cache exists, full clean means removing symlinks to the file.
-	dirEntries, _ := os.ReadDir(krb5CacheDirectory)
-	for _, dirEntry := range dirEntries {
-		filePath := getKerberosFilePath(krb5CacheDirectory, dirEntry.Name())
-		lStat, _ := os.Lstat(filePath)
-		// If it's a symlink, checking if it's pointing to the volume file in question
-		if lStat != nil {
-			target, _ := os.Readlink(filePath)
-			if target == volumeIDCacheAbsolutePath {
-				err = os.Remove(filePath)
-				if err != nil {
-					klog.Errorf("Error removing symlink to kerberos ticket cache: %s (%v)", filePath, err)
-				}
-			}
-		}
-	}
-
-	err = os.Remove(volumeIDCacheAbsolutePath)
-	if err != nil {
-		klog.Errorf("Error removing symlink to kerberos ticket cache: %s (%v)", volumeIDCacheAbsolutePath, err)
-	}
-
-	return nil
 }
 
 // Raises RWX bits for group access in the mode arg. If mode is invalid, keep it unchanged.
