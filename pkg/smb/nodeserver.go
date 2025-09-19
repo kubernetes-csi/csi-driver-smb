@@ -658,52 +658,6 @@ func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountF
 	return false, nil
 }
 
-func deleteKerberosCache(krb5CacheDirectory, volumeID string) error {
-	exists, err := kerberosCacheDirectoryExists(krb5CacheDirectory)
-	// If not supported, simply return
-	if !exists {
-		return nil
-	}
-	if err != nil {
-		return err
-	}
-
-	volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
-
-	var volumeIDCacheAbsolutePath = getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
-	_, err = os.Stat(volumeIDCacheAbsolutePath)
-	// Not created or already removed
-	if os.IsNotExist(err) {
-		return nil
-	} else if err != nil {
-		return err
-	}
-
-	// If file with cache exists, full clean means removing symlinks to the file.
-	dirEntries, _ := os.ReadDir(krb5CacheDirectory)
-	for _, dirEntry := range dirEntries {
-		filePath := getKerberosFilePath(krb5CacheDirectory, dirEntry.Name())
-		lStat, _ := os.Lstat(filePath)
-		// If it's a symlink, checking if it's pointing to the volume file in question
-		if lStat != nil {
-			target, _ := os.Readlink(filePath)
-			if target == volumeIDCacheAbsolutePath {
-				err = os.Remove(filePath)
-				if err != nil {
-					klog.Errorf("Error removing symlink to kerberos ticket cache: %s (%v)", filePath, err)
-				}
-			}
-		}
-	}
-
-	err = os.Remove(volumeIDCacheAbsolutePath)
-	if err != nil {
-		klog.Errorf("Error removing symlink to kerberos ticket cache: %s (%v)", volumeIDCacheAbsolutePath, err)
-	}
-
-	return nil
-}
-
 // Raises RWX bits for group access in the mode arg. If mode is invalid, keep it unchanged.
 func enableGroupRWX(mode string) string {
 	v, e := strconv.ParseInt(mode, 0, 0)
