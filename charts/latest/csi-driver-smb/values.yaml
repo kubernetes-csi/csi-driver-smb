@@ -14,11 +14,11 @@ image:
     pullPolicy: IfNotPresent
   livenessProbe:
     repository: /livenessprobe
-    tag: v2.16.0
+    tag: v2.17.0
     pullPolicy: IfNotPresent
   nodeDriverRegistrar:
     repository: /csi-node-driver-registrar
-    tag: v2.14.0
+    tag: v2.15.0
     pullPolicy: IfNotPresent
   csiproxy:
     repository: ghcr.io/kubernetes-sigs/sig-windows/csi-proxy
