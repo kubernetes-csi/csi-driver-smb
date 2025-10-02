@@ -30,8 +30,10 @@ import (
 	"k8s.io/klog/v2"
 )
 
-var invalidPathCharsRegexWindows = regexp.MustCompile(`["/\:\?\*|]`)
-var absPathRegexWindows = regexp.MustCompile(`^[a-zA-Z]:\\`)
+var (
+	invalidPathCharsRegexWindows = regexp.MustCompile(`["/\:\?\*|]`)
+	absPathRegexWindows          = regexp.MustCompile(`^[a-zA-Z]:\\`)
+)
 
 func containsInvalidCharactersWindows(path string) bool {
 	if isAbsWindows(path) {
