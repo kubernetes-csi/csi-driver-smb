@@ -34,7 +34,7 @@ spec:
       hostNetwork: true
       initContainers:
         - name: init
-          image: registry.k8s.io/sig-storage/smbplugin:v1.19.0-windows-hp
+          image: gcr.io/k8s-staging-sig-storage/smbplugin:canary-windows-hp
           imagePullPolicy: IfNotPresent
           command:
             - "powershell.exe"
@@ -69,7 +69,7 @@ spec:
               cpu: 30m
               memory: 40Mi
         - name: smb
-          image: registry.k8s.io/sig-storage/smbplugin:v1.19.0-windows-hp
+          image: gcr.io/k8s-staging-sig-storage/smbplugin:canary-windows-hp
           imagePullPolicy: IfNotPresent
           command:
             - "smbplugin.exe"
