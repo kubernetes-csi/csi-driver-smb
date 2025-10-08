@@ -127,6 +127,7 @@ The following table lists the configurable parameters of the latest SMB CSI Driv
 | `windows.resources.smb.requests.cpu`                    | smb-csi-driver cpu requests limits                                                                         | `10m`                                                   |
 | `windows.resources.smb.requests.memory`                 | smb-csi-driver memory requests limits                                                                      | `20Mi`                                                  |
 | `windows.kubelet`                                       | configure kubelet directory path on Windows agent node                                                     | `'C:\var\lib\kubelet'`                                  |
+| `storageClasses` | create multiple storage classes | `[]` |  |
 
 ### Csi Proxy support on windows
  > if you have set `windows.useHostProcessContainers` as `true`, csi-proxy is not needed by CSI driver.
@@ -146,6 +147,59 @@ The following table lists the configurable parameters of the latest CSI-proxy Dr
 | `image.csiproxy.repository`                             | csiproxy docker image                                                                                      | `ghcr.io/kubernetes-sigs/sig-windows/csi-proxy`         |
 | `image.csiproxy.tag`                                    | csiproxy docker image tag                                                                                  | `v1.1.2`                                                |
 | `image.csiproxy.pullPolicy`                             | csiproxy image pull policy                                                                                 | `IfNotPresent`                                          |
+
+## Create multiple storage classes
+
+ - create multiple storage classes with different configurations using the `storageClasses` parameter:
+
+```yaml
+storageClasses:
+  - name: smb-csi
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "true"
+    parameters:
+      source: "//smb-server.default.svc.cluster.local/share"
+      # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
+      # with PV name under source
+      csi.storage.k8s.io/provisioner-secret-name: smbcreds
+      csi.storage.k8s.io/provisioner-secret-namespace: default
+      csi.storage.k8s.io/node-stage-secret-name: smbcreds
+      csi.storage.k8s.io/node-stage-secret-namespace: default
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    allowVolumeExpansion: true
+    mountOptions:
+      - dir_mode=0777
+      - file_mode=0777
+      - noperm
+      - mfsymlinks
+      - cache=strict
+      - noserverino  # required to prevent data corruption
+  - name: smb-csi-retain
+    parameters:
+      source: "//smb-server.default.svc.cluster.local/share"
+      # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
+      # with PV name under source
+      csi.storage.k8s.io/provisioner-secret-name: smbcreds
+      csi.storage.k8s.io/provisioner-secret-namespace: default
+      csi.storage.k8s.io/node-stage-secret-name: smbcreds
+      csi.storage.k8s.io/node-stage-secret-namespace: default
+    reclaimPolicy: Retain
+    volumeBindingMode: Immediate
+    allowVolumeExpansion: true
+    mountOptions:
+      - dir_mode=0777
+      - file_mode=0777
+      - noperm
+      - mfsymlinks
+      - cache=strict
+      - noserverino  # required to prevent data corruption
+```
+
+ - install with custom values:
+```console
+helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system -f custom-values.yaml
+```
 
 ## troubleshooting
 
