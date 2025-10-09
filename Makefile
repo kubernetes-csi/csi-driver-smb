@@ -29,7 +29,7 @@ include release-tools/build.make
 GIT_COMMIT := $(shell git rev-parse HEAD)
 REGISTRY ?= andyzhangx
 REGISTRY_NAME := $(shell echo $(REGISTRY) | sed "s/.azurecr.io//g")
-IMAGE_VERSION ?= v1.19.0
+IMAGE_VERSION ?= v1.20.0
 VERSION ?= latest
 # Use a custom version for E2E tests if we are testing in CI
 ifdef CI
@@ -256,3 +256,4 @@ endif
 .PHONY: create-metrics-svc
 create-metrics-svc:
 	kubectl apply -f deploy/example/metrics/csi-smb-controller-svc.yaml
+
