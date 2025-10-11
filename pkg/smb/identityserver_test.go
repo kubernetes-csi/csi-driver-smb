@@ -18,12 +18,13 @@ package smb
 
 import (
 	"context"
+	"reflect"
+	"testing"
+
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"reflect"
-	"testing"
 )
 
 func TestGetPluginInfo(t *testing.T) {

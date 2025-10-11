@@ -122,7 +122,8 @@ func TestIsLikelyNotMountPoint(t *testing.T) {
 			file:        "./error_is_likely_target",
 			expectedErr: fmt.Errorf("fake IsLikelyNotMountPoint: fake error"),
 		},
-		{desc: "[Success] Successful run",
+		{
+			desc:        "[Success] Successful run",
 			file:        targetTest,
 			expectedErr: nil,
 		},

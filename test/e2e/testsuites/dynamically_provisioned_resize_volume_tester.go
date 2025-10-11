@@ -55,7 +55,7 @@ func (t *DynamicallyProvisionedResizeVolumeTest) Run(ctx context.Context, client
 		ginkgo.By("checking that the pods command exits with no error")
 		tpod.WaitForSuccess(ctx)
 
-		pvcName := tpod.pod.Spec.Volumes[0].VolumeSource.PersistentVolumeClaim.ClaimName
+		pvcName := tpod.pod.Spec.Volumes[0].PersistentVolumeClaim.ClaimName
 		pvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Get(ctx, pvcName, metav1.GetOptions{})
 		if err != nil {
 			framework.ExpectNoError(err, fmt.Sprintf("fail to get original pvc(%s): %v", pvcName, err))
@@ -78,7 +78,7 @@ func (t *DynamicallyProvisionedResizeVolumeTest) Run(ctx context.Context, client
 		time.Sleep(30 * time.Second)
 
 		ginkgo.By("checking the resizing result")
-		newPvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Get(ctx, tpod.pod.Spec.Volumes[0].VolumeSource.PersistentVolumeClaim.ClaimName, metav1.GetOptions{})
+		newPvc, err := client.CoreV1().PersistentVolumeClaims(namespace.Name).Get(ctx, tpod.pod.Spec.Volumes[0].PersistentVolumeClaim.ClaimName, metav1.GetOptions{})
 		if err != nil {
 			framework.ExpectNoError(err, fmt.Sprintf("fail to get new pvc(%s): %v", pvcName, err))
 		}
