@@ -18,6 +18,8 @@ package smb
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"io/fs"
 	"os"
@@ -85,6 +87,19 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 	}
 
 	secrets := req.GetSecrets()
+	username := strings.TrimSpace(secrets["username"])
+	password := strings.TrimSpace(secrets["password"])
+	if username != "" || password != "" {
+		hashKey := fmt.Sprintf("%s|%s", username, password)
+		hash := sha256.Sum256([]byte(hashKey))
+		// Use first 16 bytes (128 bits) for better collision resistance
+		// Base64 encoding is more compact than hex (22 chars vs 32 chars)
+		hashStr := base64.URLEncoding.EncodeToString(hash[:16])
+		smbVol.id = fmt.Sprintf("%s#cred=%s", getVolumeIDFromSmbVol(smbVol), hashStr)
+	} else {
+		smbVol.id = getVolumeIDFromSmbVol(smbVol)
+	}
+
 	createSubDir := len(secrets) > 0
 	if len(smbVol.uuid) > 0 {
 		klog.V(2).Infof("create subdirectory(%s) if not exists", smbVol.subDir)
