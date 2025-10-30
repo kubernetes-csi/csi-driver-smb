@@ -28,8 +28,10 @@ import (
 	"sync"
 )
 
-var basePath = "c:\\csi\\smbmounts"
-var mutexes sync.Map
+var (
+	basePath = "c:\\csi\\smbmounts"
+	mutexes  sync.Map
+)
 
 func lock(key string) func() {
 	value, _ := mutexes.LoadOrStore(key, &sync.Mutex{})
