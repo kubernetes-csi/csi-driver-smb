@@ -6,11 +6,11 @@ image:
     pullPolicy: IfNotPresent
   csiProvisioner:
     repository: /csi-provisioner
-    tag: v5.3.0
+    tag: v6.0.0
     pullPolicy: IfNotPresent
   csiResizer:
     repository: registry.k8s.io/sig-storage/csi-resizer
-    tag: v1.14.0
+    tag: v2.0.0
     pullPolicy: IfNotPresent
   livenessProbe:
     repository: /livenessprobe
