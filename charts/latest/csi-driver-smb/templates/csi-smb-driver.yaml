@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.driver.name }}
 {{- if .Values.driver.labels }}
   labels:
-{{ toYaml .Values.driver.labels | indent 4 }}
+{{- toYaml .Values.driver.labels | nindent 4 }}
 {{- end }}
 spec:
   attachRequired: false
