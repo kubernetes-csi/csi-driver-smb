@@ -36,6 +36,7 @@ rbac:
 
 driver:
   name: smb.csi.k8s.io
+  labels: {}
 
 feature:
   enableGetVolumeStats: true
