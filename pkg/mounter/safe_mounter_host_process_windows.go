@@ -1,5 +1,4 @@
 //go:build windows
-// +build windows
 
 /*
 Copyright 2022 The Kubernetes Authors.
@@ -197,7 +196,7 @@ func (mounter *winMounter) IsLikelyNotMountPoint(path string) (bool, error) {
 // Currently the make dir is only used from the staging code path, hence we call it
 // with Plugin context..
 func (mounter *winMounter) MakeDir(path string) error {
-	return os.MkdirAll(normalizeWindowsPath(path), 0755)
+	return os.MkdirAll(normalizeWindowsPath(path), 0o755)
 }
 
 // ExistsPath - Checks if a path exists. Unlike util ExistsPath, this call does not perform follow link.

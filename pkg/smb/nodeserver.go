@@ -17,6 +17,7 @@ limitations under the License.
 package smb
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -33,8 +34,6 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"golang.org/x/net/context"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/util"
 	azcache "sigs.k8s.io/cloud-provider-azure/pkg/cache"
@@ -230,11 +229,11 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			sensitiveMountOptions = []string{password}
 		}
 	} else {
-		var useKerberosCache, err = ensureKerberosCache(d.krb5CacheDirectory, d.krb5Prefix, volumeID, mountFlags, secrets)
+		useKerberosCache, err := ensureKerberosCache(d.krb5CacheDirectory, d.krb5Prefix, volumeID, mountFlags, secrets)
 		if err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("Error writing kerberos cache: %v", err))
 		}
-		if err := os.MkdirAll(targetPath, 0750); err != nil {
+		if err := os.MkdirAll(targetPath, 0o750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
 		}
 		if requireUsernamePwdOption && !useKerberosCache {
@@ -482,7 +481,7 @@ func (d *Driver) ensureMountPoint(target string) (bool, error) {
 }
 
 func makeDir(pathname string) error {
-	err := os.MkdirAll(pathname, os.FileMode(0755))
+	err := os.MkdirAll(pathname, os.FileMode(0o755))
 	if err != nil {
 		if !os.IsExist(err) {
 			return err
@@ -510,13 +509,13 @@ func hasKerberosMountOption(mountFlags []string) bool {
 }
 
 func getCredUID(mountFlags []string) (int, error) {
-	var cruidPrefix = "cruid="
+	cruidPrefix := "cruid="
 	for _, mountFlag := range mountFlags {
 		if strings.HasPrefix(mountFlag, cruidPrefix) {
 			return strconv.Atoi(strings.TrimPrefix(mountFlag, cruidPrefix))
 		}
 	}
-	return -1, fmt.Errorf("Can't find credUid in mount flags")
+	return -1, fmt.Errorf("can't find credUid in mount flags")
 }
 
 func getKrb5CcacheName(krb5Prefix string, credUID int) string {
@@ -544,7 +543,7 @@ func kerberosCacheDirectoryExists(krb5CacheDirectory string) (bool, error) {
 }
 
 func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secrets map[string]string) (string, []byte, error) {
-	var krb5CcacheName = getKrb5CcacheName(krb5Prefix, credUID)
+	krb5CcacheName := getKrb5CcacheName(krb5Prefix, credUID)
 	var krb5CcacheContent string
 	for k, v := range secrets {
 		switch strings.ToLower(k) {
@@ -559,7 +558,7 @@ func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secret
 	if err != nil {
 		return "", nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Malformed kerberos cache in key %s, expected to be in base64 form: %v", krb5CcacheName, err))
 	}
-	var krb5CacheFileName = getKerberosFilePath(krb5CacheDirectory, getKrb5CcacheName(krb5Prefix, credUID))
+	krb5CacheFileName := getKerberosFilePath(krb5CacheDirectory, getKrb5CcacheName(krb5Prefix, credUID))
 
 	return krb5CacheFileName, content, nil
 }
@@ -568,7 +567,7 @@ func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secret
 // At the same time, kerberos expects to find cache in file named "krb5cc_*", so creating symlink
 // will allow both clean up and serving proper cache to the kerberos.
 func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
-	var securityIsKerberos = hasKerberosMountOption(mountFlags)
+	securityIsKerberos := hasKerberosMountOption(mountFlags)
 	if securityIsKerberos {
 		_, err := kerberosCacheDirectoryExists(krb5CacheDirectory)
 		if err != nil {
@@ -586,7 +585,7 @@ func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountF
 		volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
 
 		volumeIDCacheAbsolutePath := getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
-		if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0700)); err != nil {
+		if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0o700)); err != nil {
 			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", volumeIDCacheAbsolutePath, err))
 		}
 		if err := os.Chown(volumeIDCacheAbsolutePath, credUID, credUID); err != nil {
@@ -623,7 +622,7 @@ func deleteKerberosCache(krb5CacheDirectory, volumeID string) error {
 
 	volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
 
-	var volumeIDCacheAbsolutePath = getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
+	volumeIDCacheAbsolutePath := getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
 	_, err = os.Stat(volumeIDCacheAbsolutePath)
 	// Not created or already removed
 	if os.IsNotExist(err) {
@@ -663,7 +662,7 @@ func enableGroupRWX(mode string) string {
 	if e != nil || v < 0 {
 		return mode
 	}
-	return fmt.Sprintf("0%o", v|070)
+	return fmt.Sprintf("0%o", v|0o70)
 }
 
 // Apply enableGroupRWX() to the option "flag=xyz"

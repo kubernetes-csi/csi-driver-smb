@@ -1,6 +1,6 @@
 module github.com/kubernetes-csi/csi-driver-smb
 
-go 1.24.0
+go 1.25
 
 godebug winsymlink=0
 
@@ -21,12 +21,12 @@ require (
 	go.uber.org/goleak v1.3.0
 	golang.org/x/net v0.47.0
 	google.golang.org/grpc v1.65.0
-	k8s.io/api v0.31.12
-	k8s.io/apimachinery v0.31.12
-	k8s.io/client-go v0.31.12
-	k8s.io/component-base v0.31.12
+	k8s.io/api v0.31.14
+	k8s.io/apimachinery v0.31.14
+	k8s.io/client-go v0.31.14
+	k8s.io/component-base v0.31.14
 	k8s.io/klog/v2 v2.130.1
-	k8s.io/kubernetes v1.31.12
+	k8s.io/kubernetes v1.31.14
 	k8s.io/mount-utils v0.32.0
 	k8s.io/pod-security-admission v0.31.12
 	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738

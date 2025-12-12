@@ -424,7 +424,7 @@ func TestGetRootPath(t *testing.T) {
 
 func TestGetKubeConfig(t *testing.T) {
 	// skip for now as this is very flaky on Windows
-	//skipIfTestingOnWindows(t)
+	// skipIfTestingOnWindows(t)
 	emptyKubeConfig := "empty-Kube-Config"
 	validKubeConfig := "valid-Kube-Config"
 	fakeContent := `
@@ -471,7 +471,7 @@ users:
 		}
 	}()
 
-	if err := os.WriteFile(validKubeConfig, []byte(fakeContent), 0666); err != nil {
+	if err := os.WriteFile(validKubeConfig, []byte(fakeContent), 0o666); err != nil {
 		t.Error(err)
 	}
 

@@ -42,7 +42,7 @@ func TestServe(_ *testing.T) {
 	s := nonBlockingGRPCServer{}
 	s.server = grpc.NewServer()
 	s.wg = sync.WaitGroup{}
-	//need to add one here as the actual also requires one.
+	// need to add one here as the actual also requires one.
 	s.wg.Add(1)
 	s.serve("tcp://127.0.0.1:0", nil, nil, nil, true)
 }

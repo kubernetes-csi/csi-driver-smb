@@ -123,7 +123,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		// Create subdirectory under base-dir
 		// TODO: revisit permissions
 		internalVolumePath := getInternalVolumePath(d.workingMountDir, smbVol)
-		if err = os.MkdirAll(internalVolumePath, 0777); err != nil {
+		if err = os.MkdirAll(internalVolumePath, 0o777); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err)
 		}
 
@@ -215,7 +215,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 			if strings.Contains(smbVol.subDir, "/") {
 				parentDir := filepath.Dir(archivedInternalVolumePath)
 				klog.V(2).Infof("DeleteVolume: subdirectory(%s) contains '/', make sure the parent directory(%s) exists", smbVol.subDir, parentDir)
-				if err = os.MkdirAll(parentDir, 0777); err != nil {
+				if err = os.MkdirAll(parentDir, 0o777); err != nil {
 					return nil, status.Errorf(codes.Internal, "create parent directory(%s) of %s failed with %v", parentDir, archivedInternalVolumePath, err)
 				}
 			}
@@ -235,7 +235,7 @@ func (d *Driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest)
 		} else {
 			if _, err := os.Lstat(internalVolumePath); err == nil {
 				if err2 := filepath.WalkDir(internalVolumePath, func(path string, _ fs.DirEntry, _ error) error {
-					return os.Chmod(path, 0777)
+					return os.Chmod(path, 0o777)
 				}); err2 != nil {
 					klog.Errorf("failed to chmod subdirectory: %v", err2)
 				}

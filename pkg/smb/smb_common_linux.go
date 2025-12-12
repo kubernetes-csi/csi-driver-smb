@@ -1,5 +1,4 @@
 //go:build linux
-// +build linux
 
 /*
 Copyright 2020 The Kubernetes Authors.
@@ -47,6 +46,7 @@ func Mount(m *mount.SafeFormatAndMount, source, target, fsType string, options, 
 		}()
 
 		for _, option := range sensitiveMountOptions {
+			//lint:ignore QF1012 reason: adhering to rule breaks tests.
 			if _, err := file.Write([]byte(fmt.Sprintf("%s\n", option))); err != nil {
 				return err
 			}
