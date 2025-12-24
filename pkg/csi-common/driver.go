@@ -94,7 +94,7 @@ func (d *CSIDriver) AddControllerServiceCapabilities(cl []csi.ControllerServiceC
 		csc = append(csc, NewControllerServiceCapability(c))
 	}
 
-	d.Cap = csc
+	d.Cap = append(d.Cap, csc...)
 }
 
 func (d *CSIDriver) AddNodeServiceCapabilities(nl []csi.NodeServiceCapability_RPC_Type) {
@@ -103,7 +103,7 @@ func (d *CSIDriver) AddNodeServiceCapabilities(nl []csi.NodeServiceCapability_RP
 		klog.V(2).Infof("Enabling node service capability: %v", n.String())
 		nsc = append(nsc, NewNodeServiceCapability(n))
 	}
-	d.NSCap = nsc
+	d.NSCap = append(d.NSCap, nsc...)
 }
 
 func (d *CSIDriver) AddVolumeCapabilityAccessModes(vc []csi.VolumeCapability_AccessMode_Mode) []*csi.VolumeCapability_AccessMode {
