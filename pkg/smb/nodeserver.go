@@ -40,6 +40,8 @@ import (
 	azcache "sigs.k8s.io/cloud-provider-azure/pkg/cache"
 )
 
+const mountTimeoutInSec = 110
+
 // NodePublishVolume mount the volume from staging to target path
 func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
 	volCap := req.GetVolumeCapability()
@@ -282,8 +284,10 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		execFunc := func() error {
 			return Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
 		}
-		timeoutFunc := func() error { return fmt.Errorf("time out") }
-		if err := util.WaitUntilTimeout(90*time.Second, execFunc, timeoutFunc); err != nil {
+		timeoutFunc := func() error {
+			return fmt.Errorf("mount volume %s to %s timeout after %ds", source, targetPath, mountTimeoutInSec)
+		}
+		if err := util.WaitUntilTimeout(mountTimeoutInSec*time.Second, execFunc, timeoutFunc); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, err))
 		}
 		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, targetPath)
