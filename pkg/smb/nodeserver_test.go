@@ -252,6 +252,16 @@ func TestNodeStageVolume(t *testing.T) {
 				strings.Replace(testSource, "\\", "\\\\", -1), sourceTest, testSource, sourceTest),
 			expectedErr: testutil.TestError{},
 		},
+		{
+			desc: "[Error] invalid source with directory traversal sequence",
+			req: &csi.NodeStageVolumeRequest{VolumeId: "vol_1##", StagingTargetPath: sourceTest,
+				VolumeCapability: &stdVolCap,
+				VolumeContext:    map[string]string{sourceField: "\\\\hostname\\share\\..\\test"},
+				Secrets:          secrets},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "invalid source path \"\\\\\\\\hostname\\\\share\\\\..\\\\test\": path contains directory traversal sequence"),
+			},
+		},
 	}
 
 	// Setup

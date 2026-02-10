@@ -570,43 +570,58 @@ func TestValidatePath(t *testing.T) {
 			expectError: false,
 		},
 		{
-			desc:        "valid path",
-			path:        "subdir/file",
+			desc:        "valid path with forward slashes",
+			path:        "/home/user/data",
 			expectError: false,
 		},
 		{
-			desc:        "valid path with leading slash",
-			path:        "/subdir/file",
+			desc:        "valid path with backslashes",
+			path:        "\\home\\user\\data",
+			expectError: false,
+		},
+		{
+			desc:        "valid path with mixed slashes",
+			path:        "/home\\user/data",
 			expectError: false,
 		},
 		{
 			desc:        "path with single dot",
-			path:        "./subdir/file",
+			path:        "/home/./data",
 			expectError: false,
 		},
 		{
-			desc:        "path with directory traversal",
-			path:        "../subdir/file",
+			desc:        "path with directory traversal at start",
+			path:        "../home/user",
 			expectError: true,
 		},
 		{
 			desc:        "path with directory traversal in middle",
-			path:        "subdir/../file",
+			path:        "/home/../user",
 			expectError: true,
 		},
 		{
 			desc:        "path with directory traversal at end",
-			path:        "subdir/file/..",
+			path:        "/home/user/..",
+			expectError: true,
+		},
+		{
+			desc:        "path with directory traversal using backslashes",
+			path:        "\\home\\..\\user",
 			expectError: true,
 		},
 		{
 			desc:        "path with multiple directory traversals",
-			path:        "../../../etc/passwd",
+			path:        "/home/../../user",
 			expectError: true,
 		},
 		{
-			desc:        "path with triple dots (not traversal)",
-			path:        "subdir/.../file",
+			desc:        "simple valid directory",
+			path:        "subdir",
+			expectError: false,
+		},
+		{
+			desc:        "path with triple dots (valid)",
+			path:        "/home/.../data",
 			expectError: false,
 		},
 	}
@@ -615,6 +630,7 @@ func TestValidatePath(t *testing.T) {
 		err := validatePath(test.path)
 		if test.expectError {
 			assert.NotNil(t, err, "test[%s]: expected error but got nil", test.desc)
+			assert.Contains(t, err.Error(), "path contains directory traversal sequence", "test[%s]: unexpected error message", test.desc)
 		} else {
 			assert.Nil(t, err, "test[%s]: unexpected error: %v", test.desc, err)
 		}

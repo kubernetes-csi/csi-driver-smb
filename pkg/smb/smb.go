@@ -23,7 +23,6 @@ import (
 	"net"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
@@ -386,17 +385,12 @@ func inClusterConfig(enableWindowsHostProcess bool) (*rest.Config, error) {
 }
 
 func validatePath(path string) error {
-	for _, segment := range strings.Split(path, "/") {
+	segments := strings.FieldsFunc(path, func(r rune) bool {
+		return r == '/' || r == '\\'
+	})
+	for _, segment := range segments {
 		if segment == ".." {
 			return fmt.Errorf("path contains directory traversal sequence")
-		}
-	}
-
-	if runtime.GOOS == "windows" {
-		for _, segment := range strings.Split(path, "\\") {
-			if segment == ".." {
-				return fmt.Errorf("path contains directory traversal sequence")
-			}
 		}
 	}
 	return nil
