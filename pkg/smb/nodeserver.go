@@ -281,6 +281,10 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			source = strings.TrimRight(source, "/")
 			source = fmt.Sprintf("%s/%s", source, subDir)
 		}
+
+		if err := validatePath(source); err != nil {
+			return nil, status.Errorf(codes.InvalidArgument, "invalid source path %q: %v", source, err)
+		}
 		execFunc := func() error {
 			return Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
 		}

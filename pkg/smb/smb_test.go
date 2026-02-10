@@ -557,3 +557,66 @@ func TestGetUserNamePasswordFromSecret(t *testing.T) {
 		assert.Equal(t, test.expectedError, err, "test[%s]: unexpected error", test.desc)
 	}
 }
+
+func TestValidatePath(t *testing.T) {
+	tests := []struct {
+		desc        string
+		path        string
+		expectError bool
+	}{
+		{
+			desc:        "empty path",
+			path:        "",
+			expectError: false,
+		},
+		{
+			desc:        "valid path",
+			path:        "subdir/file",
+			expectError: false,
+		},
+		{
+			desc:        "valid path with leading slash",
+			path:        "/subdir/file",
+			expectError: false,
+		},
+		{
+			desc:        "path with single dot",
+			path:        "./subdir/file",
+			expectError: false,
+		},
+		{
+			desc:        "path with directory traversal",
+			path:        "../subdir/file",
+			expectError: true,
+		},
+		{
+			desc:        "path with directory traversal in middle",
+			path:        "subdir/../file",
+			expectError: true,
+		},
+		{
+			desc:        "path with directory traversal at end",
+			path:        "subdir/file/..",
+			expectError: true,
+		},
+		{
+			desc:        "path with multiple directory traversals",
+			path:        "../../../etc/passwd",
+			expectError: true,
+		},
+		{
+			desc:        "path with triple dots (not traversal)",
+			path:        "subdir/.../file",
+			expectError: false,
+		},
+	}
+
+	for _, test := range tests {
+		err := validatePath(test.path)
+		if test.expectError {
+			assert.NotNil(t, err, "test[%s]: expected error but got nil", test.desc)
+		} else {
+			assert.Nil(t, err, "test[%s]: unexpected error: %v", test.desc, err)
+		}
+	}
+}
