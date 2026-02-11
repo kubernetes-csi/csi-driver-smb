@@ -498,6 +498,12 @@ func newSMBVolume(name string, size int64, params map[string]string, defaultOnDe
 	if err := validateOnDeleteValue(onDelete); err != nil {
 		return nil, err
 	}
+	if err := validatePath(vol.source); err != nil {
+		return nil, fmt.Errorf("invalid source %q: %v", vol.source, err)
+	}
+	if err := validatePath(vol.subDir); err != nil {
+		return nil, fmt.Errorf("invalid subDir %q: %v", vol.subDir, err)
+	}
 
 	vol.onDelete = defaultOnDeletePolicy
 	if onDelete != "" {

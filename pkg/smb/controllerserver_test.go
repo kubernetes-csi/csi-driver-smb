@@ -906,3 +906,527 @@ func TestCopyFromVolume(t *testing.T) {
 		}
 	}
 }
+
+func TestNewSMBVolumeExtended(t *testing.T) {
+	cases := []struct {
+		desc                  string
+		name                  string
+		size                  int64
+		params                map[string]string
+		defaultOnDeletePolicy string
+		expectVol             *smbVolume
+		expectErr             bool
+		expectErrMsg          string
+	}{
+		{
+			desc: "subDir is specified",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+				"subDir": "subdir",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#subdir#pv-name#",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "subdir",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc: "subDir with pv/pvc metadata is specified",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source":        "//smb-server.default.svc.cluster.local/share",
+				"subDir":        fmt.Sprintf("subdir-%s-%s-%s", pvcNameMetadata, pvcNamespaceMetadata, pvNameMetadata),
+				pvcNameKey:      "pvcname",
+				pvcNamespaceKey: "pvcnamespace",
+				pvNameKey:       "pvname",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#subdir-pvcname-pvcnamespace-pvname#pv-name#",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "subdir-pvcname-pvcnamespace-pvname",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc: "subDir not specified",
+			name: "pv-name",
+			size: 200,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#pv-name##",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "pv-name",
+				size:   200,
+				uuid:   "",
+			},
+		},
+		{
+			desc:         "invalid parameter",
+			params:       map[string]string{"invalid-parameter": "value"},
+			expectVol:    nil,
+			expectErr:    true,
+			expectErrMsg: "invalid parameter invalid-parameter in storage class",
+		},
+		{
+			desc:         "source value is empty",
+			params:       map[string]string{},
+			expectVol:    nil,
+			expectErr:    true,
+			expectErrMsg: fmt.Sprintf("%s is a required parameter", sourceField),
+		},
+		{
+			desc:                  "with default onDelete policy",
+			name:                  "pv-name",
+			size:                  100,
+			defaultOnDeletePolicy: "delete",
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+			},
+			expectVol: &smbVolume{
+				id:       "smb-server.default.svc.cluster.local/share#pv-name##",
+				source:   "//smb-server.default.svc.cluster.local/share",
+				subDir:   "pv-name",
+				size:     100,
+				uuid:     "",
+				onDelete: "delete",
+			},
+		},
+		{
+			desc:                  "onDelete param overrides default policy",
+			name:                  "pv-name",
+			size:                  100,
+			defaultOnDeletePolicy: "delete",
+			params: map[string]string{
+				"source":   "//smb-server.default.svc.cluster.local/share",
+				"ondelete": "retain",
+			},
+			expectVol: &smbVolume{
+				id:       "smb-server.default.svc.cluster.local/share#pv-name##retain",
+				source:   "//smb-server.default.svc.cluster.local/share",
+				subDir:   "pv-name",
+				size:     100,
+				uuid:     "",
+				onDelete: "retain",
+			},
+		},
+		{
+			desc:                  "onDelete archive policy",
+			name:                  "pv-name",
+			size:                  100,
+			defaultOnDeletePolicy: "",
+			params: map[string]string{
+				"source":   "//smb-server.default.svc.cluster.local/share",
+				"ondelete": "archive",
+			},
+			expectVol: &smbVolume{
+				id:       "smb-server.default.svc.cluster.local/share#pv-name##archive",
+				source:   "//smb-server.default.svc.cluster.local/share",
+				subDir:   "pv-name",
+				size:     100,
+				uuid:     "",
+				onDelete: "archive",
+			},
+		},
+		{
+			desc: "case insensitive source parameter",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"SOURCE": "//smb-server.default.svc.cluster.local/share",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#pv-name##",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "pv-name",
+				size:   100,
+				uuid:   "",
+			},
+		},
+		{
+			desc: "case insensitive subDir parameter",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+				"SUBDIR": "mysubdir",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#mysubdir#pv-name#",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "mysubdir",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc: "nested subDir path",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+				"subDir": "dir1/dir2/dir3",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#dir1/dir2/dir3#pv-name#",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "dir1/dir2/dir3",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc: "zero size volume",
+			name: "pv-name",
+			size: 0,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#pv-name##",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "pv-name",
+				size:   0,
+				uuid:   "",
+			},
+		},
+	}
+
+	for _, test := range cases {
+		t.Run(test.desc, func(t *testing.T) {
+			vol, err := newSMBVolume(test.name, test.size, test.params, test.defaultOnDeletePolicy)
+			if test.expectErr {
+				assert.NotNil(t, err)
+				if test.expectErrMsg != "" {
+					assert.Contains(t, err.Error(), test.expectErrMsg)
+				}
+				assert.Nil(t, vol)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, test.expectVol, vol)
+			}
+		})
+	}
+}
+
+func TestNewSMBVolumeValidation(t *testing.T) {
+	cases := []struct {
+		desc                  string
+		name                  string
+		size                  int64
+		params                map[string]string
+		defaultOnDeletePolicy string
+		expectVol             *smbVolume
+		expectErr             bool
+		expectErrMsg          string
+	}{
+		{
+			desc: "valid source with subDir",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+				"subDir": "subdir",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server.default.svc.cluster.local/share#subdir#pv-name#",
+				source: "//smb-server.default.svc.cluster.local/share",
+				subDir: "subdir",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc: "invalid source format",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share/../other",
+			},
+			expectErr:    true,
+			expectErrMsg: "invalid source \"//smb-server.default.svc.cluster.local/share/../other\": path contains directory traversal sequence",
+		},
+		{
+			desc: "invalid subDir format",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server.default.svc.cluster.local/share",
+				"subDir": "subdir/../other",
+			},
+			expectErr:    true,
+			expectErrMsg: "invalid subDir \"subdir/../other\": path contains directory traversal sequence",
+		},
+		{
+			desc: "source without subDir uses pv name",
+			name: "my-pv-name",
+			size: 200,
+			params: map[string]string{
+				"source": "//smb-server/share",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share#my-pv-name##",
+				source: "//smb-server/share",
+				subDir: "my-pv-name",
+				size:   200,
+				uuid:   "",
+			},
+		},
+		{
+			desc:         "missing source parameter",
+			name:         "pv-name",
+			size:         100,
+			params:       map[string]string{},
+			expectErr:    true,
+			expectErrMsg: "source is a required parameter",
+		},
+		{
+			desc: "invalid parameter in storage class",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source":           "//smb-server/share",
+				"unknownParameter": "value",
+			},
+			expectErr:    true,
+			expectErrMsg: "invalid parameter unknownParameter in storage class",
+		},
+		{
+			desc:                  "default onDelete policy applied",
+			name:                  "pv-name",
+			size:                  100,
+			defaultOnDeletePolicy: "delete",
+			params: map[string]string{
+				"source": "//smb-server/share",
+			},
+			expectVol: &smbVolume{
+				id:       "smb-server/share#pv-name##",
+				source:   "//smb-server/share",
+				subDir:   "pv-name",
+				size:     100,
+				uuid:     "",
+				onDelete: "delete",
+			},
+		},
+		{
+			desc:                  "onDelete parameter overrides default",
+			name:                  "pv-name",
+			size:                  100,
+			defaultOnDeletePolicy: "delete",
+			params: map[string]string{
+				"source":   "//smb-server/share",
+				"ondelete": "retain",
+			},
+			expectVol: &smbVolume{
+				id:       "smb-server/share#pv-name##retain",
+				source:   "//smb-server/share",
+				subDir:   "pv-name",
+				size:     100,
+				uuid:     "",
+				onDelete: "retain",
+			},
+		},
+		{
+			desc: "onDelete archive policy",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source":   "//smb-server/share",
+				"ondelete": "archive",
+			},
+			expectVol: &smbVolume{
+				id:       "smb-server/share#pv-name##archive",
+				source:   "//smb-server/share",
+				subDir:   "pv-name",
+				size:     100,
+				uuid:     "",
+				onDelete: "archive",
+			},
+		},
+		{
+			desc: "case insensitive SOURCE parameter",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"SOURCE": "//smb-server/share",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share#pv-name##",
+				source: "//smb-server/share",
+				subDir: "pv-name",
+				size:   100,
+				uuid:   "",
+			},
+		},
+		{
+			desc: "case insensitive SUBDIR parameter",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server/share",
+				"SUBDIR": "mysubdir",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share#mysubdir#pv-name#",
+				source: "//smb-server/share",
+				subDir: "mysubdir",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc: "case insensitive ONDELETE parameter",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source":   "//smb-server/share",
+				"ONDELETE": "retain",
+			},
+			expectVol: &smbVolume{
+				id:       "smb-server/share#pv-name##retain",
+				source:   "//smb-server/share",
+				subDir:   "pv-name",
+				size:     100,
+				uuid:     "",
+				onDelete: "retain",
+			},
+		},
+		{
+			desc: "subDir with pvc metadata replacement",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source":        "//smb-server/share",
+				"subDir":        fmt.Sprintf("%s-%s-%s", pvcNameMetadata, pvcNamespaceMetadata, pvNameMetadata),
+				pvcNameKey:      "mypvc",
+				pvcNamespaceKey: "mynamespace",
+				pvNameKey:       "mypv",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share#mypvc-mynamespace-mypv#pv-name#",
+				source: "//smb-server/share",
+				subDir: "mypvc-mynamespace-mypv",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc: "nested subDir path",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server/share",
+				"subDir": "level1/level2/level3",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share#level1/level2/level3#pv-name#",
+				source: "//smb-server/share",
+				subDir: "level1/level2/level3",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc: "zero size volume",
+			name: "pv-name",
+			size: 0,
+			params: map[string]string{
+				"source": "//smb-server/share",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share#pv-name##",
+				source: "//smb-server/share",
+				subDir: "pv-name",
+				size:   0,
+				uuid:   "",
+			},
+		},
+		{
+			desc: "large size volume",
+			name: "pv-name",
+			size: 1099511627776, // 1 TiB
+			params: map[string]string{
+				"source": "//smb-server/share",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share#pv-name##",
+				source: "//smb-server/share",
+				subDir: "pv-name",
+				size:   1099511627776,
+				uuid:   "",
+			},
+		},
+		{
+			desc: "source with multiple path segments",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source": "//smb-server/share/dir1/dir2",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share/dir1/dir2#pv-name##",
+				source: "//smb-server/share/dir1/dir2",
+				subDir: "pv-name",
+				size:   100,
+				uuid:   "",
+			},
+		},
+		{
+			desc: "partial pvc metadata in subDir",
+			name: "pv-name",
+			size: 100,
+			params: map[string]string{
+				"source":   "//smb-server/share",
+				"subDir":   fmt.Sprintf("prefix-%s-suffix", pvcNameMetadata),
+				pvcNameKey: "mypvc",
+			},
+			expectVol: &smbVolume{
+				id:     "smb-server/share#prefix-mypvc-suffix#pv-name#",
+				source: "//smb-server/share",
+				subDir: "prefix-mypvc-suffix",
+				size:   100,
+				uuid:   "pv-name",
+			},
+		},
+		{
+			desc:                  "empty onDelete with empty default",
+			name:                  "pv-name",
+			size:                  100,
+			defaultOnDeletePolicy: "",
+			params: map[string]string{
+				"source": "//smb-server/share",
+			},
+			expectVol: &smbVolume{
+				id:       "smb-server/share#pv-name##",
+				source:   "//smb-server/share",
+				subDir:   "pv-name",
+				size:     100,
+				uuid:     "",
+				onDelete: "",
+			},
+		},
+	}
+
+	for _, test := range cases {
+		t.Run(test.desc, func(t *testing.T) {
+			vol, err := newSMBVolume(test.name, test.size, test.params, test.defaultOnDeletePolicy)
+			if test.expectErr {
+				assert.NotNil(t, err)
+				if test.expectErrMsg != "" {
+					assert.Contains(t, err.Error(), test.expectErrMsg)
+				}
+				assert.Nil(t, vol)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, test.expectVol, vol)
+			}
+		})
+	}
+}

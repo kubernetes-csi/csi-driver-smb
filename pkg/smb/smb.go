@@ -383,3 +383,15 @@ func inClusterConfig(enableWindowsHostProcess bool) (*rest.Config, error) {
 		BearerTokenFile: tokenFile,
 	}, nil
 }
+
+func validatePath(path string) error {
+	segments := strings.FieldsFunc(path, func(r rune) bool {
+		return r == '/' || r == '\\'
+	})
+	for _, segment := range segments {
+		if segment == ".." {
+			return fmt.Errorf("path contains directory traversal sequence")
+		}
+	}
+	return nil
+}
