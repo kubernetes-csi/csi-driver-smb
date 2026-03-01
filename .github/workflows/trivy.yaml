@@ -17,8 +17,6 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v6
-        run: |
-          git config --global init.defaultBranch master
       
       - name: Build an image from Dockerfile
         run: |
