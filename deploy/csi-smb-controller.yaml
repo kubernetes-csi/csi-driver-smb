@@ -44,7 +44,7 @@ spec:
             - "--csi-address=$(ADDRESS)"
             - "--leader-election"
             - "--leader-election-namespace=kube-system"
-            - "--feature-gates=HonorPVReclaimPolicy=true,VolumeAttributesClass=false"
+            - "--feature-gates=VolumeAttributesClass=false"
             - "--extra-create-metadata=true"
             - "--retry-interval-max=30m"
           env:
