@@ -33,7 +33,7 @@ import (
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/os/smb"
 )
 
-var driverGlobalMountPath = "C:\\var\\lib\\kubelet\\plugins\\kubernetes.io\\csi\\file.csi.azure.com"
+var driverGlobalMountPath = "C:\\var\\lib\\kubelet\\plugins\\kubernetes.io\\csi\\smb.csi.k8s.io"
 
 var _ CSIProxyMounter = &winMounter{}
 
