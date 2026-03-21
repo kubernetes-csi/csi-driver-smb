@@ -1,18 +1,28 @@
-## CSI driver example
-> refer to [driver parameters](../../docs/driver-parameters.md) for more detailed usage
+# CSI Driver E2E Usage Example
 
-### Prerequisite
- - [Set up a Samba Server on a Kubernetes cluster](./smb-provisioner/)
- > this example will create a new Samba Server(`//smb-server.default.svc.cluster.local/share`) with credential stored in secret `smbcreds`
- - Use `kubectl create secret` to create `smbcreds` secret to store Samba Server username, password
-```console
-kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
-```
-> add `--from-literal domain=DOMAIN-NAME` for domain support
+> Refer to [driver parameters](../../docs/driver-parameters.md) for more detailed usage.
 
-### Option#1: Storage Class Usage
- - Access by Linux node
-#### 1. Create a storage class
+## Prerequisites
+
+- [Set up a Samba Server on a Kubernetes cluster](./smb-provisioner/)
+  > This example will create a new Samba Server (`//smb-server.default.svc.cluster.local/share`) with credentials stored in the secret `smbcreds`.
+
+- Use `kubectl create secret` to create the `smbcreds` secret to store Samba Server username and password:
+
+  ```console
+  kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
+  ```
+
+  > Add `--from-literal domain=DOMAIN-NAME` for domain support.
+
+---
+
+## Option 1: Storage Class Usage (Dynamic Provisioning)
+
+### 1. Create a StorageClass
+
+#### Access by Linux node
+
 ```yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -37,13 +47,14 @@ mountOptions:
   - gid=1001
 ```
 
- - Create storage class
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
 ```
 
- - Access by Windows node
-> Since `smb-server.default.svc.cluster.local` could not be recognized by CSI proxy on Windows node, should configure public IP address or domain name for `source` in storage class:
+#### Access by Windows node
+
+> **Note:** `smb-server.default.svc.cluster.local` cannot be resolved by CSI proxy on Windows nodes. Use a public IP address or externally resolvable domain name for `source` in the StorageClass.
+
 ```yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -51,8 +62,9 @@ metadata:
   name: smb
 provisioner: smb.csi.k8s.io
 parameters:
-  # On Windows, "*.default.svc.cluster.local" could not be recognized by csi-proxy
-  source: //smb-server.default.svc.cluster.local/share
+  # On Windows, "*.default.svc.cluster.local" cannot be resolved by csi-proxy.
+  # Replace with a public IP or externally resolvable domain name.
+  source: //<public-ip-or-domain>/share
   # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
   # with PV name under source
   csi.storage.k8s.io/provisioner-secret-name: smbcreds
@@ -64,18 +76,20 @@ allowVolumeExpansion: true
 mountOptions:
   - dir_mode=0777
   - file_mode=0777
-  - uid=1001
-  - gid=1001
 ```
 
-#### 2. Create a statefulset with SMB volume mount
+### 2. Create a StatefulSet with SMB volume mount
+
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/statefulset.yaml
 ```
- - Execute `df -h` command in the container
+
+Verify the volume is mounted:
+
 ```console
 kubectl exec -it statefulset-smb-0 -- df -h
 ```
+
 <pre>
 Filesystem                                    Size  Used Avail Use% Mounted on
 ...
@@ -84,9 +98,14 @@ Filesystem                                    Size  Used Avail Use% Mounted on
 ...
 </pre>
 
-### Option#2: PV/PVC Usage
-#### 1. Create PV/PVC bound with SMB share
- - Create a smb CSI PV, download [`pv-smb.yaml`](https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pv-smb.yaml) file and edit `source` in `volumeAttributes`
+---
+
+## Option 2: PV/PVC Usage (Static Provisioning)
+
+### 1. Create PV/PVC bound with SMB share
+
+Create an SMB CSI PV — download [`pv-smb.yaml`](https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pv-smb.yaml) and edit `source` in `volumeAttributes`:
+
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
@@ -115,31 +134,39 @@ spec:
       name: smbcreds
       namespace: default
 ```
-> For [Azure File](https://docs.microsoft.com/en-us/azure/storage/files/), format of `source`: `//accountname.file.core.windows.net/sharename`
+
+> For [Azure File](https://learn.microsoft.com/en-us/azure/storage/files/), the format of `source` is: `//accountname.file.core.windows.net/sharename`
 
 ```console
 kubectl create -f pv-smb.yaml
 ```
 
- - Create a PVC
+Create a PVC:
+
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/pvc-smb-static.yaml
 ```
 
- - make sure pvc is created and in `Bound` status after a while
+Make sure the PVC is created and in `Bound` status:
+
 ```console
 watch kubectl describe pvc pvc-smb
 ```
 
-#### 2.1 Create a deployment on Linux
+### 2. Create a deployment
+
+#### Linux
+
 ```console
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/deployment.yaml
 ```
 
- - Execute `df -h` command in the container
+Verify the volume is mounted:
+
 ```console
 kubectl exec -it nginx-smb -- df -h
 ```
+
 <pre>
 Filesystem            Size  Used Avail Use% Mounted on
 ...
@@ -148,9 +175,10 @@ Filesystem            Size  Used Avail Use% Mounted on
 ...
 </pre>
 
-In the above example, there is a `/mnt/smb` directory mounted as cifs filesystem.
+In the above example, `/mnt/smb` is mounted as a CIFS filesystem.
 
-### 2.2 Create a deployment on Windows
+#### Windows
+
 ```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/windows/deployment.yaml
 ```
