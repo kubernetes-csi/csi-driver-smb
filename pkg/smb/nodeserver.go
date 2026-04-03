@@ -577,48 +577,48 @@ func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secret
 // will allow both clean up and serving proper cache to the kerberos.
 // If symlink already exists, ignore it
 func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
-    var securityIsKerberos = hasKerberosMountOption(mountFlags)
-    if securityIsKerberos {
-        _, err := kerberosCacheDirectoryExists(krb5CacheDirectory)
-        if err != nil {
-            return false, err
-        }
-        credUID, err := getCredUID(mountFlags)
-        if err != nil {
-            return false, err
-        }
-        krb5CacheFileName, content, err := getKerberosCache(krb5CacheDirectory, krb5Prefix, credUID, secrets)
-        if err != nil {
-            return false, err
-        }
-        volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
+	var securityIsKerberos = hasKerberosMountOption(mountFlags)
+	if securityIsKerberos {
+		_, err := kerberosCacheDirectoryExists(krb5CacheDirectory)
+		if err != nil {
+			return false, err
+		}
+		credUID, err := getCredUID(mountFlags)
+		if err != nil {
+			return false, err
+		}
+		krb5CacheFileName, content, err := getKerberosCache(krb5CacheDirectory, krb5Prefix, credUID, secrets)
+		if err != nil {
+			return false, err
+		}
+		volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
 
-        volumeIDCacheAbsolutePath := getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
-        if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0700)); err != nil {
-            return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", volumeIDCacheAbsolutePath, err))
-        }
-        if err := os.Chown(volumeIDCacheAbsolutePath, credUID, credUID); err != nil {
-            return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't chown kerberos cache %s to user %d: %v", volumeIDCacheAbsolutePath, credUID, err))
-        }
+		volumeIDCacheAbsolutePath := getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
+		if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0700)); err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", volumeIDCacheAbsolutePath, err))
+		}
+		if err := os.Chown(volumeIDCacheAbsolutePath, credUID, credUID); err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't chown kerberos cache %s to user %d: %v", volumeIDCacheAbsolutePath, credUID, err))
+		}
 
-        _, statErr := os.Stat(krb5CacheFileName)
-        if statErr == nil {
-            klog.V(2).Infof("Valid symlink already exists [%s], leaving it alone for concurrent mount.", krb5CacheFileName)
-        } else {
-            os.Remove(krb5CacheFileName)
+		_, statErr := os.Stat(krb5CacheFileName)
+		if statErr == nil {
+			klog.V(2).Infof("Valid symlink already exists [%s], leaving it alone for concurrent mount.", krb5CacheFileName)
+		} else {
+			os.Remove(krb5CacheFileName)
 
-            if err := os.Symlink(volumeIDCacheAbsolutePath, krb5CacheFileName); err != nil {
-                if os.IsExist(err) {
-                    klog.V(2).Infof("Symlink %s was just created by another thread, continuing.", krb5CacheFileName)
-                } else {
-                    return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't create symlink: %v", err))
-                }
-            }
-        }
+			if err := os.Symlink(volumeIDCacheAbsolutePath, krb5CacheFileName); err != nil {
+				if os.IsExist(err) {
+					klog.V(2).Infof("Symlink %s was just created by another thread, continuing.", krb5CacheFileName)
+				} else {
+					return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't create symlink: %v", err))
+				}
+			}
+		}
 
-        return true, nil
-    }
-    return false, nil
+		return true, nil
+	}
+	return false, nil
 }
 
 func deleteKerberosCache(krb5CacheDirectory, volumeID string) error {
