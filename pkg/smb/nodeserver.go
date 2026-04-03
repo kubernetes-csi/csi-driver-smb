@@ -24,6 +24,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -572,10 +573,17 @@ func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secret
 	return krb5CacheFileName, content, nil
 }
 
+var cruidLocks sync.Map // map[int]*sync.Mutex
+
+func getCruidLock(cruid int) *sync.Mutex {
+	val, _ := cruidLocks.LoadOrStore(cruid, &sync.Mutex{})
+	return val.(*sync.Mutex)
+}
+
 // Create kerberos cache in the file based on the VolumeID, so it can be cleaned up during unstage
 // At the same time, kerberos expects to find cache in file named "krb5cc_*", so creating symlink
 // will allow both clean up and serving proper cache to the kerberos.
-// If symlink already exists, ignore it
+// If symlink already exists, ignore it.
 func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
 	var securityIsKerberos = hasKerberosMountOption(mountFlags)
 	if securityIsKerberos {
@@ -591,9 +599,10 @@ func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountF
 		if err != nil {
 			return false, err
 		}
-		volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
 
+		volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
 		volumeIDCacheAbsolutePath := getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
+
 		if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0700)); err != nil {
 			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", volumeIDCacheAbsolutePath, err))
 		}
@@ -601,19 +610,20 @@ func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountF
 			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't chown kerberos cache %s to user %d: %v", volumeIDCacheAbsolutePath, credUID, err))
 		}
 
-		_, statErr := os.Stat(krb5CacheFileName)
-		if statErr == nil {
-			klog.V(2).Infof("Valid symlink already exists [%s], leaving it alone for concurrent mount.", krb5CacheFileName)
-		} else {
-			os.Remove(krb5CacheFileName)
+		lock := getCruidLock(credUID)
+		lock.Lock()
+		defer lock.Unlock()
 
-			if err := os.Symlink(volumeIDCacheAbsolutePath, krb5CacheFileName); err != nil {
-				if os.IsExist(err) {
-					klog.V(2).Infof("Symlink %s was just created by another thread, continuing.", krb5CacheFileName)
-				} else {
-					return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't create symlink: %v", err))
-				}
+		if _, err := os.Stat(krb5CacheFileName); os.IsNotExist(err) {
+			klog.V(2).Infof("Symlink file doesn't exist, it will be created [%s]", krb5CacheFileName)
+		} else {
+			if err := os.Remove(krb5CacheFileName); err != nil {
+				klog.Warningf("Couldn't delete the file [%s]: %v", krb5CacheFileName, err)
 			}
+		}
+
+		if err := os.Symlink(volumeIDCacheAbsolutePath, krb5CacheFileName); err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't create symlink to a cache file %s->%s for user %d: %v", krb5CacheFileName, volumeIDCacheFileName, credUID, err))
 		}
 
 		return true, nil
