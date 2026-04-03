@@ -585,7 +585,7 @@ func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secret
 // Create kerberos cache in the file based on the VolumeID, so it can be cleaned up during unstage
 // At the same time, kerberos expects to find cache in file named "krb5cc_*", so creating symlink
 // will allow both clean up and serving proper cache to the kerberos.
-// If symlink already exist, ignore it
+// If symlink already exists, ignore it
 func ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
     var securityIsKerberos = hasKerberosMountOption(mountFlags)
     if securityIsKerberos {
