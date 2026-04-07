@@ -55,7 +55,7 @@ spec:
             - --csi-address=$(ADDRESS)
             - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
             - --v=2
-            - --http-endpoint=:29809
+            - --http-endpoint=localhost:29809
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -69,6 +69,7 @@ spec:
             httpGet:
               path: /healthz
               port: healthz
+              host: localhost
             initialDelaySeconds: 30
             timeoutSeconds: 15
             periodSeconds: 10
