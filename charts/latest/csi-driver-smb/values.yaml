@@ -26,9 +26,9 @@ image:
     pullPolicy: IfNotPresent
 
 nodeDriverRegistrar:
-  healthPort: 19809
+  healthPort: 29641
   livenessProbe:
-    enabled: false
+    enabled: true
     initialDelaySeconds: 20
     timeoutSeconds: 10
     periodSeconds: 5

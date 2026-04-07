@@ -55,7 +55,7 @@ spec:
             - --csi-address=$(ADDRESS)
             - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
             - --v=2
-            - --http-endpoint=localhost:19809
+            - --http-endpoint=localhost:29641
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -68,7 +68,7 @@ spec:
               mountPath: /registration
           ports:
             - name: healthz
-              containerPort: 19809
+              containerPort: 29641
               protocol: TCP
           livenessProbe:
             httpGet:
