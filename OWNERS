@@ -1,8 +1,8 @@
-reviewers:
-- andyzhangx
-- ZeroMagic
+# See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- andyzhangx
-- jingxu97
-- msau42
+- kubernetes-csi-approvers
+- pohly
+
+reviewers:
+- kubernetes-csi-reviewers

@@ -1,9 +1,5 @@
 # Release Process
 
-The SMB CSI Driver is released on an as-needed basis. The process is as follows:
-
-1. An issue is proposing a new release with a changelog since the last release
-1. All [OWNERS](OWNERS) must LGTM this release
-1. An OWNER runs `git tag -s $VERSION` and inserts the changelog and pushes the tag with `git push $VERSION`
-1. The release issue is closed
-1. An announcement email is sent to `kubernetes-dev@googlegroups.com` with the subject `[ANNOUNCE] csi-driver-smb $VERSION is released`
+No tagged releases are planned at this point. The intention is to keep
+the master branch in a state such that it can be used for all
+supported branches in downstream repos which use these files.
