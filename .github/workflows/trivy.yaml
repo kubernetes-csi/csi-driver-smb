@@ -12,7 +12,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
-          go-version: 1.25.8
+          go-version: 1.25.9
         id: go
 
       - name: Checkout code
