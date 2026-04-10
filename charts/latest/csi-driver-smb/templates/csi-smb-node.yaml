@@ -78,8 +78,8 @@ spec:
             - --csi-address=$(ADDRESS)
             - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
             - --v=2
-{{- if .Values.nodeDriverRegistrar.livenessProbe.enabled }}
-            - --http-endpoint=localhost:{{ .Values.nodeDriverRegistrar.healthPort }}
+{{- if .Values.node.nodeDriverRegistrar.livenessProbe.enabled }}
+            - --http-endpoint=localhost:{{ .Values.node.nodeDriverRegistrar.healthPort }}
 {{- end }}
           env:
             - name: ADDRESS
@@ -93,20 +93,20 @@ spec:
             - name: registration-dir
               mountPath: /registration
           resources: {{- toYaml .Values.linux.resources.nodeDriverRegistrar | nindent 12 }}
-{{- if .Values.nodeDriverRegistrar.livenessProbe.enabled }}
+{{- if .Values.node.nodeDriverRegistrar.livenessProbe.enabled }}
           ports:
             - name: healthz
-              containerPort: {{ .Values.nodeDriverRegistrar.healthPort }}
+              containerPort: {{ .Values.node.nodeDriverRegistrar.healthPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               host: localhost
               path: /healthz
               port: healthz
-            initialDelaySeconds: {{ .Values.nodeDriverRegistrar.livenessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.nodeDriverRegistrar.livenessProbe.timeoutSeconds }}
-            periodSeconds: {{ .Values.nodeDriverRegistrar.livenessProbe.periodSeconds }}
-            failureThreshold: {{ .Values.nodeDriverRegistrar.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.node.nodeDriverRegistrar.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.node.nodeDriverRegistrar.livenessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.node.nodeDriverRegistrar.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.node.nodeDriverRegistrar.livenessProbe.failureThreshold }}
 {{- end }}
           securityContext:
             capabilities:

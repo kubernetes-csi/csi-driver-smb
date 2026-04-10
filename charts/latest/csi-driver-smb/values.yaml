@@ -25,15 +25,6 @@ image:
     tag: v1.1.2
     pullPolicy: IfNotPresent
 
-nodeDriverRegistrar:
-  healthPort: 29641
-  livenessProbe:
-    enabled: true
-    initialDelaySeconds: 20
-    timeoutSeconds: 10
-    periodSeconds: 5
-    failureThreshold: 2
-
 serviceAccount:
   create: true # When true, service accounts will be created for you. Set to false if you want to use your own.
   controller: csi-smb-controller-sa
@@ -108,6 +99,14 @@ node:
   logLevel: 5
   livenessProbe:
     healthPort: 29643
+  nodeDriverRegistrar:
+    healthPort: 29641
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 20
+      timeoutSeconds: 10
+      periodSeconds: 5
+      failureThreshold: 2
   affinity: {}
   nodeSelector: {}
 
