@@ -610,7 +610,10 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 	}
 	defer d.volumeLocks.Release(cruidLockKey)
 
-	if _, err := os.Stat(krb5CacheFileName); os.IsNotExist(err) {
+	// Use Lstat so a dangling symlink is still detected as present — os.Stat
+	// would follow the link and report ENOENT, causing the subsequent Symlink
+	// to fail with "file exists".
+	if _, err := os.Lstat(krb5CacheFileName); os.IsNotExist(err) {
 		klog.V(2).Infof("Symlink file doesn't exist, it will be created [%s]", krb5CacheFileName)
 	} else {
 		if err := os.Remove(krb5CacheFileName); err != nil {

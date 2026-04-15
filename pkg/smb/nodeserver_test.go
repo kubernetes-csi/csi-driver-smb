@@ -27,6 +27,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"testing"
 
@@ -979,6 +980,58 @@ func TestGetKerberosCache(t *testing.T) {
 		}
 	}
 
+}
+
+// Regression test for the race where parallel kubelet mounts sharing a CRUID
+// collided on the shared krb5cc_<uid> symlink. Runs many goroutines against the
+// per-CRUID lock and asserts no caller observes a "file exists" from Symlink
+// and that the final symlink points at a valid volume-specific cache file.
+func TestEnsureKerberosCacheConcurrent(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("ensureKerberosCache is only used on Linux")
+	}
+
+	krb5Dir := t.TempDir() + "/"
+	d := NewFakeDriver()
+
+	credUID := os.Getuid()
+	krb5Prefix := "krb5cc_"
+	ticket := []byte{'G', 'O', 'L', 'A', 'N', 'G'}
+	base64Ticket := base64.StdEncoding.EncodeToString(ticket)
+	secrets := map[string]string{
+		fmt.Sprintf("%s%d", krb5Prefix, credUID): base64Ticket,
+	}
+	mountFlags := []string{"sec=krb5", fmt.Sprintf("cruid=%d", credUID)}
+
+	const nGoroutines = 8
+	var wg sync.WaitGroup
+	errCh := make(chan error, nGoroutines)
+	for i := 0; i < nGoroutines; i++ {
+		wg.Add(1)
+		go func(idx int) {
+			defer wg.Done()
+			volumeID := fmt.Sprintf("vol-%d", idx)
+			_, err := d.ensureKerberosCache(krb5Dir, krb5Prefix, volumeID, mountFlags, secrets)
+			// Aborted is acceptable — it's how TryAcquire signals contention.
+			if err != nil && status.Code(err) != codes.Aborted {
+				errCh <- fmt.Errorf("goroutine %d: unexpected error: %v", idx, err)
+			}
+		}(i)
+	}
+	wg.Wait()
+	close(errCh)
+	for e := range errCh {
+		t.Error(e)
+	}
+
+	symlinkPath := getKerberosFilePath(krb5Dir, getKrb5CcacheName(krb5Prefix, credUID))
+	target, err := os.Readlink(symlinkPath)
+	if err != nil {
+		t.Fatalf("final symlink missing at %s: %v", symlinkPath, err)
+	}
+	if _, err := os.Stat(target); err != nil {
+		t.Fatalf("symlink target %s does not exist: %v", target, err)
+	}
 }
 
 func TestNodePublishVolumeIdempotentMount(t *testing.T) {
