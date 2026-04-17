@@ -987,7 +987,7 @@ func TestGetKerberosCache(t *testing.T) {
 // per-CRUID lock and asserts no caller observes a "file exists" from Symlink
 // and that the final symlink points at a valid volume-specific cache file.
 func TestEnsureKerberosCacheConcurrent(t *testing.T) {
-	if runtime.GOOS == "windows" {
+	if runtime.GOOS != "linux" {
 		t.Skip("ensureKerberosCache is only used on Linux")
 	}
 
