@@ -616,7 +616,7 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 
 	cruidLockKey := fmt.Sprintf("cruid-%d", credUID)
 	if acquired := d.volumeLocks.TryAcquire(cruidLockKey); !acquired {
-		return false, status.Errorf(codes.Aborted, volumeOperationAlreadyExistsFmt, cruidLockKey)
+		return false, status.Errorf(codes.Aborted, "another kerberos cache operation for CRUID %d is already in progress", credUID)
 	}
 	defer d.volumeLocks.Release(cruidLockKey)
 
