@@ -982,6 +982,86 @@ func TestGetKerberosCache(t *testing.T) {
 
 }
 
+// Covers the three observable states of the shared krb5cc_<uid> symlink prior
+// to ensureKerberosCache: no link, a valid link from a previous volume, and a
+// dangling link whose target has been cleaned up. The dangling case is the
+// regression guard for the os.Stat -> os.Lstat fix.
+func TestEnsureKerberosCache(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("ensureKerberosCache is only used on Linux")
+	}
+
+	credUID := os.Getuid()
+	krb5Prefix := "krb5cc_"
+	ticket := []byte{'G', 'O', 'L', 'A', 'N', 'G'}
+	base64Ticket := base64.StdEncoding.EncodeToString(ticket)
+	secrets := map[string]string{
+		fmt.Sprintf("%s%d", krb5Prefix, credUID): base64Ticket,
+	}
+	mountFlags := []string{"sec=krb5", fmt.Sprintf("cruid=%d", credUID)}
+	volumeID := "vol-1"
+
+	tests := []struct {
+		desc  string
+		setup func(t *testing.T, krb5Dir, symlinkPath string)
+	}{
+		{
+			desc:  "no existing symlink",
+			setup: func(_ *testing.T, _, _ string) {},
+		},
+		{
+			desc: "valid symlink from a previous volume is replaced",
+			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
+				previous := krb5Dir + "previous-volume-cache"
+				if err := os.WriteFile(previous, []byte("old"), 0600); err != nil {
+					t.Fatalf("setup WriteFile: %v", err)
+				}
+				if err := os.Symlink(previous, symlinkPath); err != nil {
+					t.Fatalf("setup Symlink: %v", err)
+				}
+			},
+		},
+		{
+			desc: "dangling symlink is replaced",
+			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
+				if err := os.Symlink(krb5Dir+"gone", symlinkPath); err != nil {
+					t.Fatalf("setup Symlink: %v", err)
+				}
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			krb5Dir := t.TempDir() + "/"
+			d := NewFakeDriver()
+			symlinkPath := getKerberosFilePath(krb5Dir, getKrb5CcacheName(krb5Prefix, credUID))
+
+			tc.setup(t, krb5Dir, symlinkPath)
+
+			used, err := d.ensureKerberosCache(krb5Dir, krb5Prefix, volumeID, mountFlags, secrets)
+			if err != nil {
+				t.Fatalf("ensureKerberosCache: %v", err)
+			}
+			if !used {
+				t.Fatalf("expected useKerberosCache=true")
+			}
+
+			target, err := os.Readlink(symlinkPath)
+			if err != nil {
+				t.Fatalf("readlink %s: %v", symlinkPath, err)
+			}
+			expected := getKerberosFilePath(krb5Dir, volumeKerberosCacheName(volumeID))
+			if target != expected {
+				t.Errorf("symlink target = %s, want %s", target, expected)
+			}
+			if _, err := os.Stat(target); err != nil {
+				t.Fatalf("symlink target %s must be valid: %v", target, err)
+			}
+		})
+	}
+}
+
 // Regression test for the race where parallel kubelet mounts sharing a CRUID
 // collided on the shared krb5cc_<uid> symlink. Runs many goroutines against the
 // per-CRUID lock and asserts no caller observes a "file exists" from Symlink
