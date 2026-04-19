@@ -476,6 +476,65 @@ func TestNodePublishVolume(t *testing.T) {
 				DefaultError: status.Error(codes.Internal, "Error getting username and password from secret  in namespace podnamespace: could not username and password from secret(): KubeClient is nil"),
 			},
 		},
+		{
+			desc: "[Success] Read-only from MULTI_NODE_READER_ONLY access mode",
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_READER_ONLY},
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{},
+					},
+				},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: sourceTest,
+				Readonly:          false},
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc: "[Success] Read-only from SINGLE_NODE_READER_ONLY access mode",
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY},
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{},
+					},
+				},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: sourceTest,
+				Readonly:          false},
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc: "[Success] Read-only from mount flags containing 'ro'",
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &volumeCap,
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{
+							MountFlags: []string{"ro"},
+						},
+					},
+				},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: sourceTest,
+				Readonly:          false},
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc: "[Success] No nil panic when VolumeCapability has no Mount (block access type)",
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &volumeCap,
+				},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: sourceTest,
+				Readonly:          false},
+			expectedErr: testutil.TestError{},
+		},
 	}
 
 	// Setup

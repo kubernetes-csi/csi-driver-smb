@@ -92,11 +92,11 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 
 	// also check if the volume mount flags contain "ro"
 	if !readOnly {
-		if mountFlags := volCap.GetMount().GetMountFlags(); len(mountFlags) > 0 {
-			for _, flag := range mountFlags {
+		if m := volCap.GetMount(); m != nil {
+			for _, flag := range m.GetMountFlags() {
 				if flag == "ro" {
 					readOnly = true
-					klog.V(2).Infof("NodePublishVolume: mount flags contain 'ro', propagating to bind mount")
+					klog.V(2).Infof("NodePublishVolume: mount flags contain 'ro', propagating to bind mount for volume %s on target %s", volumeID, target)
 					break
 				}
 			}
