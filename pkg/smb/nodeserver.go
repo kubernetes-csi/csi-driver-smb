@@ -79,7 +79,31 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	}
 
 	mountOptions := []string{"bind"}
-	if req.GetReadonly() {
+	readOnly := req.GetReadonly()
+
+	// also check if the volume capability access mode is read-only
+	if !readOnly && volCap.GetAccessMode() != nil {
+		mode := volCap.GetAccessMode().GetMode()
+		if mode == csi.VolumeCapability_AccessMode_MULTI_NODE_READER_ONLY ||
+			mode == csi.VolumeCapability_AccessMode_SINGLE_NODE_READER_ONLY {
+			readOnly = true
+		}
+	}
+
+	// also check if the volume mount flags contain "ro"
+	if !readOnly {
+		if mountFlags := volCap.GetMount().GetMountFlags(); len(mountFlags) > 0 {
+			for _, flag := range mountFlags {
+				if flag == "ro" {
+					readOnly = true
+					klog.V(2).Infof("NodePublishVolume: mount flags contain 'ro', propagating to bind mount")
+					break
+				}
+			}
+		}
+	}
+
+	if readOnly {
 		mountOptions = append(mountOptions, "ro")
 	}
 
