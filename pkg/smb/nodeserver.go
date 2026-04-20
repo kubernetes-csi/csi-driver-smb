@@ -576,7 +576,8 @@ func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secret
 // At the same time, kerberos expects to find cache in file named "krb5cc_*", so creating symlink
 // will allow both clean up and serving proper cache to the kerberos.
 // If a valid symlink already exists (pointing to a readable cache file), it is kept as-is
-// to avoid disrupting concurrent mounts. Dangling or non-symlink entries are replaced.
+// to avoid disrupting concurrent mounts. Dangling symlinks, regular files, and directories
+// are replaced.
 func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
 	if !hasKerberosMountOption(mountFlags) {
 		return false, nil
@@ -620,8 +621,13 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 				klog.V(2).Infof("Valid symlink already exists [%s -> %s], leaving it alone for concurrent mount.", krb5CacheFileName, symlinkTarget)
 				shouldCreateSymlink = false
 			}
+		} else if fileInfo.IsDir() {
+			// A directory cannot be atomically replaced by os.Rename; remove it first.
+			if err := os.RemoveAll(krb5CacheFileName); err != nil {
+				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't remove unexpected directory at kerberos cache path %s: %v", krb5CacheFileName, err))
+			}
 		}
-		// Do not remove the existing path here; rely on os.Rename's atomic
+		// For regular files or dangling symlinks, rely on os.Rename's atomic
 		// replace to avoid a window where krb5CacheFileName is missing.
 	} else if !os.IsNotExist(statErr) {
 		return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't inspect kerberos cache path %s: %v", krb5CacheFileName, statErr))
