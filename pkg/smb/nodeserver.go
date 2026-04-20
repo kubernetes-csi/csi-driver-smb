@@ -575,7 +575,8 @@ func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secret
 // Create kerberos cache in the file based on the VolumeID, so it can be cleaned up during unstage
 // At the same time, kerberos expects to find cache in file named "krb5cc_*", so creating symlink
 // will allow both clean up and serving proper cache to the kerberos.
-// If symlink already exists, ignore it.
+// If a valid symlink already exists (pointing to a readable cache file), it is kept as-is
+// to avoid disrupting concurrent mounts. Dangling or non-symlink entries are replaced.
 func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
 	if !hasKerberosMountOption(mountFlags) {
 		return false, nil
@@ -650,6 +651,14 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 		}
 
 		if err := os.Rename(tempSymlinkName, krb5CacheFileName); err != nil {
+			// On Linux, Rename replaces the target atomically; this branch is
+			// only expected on systems where rename-over-existing fails (e.g.,
+			// certain Windows/NFS edge cases). Only retry when the target
+			// already exists; for other errors (permission, I/O) fail fast.
+			if !os.IsExist(err) {
+				os.Remove(tempSymlinkName)
+				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't atomically update kerberos symlink %s -> %s for credUID %d: %v", krb5CacheFileName, volumeIDCacheAbsolutePath, credUID, err))
+			}
 			if removeErr := os.Remove(krb5CacheFileName); removeErr != nil && !os.IsNotExist(removeErr) {
 				os.Remove(tempSymlinkName)
 				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't replace kerberos symlink %s: rename failed: %v, remove failed: %v", krb5CacheFileName, err, removeErr))
