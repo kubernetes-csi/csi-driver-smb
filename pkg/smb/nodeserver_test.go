@@ -1121,6 +1121,10 @@ func TestEnsureKerberosCacheConcurrent(t *testing.T) {
 	if _, err := os.Stat(target); err != nil {
 		t.Fatalf("symlink target %s does not exist: %v", target, err)
 	}
+	// Verify the target is a volume-specific cache file (named vol-<N>)
+	if !strings.Contains(target, "vol-") {
+		t.Errorf("expected symlink target to be a volume-specific cache file, got %s", target)
+	}
 }
 
 func TestNodePublishVolumeIdempotentMount(t *testing.T) {
