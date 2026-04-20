@@ -621,11 +621,8 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 				shouldCreateSymlink = false
 			}
 		}
-		if shouldCreateSymlink {
-			if err := os.Remove(krb5CacheFileName); err != nil && !os.IsNotExist(err) {
-				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't remove existing kerberos cache path %s: %v", krb5CacheFileName, err))
-			}
-		}
+		// Do not remove the existing path here; rely on os.Rename's atomic
+		// replace to avoid a window where krb5CacheFileName is missing.
 	} else if !os.IsNotExist(statErr) {
 		return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't inspect kerberos cache path %s: %v", krb5CacheFileName, statErr))
 	}
