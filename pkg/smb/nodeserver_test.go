@@ -1121,9 +1121,14 @@ func TestEnsureKerberosCacheConcurrent(t *testing.T) {
 	if _, err := os.Stat(target); err != nil {
 		t.Fatalf("symlink target %s does not exist: %v", target, err)
 	}
-	// Verify the target is a volume-specific cache file (named vol-<N>)
-	if !strings.Contains(target, "vol-") {
-		t.Errorf("expected symlink target to be a volume-specific cache file, got %s", target)
+	// Verify the target is a volume-specific cache file (base64-encoded volumeID)
+	targetBase := filepath.Base(target)
+	decoded, err := base64.URLEncoding.DecodeString(targetBase)
+	if err != nil {
+		decoded, err = base64.StdEncoding.DecodeString(targetBase)
+	}
+	if err != nil || !strings.HasPrefix(string(decoded), "vol-") {
+		t.Errorf("expected symlink target to be a volume-specific cache file (base64 of vol-*), got %s (decoded: %s)", target, string(decoded))
 	}
 }
 
