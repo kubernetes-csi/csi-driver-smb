@@ -1065,8 +1065,8 @@ func TestEnsureKerberosCache(t *testing.T) {
 }
 
 // Regression test for the race where parallel kubelet mounts sharing a CRUID
-// collided on the shared krb5cc_<uid> symlink. Runs many goroutines against the
-// per-CRUID lock and asserts no caller observes a "file exists" from Symlink
+// collided on the shared krb5cc_<uid> symlink. Runs many goroutines concurrently
+// and asserts that atomic temp-symlink-then-rename avoids "file exists" errors
 // and that the final symlink points at a valid volume-specific cache file.
 func TestEnsureKerberosCacheConcurrent(t *testing.T) {
 	if runtime.GOOS != "linux" {
