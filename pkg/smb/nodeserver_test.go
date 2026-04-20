@@ -990,6 +990,11 @@ func TestEnsureKerberosCache(t *testing.T) {
 	if runtime.GOOS != "linux" {
 		t.Skip("ensureKerberosCache is only used on Linux")
 	}
+	// ensureKerberosCache calls os.Chown(path, uid, uid); when uid != gid
+	// this fails with EPERM for non-root users.
+	if os.Getuid() != 0 && os.Getuid() != os.Getgid() {
+		t.Skip("skipping: os.Chown requires root or uid == gid")
+	}
 
 	credUID := os.Getuid()
 	krb5Prefix := "krb5cc_"
@@ -1071,6 +1076,9 @@ func TestEnsureKerberosCache(t *testing.T) {
 func TestEnsureKerberosCacheConcurrent(t *testing.T) {
 	if runtime.GOOS != "linux" {
 		t.Skip("ensureKerberosCache is only used on Linux")
+	}
+	if os.Getuid() != 0 && os.Getuid() != os.Getgid() {
+		t.Skip("skipping: os.Chown requires root or uid == gid")
 	}
 
 	krb5Dir := t.TempDir() + "/"
