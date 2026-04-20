@@ -1010,7 +1010,7 @@ func TestEnsureKerberosCache(t *testing.T) {
 			setup: func(_ *testing.T, _, _ string) {},
 		},
 		{
-			desc: "valid symlink from a previous volume is replaced",
+			desc: "valid symlink from a previous volume is kept",
 			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
 				previous := krb5Dir + "previous-volume-cache"
 				if err := os.WriteFile(previous, []byte("old"), 0600); err != nil {
@@ -1051,12 +1051,14 @@ func TestEnsureKerberosCache(t *testing.T) {
 			if err != nil {
 				t.Fatalf("readlink %s: %v", symlinkPath, err)
 			}
-			expected := getKerberosFilePath(krb5Dir, volumeKerberosCacheName(volumeID))
-			if target != expected {
-				t.Errorf("symlink target = %s, want %s", target, expected)
-			}
+			// Symlink must point to a valid, readable cache file.
 			if _, err := os.Stat(target); err != nil {
 				t.Fatalf("symlink target %s must be valid: %v", target, err)
+			}
+			// Volume-specific cache file must also exist.
+			volCachePath := getKerberosFilePath(krb5Dir, volumeKerberosCacheName(volumeID))
+			if _, err := os.Stat(volCachePath); err != nil {
+				t.Fatalf("volume cache file %s must exist: %v", volCachePath, err)
 			}
 		})
 	}
@@ -1092,8 +1094,7 @@ func TestEnsureKerberosCacheConcurrent(t *testing.T) {
 			defer wg.Done()
 			volumeID := fmt.Sprintf("vol-%d", idx)
 			_, err := d.ensureKerberosCache(krb5Dir, krb5Prefix, volumeID, mountFlags, secrets)
-			// Aborted is acceptable — it's how TryAcquire signals contention.
-			if err != nil && status.Code(err) != codes.Aborted {
+			if err != nil {
 				errCh <- fmt.Errorf("goroutine %d: unexpected error: %v", idx, err)
 			}
 		}(i)
