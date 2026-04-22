@@ -1017,7 +1017,7 @@ func TestEnsureKerberosCache(t *testing.T) {
 		{
 			desc: "valid symlink from a previous volume is kept",
 			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
-				previous := krb5Dir + "previous-volume-cache"
+				previous := filepath.Join(krb5Dir, "previous-volume-cache")
 				if err := os.WriteFile(previous, []byte("old"), 0600); err != nil {
 					t.Fatalf("setup WriteFile: %v", err)
 				}
@@ -1029,7 +1029,7 @@ func TestEnsureKerberosCache(t *testing.T) {
 		{
 			desc: "dangling symlink is replaced",
 			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
-				if err := os.Symlink(krb5Dir+"gone", symlinkPath); err != nil {
+				if err := os.Symlink(filepath.Join(krb5Dir, "gone"), symlinkPath); err != nil {
 					t.Fatalf("setup Symlink: %v", err)
 				}
 			},
