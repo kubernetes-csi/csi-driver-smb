@@ -1069,7 +1069,6 @@ func TestEnsureKerberosCache(t *testing.T) {
 			if _, err := os.Stat(target); err != nil {
 				t.Fatalf("symlink target %s must be valid: %v", target, err)
 			}
-			}
 		})
 	}
 }
