@@ -982,16 +982,13 @@ func TestGetKerberosCache(t *testing.T) {
 
 }
 
-// Covers the three observable states of the shared krb5cc_<uid> symlink prior
-// to ensureKerberosCache: no link, a valid link from a previous volume, and a
-// dangling link whose target has been cleaned up. The dangling case is the
-// regression guard for the os.Stat -> os.Lstat fix.
+// Tests ensureKerberosCache across different initial states of the krb5cc_<uid> path:
+// no existing entry, a valid symlink from a previous volume, a dangling symlink,
+// and a directory (unexpected but should be handled).
 func TestEnsureKerberosCache(t *testing.T) {
 	if runtime.GOOS != "linux" {
 		t.Skip("ensureKerberosCache is only used on Linux")
 	}
-	// ensureKerberosCache calls os.Chown(path, uid, uid); when uid != gid
-	// this fails with EPERM for non-root users.
 	if os.Getuid() != 0 && os.Getuid() != os.Getgid() {
 		t.Skip("skipping: os.Chown requires root or uid == gid")
 	}
@@ -1015,7 +1012,7 @@ func TestEnsureKerberosCache(t *testing.T) {
 			setup: func(_ *testing.T, _, _ string) {},
 		},
 		{
-			desc: "valid symlink from a previous volume is kept",
+			desc: "existing symlink from a previous volume is atomically replaced",
 			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
 				previous := filepath.Join(krb5Dir, "previous-volume-cache")
 				if err := os.WriteFile(previous, []byte("old"), 0600); err != nil {
@@ -1031,6 +1028,14 @@ func TestEnsureKerberosCache(t *testing.T) {
 			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
 				if err := os.Symlink(filepath.Join(krb5Dir, "gone"), symlinkPath); err != nil {
 					t.Fatalf("setup Symlink: %v", err)
+				}
+			},
+		},
+		{
+			desc: "directory at symlink path is replaced",
+			setup: func(t *testing.T, _, symlinkPath string) {
+				if err := os.MkdirAll(symlinkPath, 0755); err != nil {
+					t.Fatalf("setup MkdirAll: %v", err)
 				}
 			},
 		},
@@ -1056,14 +1061,14 @@ func TestEnsureKerberosCache(t *testing.T) {
 			if err != nil {
 				t.Fatalf("readlink %s: %v", symlinkPath, err)
 			}
-			// Symlink must point to a valid, readable cache file.
+			// Symlink must point to current volume's cache file.
+			volCachePath := getKerberosFilePath(krb5Dir, volumeKerberosCacheName(volumeID))
+			if target != volCachePath {
+				t.Errorf("symlink target = %s, want %s", target, volCachePath)
+			}
 			if _, err := os.Stat(target); err != nil {
 				t.Fatalf("symlink target %s must be valid: %v", target, err)
 			}
-			// Volume-specific cache file must also exist.
-			volCachePath := getKerberosFilePath(krb5Dir, volumeKerberosCacheName(volumeID))
-			if _, err := os.Stat(volCachePath); err != nil {
-				t.Fatalf("volume cache file %s must exist: %v", volCachePath, err)
 			}
 		})
 	}

@@ -572,12 +572,10 @@ func getKerberosCache(krb5CacheDirectory, krb5Prefix string, credUID int, secret
 	return krb5CacheFileName, content, nil
 }
 
-// Create kerberos cache in the file based on the VolumeID, so it can be cleaned up during unstage
-// At the same time, kerberos expects to find cache in file named "krb5cc_*", so creating symlink
-// will allow both clean up and serving proper cache to the kerberos.
-// If a valid symlink already exists (pointing to a readable cache file), it is kept as-is
-// to avoid disrupting concurrent mounts. Dangling symlinks, regular files, and directories
-// are replaced.
+// ensureKerberosCache writes a volume-specific kerberos cache file and
+// creates (or atomically updates) the krb5cc_<uid> symlink to point at it.
+// Concurrent callers for the same cruid are safe: each writes its own cache
+// file and the symlink is updated via temp-symlink + rename (atomic on Linux).
 func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID string, mountFlags []string, secrets map[string]string) (bool, error) {
 	if !hasKerberosMountOption(mountFlags) {
 		return false, nil
@@ -595,84 +593,33 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 	if err != nil {
 		return false, err
 	}
-	volumeIDCacheFileName := volumeKerberosCacheName(volumeID)
 
-	volumeIDCacheAbsolutePath := getKerberosFilePath(krb5CacheDirectory, volumeIDCacheFileName)
+	// Write cache into volume-specific file so it can be cleaned up during unstage.
+	volumeIDCacheAbsolutePath := getKerberosFilePath(krb5CacheDirectory, volumeKerberosCacheName(volumeID))
 	if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0700)); err != nil {
-		return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't write kerberos cache to file %s: %v", volumeIDCacheAbsolutePath, err))
+		return false, status.Error(codes.Internal, fmt.Sprintf("failed to write kerberos cache %s: %v", volumeIDCacheAbsolutePath, err))
 	}
 	if err := os.Chown(volumeIDCacheAbsolutePath, credUID, credUID); err != nil {
-		return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't chown kerberos cache %s to user %d: %v", volumeIDCacheAbsolutePath, credUID, err))
+		return false, status.Error(codes.Internal, fmt.Sprintf("failed to chown kerberos cache %s to uid %d: %v", volumeIDCacheAbsolutePath, credUID, err))
 	}
 
-	// Check if a valid symlink already exists — if so, leave it alone for concurrent mounts.
-	// Use Lstat so a dangling symlink is still detected as present.
-	shouldCreateSymlink := true
-	fileInfo, statErr := os.Lstat(krb5CacheFileName)
-	if statErr == nil {
-		if fileInfo.Mode()&os.ModeSymlink != 0 {
-			symlinkTarget, readErr := os.Readlink(krb5CacheFileName)
-			if readErr != nil {
-				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't read symlink %s: %v", krb5CacheFileName, readErr))
-			}
-			// Accept any existing symlink that points to a valid, readable cache file.
-			// This avoids racing with concurrent mounts for the same cruid but different volumes.
-			if _, targetErr := os.Stat(krb5CacheFileName); targetErr == nil {
-				klog.V(2).Infof("Valid symlink already exists [%s -> %s], leaving it alone for concurrent mount.", krb5CacheFileName, symlinkTarget)
-				shouldCreateSymlink = false
-			}
-		} else if fileInfo.IsDir() {
-			// A directory cannot be atomically replaced by os.Rename; remove it first.
-			if err := os.RemoveAll(krb5CacheFileName); err != nil {
-				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't remove unexpected directory at kerberos cache path %s: %v", krb5CacheFileName, err))
-			}
+	// Atomic symlink update: create temp symlink then rename over the target.
+	// os.Rename on Linux atomically replaces files and symlinks (but not directories).
+	if info, err := os.Lstat(krb5CacheFileName); err == nil && info.IsDir() {
+		if err := os.RemoveAll(krb5CacheFileName); err != nil {
+			return false, status.Error(codes.Internal, fmt.Sprintf("failed to remove directory at kerberos cache path %s: %v", krb5CacheFileName, err))
 		}
-		// For regular files or dangling symlinks, rely on os.Rename's atomic
-		// replace to avoid a window where krb5CacheFileName is missing.
-	} else if !os.IsNotExist(statErr) {
-		return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't inspect kerberos cache path %s: %v", krb5CacheFileName, statErr))
 	}
 
-	if shouldCreateSymlink {
-		// Use atomic temp-symlink + rename to avoid a window where krb5CacheFileName is missing.
-		created := false
-		var tempSymlinkName string
-		for attempt := 0; attempt < 5; attempt++ {
-			tempSymlinkName = filepath.Join(filepath.Dir(krb5CacheFileName), fmt.Sprintf(".%s.tmp.%d", filepath.Base(krb5CacheFileName), time.Now().UnixNano()))
-			if err := os.Symlink(volumeIDCacheAbsolutePath, tempSymlinkName); err != nil {
-				if os.IsExist(err) {
-					klog.V(2).Infof("Temporary symlink path %s already exists, retrying.", tempSymlinkName)
-					continue
-				}
-				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't create temporary symlink %s -> %s for credUID %d: %v", tempSymlinkName, volumeIDCacheAbsolutePath, credUID, err))
-			}
-			created = true
-			break
-		}
-		if !created {
-			return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't create temporary symlink for kerberos cache %s after retries", krb5CacheFileName))
-		}
-
-		if err := os.Rename(tempSymlinkName, krb5CacheFileName); err != nil {
-			// On Linux, Rename replaces the target atomically; this branch is
-			// only expected on systems where rename-over-existing fails (e.g.,
-			// certain Windows/NFS edge cases). Only retry when the target
-			// already exists; for other errors (permission, I/O) fail fast.
-			if !os.IsExist(err) {
-				os.Remove(tempSymlinkName)
-				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't atomically update kerberos symlink %s -> %s for credUID %d: %v", krb5CacheFileName, volumeIDCacheAbsolutePath, credUID, err))
-			}
-			if removeErr := os.Remove(krb5CacheFileName); removeErr != nil && !os.IsNotExist(removeErr) {
-				os.Remove(tempSymlinkName)
-				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't replace kerberos symlink %s: rename failed: %v, remove failed: %v", krb5CacheFileName, err, removeErr))
-			}
-			if retryErr := os.Rename(tempSymlinkName, krb5CacheFileName); retryErr != nil {
-				os.Remove(tempSymlinkName)
-				return false, status.Error(codes.Internal, fmt.Sprintf("Couldn't atomically update kerberos symlink %s -> %s for credUID %d: %v", krb5CacheFileName, volumeIDCacheAbsolutePath, credUID, retryErr))
-			}
-		}
-		klog.V(2).Infof("Updated kerberos symlink %s -> %s", krb5CacheFileName, volumeIDCacheAbsolutePath)
+	tempSymlink := fmt.Sprintf("%s.tmp.%d", krb5CacheFileName, time.Now().UnixNano())
+	if err := os.Symlink(volumeIDCacheAbsolutePath, tempSymlink); err != nil {
+		return false, status.Error(codes.Internal, fmt.Sprintf("failed to create temp symlink %s -> %s: %v", tempSymlink, volumeIDCacheAbsolutePath, err))
 	}
+	if err := os.Rename(tempSymlink, krb5CacheFileName); err != nil {
+		os.Remove(tempSymlink)
+		return false, status.Error(codes.Internal, fmt.Sprintf("failed to rename symlink %s -> %s: %v", tempSymlink, krb5CacheFileName, err))
+	}
+	klog.V(2).Infof("Updated kerberos symlink %s -> %s", krb5CacheFileName, volumeIDCacheAbsolutePath)
 
 	return true, nil
 }
