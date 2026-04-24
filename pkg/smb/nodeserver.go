@@ -599,7 +599,9 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 	if err := os.WriteFile(volumeIDCacheAbsolutePath, content, os.FileMode(0700)); err != nil {
 		return false, status.Error(codes.Internal, fmt.Sprintf("failed to write kerberos cache %s: %v", volumeIDCacheAbsolutePath, err))
 	}
-	if err := os.Chown(volumeIDCacheAbsolutePath, credUID, credUID); err != nil {
+	// Use gid -1 to leave the group unchanged; this avoids EPERM when the
+	// process uid != gid and the caller is not root (e.g., unit-test environments).
+	if err := os.Chown(volumeIDCacheAbsolutePath, credUID, -1); err != nil {
 		return false, status.Error(codes.Internal, fmt.Sprintf("failed to chown kerberos cache %s to uid %d: %v", volumeIDCacheAbsolutePath, credUID, err))
 	}
 
