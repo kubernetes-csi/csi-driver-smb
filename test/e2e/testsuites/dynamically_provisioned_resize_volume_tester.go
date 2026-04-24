@@ -19,7 +19,6 @@ package testsuites
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/kubernetes-csi/csi-driver-smb/test/e2e/driver"
@@ -90,10 +89,8 @@ func (t *DynamicallyProvisionedResizeVolumeTest) Run(ctx context.Context, client
 		ginkgo.By("checking the resizing PV result")
 		newPv, _ := client.CoreV1().PersistentVolumes().Get(ctx, updatedPvc.Spec.VolumeName, metav1.GetOptions{})
 		newPvSize := newPv.Spec.Capacity["storage"]
-		newPvSizeStr := newPvSize.String() + "Gi"
-
-		if !strings.Contains(newPvSizeStr, newSize.String()) {
-			framework.Failf("newPVCSize(%+v) is not equal to newPVSize(%+v)", newSize.String(), newPvSizeStr)
+		if newPvSize.Cmp(newSize) != 0 {
+			framework.Failf("newPVCSize(%s) is not equal to newPVSize(%s)", newSize.String(), newPvSize.String())
 		}
 	}
 }
