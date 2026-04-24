@@ -989,9 +989,6 @@ func TestEnsureKerberosCache(t *testing.T) {
 	if runtime.GOOS != "linux" {
 		t.Skip("ensureKerberosCache is only used on Linux")
 	}
-	if os.Getuid() != 0 && os.Getuid() != os.Getgid() {
-		t.Skip("skipping: os.Chown requires root or uid == gid")
-	}
 
 	credUID := os.Getuid()
 	krb5Prefix := "krb5cc_"
@@ -1081,9 +1078,6 @@ func TestEnsureKerberosCacheConcurrent(t *testing.T) {
 	if runtime.GOOS != "linux" {
 		t.Skip("ensureKerberosCache is only used on Linux")
 	}
-	if os.Getuid() != 0 && os.Getuid() != os.Getgid() {
-		t.Skip("skipping: os.Chown requires root or uid == gid")
-	}
 
 	krb5Dir := t.TempDir() + "/"
 	d := NewFakeDriver()
@@ -1125,14 +1119,14 @@ func TestEnsureKerberosCacheConcurrent(t *testing.T) {
 	if _, err := os.Stat(target); err != nil {
 		t.Fatalf("symlink target %s does not exist: %v", target, err)
 	}
-	// Verify the target is a volume-specific cache file.
-	// volumeKerberosCacheName() uses StdEncoding then replaces "/" → "-" and "+" → "_",
-	// so reverse those substitutions before decoding.
+	// Verify the target is one of the expected volume-specific cache files.
 	targetBase := filepath.Base(target)
-	reversed := strings.ReplaceAll(strings.ReplaceAll(targetBase, "-", "/"), "_", "+")
-	decoded, err := base64.StdEncoding.DecodeString(reversed)
-	if err != nil || !strings.HasPrefix(string(decoded), "vol-") {
-		t.Errorf("expected symlink target to be a base64-encoded vol-* cache file, got %s (decoded: %s, err: %v)", target, string(decoded), err)
+	validTargets := make(map[string]bool, nGoroutines)
+	for i := 0; i < nGoroutines; i++ {
+		validTargets[volumeKerberosCacheName(fmt.Sprintf("vol-%d", i))] = true
+	}
+	if !validTargets[targetBase] {
+		t.Errorf("symlink target %s is not a known volume cache file name", target)
 	}
 }
 
