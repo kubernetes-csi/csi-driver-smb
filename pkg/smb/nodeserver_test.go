@@ -27,6 +27,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"testing"
 
@@ -1038,6 +1039,154 @@ func TestGetKerberosCache(t *testing.T) {
 		}
 	}
 
+}
+
+// Tests ensureKerberosCache across different initial states of the krb5cc_<uid> path:
+// no existing entry, a valid symlink from a previous volume, a dangling symlink,
+// and a directory (unexpected but should be handled).
+func TestEnsureKerberosCache(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("ensureKerberosCache is only used on Linux")
+	}
+
+	credUID := os.Getuid()
+	krb5Prefix := "krb5cc_"
+	ticket := []byte{'G', 'O', 'L', 'A', 'N', 'G'}
+	base64Ticket := base64.StdEncoding.EncodeToString(ticket)
+	secrets := map[string]string{
+		fmt.Sprintf("%s%d", krb5Prefix, credUID): base64Ticket,
+	}
+	mountFlags := []string{"sec=krb5", fmt.Sprintf("cruid=%d", credUID)}
+	volumeID := "vol-1"
+
+	tests := []struct {
+		desc  string
+		setup func(t *testing.T, krb5Dir, symlinkPath string)
+	}{
+		{
+			desc:  "no existing symlink",
+			setup: func(_ *testing.T, _, _ string) {},
+		},
+		{
+			desc: "existing symlink from a previous volume is atomically replaced",
+			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
+				previous := filepath.Join(krb5Dir, "previous-volume-cache")
+				if err := os.WriteFile(previous, []byte("old"), 0600); err != nil {
+					t.Fatalf("setup WriteFile: %v", err)
+				}
+				if err := os.Symlink(previous, symlinkPath); err != nil {
+					t.Fatalf("setup Symlink: %v", err)
+				}
+			},
+		},
+		{
+			desc: "dangling symlink is replaced",
+			setup: func(t *testing.T, krb5Dir, symlinkPath string) {
+				if err := os.Symlink(filepath.Join(krb5Dir, "gone"), symlinkPath); err != nil {
+					t.Fatalf("setup Symlink: %v", err)
+				}
+			},
+		},
+		{
+			desc: "directory at symlink path is replaced",
+			setup: func(t *testing.T, _, symlinkPath string) {
+				if err := os.MkdirAll(symlinkPath, 0755); err != nil {
+					t.Fatalf("setup MkdirAll: %v", err)
+				}
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			krb5Dir := t.TempDir() + "/"
+			d := NewFakeDriver()
+			symlinkPath := getKerberosFilePath(krb5Dir, getKrb5CcacheName(krb5Prefix, credUID))
+
+			tc.setup(t, krb5Dir, symlinkPath)
+
+			used, err := d.ensureKerberosCache(krb5Dir, krb5Prefix, volumeID, mountFlags, secrets)
+			if err != nil {
+				t.Fatalf("ensureKerberosCache: %v", err)
+			}
+			if !used {
+				t.Fatalf("expected useKerberosCache=true")
+			}
+
+			target, err := os.Readlink(symlinkPath)
+			if err != nil {
+				t.Fatalf("readlink %s: %v", symlinkPath, err)
+			}
+			// Symlink must point to current volume's cache file.
+			volCachePath := getKerberosFilePath(krb5Dir, volumeKerberosCacheName(volumeID))
+			if target != volCachePath {
+				t.Errorf("symlink target = %s, want %s", target, volCachePath)
+			}
+			if _, err := os.Stat(target); err != nil {
+				t.Fatalf("symlink target %s must be valid: %v", target, err)
+			}
+		})
+	}
+}
+
+// Regression test for the race where parallel kubelet mounts sharing a CRUID
+// collided on the shared krb5cc_<uid> symlink. Runs many goroutines concurrently
+// and asserts that atomic temp-symlink-then-rename avoids "file exists" errors
+// and that the final symlink points at a valid volume-specific cache file.
+func TestEnsureKerberosCacheConcurrent(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("ensureKerberosCache is only used on Linux")
+	}
+
+	krb5Dir := t.TempDir() + "/"
+	d := NewFakeDriver()
+
+	credUID := os.Getuid()
+	krb5Prefix := "krb5cc_"
+	ticket := []byte{'G', 'O', 'L', 'A', 'N', 'G'}
+	base64Ticket := base64.StdEncoding.EncodeToString(ticket)
+	secrets := map[string]string{
+		fmt.Sprintf("%s%d", krb5Prefix, credUID): base64Ticket,
+	}
+	mountFlags := []string{"sec=krb5", fmt.Sprintf("cruid=%d", credUID)}
+
+	const nGoroutines = 8
+	var wg sync.WaitGroup
+	errCh := make(chan error, nGoroutines)
+	for i := 0; i < nGoroutines; i++ {
+		wg.Add(1)
+		go func(idx int) {
+			defer wg.Done()
+			volumeID := fmt.Sprintf("vol-%d", idx)
+			_, err := d.ensureKerberosCache(krb5Dir, krb5Prefix, volumeID, mountFlags, secrets)
+			if err != nil {
+				errCh <- fmt.Errorf("goroutine %d: unexpected error: %v", idx, err)
+			}
+		}(i)
+	}
+	wg.Wait()
+	close(errCh)
+	for e := range errCh {
+		t.Error(e)
+	}
+
+	symlinkPath := getKerberosFilePath(krb5Dir, getKrb5CcacheName(krb5Prefix, credUID))
+	target, err := os.Readlink(symlinkPath)
+	if err != nil {
+		t.Fatalf("final symlink missing at %s: %v", symlinkPath, err)
+	}
+	if _, err := os.Stat(target); err != nil {
+		t.Fatalf("symlink target %s does not exist: %v", target, err)
+	}
+	// Verify the target is one of the expected volume-specific cache files.
+	targetBase := filepath.Base(target)
+	validTargets := make(map[string]bool, nGoroutines)
+	for i := 0; i < nGoroutines; i++ {
+		validTargets[volumeKerberosCacheName(fmt.Sprintf("vol-%d", i))] = true
+	}
+	if !validTargets[targetBase] {
+		t.Errorf("symlink target %s is not a known volume cache file name", target)
+	}
 }
 
 func TestNodePublishVolumeIdempotentMount(t *testing.T) {
