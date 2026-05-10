@@ -97,13 +97,20 @@ jobs:
           CGO_ENABLED: '0'
           GOOS: linux
         run: |
+          # Use the same output path convention as Makefile:
+          # _output/<goarch>/smbplugin for most arches, _output/arm/v7/smbplugin for armv7
+          if [[ "${{ matrix.goarch }}" == "arm" ]]; then
+            OUT_DIR="_output/arm/v7"
+          else
+            OUT_DIR="_output/${{ matrix.goarch }}"
+          fi
           GIT_COMMIT=$(git rev-parse HEAD)
-          mkdir -p _output/${{ matrix.goarch }}
-          go build -trimpath -ldflags="-s -w \
+          mkdir -p "${OUT_DIR}"
+          go build -a -ldflags "-s -w \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.driverVersion=${{ needs.validate.outputs.version }} \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.gitCommit=${GIT_COMMIT} \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            -o _output/${{ matrix.goarch }}/smbplugin ./cmd/smbplugin
+            -mod vendor -o "${OUT_DIR}/smbplugin" ./cmd/smbplugin
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3
@@ -121,10 +128,16 @@ jobs:
       - name: Build and push ${{ matrix.platform }}
         run: |
           VERSION="${{ needs.validate.outputs.version }}"
+          # Match Makefile convention: --build-arg ARCH=arm/v7 for armv7
+          if [[ "${{ matrix.goarch }}" == "arm" ]]; then
+            DOCKER_ARCH="arm/v7"
+          else
+            DOCKER_ARCH="${{ matrix.goarch }}"
+          fi
           GIT_COMMIT=$(git rev-parse HEAD)
           docker buildx build --push \
             --platform=${{ matrix.platform }} \
-            --build-arg ARCH=${{ matrix.goarch }} \
+            --build-arg ARCH=${DOCKER_ARCH} \
             --provenance=false --sbom=false \
             --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}-${{ matrix.suffix }} \
             --label org.opencontainers.image.revision=${GIT_COMMIT} \
@@ -132,8 +145,8 @@ jobs:
             .
 
   # ── Build & push Windows container images ──────────────────────────────────
-  # Cross-compile Go binary on Linux, then build the Windows container image
-  # on a Windows runner (required for pulling Windows base images).
+  # Build Go binary and container image on Windows runners
+  # (required for pulling Windows base images).
   build-windows:
     needs: [validate]
     strategy:
@@ -164,11 +177,11 @@ jobs:
         run: |
           GIT_COMMIT=$(git rev-parse HEAD)
           mkdir -p _output/amd64
-          go build -trimpath -ldflags="-s -w \
+          go build -a -ldflags "-s -w \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.driverVersion=${{ needs.validate.outputs.version }} \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.gitCommit=${GIT_COMMIT} \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            -o _output/amd64/smbplugin.exe ./cmd/smbplugin
+            -mod vendor -o _output/amd64/smbplugin.exe ./cmd/smbplugin
 
       - name: Login to GHCR
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
@@ -215,11 +228,11 @@ jobs:
         run: |
           GIT_COMMIT=$(git rev-parse HEAD)
           mkdir -p _output/amd64
-          go build -trimpath -ldflags="-s -w \
+          go build -a -ldflags "-s -w \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.driverVersion=${{ needs.validate.outputs.version }} \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.gitCommit=${GIT_COMMIT} \
             -X github.com/kubernetes-csi/csi-driver-smb/pkg/smb.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            -o _output/amd64/smbplugin.exe ./cmd/smbplugin
+            -mod vendor -o _output/amd64/smbplugin.exe ./cmd/smbplugin
 
       - name: Login to GHCR
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
@@ -281,6 +294,8 @@ jobs:
   publish-helm:
     runs-on: ubuntu-latest
     needs: [validate]
+    outputs:
+      helm_chart_version: ${{ steps.verify-version.outputs.helm_chart_version }}
     steps:
       - name: Checkout at version tag
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -307,6 +322,7 @@ jobs:
         run: helm lint "${{ env.chart_dir }}"
 
       - name: Verify chart version matches
+        id: verify-version
         run: |
           YAML_VERSION=$(grep '^version:' "${{ env.chart_dir }}/Chart.yaml" | awk '{print $2}')
           EXPECTED="${{ needs.validate.outputs.chart_version }}"
@@ -317,6 +333,7 @@ jobs:
             exit 1
           fi
           echo "helm_chart_version=${YAML_VERSION}" >> "$GITHUB_ENV"
+          echo "helm_chart_version=${YAML_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Login to GHCR (Helm)
         run: |
@@ -343,27 +360,26 @@ jobs:
       - name: Job summary
         env:
           VERSION: ${{ needs.validate.outputs.version }}
-          CHART_VERSION: ${{ needs.validate.outputs.chart_version }}
+          CHART_VERSION: ${{ needs.publish-helm.outputs.helm_chart_version || needs.validate.outputs.chart_version }}
         shell: bash
         run: |
           FENCE='```'
-          cat >> "$GITHUB_STEP_SUMMARY" << EOF
-          ## Published to GHCR
-
-          ### Container Images
-          | Image | Tag |
-          |-------|-----|
-          | ${REGISTRY}/${IMAGE_NAME} | ${VERSION} (multi-arch manifest) |
-          | ${REGISTRY}/${IMAGE_NAME} | ${VERSION}-windows-hp (HostProcess) |
-
-          ${FENCE}bash
-          docker pull ${REGISTRY}/${IMAGE_NAME}:${VERSION}
-          docker pull ${REGISTRY}/${IMAGE_NAME}:${VERSION}-windows-hp
-          ${FENCE}
-
-          ### Helm Chart (OCI)
-          ${FENCE}bash
-          helm install csi-driver-smb oci://${REGISTRY}/${CHART_NAME} --version ${CHART_VERSION} -n kube-system
-          ${FENCE}
-          EOF
-          sed -i 's/^          //' "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## Published to GHCR"
+            echo ""
+            echo "### Container Images"
+            echo "| Image | Tag |"
+            echo "|-------|-----|"
+            echo "| ${REGISTRY}/${IMAGE_NAME} | ${VERSION} (multi-arch manifest) |"
+            echo "| ${REGISTRY}/${IMAGE_NAME} | ${VERSION}-windows-hp (HostProcess) |"
+            echo ""
+            echo "${FENCE}bash"
+            echo "docker pull ${REGISTRY}/${IMAGE_NAME}:${VERSION}"
+            echo "docker pull ${REGISTRY}/${IMAGE_NAME}:${VERSION}-windows-hp"
+            echo "${FENCE}"
+            echo ""
+            echo "### Helm Chart (OCI)"
+            echo "${FENCE}bash"
+            echo "helm install csi-driver-smb oci://${REGISTRY}/${CHART_NAME} --version ${CHART_VERSION} -n kube-system"
+            echo "${FENCE}"
+          } >> "$GITHUB_STEP_SUMMARY"
