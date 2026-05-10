@@ -135,7 +135,7 @@ jobs:
             DOCKER_ARCH="${{ matrix.goarch }}"
           fi
           GIT_COMMIT=$(git rev-parse HEAD)
-          docker buildx build --push \
+          docker buildx build --pull --push \
             --platform=${{ matrix.platform }} \
             --build-arg ARCH=${DOCKER_ARCH} \
             --provenance=false --sbom=false \
@@ -196,7 +196,7 @@ jobs:
           VERSION="${{ needs.validate.outputs.version }}"
           GIT_COMMIT=$(git rev-parse HEAD)
           TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}-windows-${{ matrix.osversion }}-amd64"
-          docker build \
+          docker build --pull \
             --build-arg OSVERSION=${{ matrix.osversion }} \
             --label org.opencontainers.image.revision=${GIT_COMMIT} \
             --tag "${TAG}" \
@@ -247,7 +247,7 @@ jobs:
           VERSION="${{ needs.validate.outputs.version }}"
           GIT_COMMIT=$(git rev-parse HEAD)
           TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}-windows-hp"
-          docker build \
+          docker build --pull \
             --label org.opencontainers.image.revision=${GIT_COMMIT} \
             --tag "${TAG}" \
             --file ./cmd/smbplugin/Dockerfile.WindowsHostProcess \
