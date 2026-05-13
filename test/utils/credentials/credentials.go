@@ -25,7 +25,7 @@ import (
 	"github.com/kubernetes-csi/csi-driver-smb/test/utils/testutil"
 
 	"github.com/pborman/uuid"
-	"github.com/pelletier/go-toml"
+	"github.com/pelletier/go-toml/v2"
 )
 
 const (
