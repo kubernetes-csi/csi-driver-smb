@@ -23,7 +23,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/golang/protobuf/ptypes/wrappers"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // GetPluginInfo return the version and name of the plugin
@@ -47,7 +47,7 @@ func (f *Driver) GetPluginInfo(_ context.Context, _ *csi.GetPluginInfoRequest) (
 // Currently the spec does not dictate what you should return either.
 // Hence, return an empty response
 func (f *Driver) Probe(_ context.Context, _ *csi.ProbeRequest) (*csi.ProbeResponse, error) {
-	return &csi.ProbeResponse{Ready: &wrappers.BoolValue{Value: true}}, nil
+	return &csi.ProbeResponse{Ready: &wrapperspb.BoolValue{Value: true}}, nil
 }
 
 // GetPluginCapabilities returns the capabilities of the plugin
