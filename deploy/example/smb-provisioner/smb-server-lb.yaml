@@ -39,6 +39,15 @@ spec:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
           effect: "NoSchedule"
+      securityContext:
+        runAsUser: 0
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chmod 777 /storage"]
+          volumeMounts:
+            - mountPath: /storage
+              name: data-volume
       containers:
         - name: smb-server
           image: dockurr/samba
