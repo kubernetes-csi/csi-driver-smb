@@ -80,6 +80,11 @@ spec:
             - "--extra-create-metadata=true"
             - "--feature-gates=VolumeAttributesClass=false"
             - "--retry-interval-max=30m"
+{{- with .Values.controller.extraArgs.csiProvisioner }}
+{{- range . }}
+            - {{ . | quote }}
+{{- end }}
+{{- end }}
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -106,6 +111,11 @@ spec:
             - "--leader-election-namespace={{ .Release.Namespace }}"
             - '-handle-volume-inuse-error=false'
             - '-feature-gates=VolumeAttributesClass=false'
+{{- with .Values.controller.extraArgs.csiResizer }}
+{{- range . }}
+            - {{ . | quote }}
+{{- end }}
+{{- end }}
           env:
             - name: ADDRESS
               value: /csi/csi.sock
