@@ -36,6 +36,13 @@ echo "print out all default namespace pods status ..."
 kubectl get pods -n default -o wide
 echo "======================================================================================"
 
+echo "print out smb-server pod logs ..."
+echo "======================================================================================"
+kubectl get pods -n default -l app=smb-server \
+    | awk 'NR>1 {print $1}' \
+    | xargs -I {} sh -c 'echo "--- Pod: {} ---"; kubectl logs {} -n default --all-containers; kubectl describe pod {} -n default | grep -A 20 "Events:"'
+echo "======================================================================================"
+
 echo "print out all $NS namespace pods status ..."
 kubectl get pods -n${NS} -o wide
 echo "======================================================================================"
