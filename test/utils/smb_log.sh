@@ -54,6 +54,20 @@ kubectl get pods -n${NS} -l${LABEL} \
     | awk 'NR>1 {print $1}' \
     | xargs -I {} kubectl logs {} --prefix -c${CONTAINER} -n${NS}
 
+echo "checking csi-$DRIVER pod restarts and collecting crash logs ..."
+echo "======================================================================================"
+for pod in $(kubectl get pods -n${NS} -l "app in (csi-$DRIVER-controller, csi-$DRIVER-node, csi-$DRIVER-node-win)" --no-headers | awk '$4 != "0" {print $1}'); do
+    echo ">>> Pod $pod has restarts, collecting debug info ..."
+    echo "--- kubectl describe pod $pod ---"
+    kubectl describe pod "$pod" -n${NS} || true
+    echo "--- previous container logs for pod $pod ---"
+    for container in $(kubectl get pod "$pod" -n${NS} -o jsonpath='{.spec.containers[*].name}'); do
+        echo "  --- container: $container (previous) ---"
+        kubectl logs "$pod" -n${NS} -c "$container" --previous 2>&1 || true
+    done
+    echo "======================================================================================"
+done
+
 echo "print out csi-$DRIVER-node logs ..."
 echo "======================================================================================"
 LABEL="app=csi-$DRIVER-node"
