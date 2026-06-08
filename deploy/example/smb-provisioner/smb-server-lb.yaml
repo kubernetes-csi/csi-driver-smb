@@ -42,6 +42,8 @@ spec:
       containers:
         - name: smb-server
           image: andyzhangx/samba:win-fix
+          securityContext:
+            runAsUser: 0
           env:
             - name: PERMISSIONS
               value: "0777"

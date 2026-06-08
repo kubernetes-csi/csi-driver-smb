@@ -38,9 +38,8 @@ echo "==========================================================================
 
 echo "print out smb-server pod logs ..."
 echo "======================================================================================"
-kubectl get pods -n default -l app=smb-server \
-    | awk 'NR>1 {print $1}' \
-    | xargs -I {} sh -c 'echo "--- Pod: {} ---"; kubectl logs {} -n default --all-containers; kubectl describe pod {} -n default | grep -A 20 "Events:"'
+kubectl get pods -n default -l app=smb-server --no-headers -o custom-columns=":metadata.name" \
+    | xargs --no-run-if-empty -I {} sh -c 'echo "--- Pod: {} ---"; kubectl logs {} -n default --all-containers 2>/dev/null || true; kubectl describe pod {} -n default 2>/dev/null | grep -A 20 "Events:" || true'
 echo "======================================================================================"
 
 echo "print out all $NS namespace pods status ..."
