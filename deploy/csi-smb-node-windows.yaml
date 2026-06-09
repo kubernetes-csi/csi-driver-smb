@@ -36,7 +36,7 @@ spec:
           image: registry.k8s.io/sig-storage/livenessprobe:v2.16.0
           args:
             - --csi-address=$(CSI_ENDPOINT)
-            - --probe-timeout=3s
+            - --probe-timeout=30s
             - --health-port=29643
             - --v=2
           env:
