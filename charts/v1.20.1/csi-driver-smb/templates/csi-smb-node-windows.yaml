@@ -49,7 +49,7 @@ spec:
 {{- end }}
           args:
             - --csi-address=$(CSI_ENDPOINT)
-            - --probe-timeout=3s
+            - --probe-timeout=30s
             - --health-port={{ .Values.node.livenessProbe.healthPort }}
             - --v=2
           env:
@@ -110,12 +110,12 @@ spec:
               name: healthz
               protocol: TCP
           livenessProbe:
-            failureThreshold: 5
+            failureThreshold: 10
             httpGet:
               path: /healthz
               port: healthz
-            initialDelaySeconds: 30
-            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
             periodSeconds: 30
           env:
             - name: CSI_ENDPOINT
