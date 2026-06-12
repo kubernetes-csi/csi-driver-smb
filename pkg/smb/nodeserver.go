@@ -20,6 +20,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -647,7 +648,7 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 		}
 	}
 
-	tempSymlink := fmt.Sprintf("%s.tmp.%d", krb5CacheFileName, time.Now().UnixNano())
+	tempSymlink := fmt.Sprintf("%s.tmp.%d.%d", krb5CacheFileName, time.Now().UnixNano(), rand.Int63())
 	if err := os.Symlink(volumeIDCacheAbsolutePath, tempSymlink); err != nil {
 		return false, status.Error(codes.Internal, fmt.Sprintf("failed to create temp symlink %s -> %s: %v", tempSymlink, volumeIDCacheAbsolutePath, err))
 	}
