@@ -80,6 +80,11 @@ spec:
             - "--extra-create-metadata=true"
             - "--feature-gates=HonorPVReclaimPolicy=true"
             - "--retry-interval-max=30m"
+{{- with .Values.controller.extraArgs.csiProvisioner }}
+{{- range . }}
+            - {{ . | quote }}
+{{- end }}
+{{- end }}
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -105,6 +110,11 @@ spec:
             - "-leader-election"
             - "--leader-election-namespace={{ .Release.Namespace }}"
             - '-handle-volume-inuse-error=false'
+{{- with .Values.controller.extraArgs.csiResizer }}
+{{- range . }}
+            - {{ . | quote }}
+{{- end }}
+{{- end }}
           env:
             - name: ADDRESS
               value: /csi/csi.sock
