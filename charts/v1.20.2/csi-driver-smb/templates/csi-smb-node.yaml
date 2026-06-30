@@ -1,0 +1,164 @@
+{{- if .Values.linux.enabled}}
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ .Values.linux.dsName }}
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
+spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.node.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ .Values.linux.dsName }}
+  template:
+    metadata:
+{{ include "smb.labels" . | indent 6 }}
+        app: {{ .Values.linux.dsName }}
+        {{- if .Values.podLabels }}
+{{- toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+{{- with .Values.node.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}    
+      hostNetwork: true
+      dnsPolicy: {{ .Values.linux.dnsPolicy }}
+      serviceAccountName: {{ .Values.serviceAccount.node }}
+      nodeSelector:
+        kubernetes.io/os: linux
+{{- with .Values.node.nodeSelector }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- if .Values.securityContext }}
+      securityContext: {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
+{{- with .Values.linux.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      {{- include "smb.pullSecrets" . | indent 6 }}
+      containers:
+        - name: liveness-probe
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+{{- if hasPrefix "/" .Values.image.livenessProbe.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
+{{- else }}
+          image: "{{ .Values.image.livenessProbe.repository }}:{{ .Values.image.livenessProbe.tag }}"
+{{- end }}
+          args:
+            - --csi-address=/csi/csi.sock
+            - --probe-timeout=3s
+            - --http-endpoint=localhost:{{ .Values.node.livenessProbe.healthPort }}
+            - --v=2
+          imagePullPolicy: {{ .Values.image.livenessProbe.pullPolicy }}
+          resources: {{- toYaml .Values.linux.resources.livenessProbe | nindent 12 }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+              - ALL
+        - name: node-driver-registrar
+{{- if hasPrefix "/" .Values.image.nodeDriverRegistrar.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
+{{- else }}
+          image: "{{ .Values.image.nodeDriverRegistrar.repository }}:{{ .Values.image.nodeDriverRegistrar.tag }}"
+{{- end }}
+          args:
+            - --csi-address=$(ADDRESS)
+            - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+            - --v=2
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}/csi.sock
+          imagePullPolicy: {{ .Values.image.nodeDriverRegistrar.pullPolicy }}
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+            - name: registration-dir
+              mountPath: /registration
+          resources: {{- toYaml .Values.linux.resources.nodeDriverRegistrar | nindent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+        - name: smb
+{{- if hasPrefix "/" .Values.image.smb.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+{{- else }}
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
+{{- end }}
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
+          args:
+            - "--v={{ .Values.node.logLevel }}"
+            - "--drivername={{ .Values.driver.name }}"
+            - "--endpoint=$(CSI_ENDPOINT)"
+            - "--nodeid=$(KUBE_NODE_NAME)"
+            - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
+            - "--krb5-prefix={{ .Values.linux.krb5Prefix }}"
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              host: localhost
+              path: /healthz
+              port: {{ .Values.node.livenessProbe.healthPort }}
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            periodSeconds: 30
+          env:
+            - name: CSI_ENDPOINT
+              value: unix:///csi/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          securityContext:
+            privileged: true
+            capabilities:
+              drop:
+              - ALL
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+            - mountPath: {{ .Values.linux.kubelet }}
+              mountPropagation: Bidirectional
+              name: mountpoint-dir
+{{- if ne .Values.linux.krb5CacheDirectory "" }}
+            - mountPath: {{ .Values.linux.kubelet }}/kerberos/
+              mountPropagation: Bidirectional
+              name: krb5cache-dir
+{{- end }}
+          resources: {{- toYaml .Values.linux.resources.smb | nindent 12 }}
+      volumes:
+        - hostPath:
+            path: {{ .Values.linux.kubelet }}/plugins/{{ .Values.driver.name }}
+            type: DirectoryOrCreate
+          name: socket-dir
+        - hostPath:
+            path: {{ .Values.linux.kubelet }}/
+            type: DirectoryOrCreate
+          name: mountpoint-dir
+        - hostPath:
+            path: {{ .Values.linux.kubelet }}/plugins_registry/
+            type: DirectoryOrCreate
+          name: registration-dir
+{{- if ne .Values.linux.krb5CacheDirectory "" }}
+        - hostPath:
+            path: {{ .Values.linux.krb5CacheDirectory }}
+            type: DirectoryOrCreate
+          name: krb5cache-dir
+{{- end }}
+{{- end -}}
