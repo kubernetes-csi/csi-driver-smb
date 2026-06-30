@@ -558,6 +558,16 @@ func TestGetSmbVolFromID(t *testing.T) {
 			subDir:    "pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
 			expectErr: true,
 		},
+		{
+			desc:      "subDir with path traversal should be rejected",
+			volumeID:  "smb-server.default.svc.cluster.local/share#../../etc/shadow#pvc-4729891a-f57e-4982-9c60-e9884af1be2f",
+			expectErr: true,
+		},
+		{
+			desc:      "uuid with path traversal should be rejected",
+			volumeID:  "smb-server.default.svc.cluster.local/share#subdir#../../etc/shadow#delete",
+			expectErr: true,
+		},
 	}
 	for _, test := range cases {
 		t.Run(test.desc, func(t *testing.T) {
