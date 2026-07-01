@@ -1,0 +1,48 @@
+{{- if .Values.windows.csiproxy.enabled}}
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ .Values.windows.csiproxy.dsName }}
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
+spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.node.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ .Values.windows.csiproxy.dsName }}
+  template:
+    metadata:
+{{ include "smb.labels" . | indent 6 }}
+        app: {{ .Values.windows.csiproxy.dsName }}
+    spec:
+{{- with .Values.windows.csiproxy.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      securityContext:
+        windowsOptions:
+          hostProcess: true
+          runAsUserName: {{ .Values.windows.csiproxy.username | quote }} 
+      hostNetwork: true
+      nodeSelector:
+{{- with .Values.windows.csiproxy.nodeSelector }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.node.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- include "smb.pullSecrets" . | indent 6 }}
+      containers:
+        - name: csi-proxy
+{{- if hasPrefix "/" .Values.image.csiproxy.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.csiproxy.repository }}:{{ .Values.image.csiproxy.tag }}"
+{{- else }}
+          image: "{{ .Values.image.csiproxy.repository }}:{{ .Values.image.csiproxy.tag }}"
+{{- end }}
+          imagePullPolicy: {{ .Values.image.csiproxy.pullPolicy }}
+{{- end -}}
