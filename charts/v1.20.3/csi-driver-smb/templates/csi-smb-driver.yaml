@@ -1,0 +1,17 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: CSIDriver
+metadata:
+  name: {{ .Values.driver.name }}
+{{- if .Values.driver.labels }}
+  labels:
+{{- toYaml .Values.driver.labels | nindent 4 }}
+{{- end }}
+spec:
+  attachRequired: false
+  podInfoOnMount: true
+  volumeLifecycleModes:
+    - Persistent
+    {{- if .Values.feature.enableInlineVolume }}
+    - Ephemeral
+    {{- end }}
