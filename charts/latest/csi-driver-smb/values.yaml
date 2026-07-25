@@ -24,6 +24,12 @@ image:
     repository: ghcr.io/kubernetes-sigs/sig-windows/csi-proxy
     tag: v1.1.2
     pullPolicy: IfNotPresent
+  # Image used by the optional krb5 auto-config initContainer (see linux.krb5AutoConfig).
+  # A small shell-capable image is sufficient; the initContainer only runs mkdir + cat.
+  krb5AutoConfig:
+    repository: mcr.microsoft.com/cbl-mariner/busybox
+    tag: 2.0
+    pullPolicy: IfNotPresent
 
 serviceAccount:
   create: true # When true, service accounts will be created for you. Set to false if you want to use your own.
