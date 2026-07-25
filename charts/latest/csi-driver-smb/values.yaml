@@ -28,7 +28,7 @@ image:
   # A small shell-capable image is sufficient; the initContainer only runs mkdir + cat.
   krb5AutoConfig:
     repository: mcr.microsoft.com/cbl-mariner/busybox
-    tag: 2.0
+    tag: "2.0"
     pullPolicy: IfNotPresent
 
 serviceAccount:
