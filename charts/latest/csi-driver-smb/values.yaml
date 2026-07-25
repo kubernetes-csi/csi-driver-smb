@@ -127,7 +127,6 @@ linux:
   # documented in docs/driver-parameters.md (Kerberos ticket support).
   # Set to false if you manage /etc/krb5.conf(.d/) yourself.
   krb5AutoConfig: false
-  krb5AutoConfigImage: busybox:stable
   tolerations:
     - operator: "Exists"
   resources:
