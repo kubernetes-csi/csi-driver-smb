@@ -314,31 +314,53 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		if err := validatePath(source); err != nil {
 			return nil, status.Errorf(codes.InvalidArgument, "invalid source path %q: %v", source, err)
 		}
-		mountDone := make(chan error, 1)
-		go func() {
-			mountDone <- Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
-		}()
-		select {
-		case err := <-mountDone:
-			if err != nil {
-				return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, err))
-			}
-		case <-time.After(time.Duration(mountTimeoutInSec) * time.Second):
-			// The mount goroutine is still running; keep the volume lock held
-			// so kubelet retries get codes.Aborted instead of spawning more
-			// goroutines. Release the lock asynchronously when the mount finishes.
+		keepLockHeld, mountErr := d.mountWithTimeout(ctx, source, targetPath, mountOptions, sensitiveMountOptions, volumeID, lockKey, time.Duration(mountTimeoutInSec)*time.Second)
+		if keepLockHeld {
 			releaseLock = false
-			go func() {
-				<-mountDone
-				d.volumeLocks.Release(lockKey)
-				klog.V(2).Infof("volume(%s) mount goroutine finished after timeout, released lock", volumeID)
-			}()
-			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q timeout after %ds", volumeID, source, targetPath, mountTimeoutInSec))
+		}
+		if mountErr != nil {
+			return nil, status.Errorf(codes.Internal, "volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, mountErr)
 		}
 		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, targetPath)
 	}
 
 	return &csi.NodeStageVolumeResponse{}, nil
+}
+
+// mountWithTimeout runs Mount in a goroutine and waits for it to finish, the
+// gRPC context to be canceled, or the configured mount timeout to elapse. When
+// the mount is still running after the wait ends (timeout or ctx cancellation),
+// it returns keepLockHeld=true so the caller keeps the volume lock; a
+// background goroutine releases the lock once the mount goroutine eventually
+// returns. This prevents kubelet retries from spawning additional mount
+// goroutines against the same target while a slow mount is still in flight.
+func (d *Driver) mountWithTimeout(ctx context.Context, source, targetPath string, mountOptions, sensitiveMountOptions []string, volumeID, lockKey string, timeout time.Duration) (keepLockHeld bool, err error) {
+	mountDone := make(chan error, 1)
+	go func() {
+		mountDone <- Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
+	}()
+
+	timer := time.NewTimer(timeout)
+	defer timer.Stop()
+
+	deferReleaseLock := func(reason string) {
+		go func() {
+			<-mountDone
+			d.volumeLocks.Release(lockKey)
+			klog.V(2).Infof("volume(%s) mount goroutine finished after %s, released lock", volumeID, reason)
+		}()
+	}
+
+	select {
+	case mountErr := <-mountDone:
+		return false, mountErr
+	case <-timer.C:
+		deferReleaseLock("timeout")
+		return true, fmt.Errorf("mount %q on %q timeout after %v", source, targetPath, timeout)
+	case <-ctx.Done():
+		deferReleaseLock("context cancellation")
+		return true, fmt.Errorf("mount %q on %q canceled: %v", source, targetPath, ctx.Err())
+	}
 }
 
 // NodeUnstageVolume unmount the volume from the staging path
