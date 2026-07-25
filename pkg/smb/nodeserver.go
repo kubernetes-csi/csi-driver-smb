@@ -216,7 +216,12 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	if acquired := d.volumeLocks.TryAcquire(lockKey); !acquired {
 		return nil, status.Errorf(codes.Aborted, volumeOperationAlreadyExistsFmt, volumeID)
 	}
-	defer d.volumeLocks.Release(lockKey)
+	releaseLock := true
+	defer func() {
+		if releaseLock {
+			d.volumeLocks.Release(lockKey)
+		}
+	}()
 
 	var username, password, domain string
 	for k, v := range secrets {
@@ -311,14 +316,26 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		if err := validatePath(source); err != nil {
 			return nil, status.Errorf(codes.InvalidArgument, "invalid source path %q: %v", source, err)
 		}
-		execFunc := func() error {
-			return Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
-		}
-		timeoutFunc := func() error {
-			return fmt.Errorf("mount volume %s to %s timeout after %ds", source, targetPath, mountTimeoutInSec)
-		}
-		if err := util.WaitUntilTimeout(mountTimeoutInSec*time.Second, execFunc, timeoutFunc); err != nil {
-			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, err))
+		mountDone := make(chan error, 1)
+		go func() {
+			mountDone <- Mount(d.mounter, source, targetPath, "cifs", mountOptions, sensitiveMountOptions, volumeID)
+		}()
+		select {
+		case err := <-mountDone:
+			if err != nil {
+				return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, err))
+			}
+		case <-time.After(time.Duration(mountTimeoutInSec) * time.Second):
+			// The mount goroutine is still running; keep the volume lock held
+			// so kubelet retries get codes.Aborted instead of spawning more
+			// goroutines. Release the lock asynchronously when the mount finishes.
+			releaseLock = false
+			go func() {
+				<-mountDone
+				d.volumeLocks.Release(lockKey)
+				klog.V(2).Infof("volume(%s) mount goroutine finished after timeout, released lock", volumeID)
+			}()
+			return nil, status.Error(codes.Internal, fmt.Sprintf("volume(%s) mount %q on %q timeout after %ds", volumeID, source, targetPath, mountTimeoutInSec))
 		}
 		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, targetPath)
 	}
