@@ -18,6 +18,7 @@ package smb
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -319,7 +320,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			releaseLock = false
 		}
 		if mountErr != nil {
-			return nil, status.Errorf(codes.Internal, "volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, mountErr)
+			return nil, mountErr
 		}
 		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, targetPath)
 	}
@@ -334,6 +335,12 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 // background goroutine releases the lock once the mount goroutine eventually
 // returns. This prevents kubelet retries from spawning additional mount
 // goroutines against the same target while a slow mount is still in flight.
+//
+// Returned errors are already wrapped in gRPC status errors:
+//   - mount failure                            -> codes.Internal
+//   - timer expired                            -> codes.DeadlineExceeded
+//   - ctx canceled with DeadlineExceeded cause -> codes.DeadlineExceeded
+//   - ctx canceled (client canceled)           -> codes.Canceled
 func (d *Driver) mountWithTimeout(ctx context.Context, source, targetPath string, mountOptions, sensitiveMountOptions []string, volumeID, lockKey string, timeout time.Duration) (keepLockHeld bool, err error) {
 	mountDone := make(chan error, 1)
 	go func() {
@@ -353,13 +360,20 @@ func (d *Driver) mountWithTimeout(ctx context.Context, source, targetPath string
 
 	select {
 	case mountErr := <-mountDone:
-		return false, mountErr
+		if mountErr != nil {
+			return false, status.Errorf(codes.Internal, "volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, mountErr)
+		}
+		return false, nil
 	case <-timer.C:
 		deferReleaseLock("timeout")
-		return true, fmt.Errorf("mount %q on %q timeout after %v", source, targetPath, timeout)
+		return true, status.Errorf(codes.DeadlineExceeded, "volume(%s) mount %q on %q timeout after %v", volumeID, source, targetPath, timeout)
 	case <-ctx.Done():
 		deferReleaseLock("context cancellation")
-		return true, fmt.Errorf("mount %q on %q canceled: %v", source, targetPath, ctx.Err())
+		code := codes.Canceled
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			code = codes.DeadlineExceeded
+		}
+		return true, status.Errorf(code, "volume(%s) mount %q on %q canceled: %v", volumeID, source, targetPath, ctx.Err())
 	}
 }
 
