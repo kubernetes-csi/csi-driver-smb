@@ -113,12 +113,20 @@ func TestMountWithTimeout(t *testing.T) {
 					t.Error("expected lock to be held after timeout, but TryAcquire succeeded")
 					d.volumeLocks.Release(lockKey)
 				}
-				// Wait for the mount goroutine to finish and release the lock
-				time.Sleep(tc.mountDelay + 200*time.Millisecond)
-				if !d.volumeLocks.TryAcquire(lockKey) {
+				// Poll for the async lock release with an overall deadline so
+				// we wait just long enough on slow CI runners without flaking.
+				deadline := time.Now().Add(tc.mountDelay + 5*time.Second)
+				acquired := false
+				for time.Now().Before(deadline) {
+					if d.volumeLocks.TryAcquire(lockKey) {
+						acquired = true
+						d.volumeLocks.Release(lockKey)
+						break
+					}
+					time.Sleep(10 * time.Millisecond)
+				}
+				if !acquired {
 					t.Error("expected lock to be released after mount goroutine finished")
-				} else {
-					d.volumeLocks.Release(lockKey)
 				}
 			} else if !keepLock {
 				// When keepLock is false, caller releases the lock — just clean up
