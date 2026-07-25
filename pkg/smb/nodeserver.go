@@ -365,9 +365,29 @@ func (d *Driver) mountWithTimeout(ctx context.Context, source, targetPath string
 		}
 		return false, nil
 	case <-timer.C:
+		// Re-check mountDone non-blocking: select picks randomly among
+		// ready cases, so the mount may have completed at the same instant
+		// the timer fired.
+		select {
+		case mountErr := <-mountDone:
+			if mountErr != nil {
+				return false, status.Errorf(codes.Internal, "volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, mountErr)
+			}
+			return false, nil
+		default:
+		}
 		deferReleaseLock("timeout")
 		return true, status.Errorf(codes.DeadlineExceeded, "volume(%s) mount %q on %q timeout after %v", volumeID, source, targetPath, timeout)
 	case <-ctx.Done():
+		// Re-check mountDone: mount may have completed simultaneously.
+		select {
+		case mountErr := <-mountDone:
+			if mountErr != nil {
+				return false, status.Errorf(codes.Internal, "volume(%s) mount %q on %q failed with %v", volumeID, source, targetPath, mountErr)
+			}
+			return false, nil
+		default:
+		}
 		deferReleaseLock("context cancellation")
 		code := codes.Canceled
 		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
