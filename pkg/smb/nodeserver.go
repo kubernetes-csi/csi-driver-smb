@@ -354,7 +354,10 @@ func (d *Driver) mountWithTimeout(ctx context.Context, source, targetPath string
 
 	deferReleaseLock := func(reason string) {
 		go func() {
-			<-mountDone
+			mountErr := <-mountDone
+			if mountErr != nil {
+				klog.Warningf("volume(%s) mount %q on %q failed after %s with %v", volumeID, source, targetPath, reason, mountErr)
+			}
 			d.volumeLocks.Release(lockKey)
 			klog.V(2).Infof("volume(%s) mount goroutine finished after %s, released lock", volumeID, reason)
 		}()
