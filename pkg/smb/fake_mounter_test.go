@@ -17,12 +17,110 @@ limitations under the License.
 package smb
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"testing"
+	"time"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	mount "k8s.io/mount-utils"
 )
+
+// slowMounter wraps fakeMounter and blocks MountSensitive for a configurable
+// duration. Used by TestMountWithTimeout to exercise timeout / lock semantics.
+type slowMounter struct {
+	fakeMounter
+	delay time.Duration
+}
+
+func (s *slowMounter) MountSensitive(source, target, _ string, _ []string, _ []string) error {
+	time.Sleep(s.delay)
+	return s.fakeMounter.MountSensitive(source, target, "", nil, nil)
+}
+
+func TestMountWithTimeout(t *testing.T) {
+	tests := []struct {
+		name           string
+		mountDelay     time.Duration
+		timeout        time.Duration
+		wantKeepLock   bool
+		wantCode       codes.Code
+		wantErr        bool
+		checkLockAsync bool // verify lock is released asynchronously
+	}{
+		{
+			name:         "mount completes before timeout",
+			mountDelay:   0,
+			timeout:      time.Second,
+			wantKeepLock: false,
+			wantErr:      false,
+		},
+		{
+			name:           "mount times out, lock held and released async",
+			mountDelay:     500 * time.Millisecond,
+			timeout:        50 * time.Millisecond,
+			wantKeepLock:   true,
+			wantCode:       codes.DeadlineExceeded,
+			wantErr:        true,
+			checkLockAsync: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			d := NewFakeDriver()
+			d.mounter = &mount.SafeFormatAndMount{
+				Interface: &slowMounter{delay: tc.mountDelay},
+			}
+
+			lockKey := "test-lock"
+			if !d.volumeLocks.TryAcquire(lockKey) {
+				t.Fatal("failed to acquire volume lock")
+			}
+
+			ctx := context.Background()
+			keepLock, err := d.mountWithTimeout(ctx, "source", "/target", nil, nil, "vol-1", lockKey, tc.timeout)
+
+			if keepLock != tc.wantKeepLock {
+				t.Errorf("keepLockHeld = %v, want %v", keepLock, tc.wantKeepLock)
+			}
+			if tc.wantErr {
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				st, ok := status.FromError(err)
+				if !ok {
+					t.Fatalf("expected gRPC status error, got %v", err)
+				}
+				if st.Code() != tc.wantCode {
+					t.Errorf("error code = %v, want %v", st.Code(), tc.wantCode)
+				}
+			} else if err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+
+			if tc.checkLockAsync {
+				// Lock should be held right now (retry should fail)
+				if d.volumeLocks.TryAcquire(lockKey) {
+					t.Error("expected lock to be held after timeout, but TryAcquire succeeded")
+					d.volumeLocks.Release(lockKey)
+				}
+				// Wait for the mount goroutine to finish and release the lock
+				time.Sleep(tc.mountDelay + 200*time.Millisecond)
+				if !d.volumeLocks.TryAcquire(lockKey) {
+					t.Error("expected lock to be released after mount goroutine finished")
+				} else {
+					d.volumeLocks.Release(lockKey)
+				}
+			} else if !keepLock {
+				// When keepLock is false, caller releases the lock — just clean up
+				d.volumeLocks.Release(lockKey)
+			}
+		})
+	}
+}
 
 func TestMount(t *testing.T) {
 	targetTest := "./target_test"
