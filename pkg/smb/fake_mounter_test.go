@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"runtime"
 	"testing"
 	"time"
 
@@ -41,6 +42,11 @@ func (s *slowMounter) MountSensitive(source, target, _ string, _ []string, _ []s
 }
 
 func TestMountWithTimeout(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		// Windows Mount() requires a real CSIProxyMounter; the timeout logic
+		// under test is platform-agnostic and covered on Linux.
+		t.Skip("skipping on windows: Mount() requires csi-proxy mounter")
+	}
 	tests := []struct {
 		name           string
 		mountDelay     time.Duration
