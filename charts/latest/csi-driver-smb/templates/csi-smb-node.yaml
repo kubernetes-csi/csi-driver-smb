@@ -46,6 +46,29 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       {{- include "smb.pullSecrets" . | indent 6 }}
+{{- if and (ne .Values.linux.krb5CacheDirectory "") .Values.linux.krb5AutoConfig }}
+      initContainers:
+        - name: setup-krb5-ccache
+          image: {{ .Values.linux.krb5AutoConfigImage | quote }}
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              mkdir -p /host/etc/krb5.conf.d
+              prefix="{{ .Values.linux.krb5Prefix | default "krb5cc_" }}"
+              cachedir="{{ .Values.linux.krb5CacheDirectory }}"
+              cat > /host/etc/krb5.conf.d/90-csi-driver-smb.conf <<EOF
+              [libdefaults]
+                  default_ccache_name = FILE:${cachedir}/${prefix}%{uid}
+              EOF
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: krb5-confd
+              mountPath: /host/etc/krb5.conf.d
+          resources: {{- toYaml .Values.linux.resources.livenessProbe | nindent 12 }}
+{{- end }}
       containers:
         - name: liveness-probe
           volumeMounts:
@@ -177,5 +200,11 @@ spec:
             path: {{ .Values.linux.krb5CacheDirectory }}
             type: DirectoryOrCreate
           name: krb5cache-dir
+{{- end }}
+{{- if and (ne .Values.linux.krb5CacheDirectory "") .Values.linux.krb5AutoConfig }}
+        - hostPath:
+            path: /etc/krb5.conf.d
+            type: DirectoryOrCreate
+          name: krb5-confd
 {{- end }}
 {{- end -}}
