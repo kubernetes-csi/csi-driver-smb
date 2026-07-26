@@ -120,6 +120,13 @@ linux:
   kubelet: /var/lib/kubelet
   krb5CacheDirectory: "" # directory for kerberos credential cache, empty string means default(/var/lib/kubelet/kerberos/)
   krb5Prefix: "" # prefix for kerberos credential cache, empty string means default(krb5cc_)
+  # When true (and krb5CacheDirectory is non-empty), an initContainer writes
+  # /etc/krb5.conf.d/90-csi-driver-smb.conf on every Linux node so that the
+  # in-kernel cifs.upcall picks up the per-uid credential cache produced by
+  # the driver. This lets users skip the manual node-provisioning step
+  # documented in docs/driver-parameters.md (Kerberos ticket support).
+  # Set to false if you manage /etc/krb5.conf(.d/) yourself.
+  krb5AutoConfig: false
   tolerations:
     - operator: "Exists"
   resources:

@@ -48,6 +48,13 @@ mkdir -p /etc/krb5.conf.d/
 echo "[libdefaults]
 default_ccache_name = FILE:/var/lib/kubelet/kerberos/krb5cc_%{uid}" > /etc/krb5.conf.d/ccache.conf
    ```
+   > When installing the driver via the Helm chart you can skip this step by
+   > setting `linux.krb5AutoConfig=true` (together with a non-empty
+   > `linux.krb5CacheDirectory`). The node DaemonSet then runs an
+   > initContainer that writes `/etc/krb5.conf.d/90-csi-driver-smb.conf` on
+   > every Linux node so `cifs.upcall` finds the per-uid credential cache
+   > produced by the driver. Leave it `false` if you manage `/etc/krb5.conf`
+   > yourself.
  - Mount flags should include **sec=krb5,uid=1000,cruid=1000**
    - sec=krb5 enables using credential cache
    - cruid=1000 provides information for what user credential cache will be looked up. This should match the secret entry.
