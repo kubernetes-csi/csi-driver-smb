@@ -62,7 +62,7 @@ spec:
               set -eu
               mkdir -p /host/etc/krb5.conf.d
               prefix="{{ .Values.linux.krb5Prefix | default "krb5cc_" }}"
-              cachedir="{{ .Values.linux.krb5CacheDirectory }}"
+              cachedir="{{ .Values.linux.krb5CacheDirectory | trimSuffix "/" }}"
               cat > /host/etc/krb5.conf.d/90-csi-driver-smb.conf <<EOF
               [libdefaults]
                   default_ccache_name = FILE:${cachedir}/${prefix}%{uid}
