@@ -49,12 +49,12 @@ spec:
 {{- if and (ne .Values.linux.krb5CacheDirectory "") .Values.linux.krb5AutoConfig }}
       initContainers:
         - name: setup-krb5-ccache
-{{- if hasPrefix "/" .Values.image.krb5AutoConfig.repository }}
-          image: "{{ .Values.image.baseRepo }}{{ .Values.image.krb5AutoConfig.repository }}:{{ .Values.image.krb5AutoConfig.tag }}"
+{{- if hasPrefix "/" .Values.image.smb.repository }}
+          image: "{{ .Values.image.baseRepo }}{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
 {{- else }}
-          image: "{{ .Values.image.krb5AutoConfig.repository }}:{{ .Values.image.krb5AutoConfig.tag }}"
+          image: "{{ .Values.image.smb.repository }}:{{ .Values.image.smb.tag }}"
 {{- end }}
-          imagePullPolicy: {{ .Values.image.krb5AutoConfig.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.smb.pullPolicy }}
           command:
             - sh
             - -c
