@@ -7,6 +7,7 @@
 ### Tips
 
 - run smb-controller on control plane node: `--set controller.runOnControlPlane=true`
+- set controller replicas to `2`: `--set controller.replicas=2` (requires ≥ 2 schedulable nodes — see [High-availability controller](#high-availability-controller) below)
 - Microk8s based kubernetes recommended settings:
     - `--set linux.kubelet="/var/snap/microk8s/common/var/lib/kubelet"` - sets correct path to microk8s kubelet even though a user has a folder link to it.
 
@@ -35,6 +36,32 @@ helm repo update csi-driver-smb
 helm search repo csi-driver-smb --versions
 helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version 1.20.3
 ```
+
+### High-availability controller
+
+`controller.replicas > 1` requires the same number of schedulable nodes as replicas. The controller Deployment uses `hostNetwork: true` (needed to mount SMB shares for CreateVolume), so all containers in the pod share the node's network namespace. Its `liveness-probe` sidecar listens on a **fixed host port** (`controller.livenessProbe.healthPort`, default `29642`), which the `smb` container's livenessProbe HTTP-GETs.
+
+Scheduling two controller replicas onto the same node causes the second pod's `liveness-probe` sidecar to fail binding the port (already taken by the first pod), which trips the `smb` container's livenessProbe and puts the pod into `CrashLoopBackOff`.
+
+To run controller replicas > 1:
+
+1. Ensure your cluster has at least `controller.replicas` schedulable nodes (single-node clusters, including default `k3d` / `kind` configurations, must keep `controller.replicas=1`).
+2. Add `podAntiAffinity` on `kubernetes.io/hostname` so replicas cannot co-locate. The `matchLabels` value below must match the controller pods' `app` label, which is derived from `controller.name` (default `csi-smb-controller`) — update it if you override `controller.name`:
+
+```yaml
+controller:
+  replicas: 2
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              app: csi-smb-controller
+```
+
+> [!NOTE]
+> Leader-election log lines like `"Failed to update lease optimistically, falling back to slow path"` in the active controller are **normal noise** when there are 2+ candidates racing for the same lease. They do not indicate a bug.
 
 ### install driver with customized driver name, deployment name
 
