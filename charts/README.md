@@ -7,7 +7,7 @@
 ### Tips
 
 - run smb-controller on control plane node: `--set controller.runOnControlPlane=true`
-- set replica of controller as `2`: `--set controller.replicas=2` (requires ≥ 2 schedulable nodes — see [High-availability controller](#high-availability-controller) below)
+- set controller replicas to `2`: `--set controller.replicas=2` (requires ≥ 2 schedulable nodes — see [High-availability controller](#high-availability-controller) below)
 - Microk8s based kubernetes recommended settings:
     - `--set linux.kubelet="/var/snap/microk8s/common/var/lib/kubelet"` - sets correct path to microk8s kubelet even though a user has a folder link to it.
 
@@ -45,8 +45,8 @@ Scheduling two controller replicas onto the same node causes the second pod's `l
 
 To run controller replicas > 1:
 
-1. Ensure your cluster has at least `controller.replicas` schedulable nodes (single-node dev clusters like `k3d` / `kind` must keep `controller.replicas=1`).
-2. Add `podAntiAffinity` on `kubernetes.io/hostname` so replicas cannot co-locate:
+1. Ensure your cluster has at least `controller.replicas` schedulable nodes (single-node clusters, including default `k3d` / `kind` configurations, must keep `controller.replicas=1`).
+2. Add `podAntiAffinity` on `kubernetes.io/hostname` so replicas cannot co-locate. The `matchLabels` value below must match the controller pods' `app` label, which is derived from `controller.name` (default `csi-smb-controller`) — update it if you override `controller.name`:
 
 ```yaml
 controller:
