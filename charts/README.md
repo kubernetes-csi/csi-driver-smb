@@ -20,7 +20,7 @@ Add the helm repo (pick either source — both host the same charts):
 # Option 1: raw.githubusercontent.com (default)
 helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 
-# Option 2: GitHub Pages mirror (available since 1.20.3, not affected by raw.githubusercontent.com rate limits)
+# Option 2: GitHub Pages mirror (available since 1.20.0, not affected by raw.githubusercontent.com rate limits)
 helm repo add csi-driver-smb https://kubernetes-csi.github.io/csi-driver-smb
 ```
 
@@ -28,7 +28,7 @@ Then update the repo cache, search for available versions, and install:
 
 ```console
 helm repo update csi-driver-smb
-helm search repo csi-driver-smb
+helm search repo csi-driver-smb --versions
 helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version 1.20.3
 ```
 
