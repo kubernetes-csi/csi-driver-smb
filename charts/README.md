@@ -14,13 +14,17 @@
 > [!IMPORTANT]  
 > Starting from version `1.18.0`, the prefix `v` is removed from helm chart release so they are in line with [semver](https://semver.org). Therefore, when upgrading, refer to version `1.18.0` instead of `v1.18.0`.
 
-Add the helm repo (pick either source — both host the same charts):
+Add the helm repo — pick **one** source (both host the same charts; do not run both, the second overwrites the first):
+
+Option 1: raw.githubusercontent.com (default)
 
 ```console
-# Option 1: raw.githubusercontent.com (default)
 helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+```
 
-# Option 2: GitHub Pages mirror (available since 1.20.0, not affected by raw.githubusercontent.com rate limits)
+Option 2: GitHub Pages mirror (available since 1.20.0, not affected by raw.githubusercontent.com rate limits)
+
+```console
 helm repo add csi-driver-smb https://kubernetes-csi.github.io/csi-driver-smb
 ```
 
