@@ -12,9 +12,65 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+FROM debian:bookworm AS cifs-utils-builder
+
+ARG CIFS_UTILS_VERSION=7.0
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bzip2 \
+    build-essential \
+    ca-certificates \
+    curl \
+    libcap-ng-dev \
+    libkeyutils-dev \
+    libkrb5-dev \
+    libpam0g-dev \
+    libtalloc-dev \
+    libwbclient-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+RUN curl -fsSLo cifs-utils.tar.bz2 https://www.samba.org/ftp/linux-cifs/cifs-utils/cifs-utils-${CIFS_UTILS_VERSION}.tar.bz2 \
+    && tar -xjf cifs-utils.tar.bz2 --strip-components=1
+
+RUN multiarch="$(gcc -print-multiarch)" \
+    && ./configure \
+        --enable-cifsidmap \
+        --enable-cifscreds \
+        --with-libcap-ng=auto \
+        --enable-pam \
+        --with-pamdir="/lib/${multiarch}/security" \
+        --enable-man=no \
+        --enable-smbinfo=no \
+        --disable-pythontools \
+    && make -j"$(nproc)" \
+    && make DESTDIR=/out install \
+    && install -d /out/etc/request-key.d /out/etc/cifs-utils \
+    && printf 'create  cifs.idmap    * * /usr/sbin/cifs.idmap %%k\n' > /out/etc/request-key.d/cifs.idmap.conf \
+    && printf 'create  cifs.spnego    * * /usr/sbin/cifs.upcall %%k\n' > /out/etc/request-key.d/cifs.spnego.conf \
+    && ln -sf "/usr/lib/${multiarch}/cifs-utils/idmapwb.so" /out/etc/cifs-utils/idmap-plugin \
+    && chmod u+s /out/sbin/mount.cifs
+
 FROM registry.k8s.io/build-image/debian-base:bookworm-v1.0.8
 
-RUN apt update && apt upgrade -y && apt-mark unhold libcap2 && clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
+RUN apt update && apt upgrade -y && apt-mark unhold libcap2 && clean-install \
+    ca-certificates \
+    e2fsprogs \
+    libcap-ng0 \
+    libgssapi-krb5-2 \
+    libkeyutils1 \
+    libkrb5-3 \
+    libpam0g \
+    libtalloc2 \
+    libwbclient0 \
+    mount \
+    udev \
+    util-linux \
+    xfsprogs
+
+COPY --from=cifs-utils-builder /out/ /
 
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
