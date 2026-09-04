@@ -110,6 +110,10 @@ spec:
 {{- else }}
             - "--require-privacy-for-global-mapping=true"
 {{- end }}
+{{- if .Values.windows.globalMappingAdditionalParams }}
+            - --global-mapping-additional-params
+            - {{ .Values.windows.globalMappingAdditionalParams | quote }}
+{{- end }}
           env:
             - name: CSI_ENDPOINT
               value: unix://{{ .Values.windows.kubelet }}\plugins\{{ .Values.driver.name }}\csi.sock

@@ -43,7 +43,8 @@ var (
 	kubeconfig                     = flag.String("kubeconfig", "", "Absolute path to the kubeconfig file. Required only when running out of cluster.")
 	enableGetVolumeStats           = flag.Bool("enable-get-volume-stats", true, "allow GET_VOLUME_STATS on agent node")
 	removeSMBMappingDuringUnmount  = flag.Bool("remove-smb-mapping-during-unmount", true, "remove SMBMapping during unmount on Windows node")
-	requirePrivacyForGlobalMapping = flag.Bool("require-privacy-for-global-mapping", true, "pass -RequirePrivacy $true to New-SmbGlobalMapping on Windows node; set to false to stop requiring SMB encryption on the global mapping (only applies when --enable-windows-host-process=true)")
+	requirePrivacyForGlobalMapping = flag.Bool("require-privacy-for-global-mapping", true, "pass RequirePrivacy=true/false to New-SmbGlobalMapping on Windows node; only applies when --enable-windows-host-process=true and --global-mapping-additional-params is empty")
+	globalMappingAdditionalParams  = flag.String("global-mapping-additional-params", "", "comma-separated allowlisted key=value options for New-SmbGlobalMapping on Windows host process nodes, e.g. 'RequirePrivacy=false,RequireIntegrity=true'; takes precedence over --require-privacy-for-global-mapping")
 	workingMountDir                = flag.String("working-mount-dir", "/tmp", "working directory for provisioner to mount smb shares temporarily")
 	volStatsCacheExpireInMinutes   = flag.Int("vol-stats-cache-expire-in-minutes", 10, "The cache expire time in minutes for volume stats cache")
 	krb5CacheDirectory             = flag.String("krb5-cache-directory", smb.DefaultKrb5CacheDirectory, "The directory for kerberos cache")
@@ -84,6 +85,7 @@ func handle() {
 		EnableGetVolumeStats:           *enableGetVolumeStats,
 		RemoveSMBMappingDuringUnmount:  *removeSMBMappingDuringUnmount,
 		RequirePrivacyForGlobalMapping: requirePrivacyForGlobalMapping,
+		GlobalMappingAdditionalParams:  *globalMappingAdditionalParams,
 		RemoveArchivedVolumePath:       *removeArchivedVolumePath,
 		WorkingMountDir:                *workingMountDir,
 		VolStatsCacheExpireInMinutes:   *volStatsCacheExpireInMinutes,

@@ -155,10 +155,18 @@ windows:
   dsName: csi-smb-node-win # daemonset name
   kubelet: 'C:\var\lib\kubelet'
   removeSMBMappingDuringUnmount: true
-  # only takes effect when useHostProcessContainers: true
+  # only takes effect when useHostProcessContainers: true and globalMappingAdditionalParams is empty
   # set to false to stop requiring SMB encryption on the global mapping (-RequirePrivacy $false on New-SmbGlobalMapping);
   # this only removes the encryption requirement, it does not disable SMB signing or forbid negotiated encryption
   requirePrivacyForGlobalMapping: true
+  # optional structured allowlisted key=value options for New-SmbGlobalMapping on host process Windows nodes
+  # examples: 'RequirePrivacy=false' or 'RequirePrivacy=false,RequireIntegrity=true'
+  # supported keys: Persistent, RequireIntegrity, RequirePrivacy, UseWriteThrough, FullAccess,
+  # DenyAccess, TransportType, SkipCertificateCheck, CompressNetworkTraffic, BlockNTLM,
+  # TcpPort, QuicPort, RdmaPort
+  # for list-valued FullAccess/DenyAccess use ';' inside the value, e.g. 'FullAccess=user1;user2'
+  # when non-empty, this takes precedence over requirePrivacyForGlobalMapping
+  globalMappingAdditionalParams: ""
   tolerations:
     - key: "node.kubernetes.io/os"
       operator: "Exists"

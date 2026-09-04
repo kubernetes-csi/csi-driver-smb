@@ -59,47 +59,104 @@ func TestCheckForDuplicateSMBMounts(t *testing.T) {
 	}
 }
 
-func TestNewSmbGlobalMappingCmd(t *testing.T) {
+func TestParseGlobalMappingAdditionalParams(t *testing.T) {
 	tests := []struct {
-		name           string
-		requirePrivacy bool
-		expectedFlag   string
-		unexpectedFlag string
+		name                string
+		requirePrivacy      bool
+		globalMappingParams string
+		expectedEnvs        []string
+		expectErr           string
 	}{
 		{
-			name:           "require privacy true emits $true",
+			name:           "default require privacy true when no additional params provided",
 			requirePrivacy: true,
-			expectedFlag:   "-RequirePrivacy $true",
-			unexpectedFlag: "-RequirePrivacy $false",
+			expectedEnvs:   []string{"smbopt_requireprivacy=true"},
 		},
 		{
-			name:           "require privacy false emits $false",
+			name:           "default require privacy false when no additional params provided",
 			requirePrivacy: false,
-			expectedFlag:   "-RequirePrivacy $false",
-			unexpectedFlag: "-RequirePrivacy $true",
+			expectedEnvs:   []string{"smbopt_requireprivacy=false"},
+		},
+		{
+			name:                "structured params are parsed into env vars",
+			requirePrivacy:      true,
+			globalMappingParams: "RequirePrivacy=false,RequireIntegrity=true,TransportType=QUIC,TcpPort=445,FullAccess=user1;user2",
+			expectedEnvs: []string{
+				"smbopt_requireprivacy=false",
+				"smbopt_requireintegrity=true",
+				"smbopt_transporttype=QUIC",
+				"smbopt_tcpport=445",
+				"smbopt_fullaccess=user1;user2",
+			},
+		},
+		{
+			name:                "reject invalid format",
+			globalMappingParams: "RequirePrivacy false",
+			expectErr:           "expected key=value",
+		},
+		{
+			name:                "reject unsupported key",
+			globalMappingParams: "WhatIf=true",
+			expectErr:           "unsupported global mapping additional param",
+		},
+		{
+			name:                "reject invalid boolean",
+			globalMappingParams: "RequirePrivacy=maybe",
+			expectErr:           "invalid boolean value",
+		},
+		{
+			name:                "reject duplicate key",
+			globalMappingParams: "RequirePrivacy=true,RequirePrivacy=false",
+			expectErr:           "duplicate global mapping additional param",
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			cmd := newSmbGlobalMappingCmd(test.requirePrivacy)
-			if !strings.Contains(cmd, test.expectedFlag) {
-				t.Errorf("expected command to contain %q, got %q", test.expectedFlag, cmd)
+			envs, err := parseGlobalMappingAdditionalParams(test.requirePrivacy, test.globalMappingParams)
+			if test.expectErr != "" {
+				if err == nil || !strings.Contains(err.Error(), test.expectErr) {
+					t.Fatalf("expected error containing %q, got %v", test.expectErr, err)
+				}
+				return
 			}
-			if strings.Contains(cmd, test.unexpectedFlag) {
-				t.Errorf("expected command NOT to contain %q, got %q", test.unexpectedFlag, cmd)
+			if err != nil {
+				t.Fatalf("expected no error, got %v", err)
 			}
-			// sanity: the New-SmbGlobalMapping invocation and env-var substitution must remain intact
-			for _, want := range []string{
-				"New-SmbGlobalMapping",
-				"$Env:smbuser",
-				"$Env:smbpassword",
-				"$Env:smbremotepath",
-			} {
-				if !strings.Contains(cmd, want) {
-					t.Errorf("expected command to contain %q, got %q", want, cmd)
+			for _, want := range test.expectedEnvs {
+				if !containsString(envs, want) {
+					t.Fatalf("expected envs to contain %q, got %v", want, envs)
 				}
 			}
 		})
 	}
+}
+
+func TestNewSmbGlobalMappingCmd(t *testing.T) {
+	cmd := newSmbGlobalMappingCmd()
+	for _, want := range []string{
+		"New-SmbGlobalMapping @Params",
+		"function HasValue([string]$Value) { return -not [string]::IsNullOrEmpty($Value) }",
+		"if (HasValue $Env:smbopt_requireprivacy)",
+		"$Env:smbuser",
+		"$Env:smbpassword",
+		"$Env:smbremotepath",
+		"$Env:smbopt_requireprivacy",
+		"$Env:smbopt_requireintegrity",
+		"$Env:smbopt_tcpport",
+		"$Env:smbopt_fullaccess",
+	} {
+		if !strings.Contains(cmd, want) {
+			t.Fatalf("expected command to contain %q, got %q", want, cmd)
+		}
+	}
+}
+
+func containsString(items []string, target string) bool {
+	for _, item := range items {
+		if item == target {
+			return true
+		}
+	}
+	return false
 }

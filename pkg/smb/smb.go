@@ -85,14 +85,16 @@ type DriverOptions struct {
 	// this only applies to Windows host-process mounter;
 	// nil is treated as true to preserve zero-value compatibility
 	RequirePrivacyForGlobalMapping *bool
-	WorkingMountDir                string
-	VolStatsCacheExpireInMinutes   int
-	Krb5CacheDirectory             string
-	Krb5Prefix                     string
-	DefaultOnDeletePolicy          string
-	RemoveArchivedVolumePath       bool
-	EnableWindowsHostProcess       bool
-	Kubeconfig                     string
+	// this only applies to Windows host-process mounter and takes precedence over RequirePrivacyForGlobalMapping when non-empty
+	GlobalMappingAdditionalParams string
+	WorkingMountDir               string
+	VolStatsCacheExpireInMinutes  int
+	Krb5CacheDirectory            string
+	Krb5Prefix                    string
+	DefaultOnDeletePolicy         string
+	RemoveArchivedVolumePath      bool
+	EnableWindowsHostProcess      bool
+	Kubeconfig                    string
 }
 
 // Driver implements all interfaces of CSI drivers
@@ -118,6 +120,7 @@ type Driver struct {
 	removeSMBMappingDuringUnmount bool
 	// this only applies to Windows host-process mounter
 	requirePrivacyForGlobalMapping bool
+	globalMappingAdditionalParams  string
 	krb5CacheDirectory             string
 	krb5Prefix                     string
 	defaultOnDeletePolicy          string
@@ -137,6 +140,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.enableGetVolumeStats = options.EnableGetVolumeStats
 	driver.removeSMBMappingDuringUnmount = options.RemoveSMBMappingDuringUnmount
 	driver.requirePrivacyForGlobalMapping = options.RequirePrivacyForGlobalMapping == nil || *options.RequirePrivacyForGlobalMapping
+	driver.globalMappingAdditionalParams = strings.TrimSpace(options.GlobalMappingAdditionalParams)
 	driver.removeArchivedVolumePath = options.RemoveArchivedVolumePath
 	driver.workingMountDir = options.WorkingMountDir
 	driver.enableWindowsHostProcess = options.EnableWindowsHostProcess
@@ -183,7 +187,7 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	}
 	klog.V(2).Infof("\nDRIVER INFORMATION:\n-------------------\n%s\n\nStreaming logs below:", versionMeta)
 
-	d.mounter, err = mounter.NewSafeMounter(d.enableWindowsHostProcess, d.removeSMBMappingDuringUnmount, d.requirePrivacyForGlobalMapping)
+	d.mounter, err = mounter.NewSafeMounter(d.enableWindowsHostProcess, d.removeSMBMappingDuringUnmount, d.requirePrivacyForGlobalMapping, d.globalMappingAdditionalParams)
 	if err != nil {
 		klog.Fatalf("Failed to get safe mounter. Error: %v", err)
 	}
