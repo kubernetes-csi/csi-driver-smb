@@ -54,24 +54,36 @@ func TestNewDriverRequirePrivacyForGlobalMapping(t *testing.T) {
 	truePtr := true
 	falsePtr := false
 	tests := []struct {
-		desc     string
-		input    *bool
-		expected bool
+		desc                          string
+		input                         *bool
+		globalMappingAdditionalParams string
+		expected                      bool
+		expectedAdditionalParams      string
 	}{
 		{
-			desc:     "nil defaults to true (backwards compatible with existing callers)",
-			input:    nil,
-			expected: true,
+			desc:                     "nil defaults to true (backwards compatible with existing callers)",
+			input:                    nil,
+			expected:                 true,
+			expectedAdditionalParams: "",
 		},
 		{
-			desc:     "explicit true stays true",
-			input:    &truePtr,
-			expected: true,
+			desc:                     "explicit true stays true",
+			input:                    &truePtr,
+			expected:                 true,
+			expectedAdditionalParams: "",
 		},
 		{
-			desc:     "explicit false honored (opt-out)",
-			input:    &falsePtr,
-			expected: false,
+			desc:                     "explicit false honored (opt-out)",
+			input:                    &falsePtr,
+			expected:                 false,
+			expectedAdditionalParams: "",
+		},
+		{
+			desc:                          "trim global mapping additional params",
+			input:                         &truePtr,
+			globalMappingAdditionalParams: "  RequirePrivacy=false,RequireIntegrity=true  ",
+			expected:                      true,
+			expectedAdditionalParams:      "RequirePrivacy=false,RequireIntegrity=true",
 		},
 	}
 	for _, tc := range tests {
@@ -80,10 +92,12 @@ func TestNewDriverRequirePrivacyForGlobalMapping(t *testing.T) {
 				NodeID:                         fakeNodeID,
 				DriverName:                     DefaultDriverName,
 				RequirePrivacyForGlobalMapping: tc.input,
+				GlobalMappingAdditionalParams:  tc.globalMappingAdditionalParams,
 			}
 			d := NewDriver(&options)
 			assert.NotNil(t, d)
 			assert.Equal(t, tc.expected, d.requirePrivacyForGlobalMapping)
+			assert.Equal(t, tc.expectedAdditionalParams, d.globalMappingAdditionalParams)
 		})
 	}
 }

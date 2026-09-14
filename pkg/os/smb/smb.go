@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/util"
@@ -43,25 +44,132 @@ func IsSmbMapped(remotePath string) (bool, error) {
 	return true, nil
 }
 
-func newSmbGlobalMappingCmd(requirePrivacy bool) string {
-	requirePrivacyValue := "$true"
-	if !requirePrivacy {
-		requirePrivacyValue = "$false"
-	}
-	return fmt.Sprintf(`$PWord = ConvertTo-SecureString -String $Env:smbpassword -AsPlainText -Force`+
-		`;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Env:smbuser, $PWord`+
-		`;New-SmbGlobalMapping -RemotePath $Env:smbremotepath -Credential $Credential -RequirePrivacy %s`, requirePrivacyValue)
+var supportedGlobalMappingAdditionalParams = []string{
+	"Persistent",
+	"RequireIntegrity",
+	"RequirePrivacy",
+	"UseWriteThrough",
+	"FullAccess",
+	"DenyAccess",
+	"TransportType",
+	"SkipCertificateCheck",
+	"CompressNetworkTraffic",
+	"BlockNTLM",
+	"TcpPort",
+	"QuicPort",
+	"RdmaPort",
 }
 
-func NewSmbGlobalMapping(remotePath, username, password string, requirePrivacy bool) error {
+func splitGlobalMappingListValue(value string) ([]string, error) {
+	parts := strings.Split(value, ";")
+	result := make([]string, 0, len(parts))
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			return nil, fmt.Errorf("list values must not contain empty entries")
+		}
+		result = append(result, part)
+	}
+	return result, nil
+}
+
+func parseGlobalMappingAdditionalParams(requirePrivacy bool, globalMappingAdditionalParams string) ([]string, error) {
+	globalMappingAdditionalParams = strings.TrimSpace(globalMappingAdditionalParams)
+	if globalMappingAdditionalParams == "" {
+		return []string{fmt.Sprintf("smbopt_requireprivacy=%t", requirePrivacy)}, nil
+	}
+
+	seen := map[string]struct{}{}
+	envs := []string{}
+	for _, rawPart := range strings.Split(globalMappingAdditionalParams, ",") {
+		part := strings.TrimSpace(rawPart)
+		if part == "" {
+			return nil, fmt.Errorf("global mapping additional params contain an empty entry")
+		}
+		kv := strings.SplitN(part, "=", 2)
+		if len(kv) != 2 {
+			return nil, fmt.Errorf("invalid global mapping additional param %q, expected key=value", part)
+		}
+		key := strings.TrimSpace(kv[0])
+		value := strings.TrimSpace(kv[1])
+		if key == "" || value == "" {
+			return nil, fmt.Errorf("invalid global mapping additional param %q, key and value must be non-empty", part)
+		}
+		normalizedKey := strings.ToLower(key)
+		if _, ok := seen[normalizedKey]; ok {
+			return nil, fmt.Errorf("duplicate global mapping additional param %q", key)
+		}
+
+		switch normalizedKey {
+		case "persistent", "requireintegrity", "requireprivacy", "usewritethrough", "skipcertificatecheck", "compressnetworktraffic", "blockntlm":
+			parsedValue, err := strconv.ParseBool(strings.ToLower(value))
+			if err != nil {
+				return nil, fmt.Errorf("invalid boolean value %q for %s", value, key)
+			}
+			envs = append(envs, fmt.Sprintf("smbopt_%s=%t", normalizedKey, parsedValue))
+		case "fullaccess", "denyaccess":
+			items, err := splitGlobalMappingListValue(value)
+			if err != nil {
+				return nil, fmt.Errorf("invalid list value %q for %s: %v", value, key, err)
+			}
+			envs = append(envs, fmt.Sprintf("smbopt_%s=%s", normalizedKey, strings.Join(items, ";")))
+		case "transporttype":
+			envs = append(envs, fmt.Sprintf("smbopt_%s=%s", normalizedKey, value))
+		case "tcpport", "quicport", "rdmaport":
+			parsedValue, err := strconv.ParseUint(value, 10, 16)
+			if err != nil {
+				return nil, fmt.Errorf("invalid uint16 value %q for %s", value, key)
+			}
+			envs = append(envs, fmt.Sprintf("smbopt_%s=%d", normalizedKey, parsedValue))
+		default:
+			return nil, fmt.Errorf("unsupported global mapping additional param %q, supported params: %s", key, strings.Join(supportedGlobalMappingAdditionalParams, ", "))
+		}
+		seen[normalizedKey] = struct{}{}
+	}
+	return envs, nil
+}
+
+func newSmbGlobalMappingCmd() string {
+	return `$PWord = ConvertTo-SecureString -String $Env:smbpassword -AsPlainText -Force` +
+		`;` +
+		`$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Env:smbuser, $PWord` +
+		`;` +
+		`$Params = @{ RemotePath = $Env:smbremotepath; Credential = $Credential }` +
+		`;` +
+		`function HasValue([string]$Value) { return -not [string]::IsNullOrEmpty($Value) }` +
+		`;if (HasValue $Env:smbopt_persistent) { $Params.Persistent = [System.Convert]::ToBoolean($Env:smbopt_persistent) }` +
+		`;if (HasValue $Env:smbopt_requireintegrity) { $Params.RequireIntegrity = [System.Convert]::ToBoolean($Env:smbopt_requireintegrity) }` +
+		`;if (HasValue $Env:smbopt_requireprivacy) { $Params.RequirePrivacy = [System.Convert]::ToBoolean($Env:smbopt_requireprivacy) }` +
+		`;if (HasValue $Env:smbopt_usewritethrough) { $Params.UseWriteThrough = [System.Convert]::ToBoolean($Env:smbopt_usewritethrough) }` +
+		`;if (HasValue $Env:smbopt_fullaccess) { $Params.FullAccess = $Env:smbopt_fullaccess -split ';' }` +
+		`;if (HasValue $Env:smbopt_denyaccess) { $Params.DenyAccess = $Env:smbopt_denyaccess -split ';' }` +
+		`;if (HasValue $Env:smbopt_transporttype) { $Params.TransportType = $Env:smbopt_transporttype }` +
+		`;if (HasValue $Env:smbopt_skipcertificatecheck) { $Params.SkipCertificateCheck = [System.Convert]::ToBoolean($Env:smbopt_skipcertificatecheck) }` +
+		`;if (HasValue $Env:smbopt_compressnetworktraffic) { $Params.CompressNetworkTraffic = [System.Convert]::ToBoolean($Env:smbopt_compressnetworktraffic) }` +
+		`;if (HasValue $Env:smbopt_blockntlm) { $Params.BlockNTLM = [System.Convert]::ToBoolean($Env:smbopt_blockntlm) }` +
+		`;if (HasValue $Env:smbopt_tcpport) { $Params.TcpPort = [UInt16]::Parse($Env:smbopt_tcpport) }` +
+		`;if (HasValue $Env:smbopt_quicport) { $Params.QuicPort = [UInt16]::Parse($Env:smbopt_quicport) }` +
+		`;if (HasValue $Env:smbopt_rdmaport) { $Params.RdmaPort = [UInt16]::Parse($Env:smbopt_rdmaport) }` +
+		`;New-SmbGlobalMapping @Params`
+}
+
+func NewSmbGlobalMapping(remotePath, username, password string, requirePrivacy bool, globalMappingAdditionalParams string) error {
 	// use PowerShell Environment Variables to store user input string to prevent command line injection
 	// https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_environment_variables?view=powershell-5.1
-	cmdLine := newSmbGlobalMappingCmd(requirePrivacy)
-
-	klog.V(2).Infof("begin to run NewSmbGlobalMapping with %s, %s, requirePrivacy=%v", remotePath, username, requirePrivacy)
-	if output, err := util.RunPowershellCmd(cmdLine, fmt.Sprintf("smbuser=%s", username),
+	optionEnvs, err := parseGlobalMappingAdditionalParams(requirePrivacy, globalMappingAdditionalParams)
+	if err != nil {
+		return err
+	}
+	cmdLine := newSmbGlobalMappingCmd()
+	envs := []string{
+		fmt.Sprintf("smbuser=%s", username),
 		fmt.Sprintf("smbpassword=%s", password),
-		fmt.Sprintf("smbremotepath=%s", remotePath)); err != nil {
+		fmt.Sprintf("smbremotepath=%s", remotePath),
+	}
+	envs = append(envs, optionEnvs...)
+
+	klog.V(2).Infof("begin to run NewSmbGlobalMapping with %s, %s, requirePrivacy=%v, globalMappingAdditionalParams=%q", remotePath, username, requirePrivacy, globalMappingAdditionalParams)
+	if output, err := util.RunPowershellCmd(cmdLine, envs...); err != nil {
 		return fmt.Errorf("NewSmbGlobalMapping failed. output: %q, err: %v", string(output), err)
 	}
 	return nil

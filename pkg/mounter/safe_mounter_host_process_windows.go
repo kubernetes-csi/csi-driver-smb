@@ -39,11 +39,13 @@ var _ CSIProxyMounter = &winMounter{}
 
 type winMounter struct {
 	RequirePrivacyForGlobalMapping bool
+	GlobalMappingAdditionalParams  string
 }
 
-func NewWinMounter(requirePrivacyForGlobalMapping bool) *winMounter {
+func NewWinMounter(requirePrivacyForGlobalMapping bool, globalMappingAdditionalParams string) *winMounter {
 	return &winMounter{
 		RequirePrivacyForGlobalMapping: requirePrivacyForGlobalMapping,
+		GlobalMappingAdditionalParams:  globalMappingAdditionalParams,
 	}
 }
 
@@ -104,7 +106,7 @@ func (mounter *winMounter) SMBMount(source, target, fsType string, mountOptions,
 		klog.V(2).Infof("Remote %s not mapped. Mapping now!", remotePath)
 		username := mountOptions[0]
 		password := sensitiveMountOptions[0]
-		if err := smb.NewSmbGlobalMapping(remotePath, username, password, mounter.RequirePrivacyForGlobalMapping); err != nil {
+		if err := smb.NewSmbGlobalMapping(remotePath, username, password, mounter.RequirePrivacyForGlobalMapping, mounter.GlobalMappingAdditionalParams); err != nil {
 			klog.Errorf("NewSmbGlobalMapping(%s) failed with %v", remotePath, err)
 			return err
 		}
