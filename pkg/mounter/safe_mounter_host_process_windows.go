@@ -25,6 +25,7 @@ import (
 	"os"
 	filepath "path/filepath"
 	"strings"
+	"sync"
 
 	"k8s.io/klog/v2"
 	mount "k8s.io/mount-utils"
@@ -39,11 +40,51 @@ var _ CSIProxyMounter = &winMounter{}
 
 type winMounter struct {
 	RequirePrivacyForGlobalMapping bool
+	remotePathLocks                *smbRemotePathLocker
+}
+
+type smbRemotePathLocker struct {
+	mu      sync.Mutex
+	entries map[string]*smbRemotePathLockEntry
+}
+
+type smbRemotePathLockEntry struct {
+	mu   sync.Mutex
+	refs int
+}
+
+func newSMBRemotePathLocker() *smbRemotePathLocker {
+	return &smbRemotePathLocker{entries: map[string]*smbRemotePathLockEntry{}}
+}
+
+func (locker *smbRemotePathLocker) Lock(remotePath string) func() {
+	locker.mu.Lock()
+	entry, exists := locker.entries[remotePath]
+	if !exists {
+		entry = &smbRemotePathLockEntry{}
+		locker.entries[remotePath] = entry
+	}
+	entry.refs++
+	locker.mu.Unlock()
+
+	entry.mu.Lock()
+
+	return func() {
+		entry.mu.Unlock()
+
+		locker.mu.Lock()
+		entry.refs--
+		if entry.refs == 0 {
+			delete(locker.entries, remotePath)
+		}
+		locker.mu.Unlock()
+	}
 }
 
 func NewWinMounter(requirePrivacyForGlobalMapping bool) *winMounter {
 	return &winMounter{
 		RequirePrivacyForGlobalMapping: requirePrivacyForGlobalMapping,
+		remotePathLocks:                newSMBRemotePathLocker(),
 	}
 }
 
@@ -78,6 +119,9 @@ func (mounter *winMounter) SMBMount(source, target, fsType string, mountOptions,
 	if remotePath == "" {
 		return fmt.Errorf("remote path is empty")
 	}
+
+	unlockRemotePath := mounter.remotePathLocks.Lock(canonicalizeSMBRemotePath(remotePath))
+	defer unlockRemotePath()
 
 	username := mountOptions[0]
 	password := sensitiveMountOptions[0]
@@ -120,6 +164,13 @@ func (mounter *winMounter) Unmount(target string) error {
 
 // ensureHostProcessSMBGlobalMapping repairs or recreates a Windows SMB global
 // mapping before the hostprocess mount path publishes the local symlink.
+func canonicalizeSMBRemotePath(remotePath string) string {
+	remotePath = strings.Replace(remotePath, "/", "\\", -1)
+	remotePath = normalizeWindowsPath(remotePath)
+	remotePath = strings.TrimSuffix(remotePath, `\`)
+	return strings.ToLower(remotePath)
+}
+
 func ensureHostProcessSMBGlobalMapping(
 	remotePath, username, password string,
 	requirePrivacy bool,
@@ -171,6 +222,9 @@ func (mounter *winMounter) SMBUnmount(target, _ string) error {
 	target = normalizeWindowsPath(target)
 	remoteServer, err := smb.GetRemoteServerFromTarget(target)
 	if err == nil {
+		unlockRemotePath := mounter.remotePathLocks.Lock(canonicalizeSMBRemotePath(remoteServer))
+		defer unlockRemotePath()
+
 		klog.V(2).Infof("remote server path: %s, local path: %s", remoteServer, target)
 		if hasDupSMBMount, err := smb.CheckForDuplicateSMBMounts(driverGlobalMountPath, target, remoteServer); err == nil {
 			if !hasDupSMBMount {

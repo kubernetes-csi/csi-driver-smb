@@ -26,6 +26,33 @@ import (
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/os/smb"
 )
 
+func TestCanonicalizeSMBRemotePath(t *testing.T) {
+	tests := []struct {
+		name string
+		path string
+		want string
+	}{
+		{
+			name: "normalizes separators case and trailing slash",
+			path: `//SERVER/Share/`,
+			want: `\\server\share`,
+		},
+		{
+			name: "preserves normalized unc path",
+			path: `\\server\share`,
+			want: `\\server\share`,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := canonicalizeSMBRemotePath(test.path); got != test.want {
+				t.Fatalf("canonicalizeSMBRemotePath(%q) = %q, want %q", test.path, got, test.want)
+			}
+		})
+	}
+}
+
 func TestEnsureHostProcessSMBGlobalMapping(t *testing.T) {
 	tests := []struct {
 		name          string
