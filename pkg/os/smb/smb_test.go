@@ -25,6 +25,28 @@ import (
 	"testing"
 )
 
+func TestParseSMBGlobalMappingStatus(t *testing.T) {
+	tests := []struct {
+		name string
+		in   string
+		want SMBGlobalMappingStatus
+	}{
+		{name: "ok", in: "OK", want: SMBGlobalMappingStatusOK},
+		{name: "disconnected", in: "Disconnected", want: SMBGlobalMappingStatusDisconnected},
+		{name: "notfound explicit", in: "NotFound", want: SMBGlobalMappingStatusNotFound},
+		{name: "empty means notfound", in: "", want: SMBGlobalMappingStatusNotFound},
+		{name: "other state", in: "Reconnecting", want: SMBGlobalMappingStatusOther},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := parseSMBGlobalMappingStatus(test.in); got != test.want {
+				t.Fatalf("parseSMBGlobalMappingStatus(%q) = %q, want %q", test.in, got, test.want)
+			}
+		})
+	}
+}
+
 func TestCheckForDuplicateSMBMounts(t *testing.T) {
 	tests := []struct {
 		name           string
