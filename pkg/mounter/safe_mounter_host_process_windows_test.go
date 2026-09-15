@@ -72,10 +72,10 @@ func TestEnsureHostProcessSMBGlobalMapping(t *testing.T) {
 			wantNew: true,
 		},
 		{
-			name:    "status lookup error falls back to create",
-			status:  smb.SMBGlobalMappingStatusNotFound,
+			name:      "status lookup error falls back to create",
+			status:    smb.SMBGlobalMappingStatusNotFound,
 			statusErr: fmt.Errorf("lookup failed"),
-			wantNew: true,
+			wantNew:   true,
 		},
 		{
 			name:          "path validation error still recreates when invalid",
