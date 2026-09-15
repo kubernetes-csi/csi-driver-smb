@@ -166,7 +166,6 @@ func (mounter *winMounter) Unmount(target string) error {
 // mapping before the hostprocess mount path publishes the local symlink.
 func canonicalizeSMBRemotePath(remotePath string) string {
 	remotePath = strings.Replace(remotePath, "/", "\\", -1)
-	remotePath = normalizeWindowsPath(remotePath)
 	remotePath = strings.TrimSuffix(remotePath, `\`)
 	return strings.ToLower(remotePath)
 }
