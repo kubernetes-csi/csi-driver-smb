@@ -42,6 +42,11 @@ func TestCanonicalizeSMBRemotePath(t *testing.T) {
 			path: `\\server\share`,
 			want: `\\server\share`,
 		},
+		{
+			name: "strips repeated trailing backslashes",
+			path: `\\SERVER\Share\\\\`,
+			want: `\\server\share`,
+		},
 	}
 
 	for _, test := range tests {

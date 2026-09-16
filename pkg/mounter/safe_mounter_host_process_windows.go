@@ -162,11 +162,12 @@ func (mounter *winMounter) Unmount(target string) error {
 	return mounter.Rmdir(target)
 }
 
-// ensureHostProcessSMBGlobalMapping repairs or recreates a Windows SMB global
-// mapping before the hostprocess mount path publishes the local symlink.
+// canonicalizeSMBRemotePath normalizes an SMB remote UNC path into a stable
+// lock key by converting separators, removing all trailing backslashes, and
+// folding case.
 func canonicalizeSMBRemotePath(remotePath string) string {
-	remotePath = strings.Replace(remotePath, "/", "\\", -1)
-	remotePath = strings.TrimSuffix(remotePath, `\`)
+	remotePath = strings.ReplaceAll(remotePath, "/", "\\")
+	remotePath = strings.TrimRight(remotePath, `\`)
 	return strings.ToLower(remotePath)
 }
 
