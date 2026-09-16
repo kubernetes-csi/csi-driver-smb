@@ -25,6 +25,26 @@ import (
 	"testing"
 )
 
+func TestCanonicalizeSMBRemotePath(t *testing.T) {
+	tests := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{name: "normalizes separators case and trailing slash", in: `//SERVER/Share/`, want: `\\server\share`},
+		{name: "preserves normalized unc path", in: `\\server\share`, want: `\\server\share`},
+		{name: "strips repeated trailing backslashes", in: `\\SERVER\Share\\\\`, want: `\\server\share`},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := CanonicalizeSMBRemotePath(test.in); got != test.want {
+				t.Fatalf("CanonicalizeSMBRemotePath(%q) = %q, want %q", test.in, got, test.want)
+			}
+		})
+	}
+}
+
 func TestParseSMBGlobalMappingStatus(t *testing.T) {
 	tests := []struct {
 		name string
