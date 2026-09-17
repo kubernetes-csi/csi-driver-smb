@@ -327,6 +327,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, targetPath)
 	}
 
+	d.putStageSecrets(volumeID, targetPath, secrets)
 	return &csi.NodeStageVolumeResponse{}, nil
 }
 
@@ -423,6 +424,7 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, true /*extensiveMountPointCheck*/, volumeID); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
 	}
+	d.deleteStageSecrets(volumeID, stagingTargetPath)
 
 	if err := deleteKerberosCache(d.krb5CacheDirectory, volumeID); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete kerberos cache: %v", err)
