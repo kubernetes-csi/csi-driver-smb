@@ -26,3 +26,22 @@ I will add notion in the windows example doc, there is no fix for this issue cur
  - Mitigation if hit `Multiple connections to a server or shared resource by the same user` error
 
 log on to the Windows node, run `Get-SmbGlobalMapping` to list all mappings, run `Remove-SmbGlobalMapping -RemotePath xxx` to remove existing mapping, after a while, pod remount would succeed automatically
+
+#### 3. `globalmount does not exist` ([#737](https://github.com/kubernetes-csi/csi-driver-smb/issues/737))
+
+ - error details:
+```
+MountVolume.SetUp failed for volume "pvc-..." : rpc error: code = Internal desc = Could not mount ".../globalmount" at ".../mount": ... globalmount does not exist
+```
+
+ - Cause
+
+kubelet may call `NodePublishVolume` without `NodeStageVolume` while it still records the volume as staged. The staging path (`globalmount`) is then missing, or is only a host directory.
+
+ - Behaviour
+
+`NodePublishVolume` restages CIFS using `nodePublishSecretRef` secrets or the process-local Stage cache. mkdir of `globalmount` is not a fix: bind-mounting an empty directory starts the pod on an empty volume. A stale pod bind after restage is unmounted. Kernel CIFS tree-connect Maximal Access reuse is not fixed in-driver.
+
+ - Workaround
+
+Set `nodePublishSecretRef` to the same secret as `nodeStageSecretRef` so `NodePublishVolume` can restage after a node-plugin restart. Use a unique `volumeHandle` per volume.
