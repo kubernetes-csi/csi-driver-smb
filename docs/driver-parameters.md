@@ -29,6 +29,8 @@ volumeAttributes.source | Samba Server address | `//smb-server-address/sharename
 volumeAttributes.subDir | existing sub directory under smb share |  | No | sub directory must exist otherwise mount would fail
 nodeStageSecretRef.name | secret name that stores `username`, `password`(`domain` is optional) | existing secret name |  Yes  |
 nodeStageSecretRef.namespace | namespace where the secret is | k8s namespace  |  Yes  |
+nodePublishSecretRef.name | same secret as `nodeStageSecretRef` so `NodePublishVolume` can remount CIFS if kubelet skips `NodeStageVolume` | existing secret name |  No  |
+nodePublishSecretRef.namespace | namespace where the secret is | k8s namespace  |  No  |
 
  - Use `kubectl create secret` to create `smbcreds` secret to store Samba Server username, password
 > append `--from-literal domain="DOMAIN"` if you have a domain
