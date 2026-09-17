@@ -80,6 +80,21 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		return nil, status.Error(codes.InvalidArgument, "Staging target not provided")
 	}
 
+	// kubelet may skip NodeStageVolume while it still records the volume as
+	// staged, so the bind either fails with "globalmount does not exist" (#737)
+	// or binds a bare directory onto the pod.
+	staged, err := d.isStaged(source)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not inspect staging path %q: %v", source, err)
+	}
+	restaged := false
+	if !staged {
+		if err := d.restageFromPublish(ctx, req, source); err != nil {
+			return nil, err
+		}
+		restaged = true
+	}
+
 	mountOptions := []string{"bind"}
 	readOnly := req.GetReadonly()
 
@@ -113,6 +128,15 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not mount target %q: %v", target, err)
 	}
+	if mnt && restaged {
+		// A bind taken before the restage still points at the empty directory:
+		// a bind mount does not follow a later mount on its source.
+		klog.V(2).Infof("NodePublishVolume: unmounting stale bind %s after restage of %s volumeID(%s)", target, source, volumeID)
+		if err := d.mounter.Unmount(target); err != nil {
+			return nil, status.Errorf(codes.Internal, "Could not unmount stale target %q: %v", target, err)
+		}
+		mnt = false
+	}
 	if mnt {
 		klog.V(2).Infof("NodePublishVolume: %s is already mounted", target)
 		return &csi.NodePublishVolumeResponse{}, nil
@@ -126,6 +150,9 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if err := d.mounter.Mount(source, target, "", mountOptions); err != nil {
 		if removeErr := os.Remove(target); removeErr != nil {
 			return nil, status.Errorf(codes.Internal, "Could not remove mount target %q: %v", target, removeErr)
+		}
+		if isMissingStagingMountError(err) {
+			return nil, status.Errorf(codes.FailedPrecondition, "Could not mount %q at %q: staging path is missing; NodeStageVolume must run: %v", source, target, err)
 		}
 		return nil, status.Errorf(codes.Internal, "Could not mount %q at %q: %v", source, target, err)
 	}
@@ -327,6 +354,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, targetPath)
 	}
 
+	d.putStageSecrets(volumeID, targetPath, secrets)
 	return &csi.NodeStageVolumeResponse{}, nil
 }
 
@@ -423,6 +451,7 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 	if err := CleanupSMBMountPoint(d.mounter, stagingTargetPath, true /*extensiveMountPointCheck*/, volumeID); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
 	}
+	d.deleteStageSecrets(volumeID, stagingTargetPath)
 
 	if err := deleteKerberosCache(d.krb5CacheDirectory, volumeID); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete kerberos cache: %v", err)
@@ -530,6 +559,108 @@ func (d *Driver) NodeGetVolumeStats(_ context.Context, req *csi.NodeGetVolumeSta
 // N/A for smb
 func (d *Driver) NodeExpandVolume(_ context.Context, _ *csi.NodeExpandVolumeRequest) (*csi.NodeExpandVolumeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "")
+}
+
+// isStaged reports whether stagingPath holds a live share mount. On Linux a
+// bare directory is not staged. On Windows an SMB global mapping is not a
+// mount point, so directory presence is the only signal available.
+func (d *Driver) isStaged(stagingPath string) (bool, error) {
+	if stagingPath == "" {
+		return false, nil
+	}
+	if IsCorruptedDir(stagingPath) {
+		klog.Warningf("isStaged: corrupted mount at %s, unmounting so NodeStageVolume can remount", stagingPath)
+		if err := d.mounter.Unmount(stagingPath); err != nil {
+			klog.Errorf("isStaged: Unmount %s failed: %v", stagingPath, err)
+		}
+		return false, nil
+	}
+	if runtime.GOOS == "windows" {
+		_, err := os.Stat(stagingPath)
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+	notMnt, err := d.mounter.IsLikelyNotMountPoint(stagingPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	return !notMnt, nil
+}
+
+// restageFromPublish mounts CIFS at stagingPath from within NodePublishVolume.
+func (d *Driver) restageFromPublish(ctx context.Context, req *csi.NodePublishVolumeRequest, stagingPath string) error {
+	volumeID := req.GetVolumeId()
+	klog.V(2).Infof("NodePublishVolume: staging path %s for volume %s is missing or not a CIFS mount; restaging", stagingPath, volumeID)
+
+	secrets := cloneSecrets(req.GetSecrets())
+	if len(secrets) == 0 {
+		secrets = d.getStageSecrets(volumeID, stagingPath)
+	}
+
+	var mountFlags []string
+	if m := req.GetVolumeCapability().GetMount(); m != nil {
+		mountFlags = m.GetMountFlags()
+	}
+	needsCreds := !hasGuestMountOptions(mountFlags)
+	if needsCreds && len(secrets) == 0 {
+		secretName, secretNamespace := getSecretNameAndNamespace(req.GetVolumeContext())
+		if secretName != "" && secretNamespace != "" {
+			username, password, domain, err := d.GetUserNamePasswordFromSecret(ctx, secretName, secretNamespace)
+			if err != nil {
+				return status.Errorf(codes.Internal, "could not get recovery credentials from secret %s/%s: %v", secretNamespace, secretName, err)
+			}
+			secrets = map[string]string{
+				usernameField: username,
+				passwordField: password,
+				domainField:   domain,
+			}
+		}
+	}
+	if needsCreds && len(secrets) == 0 {
+		return status.Errorf(codes.FailedPrecondition,
+			"volume %s is not staged at %s (globalmount missing or not a CIFS mount); NodeStageVolume must run",
+			volumeID, stagingPath)
+	}
+
+	_, err := d.NodeStageVolume(ctx, &csi.NodeStageVolumeRequest{
+		VolumeId:          volumeID,
+		StagingTargetPath: stagingPath,
+		VolumeCapability:  req.GetVolumeCapability(),
+		VolumeContext:     req.GetVolumeContext(),
+		Secrets:           secrets,
+	})
+	return err
+}
+
+func getSecretNameAndNamespace(context map[string]string) (string, string) {
+	var secretName, secretNamespace string
+	for k, v := range context {
+		switch strings.ToLower(k) {
+		case secretNameField:
+			secretName = v
+		case secretNamespaceField:
+			secretNamespace = v
+		}
+	}
+	return secretName, secretNamespace
+}
+
+// isMissingStagingMountError reports whether a mount failure names an absent
+// path. Callers return FailedPrecondition for these so kubelet restages.
+func isMissingStagingMountError(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := err.Error()
+	return strings.Contains(msg, "does not exist") || strings.Contains(msg, "no such file or directory")
 }
 
 // ensureMountPoint: create mount point if not exists

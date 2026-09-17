@@ -37,6 +37,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/fake"
 	mount "k8s.io/mount-utils"
 	"k8s.io/utils/exec"
 )
@@ -347,11 +350,14 @@ func TestNodeExpandVolume(t *testing.T) {
 
 func TestNodePublishVolume(t *testing.T) {
 	volumeCap := csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER}
-	errorMountSource := testutil.GetWorkDirPath("error_mount_source", t)
 	alreadyMountedTarget := testutil.GetWorkDirPath("false_is_likely_exist_target", t)
 	smbFile := testutil.GetWorkDirPath("smb.go", t)
 	sourceTest := testutil.GetWorkDirPath("source_test", t)
+	stagedSource := testutil.GetWorkDirPath("false_is_likely_stage_source", t)
+	errorMountStagedSource := testutil.GetWorkDirPath("false_is_likely_error_mount_source", t)
 	targetTest := testutil.GetWorkDirPath("target_test", t)
+	missingStage := testutil.GetWorkDirPath("missing_globalmount", t)
+	missingStageFromSecret := testutil.GetWorkDirPath("missing_globalmount_secret", t)
 
 	tests := []struct {
 		desc          string
@@ -397,7 +403,7 @@ func TestNodePublishVolume(t *testing.T) {
 			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        smbFile,
-				StagingTargetPath: sourceTest,
+				StagingTargetPath: stagedSource,
 				Readonly:          true},
 
 			expectedErr: testutil.TestError{
@@ -410,13 +416,13 @@ func TestNodePublishVolume(t *testing.T) {
 			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
-				StagingTargetPath: errorMountSource,
+				StagingTargetPath: errorMountStagedSource,
 				Readonly:          true},
 			// todo: This test does not return any error on windows
 			// Once the issue is figured out, we'll remove this field
 			skipOnWindows: true,
 			expectedErr: testutil.TestError{
-				DefaultError: status.Errorf(codes.Internal, "Could not mount \"%s\" at \"%s\": fake Mount: source error", errorMountSource, targetTest),
+				DefaultError: status.Errorf(codes.Internal, "Could not mount \"%s\" at \"%s\": fake Mount: source error", errorMountStagedSource, targetTest),
 			},
 		},
 		{
@@ -424,7 +430,7 @@ func TestNodePublishVolume(t *testing.T) {
 			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
-				StagingTargetPath: sourceTest,
+				StagingTargetPath: stagedSource,
 				Readonly:          true},
 			expectedErr: testutil.TestError{},
 		},
@@ -433,7 +439,7 @@ func TestNodePublishVolume(t *testing.T) {
 			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        alreadyMountedTarget,
-				StagingTargetPath: sourceTest,
+				StagingTargetPath: stagedSource,
 				Readonly:          true},
 			expectedErr: testutil.TestError{},
 		},
@@ -442,7 +448,7 @@ func TestNodePublishVolume(t *testing.T) {
 			req: &csi.NodePublishVolumeRequest{VolumeCapability: &csi.VolumeCapability{AccessMode: &volumeCap},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
-				StagingTargetPath: sourceTest,
+				StagingTargetPath: stagedSource,
 				Readonly:          true},
 			expectedErr: testutil.TestError{},
 		},
@@ -488,7 +494,7 @@ func TestNodePublishVolume(t *testing.T) {
 				},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
-				StagingTargetPath: sourceTest,
+				StagingTargetPath: stagedSource,
 				Readonly:          false},
 			expectedErr: testutil.TestError{},
 		},
@@ -503,7 +509,7 @@ func TestNodePublishVolume(t *testing.T) {
 				},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
-				StagingTargetPath: sourceTest,
+				StagingTargetPath: stagedSource,
 				Readonly:          false},
 			expectedErr: testutil.TestError{},
 		},
@@ -520,7 +526,7 @@ func TestNodePublishVolume(t *testing.T) {
 				},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
-				StagingTargetPath: sourceTest,
+				StagingTargetPath: stagedSource,
 				Readonly:          false},
 			expectedErr: testutil.TestError{},
 		},
@@ -532,14 +538,133 @@ func TestNodePublishVolume(t *testing.T) {
 				},
 				VolumeId:          "vol_1",
 				TargetPath:        targetTest,
-				StagingTargetPath: sourceTest,
+				StagingTargetPath: stagedSource,
 				Readonly:          false},
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc: "[Error] Staging path missing and no credentials",
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: missingStage,
+			},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Errorf(codes.FailedPrecondition, "volume %s is not staged at %s (globalmount missing or not a CIFS mount); NodeStageVolume must run", "vol_1", missingStage),
+			},
+		},
+		{
+			desc:          "[Success] Restage from Publish secrets",
+			skipOnWindows: true,
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &volumeCap,
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{},
+					},
+				},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: missingStage,
+				VolumeContext: map[string]string{
+					sourceField: `\\hostname\share\test`,
+				},
+				Secrets: map[string]string{
+					usernameField: "test_username",
+					passwordField: "test_password",
+					domainField:   "test_doamin",
+				},
+			},
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc:          "[Success] Restage guest without secrets",
+			skipOnWindows: true,
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &volumeCap,
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{
+							MountFlags: []string{"guest"},
+						},
+					},
+				},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: missingStage,
+				VolumeContext: map[string]string{
+					sourceField: `\\hostname\share\test`,
+				},
+			},
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc:          "[Success] Restage from Stage secret cache",
+			skipOnWindows: true,
+			setup: func(d *Driver) {
+				d.putStageSecrets("vol_1", missingStage, map[string]string{
+					usernameField: "test_username",
+					passwordField: "test_password",
+					domainField:   "test_doamin",
+				})
+			},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &volumeCap,
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{},
+					},
+				},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: missingStage,
+				VolumeContext: map[string]string{
+					sourceField: `\\hostname\share\test`,
+				},
+			},
+			expectedErr: testutil.TestError{},
+		},
+		{
+			desc:          "[Success] Restage from VolumeContext secret",
+			skipOnWindows: true,
+			setup: func(d *Driver) {
+				d.kubeClient = fake.NewSimpleClientset(&v1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "smbcreds",
+						Namespace: "default",
+					},
+					Data: map[string][]byte{
+						usernameField: []byte("test_username"),
+						passwordField: []byte("test_password"),
+						domainField:   []byte("test_domain"),
+					},
+				})
+			},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &volumeCap,
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{},
+					},
+				},
+				VolumeId:          "vol_2",
+				TargetPath:        targetTest,
+				StagingTargetPath: missingStageFromSecret,
+				VolumeContext: map[string]string{
+					sourceField:          `\\hostname\share\test`,
+					secretNameField:      "smbcreds",
+					secretNamespaceField: "default",
+				},
+			},
 			expectedErr: testutil.TestError{},
 		},
 	}
 
 	// Setup
 	_ = makeDir(alreadyMountedTarget)
+	_ = makeDir(stagedSource)
+	_ = makeDir(errorMountStagedSource)
 	d := NewFakeDriver()
 	mounter, err := NewFakeMounter()
 	if err != nil {
@@ -566,6 +691,14 @@ func TestNodePublishVolume(t *testing.T) {
 	err = os.RemoveAll(targetTest)
 	assert.NoError(t, err)
 	err = os.RemoveAll(alreadyMountedTarget)
+	assert.NoError(t, err)
+	err = os.RemoveAll(stagedSource)
+	assert.NoError(t, err)
+	err = os.RemoveAll(errorMountStagedSource)
+	assert.NoError(t, err)
+	err = os.RemoveAll(missingStage)
+	assert.NoError(t, err)
+	err = os.RemoveAll(missingStageFromSecret)
 	assert.NoError(t, err)
 }
 
@@ -1189,6 +1322,36 @@ func TestEnsureKerberosCacheConcurrent(t *testing.T) {
 	}
 }
 
+func TestIsStaged(t *testing.T) {
+	d := NewFakeDriver()
+	mounter, err := NewFakeMounter()
+	if err != nil {
+		t.Fatalf("failed to get fake mounter: %v", err)
+	}
+	d.mounter = mounter
+
+	stagedPath := testutil.GetWorkDirPath("false_is_likely_is_staged", t)
+	missingPath := testutil.GetWorkDirPath("ordinary_missing_is_staged", t)
+	errorPath := testutil.GetWorkDirPath("error_is_likely_is_staged", t)
+
+	if err := makeDir(stagedPath); err != nil {
+		t.Fatalf("mkdir stagedPath: %v", err)
+	}
+	defer os.RemoveAll(stagedPath)
+
+	staged, err := d.isStaged(stagedPath)
+	assert.NoError(t, err)
+	assert.True(t, staged)
+
+	staged, err = d.isStaged(missingPath)
+	assert.NoError(t, err)
+	assert.False(t, staged)
+
+	staged, err = d.isStaged(errorPath)
+	assert.Error(t, err)
+	assert.False(t, staged)
+}
+
 func TestNodePublishVolumeIdempotentMount(t *testing.T) {
 	if runtime.GOOS == "windows" || os.Getuid() != 0 {
 		return
@@ -1214,6 +1377,8 @@ func TestNodePublishVolumeIdempotentMount(t *testing.T) {
 		StagingTargetPath: sourceTest,
 		Readonly:          true}
 
+	err = d.mounter.Mount(sourceTest, sourceTest, "", []string{"bind"})
+	assert.NoError(t, err)
 	_, err = d.NodePublishVolume(context.Background(), &req)
 	assert.NoError(t, err)
 	_, err = d.NodePublishVolume(context.Background(), &req)
@@ -1235,6 +1400,8 @@ func TestNodePublishVolumeIdempotentMount(t *testing.T) {
 	err = d.mounter.Unmount(targetTest)
 	assert.NoError(t, err)
 	_ = d.mounter.Unmount(targetTest)
+	err = d.mounter.Unmount(sourceTest)
+	assert.NoError(t, err)
 	err = os.RemoveAll(sourceTest)
 	assert.NoError(t, err)
 	err = os.RemoveAll(targetTest)
