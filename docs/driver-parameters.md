@@ -27,10 +27,14 @@ Name | Meaning | Available Value | Mandatory | Default value
 volumeHandle | Specify a value the driver can use to uniquely identify the share in the cluster. | A recommended way to produce a unique value is to combine the smb-server address, sub directory name and share name: `{smb-server-address}#{sub-dir-name}#{share-name}`. | Yes |
 volumeAttributes.source | Samba Server address | `//smb-server-address/sharename` </br>([Azure File](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction) format: `//accountname.file.core.windows.net/filesharename`) | Yes |
 volumeAttributes.subDir | existing sub directory under smb share |  | No | sub directory must exist otherwise mount would fail
+volumeAttributes.secretname | secret used to recover a missing `globalmount` after the node plugin loses its Stage cache | existing secret name | No | recovery requires both secret attributes
+volumeAttributes.secretnamespace | namespace of the recovery secret | k8s namespace | No | recovery requires both secret attributes
 nodeStageSecretRef.name | secret name that stores `username`, `password`(`domain` is optional) | existing secret name |  Yes  |
 nodeStageSecretRef.namespace | namespace where the secret is | k8s namespace  |  Yes  |
 nodePublishSecretRef.name | same secret as `nodeStageSecretRef` so `NodePublishVolume` can remount CIFS if kubelet skips `NodeStageVolume` | existing secret name |  No  |
 nodePublishSecretRef.namespace | namespace where the secret is | k8s namespace  |  No  |
+
+The `volumeAttributes.secretname` and `volumeAttributes.secretnamespace` fields are optional. Existing PVs work without them. Set both to the `nodeStageSecretRef` Secret only when `NodePublishVolume` must recover a missing `globalmount` after the node plugin has restarted.
 
  - Use `kubectl create secret` to create `smbcreds` secret to store Samba Server username, password
 > append `--from-literal domain="DOMAIN"` if you have a domain

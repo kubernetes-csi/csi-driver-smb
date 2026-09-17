@@ -37,6 +37,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/fake"
 	mount "k8s.io/mount-utils"
 	"k8s.io/utils/exec"
 )
@@ -354,6 +357,7 @@ func TestNodePublishVolume(t *testing.T) {
 	errorMountStagedSource := testutil.GetWorkDirPath("false_is_likely_error_mount_source", t)
 	targetTest := testutil.GetWorkDirPath("target_test", t)
 	missingStage := testutil.GetWorkDirPath("missing_globalmount", t)
+	missingStageFromSecret := testutil.GetWorkDirPath("missing_globalmount_secret", t)
 
 	tests := []struct {
 		desc          string
@@ -638,6 +642,40 @@ func TestNodePublishVolume(t *testing.T) {
 			},
 			expectedErr: testutil.TestError{},
 		},
+		{
+			desc:          "[Success] Restage from VolumeContext secret",
+			skipOnWindows: true,
+			setup: func(d *Driver) {
+				d.kubeClient = fake.NewSimpleClientset(&v1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "smbcreds",
+						Namespace: "default",
+					},
+					Data: map[string][]byte{
+						usernameField: []byte("test_username"),
+						passwordField: []byte("test_password"),
+						domainField:   []byte("test_domain"),
+					},
+				})
+			},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &volumeCap,
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{},
+					},
+				},
+				VolumeId:          "vol_2",
+				TargetPath:        targetTest,
+				StagingTargetPath: missingStageFromSecret,
+				VolumeContext: map[string]string{
+					sourceField:          `\\hostname\share\test`,
+					secretNameField:      "smbcreds",
+					secretNamespaceField: "default",
+				},
+			},
+			expectedErr: testutil.TestError{},
+		},
 	}
 
 	// Setup
@@ -697,6 +735,8 @@ func TestNodePublishVolume(t *testing.T) {
 	err = os.RemoveAll(errorMountStagedSource)
 	assert.NoError(t, err)
 	err = os.RemoveAll(missingStage)
+	assert.NoError(t, err)
+	err = os.RemoveAll(missingStageFromSecret)
 	assert.NoError(t, err)
 }
 
@@ -1587,6 +1627,76 @@ func deviceAt(fm *fakeMounter, path string) string {
 		return ""
 	}
 	return mp.Device
+}
+
+func TestNodePublishVolumeKerberosSecretRecovery(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("kerberos cache recovery runs in the Linux NodeStageVolume path")
+	}
+
+	krb5Dir := t.TempDir() + "/"
+	credUID := os.Getuid()
+	ticket := []byte{'G', 'O', 'L', 'A', 'N', 'G'}
+	ccacheKey := fmt.Sprintf("krb5cc_%d", credUID)
+
+	d := NewFakeDriver()
+	d.krb5CacheDirectory = krb5Dir
+	mounter, err := NewFakeMounter()
+	if err != nil {
+		t.Fatalf("failed to get fake mounter: %v", err)
+	}
+	d.mounter = mounter
+	d.kubeClient = fake.NewSimpleClientset(&v1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "smbcreds",
+			Namespace: "default",
+		},
+		Data: map[string][]byte{
+			usernameField: []byte("test_username"),
+			passwordField: []byte("test_password"),
+			domainField:   []byte("test_domain"),
+			ccacheKey:     []byte(base64.StdEncoding.EncodeToString(ticket)),
+		},
+	})
+
+	staging := testutil.GetWorkDirPath("krb5_missing_stage", t)
+	target := testutil.GetWorkDirPath("krb5_publish_target", t)
+	t.Cleanup(func() {
+		os.RemoveAll(staging)
+		os.RemoveAll(target)
+	})
+
+	volumeCap := csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER}
+	_, err = d.NodePublishVolume(context.Background(), &csi.NodePublishVolumeRequest{
+		VolumeCapability: &csi.VolumeCapability{
+			AccessMode: &volumeCap,
+			AccessType: &csi.VolumeCapability_Mount{
+				Mount: &csi.VolumeCapability_MountVolume{
+					MountFlags: []string{"sec=krb5", fmt.Sprintf("cruid=%d", credUID)},
+				},
+			},
+		},
+		VolumeId:          "vol_krb5",
+		TargetPath:        target,
+		StagingTargetPath: staging,
+		VolumeContext: map[string]string{
+			sourceField:          `\\hostname\share\test`,
+			secretNameField:      "smbcreds",
+			secretNamespaceField: "default",
+		},
+	})
+	if err != nil {
+		t.Fatalf("kerberos restage: %v", err)
+	}
+
+	cachePath := getKerberosFilePath(krb5Dir, volumeKerberosCacheName("vol_krb5"))
+	got, err := os.ReadFile(cachePath)
+	if err != nil {
+		t.Fatalf("read kerberos cache %s: %v", cachePath, err)
+	}
+	if string(got) != string(ticket) {
+		t.Fatalf("kerberos cache %q, want %q", got, ticket)
+	}
 }
 
 func TestNodePublishVolumeIdempotentMount(t *testing.T) {

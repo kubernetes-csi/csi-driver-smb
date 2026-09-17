@@ -229,6 +229,34 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	s.Wait()
 }
 
+// getSecretData returns every key from the Secret. Kerberos mounts store the
+// credential cache under krb5cc_<uid> alongside username, password, and domain.
+// Recovery must forward those keys or restage fails with an empty cache.
+func (d *Driver) getSecretData(ctx context.Context, secretName, secretNamespace string) (map[string]string, error) {
+	if d.kubeClient == nil {
+		return nil, fmt.Errorf("could not get secret(%s): KubeClient is nil", secretName)
+	}
+
+	secret, err := d.kubeClient.CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("could not get secret(%v): %v", secretName, err)
+	}
+	if len(secret.Data) == 0 {
+		return nil, nil
+	}
+
+	out := make(map[string]string, len(secret.Data))
+	for k, v := range secret.Data {
+		value := string(v)
+		switch strings.ToLower(k) {
+		case usernameField, passwordField, domainField:
+			value = strings.TrimSpace(value)
+		}
+		out[k] = value
+	}
+	return out, nil
+}
+
 // GetUserNamePasswordFromSecret get storage account key from k8s secret
 // return <username, password, domain, error>
 func (d *Driver) GetUserNamePasswordFromSecret(ctx context.Context, secretName, secretNamespace string) (string, string, string, error) {

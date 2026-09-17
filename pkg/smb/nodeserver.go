@@ -722,6 +722,16 @@ func (d *Driver) restageFromPublish(ctx context.Context, req *csi.NodePublishVol
 	}
 	needsCreds := !hasGuestMountOptions(mountFlags)
 	if needsCreds && len(secrets) == 0 {
+		secretName, secretNamespace := getSecretNameAndNamespace(req.GetVolumeContext())
+		if secretName != "" && secretNamespace != "" {
+			recovered, err := d.getSecretData(ctx, secretName, secretNamespace)
+			if err != nil {
+				return status.Errorf(codes.Internal, "could not get recovery credentials from secret %s/%s: %v", secretNamespace, secretName, err)
+			}
+			secrets = recovered
+		}
+	}
+	if needsCreds && len(secrets) == 0 {
 		return status.Errorf(codes.FailedPrecondition,
 			"volume %s is not staged at %s (globalmount missing or not a CIFS mount); NodeStageVolume must run",
 			volumeID, stagingPath)
@@ -735,6 +745,19 @@ func (d *Driver) restageFromPublish(ctx context.Context, req *csi.NodePublishVol
 		Secrets:           secrets,
 	}, releaseLock)
 	return err
+}
+
+func getSecretNameAndNamespace(context map[string]string) (string, string) {
+	var secretName, secretNamespace string
+	for k, v := range context {
+		switch strings.ToLower(k) {
+		case secretNameField:
+			secretName = v
+		case secretNamespaceField:
+			secretNamespace = v
+		}
+	}
+	return secretName, secretNamespace
 }
 
 // isMissingStagingMountError reports whether a mount failure names an absent
