@@ -595,10 +595,7 @@ func (d *Driver) isStaged(stagingPath string) (bool, error) {
 	return !notMnt, nil
 }
 
-// restageFromPublish mounts CIFS at stagingPath from within NodePublishVolume,
-// taking credentials from nodePublishSecretRef or the Stage cache. Without
-// either it returns FailedPrecondition; mkdir alone would publish an empty
-// directory to the pod.
+// restageFromPublish mounts CIFS at stagingPath from within NodePublishVolume.
 func (d *Driver) restageFromPublish(ctx context.Context, req *csi.NodePublishVolumeRequest, stagingPath string) error {
 	volumeID := req.GetVolumeId()
 	klog.V(2).Infof("NodePublishVolume: staging path %s for volume %s is missing or not a CIFS mount; restaging", stagingPath, volumeID)
@@ -614,6 +611,20 @@ func (d *Driver) restageFromPublish(ctx context.Context, req *csi.NodePublishVol
 	}
 	needsCreds := !hasGuestMountOptions(mountFlags)
 	if needsCreds && len(secrets) == 0 {
+		secretName, secretNamespace := getSecretNameAndNamespace(req.GetVolumeContext())
+		if secretName != "" && secretNamespace != "" {
+			username, password, domain, err := d.GetUserNamePasswordFromSecret(ctx, secretName, secretNamespace)
+			if err != nil {
+				return status.Errorf(codes.Internal, "could not get recovery credentials from secret %s/%s: %v", secretNamespace, secretName, err)
+			}
+			secrets = map[string]string{
+				usernameField: username,
+				passwordField: password,
+				domainField:   domain,
+			}
+		}
+	}
+	if needsCreds && len(secrets) == 0 {
 		return status.Errorf(codes.FailedPrecondition,
 			"volume %s is not staged at %s (globalmount missing or not a CIFS mount); NodeStageVolume must run",
 			volumeID, stagingPath)
@@ -627,6 +638,19 @@ func (d *Driver) restageFromPublish(ctx context.Context, req *csi.NodePublishVol
 		Secrets:           secrets,
 	})
 	return err
+}
+
+func getSecretNameAndNamespace(context map[string]string) (string, string) {
+	var secretName, secretNamespace string
+	for k, v := range context {
+		switch strings.ToLower(k) {
+		case secretNameField:
+			secretName = v
+		case secretNamespaceField:
+			secretNamespace = v
+		}
+	}
+	return secretName, secretNamespace
 }
 
 // isMissingStagingMountError reports whether a mount failure names an absent

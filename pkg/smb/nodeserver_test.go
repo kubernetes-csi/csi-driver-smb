@@ -37,6 +37,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/fake"
 	mount "k8s.io/mount-utils"
 	"k8s.io/utils/exec"
 )
@@ -354,6 +357,7 @@ func TestNodePublishVolume(t *testing.T) {
 	errorMountStagedSource := testutil.GetWorkDirPath("false_is_likely_error_mount_source", t)
 	targetTest := testutil.GetWorkDirPath("target_test", t)
 	missingStage := testutil.GetWorkDirPath("missing_globalmount", t)
+	missingStageFromSecret := testutil.GetWorkDirPath("missing_globalmount_secret", t)
 
 	tests := []struct {
 		desc          string
@@ -621,6 +625,40 @@ func TestNodePublishVolume(t *testing.T) {
 			},
 			expectedErr: testutil.TestError{},
 		},
+		{
+			desc:          "[Success] Restage from VolumeContext secret",
+			skipOnWindows: true,
+			setup: func(d *Driver) {
+				d.kubeClient = fake.NewSimpleClientset(&v1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "smbcreds",
+						Namespace: "default",
+					},
+					Data: map[string][]byte{
+						usernameField: []byte("test_username"),
+						passwordField: []byte("test_password"),
+						domainField:   []byte("test_domain"),
+					},
+				})
+			},
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessMode: &volumeCap,
+					AccessType: &csi.VolumeCapability_Mount{
+						Mount: &csi.VolumeCapability_MountVolume{},
+					},
+				},
+				VolumeId:          "vol_2",
+				TargetPath:        targetTest,
+				StagingTargetPath: missingStageFromSecret,
+				VolumeContext: map[string]string{
+					sourceField:          `\\hostname\share\test`,
+					secretNameField:      "smbcreds",
+					secretNamespaceField: "default",
+				},
+			},
+			expectedErr: testutil.TestError{},
+		},
 	}
 
 	// Setup
@@ -659,6 +697,8 @@ func TestNodePublishVolume(t *testing.T) {
 	err = os.RemoveAll(errorMountStagedSource)
 	assert.NoError(t, err)
 	err = os.RemoveAll(missingStage)
+	assert.NoError(t, err)
+	err = os.RemoveAll(missingStageFromSecret)
 	assert.NoError(t, err)
 }
 
