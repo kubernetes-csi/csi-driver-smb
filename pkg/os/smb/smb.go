@@ -29,18 +29,64 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func IsSmbMapped(remotePath string) (bool, error) {
-	cmdLine := `$(Get-SmbGlobalMapping -RemotePath $Env:smbremotepath -ErrorAction Stop).Status`
+// SMBGlobalMappingStatus describes the observed status of a Windows SMB
+// global mapping for a remote UNC path.
+type SMBGlobalMappingStatus string
+
+const (
+	// SMBGlobalMappingStatusNotFound means no mapping exists for the remote path.
+	SMBGlobalMappingStatusNotFound SMBGlobalMappingStatus = "NotFound"
+	// SMBGlobalMappingStatusOK means the mapping exists and reports a healthy state.
+	SMBGlobalMappingStatusOK SMBGlobalMappingStatus = "OK"
+	// SMBGlobalMappingStatusDisconnected means the mapping object exists but is stale/unhealthy.
+	SMBGlobalMappingStatusDisconnected SMBGlobalMappingStatus = "Disconnected"
+	// SMBGlobalMappingStatusOther covers any other existing non-OK state.
+	SMBGlobalMappingStatusOther SMBGlobalMappingStatus = "Other"
+)
+
+func parseSMBGlobalMappingStatus(out string) SMBGlobalMappingStatus {
+	switch strings.ToLower(strings.TrimSpace(out)) {
+	case "":
+		return SMBGlobalMappingStatusNotFound
+	case strings.ToLower(string(SMBGlobalMappingStatusOK)):
+		return SMBGlobalMappingStatusOK
+	case strings.ToLower(string(SMBGlobalMappingStatusDisconnected)):
+		return SMBGlobalMappingStatusDisconnected
+	case strings.ToLower(string(SMBGlobalMappingStatusNotFound)):
+		return SMBGlobalMappingStatusNotFound
+	default:
+		return SMBGlobalMappingStatusOther
+	}
+}
+
+// CanonicalizeSMBRemotePath normalizes an SMB remote UNC path into a stable
+// canonical representation by converting separators, removing all trailing
+// backslashes, and folding case.
+func CanonicalizeSMBRemotePath(remotePath string) string {
+	remotePath = strings.ReplaceAll(remotePath, "/", "\\")
+	remotePath = strings.TrimRight(remotePath, `\`)
+	return strings.ToLower(remotePath)
+}
+
+// GetSmbGlobalMappingStatus returns the current SMB global mapping status for
+// the given remote UNC path.
+func GetSmbGlobalMappingStatus(remotePath string) (SMBGlobalMappingStatus, error) {
+	remotePath = CanonicalizeSMBRemotePath(remotePath)
+	cmdLine := `$mapping = Get-SmbGlobalMapping -ErrorAction Stop | Where-Object { $_.RemotePath -eq $Env:smbremotepath } | Select-Object -First 1; if ($null -eq $mapping) { 'NotFound' } else { $mapping.Status }`
 	cmdEnv := fmt.Sprintf("smbremotepath=%s", remotePath)
 	out, err := util.RunPowershellCmd(cmdLine, cmdEnv)
 	if err != nil {
-		return false, fmt.Errorf("error checking smb mapping. cmd %s, output: %s, err: %v", remotePath, string(out), err)
+		return SMBGlobalMappingStatusNotFound, fmt.Errorf("error checking smb mapping. cmd %s, output: %s, err: %v", remotePath, string(out), err)
 	}
+	return parseSMBGlobalMappingStatus(string(out)), nil
+}
 
-	if len(out) == 0 || !strings.EqualFold(strings.TrimSpace(string(out)), "OK") {
-		return false, nil
+func IsSmbMapped(remotePath string) (bool, error) {
+	status, err := GetSmbGlobalMappingStatus(remotePath)
+	if err != nil {
+		return false, err
 	}
-	return true, nil
+	return status == SMBGlobalMappingStatusOK, nil
 }
 
 func newSmbGlobalMappingCmd(requirePrivacy bool) string {
@@ -54,6 +100,7 @@ func newSmbGlobalMappingCmd(requirePrivacy bool) string {
 }
 
 func NewSmbGlobalMapping(remotePath, username, password string, requirePrivacy bool) error {
+	remotePath = CanonicalizeSMBRemotePath(remotePath)
 	// use PowerShell Environment Variables to store user input string to prevent command line injection
 	// https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_environment_variables?view=powershell-5.1
 	cmdLine := newSmbGlobalMappingCmd(requirePrivacy)
@@ -68,7 +115,7 @@ func NewSmbGlobalMapping(remotePath, username, password string, requirePrivacy b
 }
 
 func RemoveSmbGlobalMapping(remotePath string) error {
-	remotePath = strings.TrimSuffix(remotePath, `\`)
+	remotePath = CanonicalizeSMBRemotePath(remotePath)
 	cmd := `Remove-SmbGlobalMapping -RemotePath $Env:smbremotepath -Force`
 	klog.V(2).Infof("begin to run RemoveSmbGlobalMapping with %s", remotePath)
 	if output, err := util.RunPowershellCmd(cmd, fmt.Sprintf("smbremotepath=%s", remotePath)); err != nil {
@@ -89,6 +136,7 @@ func GetRemoteServerFromTarget(mount string) (string, error) {
 
 // CheckForDuplicateSMBMounts checks if there is any other SMB mount exists on the same remote server
 func CheckForDuplicateSMBMounts(dir, mount, remoteServer string) (bool, error) {
+	remoteServer = CanonicalizeSMBRemotePath(remoteServer)
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		return false, err
@@ -107,7 +155,7 @@ func CheckForDuplicateSMBMounts(dir, mount, remoteServer string) (bool, error) {
 					remoteServerPath, err := GetRemoteServerFromTarget(globalMountPath)
 					klog.V(2).Infof("checking remote server path %s on local path %s", remoteServerPath, globalMountPath)
 					if err == nil {
-						if remoteServerPath == remoteServer {
+						if CanonicalizeSMBRemotePath(remoteServerPath) == remoteServer {
 							return true, nil
 						}
 					} else {
