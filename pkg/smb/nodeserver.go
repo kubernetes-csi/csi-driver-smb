@@ -51,6 +51,9 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	if volCap == nil {
 		return nil, status.Error(codes.InvalidArgument, "Volume capability missing in request")
 	}
+	if err := isValidVolumeCapabilities([]*csi.VolumeCapability{volCap}); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
 	volumeID := req.GetVolumeId()
 	if len(volumeID) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
