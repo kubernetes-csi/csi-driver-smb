@@ -24,6 +24,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -107,7 +108,11 @@ type Driver struct {
 	mounter *mount.SafeFormatAndMount
 	// A map storing all volumes with ongoing operations so that additional operations
 	// for that same volume (as defined by VolumeID) return an Aborted error
-	volumeLocks          *volumeLocks
+	volumeLocks *volumeLocks
+	// NodeStageVolume credentials keyed by volume ID and staging path, so
+	// NodePublishVolume can remount CIFS when kubelet skips NodeStageVolume (#737).
+	// Process-local: never written to disk or logged. Cleared on NodeUnstageVolume.
+	stageSecrets         *sync.Map
 	workingMountDir      string
 	enableGetVolumeStats bool
 	// a timed cache storing volume stats <volumeID, volumeStats>
@@ -142,6 +147,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.enableWindowsHostProcess = options.EnableWindowsHostProcess
 	driver.kubeconfig = options.Kubeconfig
 	driver.volumeLocks = newVolumeLocks()
+	driver.stageSecrets = &sync.Map{}
 
 	driver.krb5CacheDirectory = options.Krb5CacheDirectory
 	if driver.krb5CacheDirectory == "" {
