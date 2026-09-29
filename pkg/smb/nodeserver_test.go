@@ -525,7 +525,7 @@ func TestNodePublishVolume(t *testing.T) {
 			expectedErr: testutil.TestError{},
 		},
 		{
-			desc: "[Success] No nil panic when VolumeCapability has no Mount (block access type)",
+			desc: "[Success] No nil panic when VolumeCapability has no Mount access type",
 			req: &csi.NodePublishVolumeRequest{
 				VolumeCapability: &csi.VolumeCapability{
 					AccessMode: &volumeCap,
@@ -535,6 +535,23 @@ func TestNodePublishVolume(t *testing.T) {
 				StagingTargetPath: sourceTest,
 				Readonly:          false},
 			expectedErr: testutil.TestError{},
+		},
+		{
+			desc: "[Error] Block volume capability not supported",
+			req: &csi.NodePublishVolumeRequest{
+				VolumeCapability: &csi.VolumeCapability{
+					AccessType: &csi.VolumeCapability_Block{
+						Block: &csi.VolumeCapability_BlockVolume{},
+					},
+					AccessMode: &volumeCap,
+				},
+				VolumeId:          "vol_1",
+				TargetPath:        targetTest,
+				StagingTargetPath: sourceTest,
+				Readonly:          false},
+			expectedErr: testutil.TestError{
+				DefaultError: status.Error(codes.InvalidArgument, "block volume capability not supported"),
+			},
 		},
 	}
 
