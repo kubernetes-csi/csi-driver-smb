@@ -26,11 +26,9 @@ var (
 // with.
 type ErrorTypeAttr string
 
-var (
-	// ErrorTypeOther is a fallback error value to be used when the instrumentation
-	// doesn't define a custom value.
-	ErrorTypeOther ErrorTypeAttr = "_OTHER"
-)
+// ErrorTypeOther is a fallback error value to be used when the instrumentation
+// doesn't define a custom value.
+var ErrorTypeOther ErrorTypeAttr = "_OTHER"
 
 // ConnectionStateAttr is an attribute conforming to the http.connection.state
 // semantic conventions. It represents the state of the HTTP connection in the
@@ -67,8 +65,6 @@ var (
 	RequestMethodPut RequestMethodAttr = "PUT"
 	// RequestMethodTrace is the TRACE method.
 	RequestMethodTrace RequestMethodAttr = "TRACE"
-	// RequestMethodQuery is the QUERY method.
-	RequestMethodQuery RequestMethodAttr = "QUERY"
 	// RequestMethodOther is the any HTTP method that the instrumentation has no
 	// prior knowledge of.
 	RequestMethodOther RequestMethodAttr = "_OTHER"
@@ -159,20 +155,13 @@ func (m ClientActiveRequests) Add(
 	serverPort int,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Int64UpDownCounter.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Int64UpDownCounter.Add(ctx, incr, metric.WithAttributes(
-			attribute.String("server.address", serverAddress),
-			attribute.Int("server.port", serverPort),
-		))
+		m.Int64UpDownCounter.Add(ctx, incr)
 		return
 	}
 
 	o := addOptPool.Get().(*[]metric.AddOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		addOptPool.Put(o)
 	}()
@@ -181,7 +170,7 @@ func (m ClientActiveRequests) Add(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("server.address", serverAddress),
 				attribute.Int("server.port", serverPort),
 			)...,
@@ -193,9 +182,6 @@ func (m ClientActiveRequests) Add(
 
 // AddSet adds incr to the existing count for set.
 func (m ClientActiveRequests) AddSet(ctx context.Context, incr int64, set attribute.Set) {
-	if !m.Int64UpDownCounter.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Int64UpDownCounter.Add(ctx, incr)
 		return
@@ -203,7 +189,6 @@ func (m ClientActiveRequests) AddSet(ctx context.Context, incr int64, set attrib
 
 	o := addOptPool.Get().(*[]metric.AddOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		addOptPool.Put(o)
 	}()
@@ -233,102 +218,6 @@ func (ClientActiveRequests) AttrRequestMethod(val RequestMethodAttr) attribute.K
 //
 // [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
 func (ClientActiveRequests) AttrURLScheme(val string) attribute.KeyValue {
-	return attribute.String("url.scheme", val)
-}
-
-// ClientActiveRequestsObservable is an instrument used to record metric values
-// conforming to the "http.client.active_requests" semantic conventions. It
-// represents the number of active HTTP requests.
-type ClientActiveRequestsObservable struct {
-	metric.Int64ObservableUpDownCounter
-}
-
-var newClientActiveRequestsObservableOpts = []metric.Int64ObservableUpDownCounterOption{
-	metric.WithDescription("Number of active HTTP requests."),
-	metric.WithUnit("{request}"),
-}
-
-// NewClientActiveRequestsObservable returns a new ClientActiveRequestsObservable
-// instrument.
-func NewClientActiveRequestsObservable(
-	m metric.Meter,
-	opt ...metric.Int64ObservableUpDownCounterOption,
-) (ClientActiveRequestsObservable, error) {
-	// Check if the meter is nil.
-	if m == nil {
-		return ClientActiveRequestsObservable{noop.Int64ObservableUpDownCounter{}}, nil
-	}
-
-	if len(opt) == 0 {
-		opt = newClientActiveRequestsObservableOpts
-	} else {
-		opt = append(opt, newClientActiveRequestsObservableOpts...)
-	}
-
-	i, err := m.Int64ObservableUpDownCounter(
-		"http.client.active_requests",
-		opt...,
-	)
-	if err != nil {
-		return ClientActiveRequestsObservable{noop.Int64ObservableUpDownCounter{}}, err
-	}
-	return ClientActiveRequestsObservable{i}, nil
-}
-
-// Inst returns the underlying metric instrument.
-func (m ClientActiveRequestsObservable) Inst() metric.Int64ObservableUpDownCounter {
-	return m.Int64ObservableUpDownCounter
-}
-
-// Name returns the semantic convention name of the instrument.
-func (ClientActiveRequestsObservable) Name() string {
-	return "http.client.active_requests"
-}
-
-// Unit returns the semantic convention unit of the instrument
-func (ClientActiveRequestsObservable) Unit() string {
-	return "{request}"
-}
-
-// Description returns the semantic convention description of the instrument
-func (ClientActiveRequestsObservable) Description() string {
-	return "Number of active HTTP requests."
-}
-
-// AttrServerAddress returns a required attribute for the "server.address"
-// semantic convention. It represents the server domain name if available without
-// reverse DNS lookup; otherwise, IP address or Unix domain socket name.
-func (ClientActiveRequestsObservable) AttrServerAddress(val string) attribute.KeyValue {
-	return attribute.String("server.address", val)
-}
-
-// AttrServerPort returns a required attribute for the "server.port" semantic
-// convention. It represents the server port number.
-func (ClientActiveRequestsObservable) AttrServerPort(val int) attribute.KeyValue {
-	return attribute.Int("server.port", val)
-}
-
-// AttrURLTemplate returns an optional attribute for the "url.template" semantic
-// convention. It represents the low-cardinality template of an
-// [absolute path reference].
-//
-// [absolute path reference]: https://www.rfc-editor.org/rfc/rfc3986#section-4.2
-func (ClientActiveRequestsObservable) AttrURLTemplate(val string) attribute.KeyValue {
-	return attribute.String("url.template", val)
-}
-
-// AttrRequestMethod returns an optional attribute for the "http.request.method"
-// semantic convention. It represents the HTTP request method.
-func (ClientActiveRequestsObservable) AttrRequestMethod(val RequestMethodAttr) attribute.KeyValue {
-	return attribute.String("http.request.method", string(val))
-}
-
-// AttrURLScheme returns an optional attribute for the "url.scheme" semantic
-// convention. It represents the [URI scheme] component identifying the used
-// protocol.
-//
-// [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
-func (ClientActiveRequestsObservable) AttrURLScheme(val string) attribute.KeyValue {
 	return attribute.String("url.scheme", val)
 }
 
@@ -406,20 +295,13 @@ func (m ClientConnectionDuration) Record(
 	serverPort int,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Float64Histogram.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Float64Histogram.Record(ctx, val, metric.WithAttributes(
-			attribute.String("server.address", serverAddress),
-			attribute.Int("server.port", serverPort),
-		))
+		m.Float64Histogram.Record(ctx, val)
 		return
 	}
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -428,7 +310,7 @@ func (m ClientConnectionDuration) Record(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("server.address", serverAddress),
 				attribute.Int("server.port", serverPort),
 			)...,
@@ -440,9 +322,6 @@ func (m ClientConnectionDuration) Record(
 
 // RecordSet records val to the current distribution for set.
 func (m ClientConnectionDuration) RecordSet(ctx context.Context, val float64, set attribute.Set) {
-	if !m.Float64Histogram.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Float64Histogram.Record(ctx, val)
 		return
@@ -450,7 +329,6 @@ func (m ClientConnectionDuration) RecordSet(ctx context.Context, val float64, se
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -560,21 +438,13 @@ func (m ClientOpenConnections) Add(
 	serverPort int,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Int64UpDownCounter.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Int64UpDownCounter.Add(ctx, incr, metric.WithAttributes(
-			attribute.String("http.connection.state", string(connectionState)),
-			attribute.String("server.address", serverAddress),
-			attribute.Int("server.port", serverPort),
-		))
+		m.Int64UpDownCounter.Add(ctx, incr)
 		return
 	}
 
 	o := addOptPool.Get().(*[]metric.AddOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		addOptPool.Put(o)
 	}()
@@ -583,7 +453,7 @@ func (m ClientOpenConnections) Add(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("http.connection.state", string(connectionState)),
 				attribute.String("server.address", serverAddress),
 				attribute.Int("server.port", serverPort),
@@ -596,9 +466,6 @@ func (m ClientOpenConnections) Add(
 
 // AddSet adds incr to the existing count for set.
 func (m ClientOpenConnections) AddSet(ctx context.Context, incr int64, set attribute.Set) {
-	if !m.Int64UpDownCounter.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Int64UpDownCounter.Add(ctx, incr)
 		return
@@ -606,7 +473,6 @@ func (m ClientOpenConnections) AddSet(ctx context.Context, incr int64, set attri
 
 	o := addOptPool.Get().(*[]metric.AddOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		addOptPool.Put(o)
 	}()
@@ -635,109 +501,6 @@ func (ClientOpenConnections) AttrNetworkProtocolVersion(val string) attribute.Ke
 //
 // [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
 func (ClientOpenConnections) AttrURLScheme(val string) attribute.KeyValue {
-	return attribute.String("url.scheme", val)
-}
-
-// ClientOpenConnectionsObservable is an instrument used to record metric values
-// conforming to the "http.client.open_connections" semantic conventions. It
-// represents the number of outbound HTTP connections that are currently active
-// or idle on the client.
-type ClientOpenConnectionsObservable struct {
-	metric.Int64ObservableUpDownCounter
-}
-
-var newClientOpenConnectionsObservableOpts = []metric.Int64ObservableUpDownCounterOption{
-	metric.WithDescription("Number of outbound HTTP connections that are currently active or idle on the client."),
-	metric.WithUnit("{connection}"),
-}
-
-// NewClientOpenConnectionsObservable returns a new
-// ClientOpenConnectionsObservable instrument.
-func NewClientOpenConnectionsObservable(
-	m metric.Meter,
-	opt ...metric.Int64ObservableUpDownCounterOption,
-) (ClientOpenConnectionsObservable, error) {
-	// Check if the meter is nil.
-	if m == nil {
-		return ClientOpenConnectionsObservable{noop.Int64ObservableUpDownCounter{}}, nil
-	}
-
-	if len(opt) == 0 {
-		opt = newClientOpenConnectionsObservableOpts
-	} else {
-		opt = append(opt, newClientOpenConnectionsObservableOpts...)
-	}
-
-	i, err := m.Int64ObservableUpDownCounter(
-		"http.client.open_connections",
-		opt...,
-	)
-	if err != nil {
-		return ClientOpenConnectionsObservable{noop.Int64ObservableUpDownCounter{}}, err
-	}
-	return ClientOpenConnectionsObservable{i}, nil
-}
-
-// Inst returns the underlying metric instrument.
-func (m ClientOpenConnectionsObservable) Inst() metric.Int64ObservableUpDownCounter {
-	return m.Int64ObservableUpDownCounter
-}
-
-// Name returns the semantic convention name of the instrument.
-func (ClientOpenConnectionsObservable) Name() string {
-	return "http.client.open_connections"
-}
-
-// Unit returns the semantic convention unit of the instrument
-func (ClientOpenConnectionsObservable) Unit() string {
-	return "{connection}"
-}
-
-// Description returns the semantic convention description of the instrument
-func (ClientOpenConnectionsObservable) Description() string {
-	return "Number of outbound HTTP connections that are currently active or idle on the client."
-}
-
-// AttrConnectionState returns a required attribute for the
-// "http.connection.state" semantic convention. It represents the state of the
-// HTTP connection in the HTTP connection pool.
-func (ClientOpenConnectionsObservable) AttrConnectionState(val ConnectionStateAttr) attribute.KeyValue {
-	return attribute.String("http.connection.state", string(val))
-}
-
-// AttrServerAddress returns a required attribute for the "server.address"
-// semantic convention. It represents the server domain name if available without
-// reverse DNS lookup; otherwise, IP address or Unix domain socket name.
-func (ClientOpenConnectionsObservable) AttrServerAddress(val string) attribute.KeyValue {
-	return attribute.String("server.address", val)
-}
-
-// AttrServerPort returns a required attribute for the "server.port" semantic
-// convention. It represents the server port number.
-func (ClientOpenConnectionsObservable) AttrServerPort(val int) attribute.KeyValue {
-	return attribute.Int("server.port", val)
-}
-
-// AttrNetworkPeerAddress returns an optional attribute for the
-// "network.peer.address" semantic convention. It represents the peer address of
-// the network connection - IP address or Unix domain socket name.
-func (ClientOpenConnectionsObservable) AttrNetworkPeerAddress(val string) attribute.KeyValue {
-	return attribute.String("network.peer.address", val)
-}
-
-// AttrNetworkProtocolVersion returns an optional attribute for the
-// "network.protocol.version" semantic convention. It represents the actual
-// version of the protocol used for network communication.
-func (ClientOpenConnectionsObservable) AttrNetworkProtocolVersion(val string) attribute.KeyValue {
-	return attribute.String("network.protocol.version", val)
-}
-
-// AttrURLScheme returns an optional attribute for the "url.scheme" semantic
-// convention. It represents the [URI scheme] component identifying the used
-// protocol.
-//
-// [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
-func (ClientOpenConnectionsObservable) AttrURLScheme(val string) attribute.KeyValue {
 	return attribute.String("url.scheme", val)
 }
 
@@ -824,21 +587,13 @@ func (m ClientRequestBodySize) Record(
 	serverPort int,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Int64Histogram.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Int64Histogram.Record(ctx, val, metric.WithAttributes(
-			attribute.String("http.request.method", string(requestMethod)),
-			attribute.String("server.address", serverAddress),
-			attribute.Int("server.port", serverPort),
-		))
+		m.Int64Histogram.Record(ctx, val)
 		return
 	}
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -847,7 +602,7 @@ func (m ClientRequestBodySize) Record(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("http.request.method", string(requestMethod)),
 				attribute.String("server.address", serverAddress),
 				attribute.Int("server.port", serverPort),
@@ -867,9 +622,6 @@ func (m ClientRequestBodySize) Record(
 //
 // [Content-Length]: https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length
 func (m ClientRequestBodySize) RecordSet(ctx context.Context, val int64, set attribute.Set) {
-	if !m.Int64Histogram.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Int64Histogram.Record(ctx, val)
 		return
@@ -877,7 +629,6 @@ func (m ClientRequestBodySize) RecordSet(ctx context.Context, val int64, set att
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -946,7 +697,6 @@ type ClientRequestDuration struct {
 var newClientRequestDurationOpts = []metric.Float64HistogramOption{
 	metric.WithDescription("Duration of HTTP client requests."),
 	metric.WithUnit("s"),
-	metric.WithExplicitBucketBoundaries([]float64{0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10}...),
 }
 
 // NewClientRequestDuration returns a new ClientRequestDuration instrument.
@@ -1013,21 +763,13 @@ func (m ClientRequestDuration) Record(
 	serverPort int,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Float64Histogram.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Float64Histogram.Record(ctx, val, metric.WithAttributes(
-			attribute.String("http.request.method", string(requestMethod)),
-			attribute.String("server.address", serverAddress),
-			attribute.Int("server.port", serverPort),
-		))
+		m.Float64Histogram.Record(ctx, val)
 		return
 	}
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -1036,7 +778,7 @@ func (m ClientRequestDuration) Record(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("http.request.method", string(requestMethod)),
 				attribute.String("server.address", serverAddress),
 				attribute.Int("server.port", serverPort),
@@ -1049,9 +791,6 @@ func (m ClientRequestDuration) Record(
 
 // RecordSet records val to the current distribution for set.
 func (m ClientRequestDuration) RecordSet(ctx context.Context, val float64, set attribute.Set) {
-	if !m.Float64Histogram.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Float64Histogram.Record(ctx, val)
 		return
@@ -1059,7 +798,6 @@ func (m ClientRequestDuration) RecordSet(ctx context.Context, val float64, set a
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -1201,21 +939,13 @@ func (m ClientResponseBodySize) Record(
 	serverPort int,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Int64Histogram.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Int64Histogram.Record(ctx, val, metric.WithAttributes(
-			attribute.String("http.request.method", string(requestMethod)),
-			attribute.String("server.address", serverAddress),
-			attribute.Int("server.port", serverPort),
-		))
+		m.Int64Histogram.Record(ctx, val)
 		return
 	}
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -1224,7 +954,7 @@ func (m ClientResponseBodySize) Record(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("http.request.method", string(requestMethod)),
 				attribute.String("server.address", serverAddress),
 				attribute.Int("server.port", serverPort),
@@ -1244,9 +974,6 @@ func (m ClientResponseBodySize) Record(
 //
 // [Content-Length]: https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length
 func (m ClientResponseBodySize) RecordSet(ctx context.Context, val int64, set attribute.Set) {
-	if !m.Int64Histogram.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Int64Histogram.Record(ctx, val)
 		return
@@ -1254,7 +981,6 @@ func (m ClientResponseBodySize) RecordSet(ctx context.Context, val int64, set at
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -1387,20 +1113,13 @@ func (m ServerActiveRequests) Add(
 	urlScheme string,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Int64UpDownCounter.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Int64UpDownCounter.Add(ctx, incr, metric.WithAttributes(
-			attribute.String("http.request.method", string(requestMethod)),
-			attribute.String("url.scheme", urlScheme),
-		))
+		m.Int64UpDownCounter.Add(ctx, incr)
 		return
 	}
 
 	o := addOptPool.Get().(*[]metric.AddOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		addOptPool.Put(o)
 	}()
@@ -1409,7 +1128,7 @@ func (m ServerActiveRequests) Add(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("http.request.method", string(requestMethod)),
 				attribute.String("url.scheme", urlScheme),
 			)...,
@@ -1421,9 +1140,6 @@ func (m ServerActiveRequests) Add(
 
 // AddSet adds incr to the existing count for set.
 func (m ServerActiveRequests) AddSet(ctx context.Context, incr int64, set attribute.Set) {
-	if !m.Int64UpDownCounter.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Int64UpDownCounter.Add(ctx, incr)
 		return
@@ -1431,7 +1147,6 @@ func (m ServerActiveRequests) AddSet(ctx context.Context, incr int64, set attrib
 
 	o := addOptPool.Get().(*[]metric.AddOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		addOptPool.Put(o)
 	}()
@@ -1451,94 +1166,6 @@ func (ServerActiveRequests) AttrServerAddress(val string) attribute.KeyValue {
 // convention. It represents the port of the local HTTP server that received the
 // request.
 func (ServerActiveRequests) AttrServerPort(val int) attribute.KeyValue {
-	return attribute.Int("server.port", val)
-}
-
-// ServerActiveRequestsObservable is an instrument used to record metric values
-// conforming to the "http.server.active_requests" semantic conventions. It
-// represents the number of active HTTP server requests.
-type ServerActiveRequestsObservable struct {
-	metric.Int64ObservableUpDownCounter
-}
-
-var newServerActiveRequestsObservableOpts = []metric.Int64ObservableUpDownCounterOption{
-	metric.WithDescription("Number of active HTTP server requests."),
-	metric.WithUnit("{request}"),
-}
-
-// NewServerActiveRequestsObservable returns a new ServerActiveRequestsObservable
-// instrument.
-func NewServerActiveRequestsObservable(
-	m metric.Meter,
-	opt ...metric.Int64ObservableUpDownCounterOption,
-) (ServerActiveRequestsObservable, error) {
-	// Check if the meter is nil.
-	if m == nil {
-		return ServerActiveRequestsObservable{noop.Int64ObservableUpDownCounter{}}, nil
-	}
-
-	if len(opt) == 0 {
-		opt = newServerActiveRequestsObservableOpts
-	} else {
-		opt = append(opt, newServerActiveRequestsObservableOpts...)
-	}
-
-	i, err := m.Int64ObservableUpDownCounter(
-		"http.server.active_requests",
-		opt...,
-	)
-	if err != nil {
-		return ServerActiveRequestsObservable{noop.Int64ObservableUpDownCounter{}}, err
-	}
-	return ServerActiveRequestsObservable{i}, nil
-}
-
-// Inst returns the underlying metric instrument.
-func (m ServerActiveRequestsObservable) Inst() metric.Int64ObservableUpDownCounter {
-	return m.Int64ObservableUpDownCounter
-}
-
-// Name returns the semantic convention name of the instrument.
-func (ServerActiveRequestsObservable) Name() string {
-	return "http.server.active_requests"
-}
-
-// Unit returns the semantic convention unit of the instrument
-func (ServerActiveRequestsObservable) Unit() string {
-	return "{request}"
-}
-
-// Description returns the semantic convention description of the instrument
-func (ServerActiveRequestsObservable) Description() string {
-	return "Number of active HTTP server requests."
-}
-
-// AttrRequestMethod returns a required attribute for the "http.request.method"
-// semantic convention. It represents the HTTP request method.
-func (ServerActiveRequestsObservable) AttrRequestMethod(val RequestMethodAttr) attribute.KeyValue {
-	return attribute.String("http.request.method", string(val))
-}
-
-// AttrURLScheme returns a required attribute for the "url.scheme" semantic
-// convention. It represents the [URI scheme] component identifying the used
-// protocol.
-//
-// [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
-func (ServerActiveRequestsObservable) AttrURLScheme(val string) attribute.KeyValue {
-	return attribute.String("url.scheme", val)
-}
-
-// AttrServerAddress returns an optional attribute for the "server.address"
-// semantic convention. It represents the name of the local HTTP server that
-// received the request.
-func (ServerActiveRequestsObservable) AttrServerAddress(val string) attribute.KeyValue {
-	return attribute.String("server.address", val)
-}
-
-// AttrServerPort returns an optional attribute for the "server.port" semantic
-// convention. It represents the port of the local HTTP server that received the
-// request.
-func (ServerActiveRequestsObservable) AttrServerPort(val int) attribute.KeyValue {
 	return attribute.Int("server.port", val)
 }
 
@@ -1608,13 +1235,12 @@ func (ServerRequestBodySize) Description() string {
 //
 // All additional attrs passed are included in the recorded value.
 //
-// [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
-//
 // The size of the request payload body in bytes. This is the number of bytes
 // transferred excluding headers and is often, but not always, present as the
 // [Content-Length] header. For requests using transport encoding, this should be
 // the compressed size.
 //
+// [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
 // [Content-Length]: https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length
 func (m ServerRequestBodySize) Record(
 	ctx context.Context,
@@ -1623,20 +1249,13 @@ func (m ServerRequestBodySize) Record(
 	urlScheme string,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Int64Histogram.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Int64Histogram.Record(ctx, val, metric.WithAttributes(
-			attribute.String("http.request.method", string(requestMethod)),
-			attribute.String("url.scheme", urlScheme),
-		))
+		m.Int64Histogram.Record(ctx, val)
 		return
 	}
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -1645,7 +1264,7 @@ func (m ServerRequestBodySize) Record(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("http.request.method", string(requestMethod)),
 				attribute.String("url.scheme", urlScheme),
 			)...,
@@ -1664,9 +1283,6 @@ func (m ServerRequestBodySize) Record(
 //
 // [Content-Length]: https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length
 func (m ServerRequestBodySize) RecordSet(ctx context.Context, val int64, set attribute.Set) {
-	if !m.Int64Histogram.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Int64Histogram.Record(ctx, val)
 		return
@@ -1674,7 +1290,6 @@ func (m ServerRequestBodySize) RecordSet(ctx context.Context, val int64, set att
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -1700,9 +1315,8 @@ func (ServerRequestBodySize) AttrResponseStatusCode(val int) attribute.KeyValue 
 }
 
 // AttrRoute returns an optional attribute for the "http.route" semantic
-// convention. It represents the matched route template for the request. This
-// MUST be low-cardinality and include all static path segments, with dynamic
-// path segments represented with placeholders.
+// convention. It represents the matched route, that is, the path template in the
+// format used by the respective server framework.
 func (ServerRequestBodySize) AttrRoute(val string) attribute.KeyValue {
 	return attribute.String("http.route", val)
 }
@@ -1754,7 +1368,6 @@ type ServerRequestDuration struct {
 var newServerRequestDurationOpts = []metric.Float64HistogramOption{
 	metric.WithDescription("Duration of HTTP server requests."),
 	metric.WithUnit("s"),
-	metric.WithExplicitBucketBoundaries([]float64{0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10}...),
 }
 
 // NewServerRequestDuration returns a new ServerRequestDuration instrument.
@@ -1819,20 +1432,13 @@ func (m ServerRequestDuration) Record(
 	urlScheme string,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Float64Histogram.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Float64Histogram.Record(ctx, val, metric.WithAttributes(
-			attribute.String("http.request.method", string(requestMethod)),
-			attribute.String("url.scheme", urlScheme),
-		))
+		m.Float64Histogram.Record(ctx, val)
 		return
 	}
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -1841,7 +1447,7 @@ func (m ServerRequestDuration) Record(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("http.request.method", string(requestMethod)),
 				attribute.String("url.scheme", urlScheme),
 			)...,
@@ -1853,9 +1459,6 @@ func (m ServerRequestDuration) Record(
 
 // RecordSet records val to the current distribution for set.
 func (m ServerRequestDuration) RecordSet(ctx context.Context, val float64, set attribute.Set) {
-	if !m.Float64Histogram.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Float64Histogram.Record(ctx, val)
 		return
@@ -1863,7 +1466,6 @@ func (m ServerRequestDuration) RecordSet(ctx context.Context, val float64, set a
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -1889,9 +1491,8 @@ func (ServerRequestDuration) AttrResponseStatusCode(val int) attribute.KeyValue 
 }
 
 // AttrRoute returns an optional attribute for the "http.route" semantic
-// convention. It represents the matched route template for the request. This
-// MUST be low-cardinality and include all static path segments, with dynamic
-// path segments represented with placeholders.
+// convention. It represents the matched route, that is, the path template in the
+// format used by the respective server framework.
 func (ServerRequestDuration) AttrRoute(val string) attribute.KeyValue {
 	return attribute.String("http.route", val)
 }
@@ -1999,13 +1600,12 @@ func (ServerResponseBodySize) Description() string {
 //
 // All additional attrs passed are included in the recorded value.
 //
-// [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
-//
 // The size of the response payload body in bytes. This is the number of bytes
 // transferred excluding headers and is often, but not always, present as the
 // [Content-Length] header. For requests using transport encoding, this should be
 // the compressed size.
 //
+// [URI scheme]: https://www.rfc-editor.org/rfc/rfc3986#section-3.1
 // [Content-Length]: https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length
 func (m ServerResponseBodySize) Record(
 	ctx context.Context,
@@ -2014,20 +1614,13 @@ func (m ServerResponseBodySize) Record(
 	urlScheme string,
 	attrs ...attribute.KeyValue,
 ) {
-	if !m.Int64Histogram.Enabled(ctx) {
-		return
-	}
 	if len(attrs) == 0 {
-		m.Int64Histogram.Record(ctx, val, metric.WithAttributes(
-			attribute.String("http.request.method", string(requestMethod)),
-			attribute.String("url.scheme", urlScheme),
-		))
+		m.Int64Histogram.Record(ctx, val)
 		return
 	}
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -2036,7 +1629,7 @@ func (m ServerResponseBodySize) Record(
 		*o,
 		metric.WithAttributes(
 			append(
-				attrs[:len(attrs):len(attrs)],
+				attrs,
 				attribute.String("http.request.method", string(requestMethod)),
 				attribute.String("url.scheme", urlScheme),
 			)...,
@@ -2055,9 +1648,6 @@ func (m ServerResponseBodySize) Record(
 //
 // [Content-Length]: https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length
 func (m ServerResponseBodySize) RecordSet(ctx context.Context, val int64, set attribute.Set) {
-	if !m.Int64Histogram.Enabled(ctx) {
-		return
-	}
 	if set.Len() == 0 {
 		m.Int64Histogram.Record(ctx, val)
 		return
@@ -2065,7 +1655,6 @@ func (m ServerResponseBodySize) RecordSet(ctx context.Context, val int64, set at
 
 	o := recOptPool.Get().(*[]metric.RecordOption)
 	defer func() {
-		clear(*o)
 		*o = (*o)[:0]
 		recOptPool.Put(o)
 	}()
@@ -2091,9 +1680,8 @@ func (ServerResponseBodySize) AttrResponseStatusCode(val int) attribute.KeyValue
 }
 
 // AttrRoute returns an optional attribute for the "http.route" semantic
-// convention. It represents the matched route template for the request. This
-// MUST be low-cardinality and include all static path segments, with dynamic
-// path segments represented with placeholders.
+// convention. It represents the matched route, that is, the path template in the
+// format used by the respective server framework.
 func (ServerResponseBodySize) AttrRoute(val string) attribute.KeyValue {
 	return attribute.String("http.route", val)
 }
