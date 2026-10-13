@@ -25,39 +25,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kubernetes-csi/csi-driver-smb/pkg/util"
+	"github.com/kubernetes-csi/csi-proxy/v2/pkg/wmi"
 	"k8s.io/klog/v2"
 )
-
-// SMBGlobalMappingStatus describes the observed status of a Windows SMB
-// global mapping for a remote UNC path.
-type SMBGlobalMappingStatus string
-
-const (
-	// SMBGlobalMappingStatusNotFound means no mapping exists for the remote path.
-	SMBGlobalMappingStatusNotFound SMBGlobalMappingStatus = "NotFound"
-	// SMBGlobalMappingStatusOK means the mapping exists and reports a healthy state.
-	SMBGlobalMappingStatusOK SMBGlobalMappingStatus = "OK"
-	// SMBGlobalMappingStatusDisconnected means the mapping object exists but is stale/unhealthy.
-	SMBGlobalMappingStatusDisconnected SMBGlobalMappingStatus = "Disconnected"
-	// SMBGlobalMappingStatusOther covers any other existing non-OK state.
-	SMBGlobalMappingStatusOther SMBGlobalMappingStatus = "Other"
-)
-
-func parseSMBGlobalMappingStatus(out string) SMBGlobalMappingStatus {
-	switch strings.ToLower(strings.TrimSpace(out)) {
-	case "":
-		return SMBGlobalMappingStatusNotFound
-	case strings.ToLower(string(SMBGlobalMappingStatusOK)):
-		return SMBGlobalMappingStatusOK
-	case strings.ToLower(string(SMBGlobalMappingStatusDisconnected)):
-		return SMBGlobalMappingStatusDisconnected
-	case strings.ToLower(string(SMBGlobalMappingStatusNotFound)):
-		return SMBGlobalMappingStatusNotFound
-	default:
-		return SMBGlobalMappingStatusOther
-	}
-}
 
 // CanonicalizeSMBRemotePath normalizes an SMB remote UNC path into a stable
 // canonical representation by converting separators, removing all trailing
@@ -68,58 +38,80 @@ func CanonicalizeSMBRemotePath(remotePath string) string {
 	return strings.ToLower(remotePath)
 }
 
-// GetSmbGlobalMappingStatus returns the current SMB global mapping status for
-// the given remote UNC path.
+// SMBGlobalMappingStatus describes the observed status of a Windows SMB
+// global mapping for a remote UNC path.
+type SMBGlobalMappingStatus string
+
+const (
+	SMBGlobalMappingStatusNotFound     SMBGlobalMappingStatus = "NotFound"
+	SMBGlobalMappingStatusOK           SMBGlobalMappingStatus = "OK"
+	SMBGlobalMappingStatusDisconnected SMBGlobalMappingStatus = "Disconnected"
+	SMBGlobalMappingStatusOther        SMBGlobalMappingStatus = "Other"
+)
+
+func smbGlobalMappingStatusFromWMI(status uint32) SMBGlobalMappingStatus {
+	switch status {
+	case wmi.SmbMappingStatusOK:
+		return SMBGlobalMappingStatusOK
+	case wmi.SmbMappingStatusDisconnected:
+		return SMBGlobalMappingStatusDisconnected
+	default:
+		return SMBGlobalMappingStatusOther
+	}
+}
+
+// newSmbGlobalMappingWMI is the low-level WMI create call; overridden in unit tests.
+var newSmbGlobalMappingWMI = wmi.NewSmbGlobalMapping
+var querySmbGlobalMappingWMI = wmi.QuerySmbGlobalMappingByRemotePath
+var getSmbGlobalMappingStatusWMI = wmi.GetSmbGlobalMappingStatus
+
 func GetSmbGlobalMappingStatus(remotePath string) (SMBGlobalMappingStatus, error) {
 	remotePath = CanonicalizeSMBRemotePath(remotePath)
-	cmdLine := `$mapping = Get-SmbGlobalMapping -ErrorAction Stop | Where-Object { $_.RemotePath -eq $Env:smbremotepath } | Select-Object -First 1; if ($null -eq $mapping) { 'NotFound' } else { $mapping.Status }`
-	cmdEnv := fmt.Sprintf("smbremotepath=%s", remotePath)
-	out, err := util.RunPowershellCmd(cmdLine, cmdEnv)
-	if err != nil {
-		return SMBGlobalMappingStatusNotFound, fmt.Errorf("error checking smb mapping. cmd %s, output: %s, err: %v", remotePath, string(out), err)
-	}
-	return parseSMBGlobalMappingStatus(string(out)), nil
+	status := SMBGlobalMappingStatusNotFound
+	err := wmi.WithCOMThread(func() error {
+		return wmi.WithScope(func(scope *wmi.Scope) error {
+			inst, err := querySmbGlobalMappingWMI(scope, remotePath)
+			if err != nil {
+				return err
+			}
+			mappingStatus, err := getSmbGlobalMappingStatusWMI(inst)
+			if err != nil {
+				return err
+			}
+			status = smbGlobalMappingStatusFromWMI(mappingStatus)
+			return nil
+		})
+	})
+	return status, wmi.IgnoreNotFound(err)
 }
 
 func IsSmbMapped(remotePath string) (bool, error) {
 	status, err := GetSmbGlobalMappingStatus(remotePath)
-	if err != nil {
-		return false, err
-	}
-	return status == SMBGlobalMappingStatusOK, nil
-}
-
-func newSmbGlobalMappingCmd(requirePrivacy bool) string {
-	requirePrivacyValue := "$true"
-	if !requirePrivacy {
-		requirePrivacyValue = "$false"
-	}
-	return fmt.Sprintf(`$PWord = ConvertTo-SecureString -String $Env:smbpassword -AsPlainText -Force`+
-		`;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Env:smbuser, $PWord`+
-		`;New-SmbGlobalMapping -RemotePath $Env:smbremotepath -Credential $Credential -RequirePrivacy %s`, requirePrivacyValue)
+	return status == SMBGlobalMappingStatusOK, err
 }
 
 func NewSmbGlobalMapping(remotePath, username, password string, requirePrivacy bool) error {
 	remotePath = CanonicalizeSMBRemotePath(remotePath)
-	// use PowerShell Environment Variables to store user input string to prevent command line injection
-	// https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_environment_variables?view=powershell-5.1
-	cmdLine := newSmbGlobalMappingCmd(requirePrivacy)
-
 	klog.V(2).Infof("begin to run NewSmbGlobalMapping with %s, %s, requirePrivacy=%v", remotePath, username, requirePrivacy)
-	if output, err := util.RunPowershellCmd(cmdLine, fmt.Sprintf("smbuser=%s", username),
-		fmt.Sprintf("smbpassword=%s", password),
-		fmt.Sprintf("smbremotepath=%s", remotePath)); err != nil {
-		return fmt.Errorf("NewSmbGlobalMapping failed. output: %q, err: %v", string(output), err)
+	err := wmi.WithCOMThread(func() error {
+		return newSmbGlobalMappingWMI(remotePath, username, password, requirePrivacy)
+	})
+	if err != nil {
+		return fmt.Errorf("NewSmbGlobalMapping failed. err: %v", err)
 	}
 	return nil
 }
 
 func RemoveSmbGlobalMapping(remotePath string) error {
 	remotePath = CanonicalizeSMBRemotePath(remotePath)
-	cmd := `Remove-SmbGlobalMapping -RemotePath $Env:smbremotepath -Force`
 	klog.V(2).Infof("begin to run RemoveSmbGlobalMapping with %s", remotePath)
-	if output, err := util.RunPowershellCmd(cmd, fmt.Sprintf("smbremotepath=%s", remotePath)); err != nil {
-		return fmt.Errorf("UnmountSmbShare failed. output: %q, err: %v", string(output), err)
+	err := wmi.WithCOMThread(func() error {
+		return wmi.WithScope(func(scope *wmi.Scope) error {
+			return wmi.RemoveSmbGlobalMappingByRemotePath(scope, remotePath)
+		})
+	})
+	if err != nil {
+		return fmt.Errorf("UnmountSmbShare failed. err: %v", err)
 	}
 	return nil
 }

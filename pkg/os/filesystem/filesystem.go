@@ -27,6 +27,7 @@ import (
 	"strings"
 
 	"github.com/kubernetes-csi/csi-driver-smb/pkg/util"
+	"github.com/kubernetes-csi/csi-proxy/v2/pkg/utils"
 	"k8s.io/klog/v2"
 )
 
@@ -83,15 +84,10 @@ func PathExists(path string) (bool, error) {
 	return pathExists(path)
 }
 
+// PathValid checks whether the path is accessible on the host.
+// Uses Win32 GetFileAttributes (same as csi-proxy/v2 pkg/utils.IsPathValid) instead of PowerShell Test-Path.
 func PathValid(_ context.Context, path string) (bool, error) {
-	cmd := `Test-Path $Env:remotepath`
-	cmdEnv := fmt.Sprintf("remotepath=%s", path)
-	output, err := util.RunPowershellCmd(cmd, cmdEnv)
-	if err != nil {
-		return false, fmt.Errorf("returned output: %s, error: %v", string(output), err)
-	}
-
-	return strings.HasPrefix(strings.ToLower(string(output)), "true"), nil
+	return utils.IsPathValid(path)
 }
 
 func ValidatePathWindows(path string) error {
