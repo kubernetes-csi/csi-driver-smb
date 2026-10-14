@@ -20,9 +20,11 @@ limitations under the License.
 package smb
 
 import (
+	"errors"
 	"fmt"
-	"strings"
 	"testing"
+
+	"github.com/kubernetes-csi/csi-proxy/v2/pkg/wmi"
 )
 
 func TestCanonicalizeSMBRemotePath(t *testing.T) {
@@ -45,26 +47,83 @@ func TestCanonicalizeSMBRemotePath(t *testing.T) {
 	}
 }
 
-func TestParseSMBGlobalMappingStatus(t *testing.T) {
+func TestSMBGlobalMappingStatusFromWMI(t *testing.T) {
 	tests := []struct {
-		name string
-		in   string
-		want SMBGlobalMappingStatus
+		name   string
+		status uint32
+		want   SMBGlobalMappingStatus
 	}{
-		{name: "ok", in: "OK", want: SMBGlobalMappingStatusOK},
-		{name: "disconnected", in: "Disconnected", want: SMBGlobalMappingStatusDisconnected},
-		{name: "notfound explicit", in: "NotFound", want: SMBGlobalMappingStatusNotFound},
-		{name: "empty means notfound", in: "", want: SMBGlobalMappingStatusNotFound},
-		{name: "other state", in: "Reconnecting", want: SMBGlobalMappingStatusOther},
+		{name: "ok", status: wmi.SmbMappingStatusOK, want: SMBGlobalMappingStatusOK},
+		{name: "disconnected", status: wmi.SmbMappingStatusDisconnected, want: SMBGlobalMappingStatusDisconnected},
+		{name: "other", status: wmi.SmbMappingStatusReconnecting, want: SMBGlobalMappingStatusOther},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			if got := parseSMBGlobalMappingStatus(test.in); got != test.want {
-				t.Fatalf("parseSMBGlobalMappingStatus(%q) = %q, want %q", test.in, got, test.want)
+			if got := smbGlobalMappingStatusFromWMI(test.status); got != test.want {
+				t.Fatalf("smbGlobalMappingStatusFromWMI(%d) = %q, want %q", test.status, got, test.want)
 			}
 		})
 	}
+}
+
+func TestGetSmbGlobalMappingStatus(t *testing.T) {
+	originalQuery := querySmbGlobalMappingWMI
+	originalGetStatus := getSmbGlobalMappingStatusWMI
+	t.Cleanup(func() {
+		querySmbGlobalMappingWMI = originalQuery
+		getSmbGlobalMappingStatusWMI = originalGetStatus
+	})
+
+	t.Run("found and canonicalizes path", func(t *testing.T) {
+		var gotPath string
+		querySmbGlobalMappingWMI = func(_ *wmi.Scope, remotePath string) (*wmi.COMDispatchObject, error) {
+			gotPath = remotePath
+			return nil, nil
+		}
+		getSmbGlobalMappingStatusWMI = func(_ *wmi.COMDispatchObject) (uint32, error) {
+			return wmi.SmbMappingStatusOK, nil
+		}
+
+		got, err := GetSmbGlobalMappingStatus(`//SERVER/Share/`)
+		if err != nil {
+			t.Fatalf("GetSmbGlobalMappingStatus returned error: %v", err)
+		}
+		if got != SMBGlobalMappingStatusOK {
+			t.Fatalf("status = %q, want %q", got, SMBGlobalMappingStatusOK)
+		}
+		if gotPath != `\\server\share` {
+			t.Fatalf("query path = %q, want %q", gotPath, `\\server\share`)
+		}
+	})
+
+	t.Run("not found is reported without error", func(t *testing.T) {
+		querySmbGlobalMappingWMI = func(_ *wmi.Scope, _ string) (*wmi.COMDispatchObject, error) {
+			return nil, wmi.ErrNotFound
+		}
+
+		got, err := GetSmbGlobalMappingStatus(`\\server\share`)
+		if err != nil {
+			t.Fatalf("GetSmbGlobalMappingStatus returned error: %v", err)
+		}
+		if got != SMBGlobalMappingStatusNotFound {
+			t.Fatalf("status = %q, want %q", got, SMBGlobalMappingStatusNotFound)
+		}
+	})
+
+	t.Run("property read errors are returned", func(t *testing.T) {
+		querySmbGlobalMappingWMI = func(_ *wmi.Scope, _ string) (*wmi.COMDispatchObject, error) {
+			return nil, nil
+		}
+		getSmbGlobalMappingStatusWMI = func(_ *wmi.COMDispatchObject) (uint32, error) {
+			return 0, errors.New("status read failed")
+		}
+
+		_, err := GetSmbGlobalMappingStatus(`\\server\share`)
+		if err == nil || err.Error() != "status read failed" {
+			t.Fatalf("error = %v, want status read failed", err)
+		}
+	})
 }
 
 func TestCheckForDuplicateSMBMounts(t *testing.T) {
@@ -101,46 +160,38 @@ func TestCheckForDuplicateSMBMounts(t *testing.T) {
 	}
 }
 
-func TestNewSmbGlobalMappingCmd(t *testing.T) {
+func TestNewSmbGlobalMappingPassesRequirePrivacy(t *testing.T) {
 	tests := []struct {
 		name           string
 		requirePrivacy bool
-		expectedFlag   string
-		unexpectedFlag string
 	}{
-		{
-			name:           "require privacy true emits $true",
-			requirePrivacy: true,
-			expectedFlag:   "-RequirePrivacy $true",
-			unexpectedFlag: "-RequirePrivacy $false",
-		},
-		{
-			name:           "require privacy false emits $false",
-			requirePrivacy: false,
-			expectedFlag:   "-RequirePrivacy $false",
-			unexpectedFlag: "-RequirePrivacy $true",
-		},
+		{name: "require privacy true", requirePrivacy: true},
+		{name: "require privacy false", requirePrivacy: false},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			cmd := newSmbGlobalMappingCmd(test.requirePrivacy)
-			if !strings.Contains(cmd, test.expectedFlag) {
-				t.Errorf("expected command to contain %q, got %q", test.expectedFlag, cmd)
-			}
-			if strings.Contains(cmd, test.unexpectedFlag) {
-				t.Errorf("expected command NOT to contain %q, got %q", test.unexpectedFlag, cmd)
-			}
-			// sanity: the New-SmbGlobalMapping invocation and env-var substitution must remain intact
-			for _, want := range []string{
-				"New-SmbGlobalMapping",
-				"$Env:smbuser",
-				"$Env:smbpassword",
-				"$Env:smbremotepath",
-			} {
-				if !strings.Contains(cmd, want) {
-					t.Errorf("expected command to contain %q, got %q", want, cmd)
+			var gotPrivacy bool
+			var called bool
+			orig := newSmbGlobalMappingWMI
+			t.Cleanup(func() { newSmbGlobalMappingWMI = orig })
+			newSmbGlobalMappingWMI = func(remotePath, username, password string, requirePrivacy bool) error {
+				called = true
+				gotPrivacy = requirePrivacy
+				if remotePath != `\\server\share` || username != "user" || password != "pass" {
+					t.Fatalf("unexpected args: path=%q user=%q pass=%q", remotePath, username, password)
 				}
+				return nil
+			}
+
+			if err := NewSmbGlobalMapping(`\\server\share`, "user", "pass", test.requirePrivacy); err != nil {
+				t.Fatalf("NewSmbGlobalMapping returned error: %v", err)
+			}
+			if !called {
+				t.Fatal("expected WMI create helper to be called")
+			}
+			if gotPrivacy != test.requirePrivacy {
+				t.Fatalf("RequirePrivacy: got %v, want %v", gotPrivacy, test.requirePrivacy)
 			}
 		})
 	}
