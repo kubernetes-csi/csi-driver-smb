@@ -1641,6 +1641,132 @@ func TestNodePublishVolumeStaleBind(t *testing.T) {
 	}
 }
 
+func TestNodePublishVolumeLeavesBindWhenStagingMountIsUnlisted(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("mount-table lookup is the Linux stale-bind path")
+	}
+
+	d := NewFakeDriver()
+	mounter, err := NewFakeMounter()
+	if err != nil {
+		t.Fatalf("failed to get fake mounter: %v", err)
+	}
+	fm := mounter.Interface.(*fakeMounter)
+	d.mounter = mounter
+
+	staging := testutil.GetWorkDirPath("false_is_likely_unlisted_staging", t)
+	target := testutil.GetWorkDirPath("unlisted_staging_target", t)
+	if err := makeDir(staging); err != nil {
+		t.Fatalf("mkdir staging: %v", err)
+	}
+	if err := makeDir(target); err != nil {
+		t.Fatalf("mkdir target: %v", err)
+	}
+	t.Cleanup(func() {
+		os.RemoveAll(staging)
+		os.RemoveAll(target)
+	})
+	staging, err = filepath.EvalSymlinks(staging)
+	if err != nil {
+		t.Fatal(err)
+	}
+	target, err = filepath.EvalSymlinks(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fm.MountPoints = []mount.MountPoint{
+		{Device: "/dev/root", Path: target, Type: "ext4"},
+	}
+	fm.UnmountFunc = func(path string) error {
+		t.Errorf("unmounted %s although the staging path was absent from the mount list", path)
+		return nil
+	}
+
+	volumeCap := csi.VolumeCapability_AccessMode{Mode: csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER}
+	_, err = d.NodePublishVolume(context.Background(), &csi.NodePublishVolumeRequest{
+		VolumeCapability:  &csi.VolumeCapability{AccessMode: &volumeCap},
+		VolumeId:          "vol_unlisted",
+		TargetPath:        target,
+		StagingTargetPath: staging,
+		Readonly:          true,
+	})
+	if err != nil {
+		t.Fatalf("publish: %v", err)
+	}
+	if got := deviceAt(fm, target); got != "/dev/root" {
+		t.Fatalf("target device %q, want /dev/root", got)
+	}
+}
+
+func TestSymlinkTargetDiffers(t *testing.T) {
+	base := t.TempDir()
+	source := filepath.Join(base, "staging")
+	other := filepath.Join(base, "other")
+	match := filepath.Join(base, "match")
+	mismatch := filepath.Join(base, "mismatch")
+	if err := os.Mkdir(source, 0750); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Mkdir(other, 0750); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(source, match); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(other, mismatch); err != nil {
+		t.Fatal(err)
+	}
+	if symlinkTargetDiffers(source, match) {
+		t.Fatal("symlink to the staging path was reported stale")
+	}
+	if !symlinkTargetDiffers(source, mismatch) {
+		t.Fatal("symlink to another path was reported fresh")
+	}
+	if symlinkTargetDiffers(source, source) {
+		t.Fatal("a path that is not a symlink was reported stale")
+	}
+}
+
+type listErrMounter struct {
+	fakeMounter
+}
+
+func (m *listErrMounter) List() ([]mount.MountPoint, error) {
+	return nil, fmt.Errorf("list unavailable")
+}
+
+func TestTargetBindIsStaleWithoutMountList(t *testing.T) {
+	base := t.TempDir()
+	source := filepath.Join(base, "staging")
+	other := filepath.Join(base, "other")
+	link := filepath.Join(base, "pod")
+	if err := os.Mkdir(source, 0750); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Mkdir(other, 0750); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(other, link); err != nil {
+		t.Fatal(err)
+	}
+
+	d := NewFakeDriver()
+	d.mounter = &mount.SafeFormatAndMount{Interface: &listErrMounter{}}
+	stale, err := d.targetBindIsStale(source, link)
+	if runtime.GOOS == "windows" {
+		if err != nil {
+			t.Fatalf("windows symlink fallback: %v", err)
+		}
+		if !stale {
+			t.Fatal("windows symlink to a different path was not stale")
+		}
+		return
+	}
+	if err == nil || !strings.Contains(err.Error(), "list unavailable") {
+		t.Fatalf("linux mount list error: %v", err)
+	}
+}
+
 func deviceAt(fm *fakeMounter, path string) string {
 	mp, ok := findMountPoint(fm.MountPoints, path)
 	if !ok {

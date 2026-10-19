@@ -642,11 +642,10 @@ func (d *Driver) targetBindIsStale(source, target string) (bool, error) {
 	}
 	src, srcOK := findMountPoint(mounts, source)
 	dst, dstOK := findMountPoint(mounts, target)
-	if !dstOK {
+	// A missing mount-table entry is a lookup failure. Unmounting the target
+	// then would replace a healthy bind.
+	if !srcOK || !dstOK {
 		return false, nil
-	}
-	if !srcOK {
-		return true, nil
 	}
 	return src.Device != dst.Device, nil
 }
