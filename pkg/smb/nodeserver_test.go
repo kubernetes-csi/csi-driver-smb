@@ -1798,10 +1798,11 @@ func TestNodePublishVolumeKerberosSecretRecovery(t *testing.T) {
 			Namespace: "default",
 		},
 		Data: map[string][]byte{
-			usernameField: []byte("test_username"),
-			passwordField: []byte("test_password"),
-			domainField:   []byte("test_domain"),
-			ccacheKey:     []byte(base64.StdEncoding.EncodeToString(ticket)),
+			usernameField:  []byte("test_username"),
+			passwordField:  []byte("test_password"),
+			domainField:    []byte("test_domain"),
+			ccacheKey:      []byte(base64.StdEncoding.EncodeToString(ticket)),
+			"client-token": []byte("not-a-credential"),
 		},
 	})
 
@@ -1842,6 +1843,13 @@ func TestNodePublishVolumeKerberosSecretRecovery(t *testing.T) {
 	}
 	if string(got) != string(ticket) {
 		t.Fatalf("kerberos cache %q, want %q", got, ticket)
+	}
+	cached := d.getStageSecrets("vol_krb5", staging)
+	if _, ok := cached["client-token"]; ok {
+		t.Fatal("unrelated secret key was stored in the stage cache")
+	}
+	if cached[ccacheKey] == "" {
+		t.Fatal("kerberos cache key was dropped from the stage cache")
 	}
 }
 

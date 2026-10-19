@@ -229,9 +229,9 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	s.Wait()
 }
 
-// getSecretData returns every key from the Secret. Kerberos mounts store the
-// credential cache under krb5cc_<uid> alongside username, password, and domain.
-// Recovery must forward those keys or restage fails with an empty cache.
+// getSecretData returns the credential keys from the Secret: username,
+// password, domain, and krb5cc_<uid> entries for the driver's Kerberos prefix.
+// Other keys stay out of the process cache.
 func (d *Driver) getSecretData(ctx context.Context, secretName, secretNamespace string) (map[string]string, error) {
 	if d.kubeClient == nil {
 		return nil, fmt.Errorf("could not get secret(%s): KubeClient is nil", secretName)
@@ -241,12 +241,12 @@ func (d *Driver) getSecretData(ctx context.Context, secretName, secretNamespace 
 	if err != nil {
 		return nil, fmt.Errorf("could not get secret(%v): %v", secretName, err)
 	}
-	if len(secret.Data) == 0 {
-		return nil, nil
-	}
 
-	out := make(map[string]string, len(secret.Data))
+	out := make(map[string]string)
 	for k, v := range secret.Data {
+		if !recoverySecretKey(k, d.krb5Prefix) {
+			continue
+		}
 		value := string(v)
 		switch strings.ToLower(k) {
 		case usernameField, passwordField, domainField:
@@ -254,7 +254,22 @@ func (d *Driver) getSecretData(ctx context.Context, secretName, secretNamespace 
 		}
 		out[k] = value
 	}
+	if len(out) == 0 {
+		return nil, nil
+	}
 	return out, nil
+}
+
+func recoverySecretKey(key, krb5Prefix string) bool {
+	switch strings.ToLower(key) {
+	case usernameField, passwordField, domainField:
+		return true
+	}
+	prefix := strings.ToLower(krb5Prefix)
+	if prefix == "" {
+		return false
+	}
+	return strings.HasPrefix(strings.ToLower(key), prefix)
 }
 
 // GetUserNamePasswordFromSecret get storage account key from k8s secret
