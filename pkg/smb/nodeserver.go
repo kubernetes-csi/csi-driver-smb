@@ -88,7 +88,9 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	// staged, so the bind either fails with "globalmount does not exist" (#737)
 	// or binds a bare directory onto the pod.
 	// Hold the same lock as NodeStageVolume and NodeUnstageVolume across the
-	// corruption teardown and restage. nodeStageVolume does not acquire it again.
+	// corruption teardown, restage, stale-bind check, and pod bind.
+	// nodeStageVolume does not acquire it again. Releasing it before the bind
+	// would let NodeUnstageVolume remove the share in that gap.
 	lockKey := fmt.Sprintf("%s-%s", volumeID, source)
 	if acquired := d.volumeLocks.TryAcquire(lockKey); !acquired {
 		return nil, status.Errorf(codes.Aborted, volumeOperationAlreadyExistsFmt, volumeID)
@@ -115,10 +117,6 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		if err := d.restageFromPublish(ctx, req, source, &releaseLock); err != nil {
 			return nil, err
 		}
-	}
-	if releaseLock {
-		d.volumeLocks.Release(lockKey)
-		releaseLock = false
 	}
 
 	mountOptions := []string{"bind"}

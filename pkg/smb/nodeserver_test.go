@@ -1432,12 +1432,14 @@ func TestIsStaged(t *testing.T) {
 	assert.False(t, staged)
 }
 
-// stagingLockMounter fails the test when staging inspection runs without the
-// volume lock. Embedding fakeMounter keeps the rest of the mount interface.
+// stagingLockMounter fails the test when staging inspection or the pod bind
+// runs without the volume lock. Embedding fakeMounter keeps the rest of the
+// mount interface.
 type stagingLockMounter struct {
 	fakeMounter
-	staging string
-	check   func(string) error
+	staging    string
+	bindTarget string
+	check      func(string) error
 }
 
 func (m *stagingLockMounter) IsLikelyNotMountPoint(file string) (bool, error) {
@@ -1447,6 +1449,15 @@ func (m *stagingLockMounter) IsLikelyNotMountPoint(file string) (bool, error) {
 		}
 	}
 	return m.fakeMounter.IsLikelyNotMountPoint(file)
+}
+
+func (m *stagingLockMounter) Mount(source, target, fstype string, options []string) error {
+	if target == m.bindTarget && m.check != nil {
+		if err := m.check(target); err != nil {
+			return err
+		}
+	}
+	return m.fakeMounter.Mount(source, target, fstype, options)
 }
 
 func TestNodePublishVolumeStagingLock(t *testing.T) {
@@ -1501,15 +1512,21 @@ func TestNodePublishVolumeStagingLock(t *testing.T) {
 			t.Skip("restage Mount requires the Windows CSI proxy mounter")
 		}
 		d := NewFakeDriver()
-		sawLock := false
-		lm := &stagingLockMounter{staging: staging}
-		lm.check = func(string) error {
+		sawStage := false
+		sawBind := false
+		lm := &stagingLockMounter{staging: staging, bindTarget: target}
+		lm.check = func(path string) error {
 			lockKey := fmt.Sprintf("%s-%s", "vol_lock", staging)
 			if d.volumeLocks.TryAcquire(lockKey) {
 				d.volumeLocks.Release(lockKey)
-				return fmt.Errorf("staging lock was not held")
+				return fmt.Errorf("staging lock was not held for %s", path)
 			}
-			sawLock = true
+			if path == staging {
+				sawStage = true
+			}
+			if path == target {
+				sawBind = true
+			}
 			return nil
 		}
 		d.mounter = &mount.SafeFormatAndMount{Interface: lm}
@@ -1520,8 +1537,11 @@ func TestNodePublishVolumeStagingLock(t *testing.T) {
 		if err != nil {
 			t.Fatalf("restage under lock: %v", err)
 		}
-		if !sawLock {
+		if !sawStage {
 			t.Fatal("staging path was not inspected")
+		}
+		if !sawBind {
+			t.Fatal("pod bind ran after the staging lock was released")
 		}
 	})
 }
