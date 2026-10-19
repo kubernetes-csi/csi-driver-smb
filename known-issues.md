@@ -40,7 +40,7 @@ kubelet may call `NodePublishVolume` without `NodeStageVolume` while it still re
 
  - Behaviour
 
-`NodePublishVolume` restages CIFS using `nodePublishSecretRef` secrets, the process-local Stage cache, or the optional `volumeAttributes.secretname` and `volumeAttributes.secretnamespace` Secret. mkdir of `globalmount` is not a fix: bind-mounting an empty directory starts the pod on an empty volume. A stale pod bind after restage is unmounted. Kernel CIFS tree-connect Maximal Access reuse is not fixed in-driver.
+`NodePublishVolume` restages CIFS using `nodePublishSecretRef` secrets, the process-local Stage cache, or the optional `volumeAttributes.secretname` and `volumeAttributes.secretnamespace` Secret. mkdir of `globalmount` is not a fix: bind-mounting an empty directory starts the pod on an empty volume. Every publish compares an already mounted target with the staged share and unmounts a bind that does not show that share. Kernel CIFS tree-connect Maximal Access reuse is not fixed in-driver.
 
  - Workaround
 
