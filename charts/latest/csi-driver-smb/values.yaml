@@ -2,7 +2,7 @@ image:
   baseRepo: registry.k8s.io/sig-storage
   smb:
     repository: registry.k8s.io/sig-storage/smbplugin
-    tag: v1.20.3
+    tag: v1.20.4
     pullPolicy: IfNotPresent
   csiProvisioner:
     repository: /csi-provisioner
