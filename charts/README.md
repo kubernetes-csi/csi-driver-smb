@@ -34,7 +34,7 @@ Then update the repo cache, search for available versions, and install:
 ```console
 helm repo update csi-driver-smb
 helm search repo csi-driver-smb --versions
-helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version 1.20.3
+helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version 1.20.4
 ```
 
 ### High-availability controller
