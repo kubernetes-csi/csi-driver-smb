@@ -24,6 +24,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -107,7 +108,11 @@ type Driver struct {
 	mounter *mount.SafeFormatAndMount
 	// A map storing all volumes with ongoing operations so that additional operations
 	// for that same volume (as defined by VolumeID) return an Aborted error
-	volumeLocks          *volumeLocks
+	volumeLocks *volumeLocks
+	// NodeStageVolume credentials keyed by volume ID and staging path, so
+	// NodePublishVolume can remount CIFS when kubelet skips NodeStageVolume (#737).
+	// Process-local: never written to disk or logged. Cleared on NodeUnstageVolume.
+	stageSecrets         *sync.Map
 	workingMountDir      string
 	enableGetVolumeStats bool
 	// a timed cache storing volume stats <volumeID, volumeStats>
@@ -142,6 +147,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.enableWindowsHostProcess = options.EnableWindowsHostProcess
 	driver.kubeconfig = options.Kubeconfig
 	driver.volumeLocks = newVolumeLocks()
+	driver.stageSecrets = &sync.Map{}
 
 	driver.krb5CacheDirectory = options.Krb5CacheDirectory
 	if driver.krb5CacheDirectory == "" {
@@ -221,6 +227,49 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	// Driver d act as IdentityServer, ControllerServer and NodeServer
 	s.Start(endpoint, d, d, d, testMode)
 	s.Wait()
+}
+
+// getSecretData returns the credential keys from the Secret: username,
+// password, domain, and krb5cc_<uid> entries for the driver's Kerberos prefix.
+// Other keys stay out of the process cache.
+func (d *Driver) getSecretData(ctx context.Context, secretName, secretNamespace string) (map[string]string, error) {
+	if d.kubeClient == nil {
+		return nil, fmt.Errorf("could not get secret(%s): KubeClient is nil", secretName)
+	}
+
+	secret, err := d.kubeClient.CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("could not get secret(%v): %v", secretName, err)
+	}
+
+	out := make(map[string]string)
+	for k, v := range secret.Data {
+		if !recoverySecretKey(k, d.krb5Prefix) {
+			continue
+		}
+		value := string(v)
+		switch strings.ToLower(k) {
+		case usernameField, passwordField, domainField:
+			value = strings.TrimSpace(value)
+		}
+		out[k] = value
+	}
+	if len(out) == 0 {
+		return nil, nil
+	}
+	return out, nil
+}
+
+func recoverySecretKey(key, krb5Prefix string) bool {
+	switch strings.ToLower(key) {
+	case usernameField, passwordField, domainField:
+		return true
+	}
+	prefix := strings.ToLower(krb5Prefix)
+	if prefix == "" {
+		return false
+	}
+	return strings.HasPrefix(strings.ToLower(key), prefix)
 }
 
 // GetUserNamePasswordFromSecret get storage account key from k8s secret
