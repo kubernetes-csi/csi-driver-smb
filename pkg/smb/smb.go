@@ -25,6 +25,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -124,6 +125,7 @@ type Driver struct {
 	krb5Prefix                     string
 	krb5EnsurePasswdEntry          bool
 	passwdFile                     string
+	krb5Mutex                      sync.Mutex // serializes changes to the keytabs and ticket caches of kerberos principals
 	defaultOnDeletePolicy          string
 	removeArchivedVolumePath       bool
 	enableWindowsHostProcess       bool
@@ -224,6 +226,7 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	d.AddNodeServiceCapabilities(nodeCap)
 
 	if runtime.GOOS == "linux" && d.NodeID != "" {
+		d.pruneKeytabVolumes()
 		d.restoreKerberosPasswdEntries()
 	}
 

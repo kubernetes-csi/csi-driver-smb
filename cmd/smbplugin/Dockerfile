@@ -14,7 +14,7 @@
 
 FROM registry.k8s.io/build-image/debian-base:bookworm-v1.0.8
 
-RUN apt update && apt upgrade -y && apt-mark unhold libcap2 && clean-install ca-certificates cifs-utils util-linux mount udev
+RUN apt update && apt upgrade -y && apt-mark unhold libcap2 && clean-install ca-certificates cifs-utils util-linux mount udev krb5-user
 
 LABEL maintainers="andyzhangx"
 LABEL description="SMB CSI Driver"
@@ -22,6 +22,7 @@ ARG ARCH=amd64
 ARG binary=./_output/${ARCH}/smbplugin
 COPY ${binary} /smbplugin
 
+# kinit (krb5-user) is used to get tickets for volumes mounted with a keytab.
 # /etc/krb5.conf.d/ takes site specific settings (default realm, KDCs, ...), see linux.krb5Conf in the helm chart.
 RUN mkdir -p /etc/krb5.conf.d && printf 'includedir /etc/krb5.conf.d\n\n[libdefaults]\n    default_ccache_name = FILE:/var/lib/kubelet/kerberos/krb5cc_%%{uid}\n' > /etc/krb5.conf
 

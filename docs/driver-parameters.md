@@ -80,6 +80,9 @@ kubectl create secret generic smbcreds-krb5 --from-literal krb5cc_1000=$CCACHE
 
 > See example of the [StorageClass](../deploy/example/storageclass-smb-krb5.yaml)
 
+#### Pass kerberos keytab in kubernetes secret
+A ticket passed in the secret expires. With a keytab in the secret (`krb5keytab` and `krb5principal`) the driver gets the ticket itself: see [Mount with a Kerberos keytab](./kerberos-keytab.md).
+
 ### Tips
 #### `subDir` parameter supports following pv/pvc metadata conversion
 > if `subDir` value contains following string, it would be converted into corresponding pv/pvc name or namespace
