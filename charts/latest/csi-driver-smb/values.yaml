@@ -103,6 +103,10 @@ controller:
 node:
   maxUnavailable: 1
   logLevel: 5
+  # Port for the metrics of csi-smb-node (e.g. 29645), 0 disables them. They
+  # include the renewal of the kerberos tickets of volumes mounted with a
+  # keytab. The node pods use the host network: the port is opened on the node.
+  metricsPort: 0
   livenessProbe:
     healthPort: 29643
   nodeDriverRegistrar:
@@ -135,6 +139,9 @@ linux:
   # for uid" without it, e.g. on OpenShift where the cruid is usually taken
   # from the uid range of the namespace.
   krb5EnsurePasswdEntry: true
+  # Interval for renewing the tickets of volumes mounted with a keytab
+  # (krb5keytab and krb5principal in the secret), 0 disables it.
+  krb5RenewInterval: 1h
   # Extra krb5.conf content for the smb container, e.g. [libdefaults], [realms]
   # and [domain_realm] sections with the default realm and, when the KDCs can
   # not be found through DNS, their addresses. It is used by cifs.upcall when

@@ -77,6 +77,10 @@ const (
 	krb5AllocatedUIDCount = 147000000
 
 	kinitTimeout = 30 * time.Second
+
+	// DefaultKrb5RenewInterval is the default interval for renewing the
+	// tickets of volumes staged with a keytab.
+	DefaultKrb5RenewInterval = time.Hour
 )
 
 // errKeytabReleased is returned when the last volume of a principal was
@@ -390,6 +394,11 @@ func (d *Driver) refreshKeytabTicket(credUID int, principal string, keytab []byt
 	ctx, cancel := context.WithTimeout(context.Background(), kinitTimeout)
 	defer cancel()
 	if err := kinitFunc(ctx, kinitKeytabPath, principal, tempCachePath); err != nil {
+		// Unstaging the last volume of the principal meanwhile removes the
+		// stored keytab that kinit uses: that is not a failure.
+		if keytab == nil && d.keytabReleased(credUID, principal) {
+			return errKeytabReleased
+		}
 		return err
 	}
 	// cifs.upcall reads the cache as the cruid user
@@ -413,6 +422,14 @@ func (d *Driver) refreshKeytabTicket(credUID int, principal string, keytab []byt
 	return os.Rename(tempCachePath, cachePath)
 }
 
+// keytabReleased tells whether credUID is no longer the credential uid of
+// principal: its last volume was unstaged.
+func (d *Driver) keytabReleased(credUID int, principal string) bool {
+	d.krb5Mutex.Lock()
+	defer d.krb5Mutex.Unlock()
+	return d.keytabPrincipals()[credUID] != principal
+}
+
 // ensureKerberosKeytab prepares the mount at stagingPath with the kerberos
 // keytab of the secret: it gets a ticket for the principal and returns the
 // mount flags with the cruid of the principal. usesKeytab is false, and
@@ -422,7 +439,7 @@ func (d *Driver) refreshKeytabTicket(credUID int, principal string, keytab []byt
 //
 // For a volume that is already mounted, a failure to get a ticket is not an
 // error as long as there is a ticket cache: the volume works without a new
-// ticket.
+// ticket, and the renewal tries again later.
 //
 // When it returns an error, or when staging the volume fails afterwards, the
 // caller must call releaseKerberosKeytab, unless the volume was already
@@ -545,4 +562,67 @@ func (d *Driver) isStagingPathMounted(path string, mountPoints []mount.MountPoin
 		}
 	}
 	return false
+}
+
+// renewKerberosTickets gets a fresh ticket for every principal that has
+// volumes staged with a keytab. It returns the number of renewed ticket
+// caches.
+func (d *Driver) renewKerberosTickets() int {
+	d.krb5Mutex.Lock()
+	principals := d.keytabPrincipals()
+	d.krb5Mutex.Unlock()
+
+	renewed, failed := 0, 0
+	for credUID, principal := range principals {
+		if _, err := os.Stat(d.keytabFile(credUID, krb5KeytabFileSuffix)); err != nil {
+			// the first volume of the principal is being staged
+			continue
+		}
+		err := d.refreshKeytabTicket(credUID, principal, nil)
+		if errors.Is(err, errKeytabReleased) {
+			continue
+		}
+		if err != nil {
+			klog.Errorf("failed to renew the kerberos ticket of %s (cruid %d): %v", principal, credUID, err)
+			krb5TicketRenewals.WithLabelValues(krb5RenewalResultFailure).Inc()
+			failed++
+			continue
+		}
+		klog.V(4).Infof("renewed the kerberos ticket of %s (cruid %d)", principal, credUID)
+		krb5TicketRenewals.WithLabelValues(krb5RenewalResultSuccess).Inc()
+		renewed++
+	}
+	krb5KeytabPrincipals.Set(float64(len(principals)))
+	krb5FailingRenewals.Set(float64(failed))
+	return renewed
+}
+
+// runKerberosRenewal renews the tickets of the principals that have volumes
+// staged with a keytab: right away, to recover from a downtime of the
+// driver, and then every krb5RenewInterval until stopCh is closed. Before
+// every renewal but the first (the driver prunes when it starts) it releases
+// the keytab of volumes that are no longer mounted (pruneKeytabVolumes).
+//
+// A ticket is only used when a session is set up, but the kernel sets up a
+// new one when the connection to the server was lost. Without a valid ticket
+// in the cache the volume would then stay unavailable.
+func (d *Driver) runKerberosRenewal(stopCh <-chan struct{}) {
+	if d.krb5RenewInterval <= 0 {
+		klog.V(2).Infof("kerberos ticket renewal is disabled")
+		return
+	}
+	klog.V(2).Infof("renewing the kerberos tickets of volumes mounted with a keytab every %v", d.krb5RenewInterval)
+	ticker := time.NewTicker(d.krb5RenewInterval)
+	defer ticker.Stop()
+	for {
+		if renewed := d.renewKerberosTickets(); renewed > 0 {
+			klog.V(2).Infof("renewed %d kerberos ticket cache(s)", renewed)
+		}
+		select {
+		case <-stopCh:
+			return
+		case <-ticker.C:
+		}
+		d.pruneKeytabVolumes()
+	}
 }

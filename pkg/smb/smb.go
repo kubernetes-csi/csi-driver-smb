@@ -92,6 +92,7 @@ type DriverOptions struct {
 	Krb5CacheDirectory             string
 	Krb5Prefix                     string
 	Krb5EnsurePasswdEntry          bool
+	Krb5RenewInterval              time.Duration
 	DefaultOnDeletePolicy          string
 	RemoveArchivedVolumePath       bool
 	EnableWindowsHostProcess       bool
@@ -125,6 +126,7 @@ type Driver struct {
 	krb5Prefix                     string
 	krb5EnsurePasswdEntry          bool
 	passwdFile                     string
+	krb5RenewInterval              time.Duration
 	krb5Mutex                      sync.Mutex // serializes changes to the keytabs and ticket caches of kerberos principals
 	defaultOnDeletePolicy          string
 	removeArchivedVolumePath       bool
@@ -159,6 +161,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	}
 	driver.krb5EnsurePasswdEntry = options.Krb5EnsurePasswdEntry
 	driver.passwdFile = defaultPasswdFile
+	driver.krb5RenewInterval = options.Krb5RenewInterval
 
 	if options.VolStatsCacheExpireInMinutes <= 0 {
 		options.VolStatsCacheExpireInMinutes = 10 // default expire in 10 minutes
@@ -228,6 +231,7 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 	if runtime.GOOS == "linux" && d.NodeID != "" {
 		d.pruneKeytabVolumes()
 		d.restoreKerberosPasswdEntries()
+		go d.runKerberosRenewal(make(chan struct{}))
 	}
 
 	s := csicommon.NewNonBlockingGRPCServer()

@@ -3,7 +3,7 @@
 A volume can be mounted with Kerberos in two ways:
 
  - with a ticket cache in the secret, see [Kerberos ticket support for Linux](./driver-parameters.md#kerberos-ticket-support-for-linux). The ticket in the secret expires, usually after 10 hours. Later mounts of the volume then fail until the secret is updated.
- - with a keytab in the secret, described here. The driver gets the ticket itself with `kinit` when the volume is mounted on a node. The secret only has to be updated when the keytab changes, see [Rotating the keytab](#rotating-the-keytab).
+ - with a keytab in the secret, described here. The driver gets the ticket itself with `kinit` when the volume is mounted on a node, and renews it for as long as the volume is mounted. The secret only has to be updated when the keytab changes, see [Rotating the keytab](#rotating-the-keytab).
 
 ### Prerequisites
  - The conditions of [Kerberos ticket support for Linux](./driver-parameters.md#these-are-the-conditions-that-must-be-met) apply: `cifs-utils` on every node, the kerberos cache directory, and nodes that look for the ticket caches in that directory (`linux.krb5AutoConfig=true` in the Helm chart).
@@ -29,6 +29,14 @@ There is only one ticket cache per credential uid (`cruid`) on a node. Volumes m
 
 If the mount flags do have `cruid=`, that credential uid is used. Mounting a volume with a `cruid` that is in use on the node by another principal, or by volumes mounted with a ticket cache, is refused.
 
+### Ticket renewal
+A ticket is only used when a session with the SMB server is set up. The kernel sets up a new session when the connection to the server was lost, e.g. after a network failure or a restart of the server, and needs a valid ticket for that. The driver therefore gets a fresh ticket for every principal with mounted volumes every `--krb5-renew-interval` (`linux.krb5RenewInterval` in the Helm chart, 1 hour by default, `0` disables it), and when it starts.
+
+A renewal that fails is logged (`failed to renew the kerberos ticket of ...`), and the tickets that were obtained before stay in use until they expire. With `--metrics-address` (`node.metricsPort` in the Helm chart) the node plugin exports:
+ - `csi_smb_kerberos_ticket_renewal_failing_principals`: the number of principals whose ticket could not be renewed at the last renewal. Alert when it is above 0, e.g. after a password change, see [Rotating the keytab](#rotating-the-keytab).
+ - `csi_smb_kerberos_ticket_renewals_total{result="success|failure"}`: the number of renewals.
+ - `csi_smb_kerberos_keytab_principals`: the number of principals with volumes mounted with a keytab on the node.
+
 ### What is stored on the node
 The driver keeps the following in the kerberos cache directory of the node (`/var/lib/kubelet/kerberos/` by default), readable by root only:
  - `keytabs/<cruid>.keytab` and `keytabs/<cruid>.principal`: the keytab and the principal
@@ -37,12 +45,12 @@ The driver keeps the following in the kerberos cache directory of the node (`/va
 
 They are removed when the last volume mounted as the principal is unmounted from the node. A keytab that does not work (no ticket can be obtained with it) is not stored, and does not replace the keytab of volumes that are already mounted.
 
-When a mount fails after its `NodeStageVolume` call timed out, and the volume is not mounted again (e.g. the pod was deleted), the volume is never unmounted from the node. The driver releases the keytab of such volumes when it starts: the volumes whose staging path is no longer mounted.
+When a mount fails after its `NodeStageVolume` call timed out, and the volume is not mounted again (e.g. the pod was deleted), the volume is never unmounted from the node. The driver releases the keytab of such volumes when it starts and before every renewal: the volumes whose staging path is no longer mounted.
 
 ### Changing the secret of a mounted volume
 A volume that is mounted keeps the principal and the `cruid` it was mounted with: the kernel uses that `cruid` until the volume is mounted again on the node. When the principal in the secret, or the `cruid` mount flag, changes while the volume is mounted, the driver keeps the old ones (and logs a warning) until the volume is unmounted from the node.
 
-A new keytab for the same principal replaces the stored keytab when a volume of the principal is mounted on the node, also when kubelet stages a volume that is already mounted again (e.g. after a restart of kubelet), and only when a ticket can be obtained with it. When no ticket can be obtained for a volume that is already mounted, e.g. because the KDC can not be reached, the volume keeps its ticket cache, and the driver logs a warning.
+A new keytab for the same principal replaces the stored keytab when a volume of the principal is mounted on the node, also when kubelet stages a volume that is already mounted again (e.g. after a restart of kubelet), and only when a ticket can be obtained with it. When no ticket can be obtained for a volume that is already mounted, e.g. because the KDC can not be reached, the volume keeps its ticket cache: the driver logs a warning and the renewal tries again later.
 
 ### Rotating the keytab
 A keytab stops working when the password of the principal changes, e.g. when the password of an Active Directory account is changed or expires: `kinit` then fails with `Preauthentication failed`. Update the secret with a keytab made after the change.
@@ -96,7 +104,7 @@ helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-syste
  - The credential uids have no passwd entry on the node. The driver adds one in the smb container (`linux.krb5EnsurePasswdEntry`, enabled by default), which `cifs.upcall` needs.
 
 ### Troubleshooting
- - `failed to get a kerberos ticket for ... with the keytab` in the events of the pod: `kinit` failed, the message has its output. `Cannot contact any KDC` or `Cannot find KDC for realm`: see [Finding the KDC](#finding-the-kdc). `Preauthentication failed`: the keytab does not match the password of the principal (it was changed after the keytab was made), or the keytab was made with another salt or encryption type than the KDC expects.
+ - `failed to get a kerberos ticket for ... with the keytab` in the events of the pod: `kinit` failed, the message has its output. `Cannot contact any KDC` or `Cannot find KDC for realm`: see [Finding the KDC](#finding-the-kdc). `Preauthentication failed`: the keytab does not match the password of the principal (it was changed after the keytab was made, see [Rotating the keytab](#rotating-the-keytab)), or the keytab was made with another salt or encryption type than the KDC expects.
  - `mount error(126): Required key not available`: `cifs.upcall` could not get a ticket for the SMB server. It logs the reason in the system log of the node (`journalctl -t cifs.upcall`). Use the host name of the server in `source`, not its IP address or an alias without a `cifs/` service principal.
  - `mount error(13): Permission denied`: Kerberos worked, the server refuses the principal access to the share or the directory.
  - To see the tickets of a credential uid, run `klist -c /var/lib/kubelet/kerberos/krb5cc_<cruid>` in the smb container of the `csi-smb-node` pod on the node.

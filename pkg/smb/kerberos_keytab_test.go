@@ -27,8 +27,11 @@ import (
 	"sort"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
+	"k8s.io/component-base/metrics"
+	"k8s.io/component-base/metrics/testutil"
 	mount "k8s.io/mount-utils"
 )
 
@@ -485,6 +488,157 @@ func TestKerberosTicketCacheWithCredUIDOfKeytab(t *testing.T) {
 	}
 }
 
+func TestRenewKerberosTickets(t *testing.T) {
+	d := newKeytabTestDriver(t)
+	fail := false
+	calls := fakeKinit(t, &fail)
+	mountFlags := []string{"sec=krb5"}
+
+	if renewed := d.renewKerberosTickets(); renewed != 0 || *calls != 0 {
+		t.Errorf("without keytab volumes: renewed = %d, kinit calls = %d", renewed, *calls)
+	}
+
+	// two volumes of one principal and one of another
+	credUIDs := map[string]int{}
+	for volumeID, principal := range map[string]string{"vol1": testPrincipal, "vol2": testPrincipal, "vol3": testOtherPrincipal} {
+		flags, _, err := d.ensureKerberosKeytab(volumeID, "", false, mountFlags, keytabSecrets(principal, "keytab"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		credUIDs[principal] = credUIDOfFlags(t, flags)
+	}
+	// the counter is not reset: the cache holds the number of the kinit call,
+	// which must differ from the one of the ticket obtained when staging
+	staged := *calls
+
+	// one ticket per principal, also after a restart of the driver
+	restarted := NewFakeDriver()
+	restarted.krb5CacheDirectory = d.krb5CacheDirectory
+	for _, driver := range []*Driver{d, restarted} {
+		before := readFile(t, d.kerberosCacheFile(credUIDs[testPrincipal]))
+		if renewed := driver.renewKerberosTickets(); renewed != 2 {
+			t.Errorf("renewed = %d, want 2", renewed)
+		}
+		after := readFile(t, d.kerberosCacheFile(credUIDs[testPrincipal]))
+		if after == before || !strings.HasPrefix(after, testPrincipal+" keytab ") {
+			t.Errorf("ticket cache = %q, want a new ticket (was %q)", after, before)
+		}
+	}
+	if *calls-staged != 4 {
+		t.Errorf("kinit calls = %d, want 4", *calls-staged)
+	}
+
+	// a failed renewal keeps the ticket cache
+	before := readFile(t, d.kerberosCacheFile(credUIDs[testPrincipal]))
+	fail = true
+	if renewed := d.renewKerberosTickets(); renewed != 0 {
+		t.Errorf("renewed = %d, want 0 when kinit fails", renewed)
+	}
+	if after := readFile(t, d.kerberosCacheFile(credUIDs[testPrincipal])); after != before {
+		t.Errorf("ticket cache = %q, want %q", after, before)
+	}
+	fail = false
+
+	// no renewal for a principal without volumes
+	d.releaseKerberosKeytab("vol3")
+	if renewed := d.renewKerberosTickets(); renewed != 1 {
+		t.Errorf("renewed = %d, want 1", renewed)
+	}
+	d.releaseKerberosKeytab("vol1")
+	d.releaseKerberosKeytab("vol2")
+	if renewed := d.renewKerberosTickets(); renewed != 0 {
+		t.Errorf("renewed = %d, want 0", renewed)
+	}
+	if files := kerberosFiles(t, d); len(files) != 0 {
+		t.Errorf("files = %v, want none", files)
+	}
+}
+
+func TestKerberosKeytabReleasedDuringKinit(t *testing.T) {
+	d := newKeytabTestDriver(t)
+	fail := false
+	fakeKinit(t, &fail)
+
+	flags, _, err := d.ensureKerberosKeytab("vol1", "", false, []string{"sec=krb5"}, keytabSecrets(testPrincipal, "keytab"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	credUID := credUIDOfFlags(t, flags)
+
+	// the volume is unstaged while kinit runs for the renewal
+	kinit := kinitFunc
+	kinitFunc = func(ctx context.Context, keytabPath, principal, ccachePath string) error {
+		err := kinit(ctx, keytabPath, principal, ccachePath)
+		d.releaseKerberosKeytab("vol1")
+		return err
+	}
+	if err := d.refreshKeytabTicket(credUID, testPrincipal, nil); err != errKeytabReleased {
+		t.Errorf("err = %v, want errKeytabReleased", err)
+	}
+	if files := kerberosFiles(t, d); len(files) != 0 {
+		t.Errorf("files = %v, want none", files)
+	}
+}
+
+func TestKerberosKeytabReleasedBeforeKinit(t *testing.T) {
+	d := newKeytabTestDriver(t)
+	fail := false
+	fakeKinit(t, &fail)
+	if _, _, err := d.ensureKerberosKeytab("vol1", "", false, []string{"sec=krb5"}, keytabSecrets(testPrincipal, "keytab")); err != nil {
+		t.Fatal(err)
+	}
+	failures, err := testutil.GetCounterMetricValue(krb5TicketRenewals.WithLabelValues(krb5RenewalResultFailure))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// the volume is unstaged before kinit reads the stored keytab: kinit
+	// fails, which is no renewal failure
+	kinit := kinitFunc
+	kinitFunc = func(ctx context.Context, keytabPath, principal, ccachePath string) error {
+		d.releaseKerberosKeytab("vol1")
+		return kinit(ctx, keytabPath, principal, ccachePath)
+	}
+	if renewed := d.renewKerberosTickets(); renewed != 0 {
+		t.Errorf("renewed = %d, want 0", renewed)
+	}
+	if got, _ := testutil.GetCounterMetricValue(krb5TicketRenewals.WithLabelValues(krb5RenewalResultFailure)); got != failures {
+		t.Errorf("failed renewals = %v, want %v", got, failures)
+	}
+	if got, _ := testutil.GetGaugeMetricValue(krb5FailingRenewals); got != 0 {
+		t.Errorf("failing principals = %v, want 0", got)
+	}
+	if files := kerberosFiles(t, d); len(files) != 0 {
+		t.Errorf("files = %v, want none", files)
+	}
+}
+
+func TestRunKerberosRenewal(t *testing.T) {
+	d := newKeytabTestDriver(t)
+	fail := false
+	calls := fakeKinit(t, &fail)
+	if _, _, err := d.ensureKerberosKeytab("vol1", "", false, []string{"sec=krb5"}, keytabSecrets(testPrincipal, "keytab")); err != nil {
+		t.Fatal(err)
+	}
+	*calls = 0
+
+	// disabled: returns right away
+	d.krb5RenewInterval = 0
+	d.runKerberosRenewal(make(chan struct{}))
+	if *calls != 0 {
+		t.Errorf("kinit calls = %d, want 0 when renewal is disabled", *calls)
+	}
+
+	// enabled: renews at start and stops when the channel is closed
+	d.krb5RenewInterval = time.Hour
+	stopCh := make(chan struct{})
+	close(stopCh)
+	d.runKerberosRenewal(stopCh)
+	if *calls != 1 {
+		t.Errorf("kinit calls = %d, want 1", *calls)
+	}
+}
+
 func TestKerberosKeytabMountedVolume(t *testing.T) {
 	d := newKeytabTestDriver(t)
 	fail := false
@@ -692,6 +846,64 @@ func TestPruneKeytabVolumes(t *testing.T) {
 	}
 	if files := kerberosFiles(t, d); len(files) != 0 {
 		t.Errorf("files = %v, want none", files)
+	}
+}
+
+func TestKerberosRenewalMetrics(t *testing.T) {
+	d := newKeytabTestDriver(t)
+	fail := false
+	fakeKinit(t, &fail)
+	for volumeID, principal := range map[string]string{"vol1": testPrincipal, "vol2": testOtherPrincipal} {
+		if _, _, err := d.ensureKerberosKeytab(volumeID, "", false, []string{"sec=krb5"}, keytabSecrets(principal, "keytab")); err != nil {
+			t.Fatal(err)
+		}
+	}
+	value := func(m interface{}) float64 {
+		t.Helper()
+		var v float64
+		var err error
+		switch m := m.(type) {
+		case string:
+			v, err = testutil.GetCounterMetricValue(krb5TicketRenewals.WithLabelValues(m))
+		case *metrics.Gauge:
+			v, err = testutil.GetGaugeMetricValue(m)
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		return v
+	}
+	successes, failures := value(krb5RenewalResultSuccess), value(krb5RenewalResultFailure)
+
+	d.renewKerberosTickets()
+	if got := value(krb5RenewalResultSuccess) - successes; got != 2 {
+		t.Errorf("successful renewals = %v, want 2", got)
+	}
+	if got := value(krb5KeytabPrincipals); got != 2 {
+		t.Errorf("principals = %v, want 2", got)
+	}
+	if got := value(krb5FailingRenewals); got != 0 {
+		t.Errorf("failing principals = %v, want 0", got)
+	}
+
+	fail = true
+	d.renewKerberosTickets()
+	if got := value(krb5RenewalResultFailure) - failures; got != 2 {
+		t.Errorf("failed renewals = %v, want 2", got)
+	}
+	if got := value(krb5FailingRenewals); got != 2 {
+		t.Errorf("failing principals = %v, want 2", got)
+	}
+
+	// the gauges follow the principals of the last renewal
+	fail = false
+	d.releaseKerberosKeytab("vol2")
+	d.renewKerberosTickets()
+	if got := value(krb5KeytabPrincipals); got != 1 {
+		t.Errorf("principals = %v, want 1", got)
+	}
+	if got := value(krb5FailingRenewals); got != 0 {
+		t.Errorf("failing principals = %v, want 0", got)
 	}
 }
 

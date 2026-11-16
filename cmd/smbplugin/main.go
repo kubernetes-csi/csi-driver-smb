@@ -49,6 +49,7 @@ var (
 	krb5CacheDirectory             = flag.String("krb5-cache-directory", smb.DefaultKrb5CacheDirectory, "The directory for kerberos cache")
 	krb5Prefix                     = flag.String("krb5-prefix", smb.DefaultKrb5CCName, "The prefix for kerberos cache")
 	krb5EnsurePasswdEntry          = flag.Bool("krb5-ensure-passwd-entry", true, "add an entry to /etc/passwd of the driver container for the cruid of kerberos mounts when it has none, cifs.upcall fails without it (e.g. on OpenShift)")
+	krb5RenewInterval              = flag.Duration("krb5-renew-interval", smb.DefaultKrb5RenewInterval, "interval for renewing the kerberos tickets of volumes mounted with a keytab (krb5keytab and krb5principal in the secret), 0 disables renewal")
 	defaultOnDeletePolicy          = flag.String("default-ondelete-policy", "", "default policy for deleting subdirectory when deleting a volume")
 	removeArchivedVolumePath       = flag.Bool("remove-archived-volume-path", true, "remove archived volume path in DeleteVolume")
 	enableWindowsHostProcess       = flag.Bool("enable-windows-host-process", false, "enable windows host process")
@@ -91,6 +92,7 @@ func handle() {
 		Krb5CacheDirectory:             *krb5CacheDirectory,
 		Krb5Prefix:                     *krb5Prefix,
 		Krb5EnsurePasswdEntry:          *krb5EnsurePasswdEntry,
+		Krb5RenewInterval:              *krb5RenewInterval,
 		DefaultOnDeletePolicy:          *defaultOnDeletePolicy,
 		EnableWindowsHostProcess:       *enableWindowsHostProcess,
 	}
