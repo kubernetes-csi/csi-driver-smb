@@ -23,6 +23,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -89,6 +90,7 @@ type DriverOptions struct {
 	VolStatsCacheExpireInMinutes   int
 	Krb5CacheDirectory             string
 	Krb5Prefix                     string
+	Krb5EnsurePasswdEntry          bool
 	DefaultOnDeletePolicy          string
 	RemoveArchivedVolumePath       bool
 	EnableWindowsHostProcess       bool
@@ -120,6 +122,8 @@ type Driver struct {
 	requirePrivacyForGlobalMapping bool
 	krb5CacheDirectory             string
 	krb5Prefix                     string
+	krb5EnsurePasswdEntry          bool
+	passwdFile                     string
 	defaultOnDeletePolicy          string
 	removeArchivedVolumePath       bool
 	enableWindowsHostProcess       bool
@@ -151,6 +155,8 @@ func NewDriver(options *DriverOptions) *Driver {
 	if driver.krb5Prefix == "" {
 		driver.krb5Prefix = DefaultKrb5CCName
 	}
+	driver.krb5EnsurePasswdEntry = options.Krb5EnsurePasswdEntry
+	driver.passwdFile = defaultPasswdFile
 
 	if options.VolStatsCacheExpireInMinutes <= 0 {
 		options.VolStatsCacheExpireInMinutes = 10 // default expire in 10 minutes
@@ -216,6 +222,10 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 		nodeCap = append(nodeCap, csi.NodeServiceCapability_RPC_GET_VOLUME_STATS)
 	}
 	d.AddNodeServiceCapabilities(nodeCap)
+
+	if runtime.GOOS == "linux" && d.NodeID != "" {
+		d.restoreKerberosPasswdEntries()
+	}
 
 	s := csicommon.NewNonBlockingGRPCServer()
 	// Driver d act as IdentityServer, ControllerServer and NodeServer

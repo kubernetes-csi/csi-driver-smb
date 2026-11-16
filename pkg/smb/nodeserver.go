@@ -703,6 +703,7 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 	if err != nil {
 		return false, err
 	}
+	d.ensureKerberosPasswdEntry(credUID)
 	krb5CacheFileName, content, err := getKerberosCache(krb5CacheDirectory, krb5Prefix, credUID, secrets)
 	if err != nil {
 		return false, err

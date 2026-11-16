@@ -59,6 +59,7 @@ default_ccache_name = FILE:/var/lib/kubelet/kerberos/krb5cc_%{uid}" > /etc/krb5.
    - sec=krb5 enables using credential cache
    - cruid=1000 provides information for what user credential cache will be looked up. This should match the secret entry.
    - uid=1000 is the owner of mounted files. This doesn't have to be the same as cruid.
+ - `cifs.upcall` needs a passwd entry for the `cruid` user in the smb container, otherwise the mount fails with `mount error(126): Required key not available` and `cifs.upcall` logs `Unable to find pw entry for uid` on the node. On platforms that run workloads with arbitrary uids (e.g. OpenShift, where the `cruid` is usually taken from the uid range of the namespace) there is no such entry, so the driver adds it to `/etc/passwd` of the smb container when the volume is mounted, and again for the mounted volumes when the container is restarted. Disable this with `--krb5-ensure-passwd-entry=false` (`linux.krb5EnsurePasswdEntry` in the Helm chart) if the uids are resolved in another way.
 
 #### Pass kerberos ticket in kubernetes secret 
 To pass a ticket through secret, it needs to be acquired. Here's example how it can be done:

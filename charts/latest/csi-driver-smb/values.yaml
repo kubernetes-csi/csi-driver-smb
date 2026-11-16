@@ -127,6 +127,11 @@ linux:
   # documented in docs/driver-parameters.md (Kerberos ticket support).
   # Set to false if you manage /etc/krb5.conf(.d/) yourself.
   krb5AutoConfig: false
+  # Add an entry to /etc/passwd of the smb container for the cruid of kerberos
+  # mounts when it has none. cifs.upcall fails with "Unable to find pw entry
+  # for uid" without it, e.g. on OpenShift where the cruid is usually taken
+  # from the uid range of the namespace.
+  krb5EnsurePasswdEntry: true
   tolerations:
     - operator: "Exists"
   resources:
