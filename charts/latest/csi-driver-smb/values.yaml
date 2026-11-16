@@ -33,6 +33,9 @@ serviceAccount:
 rbac:
   create: true
   name: smb
+  # When true, allow the node and controller service accounts to use the
+  # "privileged" SecurityContextConstraints, which their pods need on OpenShift.
+  openshiftPrivilegedSCC: false
 
 driver:
   name: smb.csi.k8s.io
