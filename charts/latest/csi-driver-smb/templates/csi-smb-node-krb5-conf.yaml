@@ -1,0 +1,11 @@
+{{- if and .Values.linux.enabled (ne .Values.linux.krb5Conf "") }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Values.linux.dsName }}-krb5-conf
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
+data:
+  custom.conf: |
+{{ .Values.linux.krb5Conf | indent 4 }}
+{{- end }}

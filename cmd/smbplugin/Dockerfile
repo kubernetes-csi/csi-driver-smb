@@ -22,6 +22,7 @@ ARG ARCH=amd64
 ARG binary=./_output/${ARCH}/smbplugin
 COPY ${binary} /smbplugin
 
-RUN echo "[libdefaults]\n    default_ccache_name = FILE:/var/lib/kubelet/kerberos/krb5cc_%{uid}\n" > /etc/krb5.conf
+# /etc/krb5.conf.d/ takes site specific settings (default realm, KDCs, ...), see linux.krb5Conf in the helm chart.
+RUN mkdir -p /etc/krb5.conf.d && printf 'includedir /etc/krb5.conf.d\n\n[libdefaults]\n    default_ccache_name = FILE:/var/lib/kubelet/kerberos/krb5cc_%%{uid}\n' > /etc/krb5.conf
 
 ENTRYPOINT ["/smbplugin"]
