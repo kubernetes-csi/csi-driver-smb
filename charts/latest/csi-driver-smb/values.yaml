@@ -142,6 +142,16 @@ linux:
   # Interval for renewing the tickets of volumes mounted with a keytab
   # (krb5keytab and krb5principal in the secret), 0 disables it.
   krb5RenewInterval: 1h
+  # Make the cruid users of kerberos mounts known on the node with systemd
+  # userdb records in /run/userdb of the node, and mount kerberos volumes with
+  # upcall_target=mount. Without it a kerberos volume stays unavailable after
+  # the connection to the SMB server was lost: cifs.upcall can not find the
+  # cruid user when the kernel sets up the new session. Needs nodes with
+  # nss-systemd ("systemd" in the passwd line of /etc/nsswitch.conf) and a
+  # kernel with the upcall_target mount option (Linux 6.13, or a backport such
+  # as RHEL 9.6), and nodes that look for the ticket caches in
+  # krb5CacheDirectory (krb5AutoConfig).
+  krb5HostUserdb: false
   # Extra krb5.conf content for the smb container, e.g. [libdefaults], [realms]
   # and [domain_realm] sections with the default realm and, when the KDCs can
   # not be found through DNS, their addresses. It is used by cifs.upcall when

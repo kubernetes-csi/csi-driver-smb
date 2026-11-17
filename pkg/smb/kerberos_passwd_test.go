@@ -72,7 +72,7 @@ func TestEnsurePasswdEntry(t *testing.T) {
 	}
 }
 
-func TestRestoreKerberosPasswdEntries(t *testing.T) {
+func TestRestoreKerberosUserEntriesPasswd(t *testing.T) {
 	if runtime.GOOS != "linux" {
 		t.Skip("kerberos is only supported on Linux")
 	}
@@ -97,14 +97,14 @@ func TestRestoreKerberosPasswdEntries(t *testing.T) {
 	d.passwdFile = passwdFile
 
 	d.krb5EnsurePasswdEntry = false
-	d.restoreKerberosPasswdEntries()
+	d.restoreKerberosUserEntries()
 	if content, _ := os.ReadFile(passwdFile); strings.Count(string(content), "\n") != 1 {
 		t.Errorf("passwd file changed although krb5EnsurePasswdEntry is off: %q", content)
 	}
 
 	d.krb5EnsurePasswdEntry = true
-	d.restoreKerberosPasswdEntries()
-	d.restoreKerberosPasswdEntries()
+	d.restoreKerberosUserEntries()
+	d.restoreKerberosUserEntries()
 	content, _ := os.ReadFile(passwdFile)
 	for _, uid := range []string{"1001070000", "1000"} {
 		if strings.Count(string(content), ":x:"+uid+":"+uid+":") != 1 {

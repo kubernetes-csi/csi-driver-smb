@@ -3,3 +3,11 @@ The CSI SMB Driver is getting deployed to your cluster.
 To check CSI SMB Driver pods status, please run:
 
   kubectl --namespace={{ .Release.Namespace }} get pods --selector="app.kubernetes.io/name={{ .Release.Name }}" --watch
+{{- if and .Values.linux.enabled .Values.linux.krb5HostUserdb (not (and .Values.linux.krb5AutoConfig .Values.linux.krb5CacheDirectory)) }}
+
+WARNING: linux.krb5HostUserdb is set without linux.krb5AutoConfig (and linux.krb5CacheDirectory).
+Kerberos volumes are mounted with upcall_target=mount: cifs.upcall then uses the krb5.conf
+of the nodes, which must look for the ticket caches in the kerberos cache directory of the
+driver and find the KDC, otherwise kerberos mounts fail. Set linux.krb5AutoConfig=true,
+unless you configure /etc/krb5.conf(.d/) of the nodes yourself.
+{{- end }}

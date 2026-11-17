@@ -270,14 +270,18 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			sensitiveMountOptions = []string{password}
 		}
 	} else {
-		// A volume that is not staged yet must not leave its keytab behind
-		// when staging fails: NodeUnstageVolume is not called for it.
+		// A volume that is not staged yet must not leave its keytab or ticket
+		// cache behind when staging fails: NodeUnstageVolume is not called
+		// for it.
 		notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
 		mounted := mntErr == nil && !notMnt
 		if (mntErr == nil && notMnt) || os.IsNotExist(mntErr) {
 			defer func() {
 				if !staged && !mountInFlight {
 					d.releaseKerberosKeytab(volumeID)
+					if err := d.releaseKerberosCache(volumeID); err != nil {
+						klog.Errorf("volume(%s) failed to delete the kerberos cache of a volume that could not be staged: %v", volumeID, err)
+					}
 				}
 			}()
 		}
@@ -292,6 +296,9 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			if err != nil {
 				return nil, status.Error(codes.Internal, fmt.Sprintf("Error writing kerberos cache: %v", err))
 			}
+		}
+		if useKerberosCache {
+			mountFlags = d.withKerberosUpcallTarget(mountFlags)
 		}
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
@@ -451,7 +458,7 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
 	}
 
-	if err := deleteKerberosCache(d.krb5CacheDirectory, volumeID); err != nil {
+	if err := d.releaseKerberosCache(volumeID); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete kerberos cache: %v", err)
 	}
 	d.releaseKerberosKeytab(volumeID)
@@ -748,16 +755,19 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 	if err != nil {
 		return false, err
 	}
+	// Held until the ticket cache is in place: the keytab volumes and
+	// NodeUnstageVolume check for the ticket caches of credential uids.
 	d.krb5Mutex.Lock()
-	_, usedByKeytab := d.keytabPrincipals()[credUID]
-	d.krb5Mutex.Unlock()
-	if usedByKeytab {
+	defer d.krb5Mutex.Unlock()
+	if _, usedByKeytab := d.keytabPrincipals()[credUID]; usedByKeytab {
 		// There is only one ticket cache per credential uid.
 		return false, status.Error(codes.InvalidArgument, fmt.Sprintf("cruid %d is in use on this node by volumes mounted with a kerberos keytab, use another one", credUID))
 	}
-	d.ensureKerberosPasswdEntry(credUID)
 	krb5CacheFileName, content, err := getKerberosCache(krb5CacheDirectory, krb5Prefix, credUID, secrets)
 	if err != nil {
+		return false, err
+	}
+	if err := d.ensureKerberosUserEntries(credUID); err != nil {
 		return false, err
 	}
 

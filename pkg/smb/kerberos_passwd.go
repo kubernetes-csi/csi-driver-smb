@@ -20,7 +20,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -40,7 +39,9 @@ var passwdMutex sync.Mutex
 // cruid user, exits with "Unable to find pw entry for uid" when the uid can
 // not be resolved in the mount namespace of the process doing the mount (the
 // smb container), and the mount fails with error 126 (required key not
-// available). This is the case on platforms that run workloads with
+// available). This is so with upcall_target=app (the default) and
+// cifs-utils 7.6 or older on the host; see kerberos_userdb.go for the other
+// cases. This is the case on platforms that run workloads with
 // arbitrary uids, e.g. OpenShift, where the cruid is usually taken from the
 // uid range of the namespace.
 func ensurePasswdEntry(passwdFile string, uid int) error {
@@ -63,7 +64,7 @@ func ensurePasswdEntry(passwdFile string, uid int) error {
 		}
 	}
 
-	entry := fmt.Sprintf("csi-smb-krb5-%d:x:%d:%d:csi-driver-smb kerberos credential uid:/nonexistent:/usr/sbin/nologin\n", uid, uid, uid)
+	entry := fmt.Sprintf("%s:x:%d:%d:csi-driver-smb kerberos credential uid:/nonexistent:/usr/sbin/nologin\n", kerberosUserName(uid), uid, uid)
 	if len(content) > 0 && content[len(content)-1] != '\n' {
 		entry = "\n" + entry
 	}
@@ -81,41 +82,4 @@ func ensurePasswdEntry(passwdFile string, uid int) error {
 	}
 	klog.V(2).Infof("added passwd entry for kerberos credential uid %d to %s", uid, passwdFile)
 	return nil
-}
-
-// ensureKerberosPasswdEntry adds a passwd entry for credUID when
-// --krb5-ensure-passwd-entry is set. A failure is not fatal: the uid may be
-// resolvable by other means than the passwd file.
-func (d *Driver) ensureKerberosPasswdEntry(credUID int) {
-	if !d.krb5EnsurePasswdEntry {
-		return
-	}
-	if err := ensurePasswdEntry(d.passwdFile, credUID); err != nil {
-		klog.Warningf("failed to ensure a passwd entry for kerberos credential uid %d in %s: %v", credUID, d.passwdFile, err)
-	}
-}
-
-// restoreKerberosPasswdEntries adds a passwd entry for the credential uid of
-// every ticket cache in the kerberos cache directory (<krb5Prefix><uid>).
-//
-// The entries are added when a volume is staged, but they are part of the
-// file system of the container: after a restart of the container they are
-// gone while the volumes are still mounted, and cifs.upcall would fail when
-// the kernel has to set up a new session for one of them.
-func (d *Driver) restoreKerberosPasswdEntries() {
-	if !d.krb5EnsurePasswdEntry {
-		return
-	}
-	caches, err := filepath.Glob(filepath.Join(d.krb5CacheDirectory, d.krb5Prefix+"*"))
-	if err != nil {
-		klog.Errorf("failed to list kerberos ticket caches in %s: %v", d.krb5CacheDirectory, err)
-		return
-	}
-	for _, cache := range caches {
-		credUID, err := strconv.Atoi(strings.TrimPrefix(filepath.Base(cache), d.krb5Prefix))
-		if err != nil || credUID < 0 {
-			continue
-		}
-		d.ensureKerberosPasswdEntry(credUID)
-	}
 }

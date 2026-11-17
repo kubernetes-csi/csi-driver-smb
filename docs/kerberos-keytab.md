@@ -30,12 +30,29 @@ There is only one ticket cache per credential uid (`cruid`) on a node. Volumes m
 If the mount flags do have `cruid=`, that credential uid is used. Mounting a volume with a `cruid` that is in use on the node by another principal, or by volumes mounted with a ticket cache, is refused.
 
 ### Ticket renewal
-A ticket is only used when a session with the SMB server is set up. The kernel sets up a new session when the connection to the server was lost, e.g. after a network failure or a restart of the server, and needs a valid ticket for that. The driver therefore gets a fresh ticket for every principal with mounted volumes every `--krb5-renew-interval` (`linux.krb5RenewInterval` in the Helm chart, 1 hour by default, `0` disables it), and when it starts.
+A ticket is only used when a session with the SMB server is set up. The kernel sets up a new session when the connection to the server was lost, e.g. after a network failure or a restart of the server, and needs a valid ticket for that (see also [Reconnects](#reconnects)). The driver therefore gets a fresh ticket for every principal with mounted volumes every `--krb5-renew-interval` (`linux.krb5RenewInterval` in the Helm chart, 1 hour by default, `0` disables it), and when it starts.
 
 A renewal that fails is logged (`failed to renew the kerberos ticket of ...`), and the tickets that were obtained before stay in use until they expire. With `--metrics-address` (`node.metricsPort` in the Helm chart) the node plugin exports:
  - `csi_smb_kerberos_ticket_renewal_failing_principals`: the number of principals whose ticket could not be renewed at the last renewal. Alert when it is above 0, e.g. after a password change, see [Rotating the keytab](#rotating-the-keytab).
  - `csi_smb_kerberos_ticket_renewals_total{result="success|failure"}`: the number of renewals.
  - `csi_smb_kerberos_keytab_principals`: the number of principals with volumes mounted with a keytab on the node.
+
+### Reconnects
+The kernel needs a ticket whenever it sets up a session with the SMB server: when the volume is mounted, and again when the connection to the server was lost (a network failure, a restart of the server). It asks for one with `request-key`, which the kernel starts as a helper in the namespaces of the node, and which runs `cifs.upcall` of the node (not the one in the smb container). The kernel passes the `cruid`, the process whose request needed the session, and the `upcall_target` mount option:
+ - With `upcall_target=app`, the default, `cifs.upcall` switches to the namespaces of that process before it reads the ticket cache of the `cruid`. When the volume is mounted, that process is `mount.cifs` in the smb container, which has the ticket caches and the passwd entry of the `cruid` (see [OpenShift](#openshift)). After a reconnect it is a kernel thread, in the namespaces of the node, or a process of a pod that uses the volume, which has no access to the ticket caches. On the node the `cruid` user is not known, so the new session fails either way and the volume stays unavailable: the pods get `Required key not available` errors, and the node logs `CIFS: VFS: \\<server> Send error in SessSetup = -126`. This also applies to volumes mounted with a ticket cache in the secret.
+ - With `upcall_target=mount`, `cifs.upcall` does not switch namespaces: it stays in the namespaces of the node, whatever process needed the session. The option does not refer to the namespaces of the process that mounted the volume (the kernel does not keep track of it), but to those in which `cifs.upcall` is started for the mount. The `cruid` user, the ticket cache, the `krb5.conf` and the network used to reach the KDC are then those of the node, when the volume is mounted and after a reconnect.
+
+With `--krb5-host-userdb-directory` (`linux.krb5HostUserdb=true` in the Helm chart) the driver
+ - adds a [systemd user record](https://systemd.io/USER_RECORD/) for every `cruid` in `/run/userdb` of the node (`csi-smb-krb5-<cruid>.user` and the symlink `<cruid>.user`), which makes the `cruid` user known on the node through `nss-systemd`. The records are removed when the last volume of the `cruid` is unmounted (for volumes mounted with a ticket cache in the secret: when `krb5cc_<cruid>` is removed), and when the driver starts for credential uids that have no ticket cache any more. `/run` is emptied when the node restarts. A `cruid` below 1000 (a system uid) is refused. A `cruid` that already has a record on the node, of another user or of another instance of the driver (another driver name), keeps that record: the driver only changes and removes its own records.
+ - mounts kerberos volumes with `upcall_target=mount`, unless their mount flags have an `upcall_target`, so that `cifs.upcall` always uses the namespaces of the node.
+
+The kernel then sets up the new session as soon as the connection is back, and the pods do not notice the reconnect. This needs:
+ - nodes with `nss-systemd`: `systemd` in the `passwd` line of `/etc/nsswitch.conf`. You can check it on a node with a record of a mounted volume: `getent passwd <cruid>`.
+ - a kernel with the `upcall_target` mount option: Linux 6.13 or later, or a kernel with the change backported, such as the kernel of RHEL 9.6 (`5.14.0-570`). Other kernels refuse the mount option, and the mount fails.
+ - `cifs.upcall` of the node with `upcall_target` support: `cifs-utils` 7.2 or later, or a version with the change backported. Older versions ignore `upcall_target=mount` and behave as with `upcall_target=app`: the volume is mounted, but a reconnect caused by a process of a pod fails. You can check it on a node with `grep -q upcall_target /usr/sbin/cifs.upcall && echo supported`. Avoid `cifs-utils` 7.6 on the nodes: its `cifs.upcall` does not use the `cruid` (fixed in 7.7).
+ - nodes that look for the ticket caches in the kerberos cache directory, and that can find the KDC (`linux.krb5AutoConfig=true`, and `linux.krb5Conf` when needed, see [Finding the KDC](#finding-the-kdc)).
+
+`cifs-utils` 7.7 and later look the `cruid` user up on the node before switching namespaces, also with `upcall_target=app`. With these versions on the nodes, the passwd entry in the smb container is not enough to mount the volume: use `linux.krb5HostUserdb`, or make the credential uids known on the nodes in another way.
 
 ### What is stored on the node
 The driver keeps the following in the kerberos cache directory of the node (`/var/lib/kubelet/kerberos/` by default), readable by root only:
@@ -97,14 +114,17 @@ helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-syste
   --set rbac.openshiftPrivilegedSCC=true \
   --set linux.krb5CacheDirectory=/var/lib/kubelet/kerberos/ \
   --set linux.krb5AutoConfig=true \
+  --set linux.krb5HostUserdb=true \
   --set-file linux.krb5Conf=krb5-realm.conf
 ```
  - `rbac.openshiftPrivilegedSCC` lets the pods of the driver use the `privileged` SecurityContextConstraints.
  - `linux.krb5Conf` is optional, see [Finding the KDC](#finding-the-kdc).
- - The credential uids have no passwd entry on the node. The driver adds one in the smb container (`linux.krb5EnsurePasswdEntry`, enabled by default), which `cifs.upcall` needs.
+ - The credential uids have no passwd entry on the node. The driver adds one in the smb container (`linux.krb5EnsurePasswdEntry`, enabled by default), which `cifs.upcall` needs for the mount.
+ - `linux.krb5HostUserdb` makes the volumes recover after a reconnect, see [Reconnects](#reconnects). It was tested on OpenShift 4.20, whose RHEL CoreOS 9.6 has `nss-systemd` and a kernel with `upcall_target`.
 
 ### Troubleshooting
  - `failed to get a kerberos ticket for ... with the keytab` in the events of the pod: `kinit` failed, the message has its output. `Cannot contact any KDC` or `Cannot find KDC for realm`: see [Finding the KDC](#finding-the-kdc). `Preauthentication failed`: the keytab does not match the password of the principal (it was changed after the keytab was made, see [Rotating the keytab](#rotating-the-keytab)), or the keytab was made with another salt or encryption type than the KDC expects.
+ - `Required key not available` in a pod for a volume that worked before: the kernel could not set up a new session after a reconnect, see [Reconnects](#reconnects).
  - `mount error(126): Required key not available`: `cifs.upcall` could not get a ticket for the SMB server. It logs the reason in the system log of the node (`journalctl -t cifs.upcall`). Use the host name of the server in `source`, not its IP address or an alias without a `cifs/` service principal.
  - `mount error(13): Permission denied`: Kerberos worked, the server refuses the principal access to the share or the directory.
  - To see the tickets of a credential uid, run `klist -c /var/lib/kubelet/kerberos/krb5cc_<cruid>` in the smb container of the `csi-smb-node` pod on the node.

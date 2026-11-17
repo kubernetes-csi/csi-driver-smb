@@ -171,6 +171,9 @@ spec:
             - "--krb5-prefix={{ .Values.linux.krb5Prefix }}"
             - "--krb5-ensure-passwd-entry={{ .Values.linux.krb5EnsurePasswdEntry }}"
             - "--krb5-renew-interval={{ .Values.linux.krb5RenewInterval }}"
+{{- if .Values.linux.krb5HostUserdb }}
+            - "--krb5-host-userdb-directory=/host/run/userdb"
+{{- end }}
 {{- if .Values.node.metricsPort }}
             - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
           ports:
@@ -215,6 +218,10 @@ spec:
               name: krb5-custom-conf
               readOnly: true
 {{- end }}
+{{- if .Values.linux.krb5HostUserdb }}
+            - mountPath: /host/run/userdb
+              name: host-userdb
+{{- end }}
           resources: {{- toYaml .Values.linux.resources.smb | nindent 12 }}
       volumes:
         - hostPath:
@@ -245,5 +252,11 @@ spec:
         - configMap:
             name: {{ .Values.linux.dsName }}-krb5-conf
           name: krb5-custom-conf
+{{- end }}
+{{- if .Values.linux.krb5HostUserdb }}
+        - hostPath:
+            path: /run/userdb
+            type: DirectoryOrCreate
+          name: host-userdb
 {{- end }}
 {{- end -}}

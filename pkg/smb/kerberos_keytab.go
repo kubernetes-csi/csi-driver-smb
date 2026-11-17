@@ -347,6 +347,7 @@ func (d *Driver) releaseKeytabCredential(volumeFile string) {
 			klog.Errorf("failed to remove %s: %v", file, err)
 		}
 	}
+	d.removeKerberosUserEntries(credUID)
 	klog.V(2).Infof("removed the kerberos keytab and ticket cache of cruid %d", credUID)
 }
 
@@ -466,7 +467,9 @@ func (d *Driver) ensureKerberosKeytab(volumeID, stagingPath string, mounted bool
 	if err != nil {
 		return mountFlags, false, status.Error(codes.InvalidArgument, err.Error())
 	}
-	d.ensureKerberosPasswdEntry(credUID)
+	if err := d.ensureKerberosUserEntries(credUID); err != nil {
+		return mountFlags, false, status.Error(codes.Internal, err.Error())
+	}
 	// The keytab of the secret is not one of the principal of a mounted
 	// volume whose principal changed: the volume keeps the stored keytab.
 	if credPrincipal == principal {
