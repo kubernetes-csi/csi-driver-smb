@@ -27,12 +27,12 @@ import (
 	"k8s.io/klog/v2"
 )
 
-const defaultPasswdFile = "/etc/passwd"
+const defaultUsersFile = "/etc/passwd"
 
 // passwdMutex serializes updates of the passwd file.
 var passwdMutex sync.Mutex
 
-// ensurePasswdEntry makes sure passwdFile has an entry for uid, and appends
+// ensurePasswdEntry makes sure usersFile has an entry for uid, and appends
 // one if it does not.
 //
 // cifs.upcall, which the kernel calls to get the kerberos ticket of the
@@ -44,14 +44,14 @@ var passwdMutex sync.Mutex
 // cases. This is the case on platforms that run workloads with
 // arbitrary uids, e.g. OpenShift, where the cruid is usually taken from the
 // uid range of the namespace.
-func ensurePasswdEntry(passwdFile string, uid int) error {
+func ensurePasswdEntry(usersFile string, uid int) error {
 	if uid < 0 {
 		return fmt.Errorf("invalid uid %d", uid)
 	}
 	passwdMutex.Lock()
 	defer passwdMutex.Unlock()
 
-	content, err := os.ReadFile(passwdFile)
+	content, err := os.ReadFile(usersFile)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func ensurePasswdEntry(passwdFile string, uid int) error {
 		entry = "\n" + entry
 	}
 	// Append in place instead of replacing the file, it may be a bind mount.
-	f, err := os.OpenFile(passwdFile, os.O_APPEND|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(usersFile, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
@@ -80,6 +80,6 @@ func ensurePasswdEntry(passwdFile string, uid int) error {
 	if err := f.Close(); err != nil {
 		return err
 	}
-	klog.V(2).Infof("added passwd entry for kerberos credential uid %d to %s", uid, passwdFile)
+	klog.V(2).Infof("added passwd entry for kerberos credential uid %d to %s", uid, usersFile)
 	return nil
 }

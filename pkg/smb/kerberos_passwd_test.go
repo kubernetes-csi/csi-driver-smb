@@ -39,18 +39,18 @@ func TestEnsurePasswdEntry(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.desc, func(t *testing.T) {
-			passwdFile := filepath.Join(t.TempDir(), "passwd")
-			if err := os.WriteFile(passwdFile, []byte(base), 0644); err != nil {
+			usersFile := filepath.Join(t.TempDir(), "passwd")
+			if err := os.WriteFile(usersFile, []byte(base), 0644); err != nil {
 				t.Fatal(err)
 			}
 			// twice: the second call must not add the entry again
 			for i := 0; i < 2; i++ {
-				err := ensurePasswdEntry(passwdFile, test.uid)
+				err := ensurePasswdEntry(usersFile, test.uid)
 				if (err != nil) != test.wantErr {
 					t.Fatalf("ensurePasswdEntry: err = %v, wantErr = %t", err, test.wantErr)
 				}
 			}
-			content, err := os.ReadFile(passwdFile)
+			content, err := os.ReadFile(usersFile)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -77,8 +77,8 @@ func TestRestoreKerberosUserEntriesPasswd(t *testing.T) {
 		t.Skip("kerberos is only supported on Linux")
 	}
 	cacheDir := t.TempDir()
-	passwdFile := filepath.Join(t.TempDir(), "passwd")
-	if err := os.WriteFile(passwdFile, []byte("root:x:0:0:root:/root:/bin/bash\n"), 0644); err != nil {
+	usersFile := filepath.Join(t.TempDir(), "passwd")
+	if err := os.WriteFile(usersFile, []byte("root:x:0:0:root:/root:/bin/bash\n"), 0644); err != nil {
 		t.Fatal(err)
 	}
 	// a ticket cache, the cache file of a volume and a file that is not the cache of a uid
@@ -94,18 +94,18 @@ func TestRestoreKerberosUserEntriesPasswd(t *testing.T) {
 
 	d := NewFakeDriver()
 	d.krb5CacheDirectory = cacheDir
-	d.passwdFile = passwdFile
+	d.usersFile = usersFile
 
 	d.krb5EnsurePasswdEntry = false
 	d.restoreKerberosUserEntries()
-	if content, _ := os.ReadFile(passwdFile); strings.Count(string(content), "\n") != 1 {
+	if content, _ := os.ReadFile(usersFile); strings.Count(string(content), "\n") != 1 {
 		t.Errorf("passwd file changed although krb5EnsurePasswdEntry is off: %q", content)
 	}
 
 	d.krb5EnsurePasswdEntry = true
 	d.restoreKerberosUserEntries()
 	d.restoreKerberosUserEntries()
-	content, _ := os.ReadFile(passwdFile)
+	content, _ := os.ReadFile(usersFile)
 	for _, uid := range []string{"1001070000", "1000"} {
 		if strings.Count(string(content), ":x:"+uid+":"+uid+":") != 1 {
 			t.Errorf("expected exactly one passwd entry for uid %s, got: %q", uid, content)

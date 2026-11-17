@@ -186,11 +186,11 @@ func TestKerberosKeytabLifecycle(t *testing.T) {
 	d := newKeytabTestDriver(t)
 	fail := false
 	calls := fakeKinit(t, &fail)
-	passwdFile := filepath.Join(t.TempDir(), "passwd")
-	if err := os.WriteFile(passwdFile, []byte("root:x:0:0:root:/root:/bin/bash\n"), 0644); err != nil {
+	usersFile := filepath.Join(t.TempDir(), "passwd")
+	if err := os.WriteFile(usersFile, []byte("root:x:0:0:root:/root:/bin/bash\n"), 0644); err != nil {
 		t.Fatal(err)
 	}
-	d.passwdFile = passwdFile
+	d.usersFile = usersFile
 	d.krb5EnsurePasswdEntry = true
 
 	// the first volume of a principal: the driver picks the cruid
@@ -219,7 +219,7 @@ func TestKerberosKeytabLifecycle(t *testing.T) {
 			t.Errorf("%s must have mode 0600: %v, %v", file, info, err)
 		}
 	}
-	if passwd := readFile(t, passwdFile); !strings.Contains(passwd, ":x:"+uid+":") {
+	if passwd := readFile(t, usersFile); !strings.Contains(passwd, ":x:"+uid+":") {
 		t.Errorf("no passwd entry for cruid %s: %q", uid, passwd)
 	}
 

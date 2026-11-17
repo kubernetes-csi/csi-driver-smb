@@ -249,8 +249,8 @@ func pruneUserdbRecords(dir string, keep map[int]bool, owner string) {
 // is mounted with upcall_target=mount and cifs.upcall then needs it.
 func (d *Driver) ensureKerberosUserEntries(credUID int) error {
 	if d.krb5EnsurePasswdEntry {
-		if err := ensurePasswdEntry(d.passwdFile, credUID); err != nil {
-			klog.Warningf("failed to ensure a passwd entry for kerberos credential uid %d in %s: %v", credUID, d.passwdFile, err)
+		if err := ensurePasswdEntry(d.usersFile, credUID); err != nil {
+			klog.Warningf("failed to ensure a passwd entry for kerberos credential uid %d in %s: %v", credUID, d.usersFile, err)
 		}
 	}
 	if d.krb5HostUserdbDirectory != "" {

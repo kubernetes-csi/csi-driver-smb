@@ -127,7 +127,7 @@ type Driver struct {
 	krb5CacheDirectory             string
 	krb5Prefix                     string
 	krb5EnsurePasswdEntry          bool
-	passwdFile                     string
+	usersFile                      string
 	krb5HostUserdbDirectory        string
 	krb5RenewInterval              time.Duration
 	krb5UpdateKeytabFromSecret     bool
@@ -164,7 +164,7 @@ func NewDriver(options *DriverOptions) *Driver {
 		driver.krb5Prefix = DefaultKrb5CCName
 	}
 	driver.krb5EnsurePasswdEntry = options.Krb5EnsurePasswdEntry
-	driver.passwdFile = defaultPasswdFile
+	driver.usersFile = defaultUsersFile
 	driver.krb5HostUserdbDirectory = options.Krb5HostUserdbDirectory
 	driver.krb5RenewInterval = options.Krb5RenewInterval
 	driver.krb5UpdateKeytabFromSecret = options.Krb5UpdateKeytabFromSecret
