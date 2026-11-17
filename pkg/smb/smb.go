@@ -23,7 +23,9 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -89,6 +91,10 @@ type DriverOptions struct {
 	VolStatsCacheExpireInMinutes   int
 	Krb5CacheDirectory             string
 	Krb5Prefix                     string
+	Krb5EnsurePasswdEntry          bool
+	Krb5HostUserdbDirectory        string
+	Krb5RenewInterval              time.Duration
+	Krb5UpdateKeytabFromSecret     bool
 	DefaultOnDeletePolicy          string
 	RemoveArchivedVolumePath       bool
 	EnableWindowsHostProcess       bool
@@ -120,6 +126,12 @@ type Driver struct {
 	requirePrivacyForGlobalMapping bool
 	krb5CacheDirectory             string
 	krb5Prefix                     string
+	krb5EnsurePasswdEntry          bool
+	usersFile                      string
+	krb5HostUserdbDirectory        string
+	krb5RenewInterval              time.Duration
+	krb5UpdateKeytabFromSecret     bool
+	krb5Mutex                      sync.Mutex // serializes changes to the keytabs and ticket caches of kerberos principals
 	defaultOnDeletePolicy          string
 	removeArchivedVolumePath       bool
 	enableWindowsHostProcess       bool
@@ -151,6 +163,11 @@ func NewDriver(options *DriverOptions) *Driver {
 	if driver.krb5Prefix == "" {
 		driver.krb5Prefix = DefaultKrb5CCName
 	}
+	driver.krb5EnsurePasswdEntry = options.Krb5EnsurePasswdEntry
+	driver.usersFile = defaultUsersFile
+	driver.krb5HostUserdbDirectory = options.Krb5HostUserdbDirectory
+	driver.krb5RenewInterval = options.Krb5RenewInterval
+	driver.krb5UpdateKeytabFromSecret = options.Krb5UpdateKeytabFromSecret
 
 	if options.VolStatsCacheExpireInMinutes <= 0 {
 		options.VolStatsCacheExpireInMinutes = 10 // default expire in 10 minutes
@@ -216,6 +233,12 @@ func (d *Driver) Run(endpoint, _ string, testMode bool) {
 		nodeCap = append(nodeCap, csi.NodeServiceCapability_RPC_GET_VOLUME_STATS)
 	}
 	d.AddNodeServiceCapabilities(nodeCap)
+
+	if runtime.GOOS == "linux" && d.NodeID != "" {
+		d.pruneKeytabVolumes()
+		d.restoreKerberosUserEntries()
+		go d.runKerberosRenewal(make(chan struct{}))
+	}
 
 	s := csicommon.NewNonBlockingGRPCServer()
 	// Driver d act as IdentityServer, ControllerServer and NodeServer

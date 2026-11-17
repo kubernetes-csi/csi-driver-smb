@@ -48,6 +48,10 @@ var (
 	volStatsCacheExpireInMinutes   = flag.Int("vol-stats-cache-expire-in-minutes", 10, "The cache expire time in minutes for volume stats cache")
 	krb5CacheDirectory             = flag.String("krb5-cache-directory", smb.DefaultKrb5CacheDirectory, "The directory for kerberos cache")
 	krb5Prefix                     = flag.String("krb5-prefix", smb.DefaultKrb5CCName, "The prefix for kerberos cache")
+	krb5EnsurePasswdEntry          = flag.Bool("krb5-ensure-passwd-entry", true, "add an entry to /etc/passwd of the driver container for the cruid of kerberos mounts when it has none, cifs.upcall fails without it (e.g. on OpenShift)")
+	krb5HostUserdbDirectory        = flag.String("krb5-host-userdb-directory", "", "directory of the host for systemd userdb drop-in records (/run/userdb of the host mounted in the driver container); when set, the driver adds a user record there for the cruid of kerberos mounts and mounts them with upcall_target=mount, so that the kernel can set up a new session after a reconnect")
+	krb5UpdateKeytabFromSecret     = flag.Bool("krb5-update-keytab-from-secret", true, "when the renewal with the stored keytab of a principal fails, read the secrets of its volumes (nodeStageSecretRef of their PersistentVolume) and use a new keytab found there when kinit succeeds with it; needs get/list on persistentvolumes and get on secrets")
+	krb5RenewInterval              = flag.Duration("krb5-renew-interval", smb.DefaultKrb5RenewInterval, "interval for renewing the kerberos tickets of volumes mounted with a keytab (krb5keytab and krb5principal in the secret), 0 disables renewal")
 	defaultOnDeletePolicy          = flag.String("default-ondelete-policy", "", "default policy for deleting subdirectory when deleting a volume")
 	removeArchivedVolumePath       = flag.Bool("remove-archived-volume-path", true, "remove archived volume path in DeleteVolume")
 	enableWindowsHostProcess       = flag.Bool("enable-windows-host-process", false, "enable windows host process")
@@ -89,6 +93,10 @@ func handle() {
 		VolStatsCacheExpireInMinutes:   *volStatsCacheExpireInMinutes,
 		Krb5CacheDirectory:             *krb5CacheDirectory,
 		Krb5Prefix:                     *krb5Prefix,
+		Krb5EnsurePasswdEntry:          *krb5EnsurePasswdEntry,
+		Krb5HostUserdbDirectory:        *krb5HostUserdbDirectory,
+		Krb5RenewInterval:              *krb5RenewInterval,
+		Krb5UpdateKeytabFromSecret:     *krb5UpdateKeytabFromSecret,
 		DefaultOnDeletePolicy:          *defaultOnDeletePolicy,
 		EnableWindowsHostProcess:       *enableWindowsHostProcess,
 	}

@@ -255,6 +255,9 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 	}
 
 	var mountOptions, sensitiveMountOptions []string
+	// staged: the volume is staged when the function returns.
+	// mountInFlight: the mount timed out and is still running.
+	var staged, mountInFlight bool
 	if runtime.GOOS == "windows" {
 		if domain == "" {
 			domain = defaultDomainName
@@ -267,9 +270,35 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 			sensitiveMountOptions = []string{password}
 		}
 	} else {
-		var useKerberosCache, err = d.ensureKerberosCache(d.krb5CacheDirectory, d.krb5Prefix, volumeID, mountFlags, secrets)
+		// A volume that is not staged yet must not leave its keytab or ticket
+		// cache behind when staging fails: NodeUnstageVolume is not called
+		// for it.
+		notMnt, mntErr := d.mounter.IsLikelyNotMountPoint(targetPath)
+		mounted := mntErr == nil && !notMnt
+		if (mntErr == nil && notMnt) || os.IsNotExist(mntErr) {
+			defer func() {
+				if !staged && !mountInFlight {
+					d.releaseKerberosKeytab(volumeID)
+					if err := d.releaseKerberosCache(volumeID); err != nil {
+						klog.Errorf("volume(%s) failed to delete the kerberos cache of a volume that could not be staged: %v", volumeID, err)
+					}
+				}
+			}()
+		}
+		var useKerberosCache bool
+		var err error
+		mountFlags, useKerberosCache, err = d.ensureKerberosKeytab(volumeID, targetPath, mounted, mountFlags, secrets)
 		if err != nil {
-			return nil, status.Error(codes.Internal, fmt.Sprintf("Error writing kerberos cache: %v", err))
+			return nil, err
+		}
+		if !useKerberosCache {
+			useKerberosCache, err = d.ensureKerberosCache(d.krb5CacheDirectory, d.krb5Prefix, volumeID, mountFlags, secrets)
+			if err != nil {
+				return nil, status.Error(codes.Internal, fmt.Sprintf("Error writing kerberos cache: %v", err))
+			}
+		}
+		if useKerberosCache {
+			mountFlags = d.withKerberosUpcallTarget(mountFlags)
 		}
 		if err := os.MkdirAll(targetPath, 0750); err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("MkdirAll %s failed with error: %v", targetPath, err))
@@ -323,6 +352,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		keepLockHeld, mountErr := d.mountWithTimeout(ctx, source, targetPath, mountOptions, sensitiveMountOptions, volumeID, lockKey, time.Duration(mountTimeoutInSec)*time.Second)
 		if keepLockHeld {
 			releaseLock = false
+			mountInFlight = true
 		}
 		if mountErr != nil {
 			return nil, mountErr
@@ -330,6 +360,7 @@ func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRe
 		klog.V(2).Infof("volume(%s) mount %q on %q succeeded", volumeID, source, targetPath)
 	}
 
+	staged = true
 	return &csi.NodeStageVolumeResponse{}, nil
 }
 
@@ -427,9 +458,10 @@ func (d *Driver) NodeUnstageVolume(_ context.Context, req *csi.NodeUnstageVolume
 		return nil, status.Errorf(codes.Internal, "failed to unmount staging target %q: %v", stagingTargetPath, err)
 	}
 
-	if err := deleteKerberosCache(d.krb5CacheDirectory, volumeID); err != nil {
+	if err := d.releaseKerberosCache(volumeID); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete kerberos cache: %v", err)
 	}
+	d.releaseKerberosKeytab(volumeID)
 
 	klog.V(2).Infof("NodeUnstageVolume: unmount volume %s on %s successfully", volumeID, stagingTargetPath)
 	return &csi.NodeUnstageVolumeResponse{}, nil
@@ -622,20 +654,40 @@ func checkGidPresentInMountFlags(mountFlags []string) bool {
 	return false
 }
 
-func hasKerberosMountOption(mountFlags []string) bool {
+// mountOptionsOf returns the mount options of the mount flags: a mount flag
+// can hold several options separated by commas (e.g. "vers=3.0,sec=krb5").
+func mountOptionsOf(mountFlags []string) []string {
+	var options []string
 	for _, mountFlag := range mountFlags {
-		if strings.HasPrefix(mountFlag, "sec=krb5") {
+		for _, option := range strings.Split(mountFlag, ",") {
+			if option = strings.TrimSpace(option); option != "" {
+				options = append(options, option)
+			}
+		}
+	}
+	return options
+}
+
+// hasMountOption tells whether the mount flags have an option starting with
+// prefix.
+func hasMountOption(mountFlags []string, prefix string) bool {
+	for _, option := range mountOptionsOf(mountFlags) {
+		if strings.HasPrefix(option, prefix) {
 			return true
 		}
 	}
 	return false
 }
 
+func hasKerberosMountOption(mountFlags []string) bool {
+	return hasMountOption(mountFlags, "sec=krb5")
+}
+
 func getCredUID(mountFlags []string) (int, error) {
 	var cruidPrefix = "cruid="
-	for _, mountFlag := range mountFlags {
-		if strings.HasPrefix(mountFlag, cruidPrefix) {
-			return strconv.Atoi(strings.TrimPrefix(mountFlag, cruidPrefix))
+	for _, option := range mountOptionsOf(mountFlags) {
+		if strings.HasPrefix(option, cruidPrefix) {
+			return strconv.Atoi(strings.TrimPrefix(option, cruidPrefix))
 		}
 	}
 	return -1, fmt.Errorf("Can't find credUid in mount flags")
@@ -703,8 +755,19 @@ func (d *Driver) ensureKerberosCache(krb5CacheDirectory, krb5Prefix, volumeID st
 	if err != nil {
 		return false, err
 	}
+	// Held until the ticket cache is in place: the keytab volumes and
+	// NodeUnstageVolume check for the ticket caches of credential uids.
+	d.krb5Mutex.Lock()
+	defer d.krb5Mutex.Unlock()
+	if _, usedByKeytab := d.keytabPrincipals()[credUID]; usedByKeytab {
+		// There is only one ticket cache per credential uid.
+		return false, status.Error(codes.InvalidArgument, fmt.Sprintf("cruid %d is in use on this node by volumes mounted with a kerberos keytab, use another one", credUID))
+	}
 	krb5CacheFileName, content, err := getKerberosCache(krb5CacheDirectory, krb5Prefix, credUID, secrets)
 	if err != nil {
+		return false, err
+	}
+	if err := d.ensureKerberosUserEntries(credUID); err != nil {
 		return false, err
 	}
 

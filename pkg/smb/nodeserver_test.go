@@ -927,6 +927,11 @@ func TestHasKerberosMountOption(t *testing.T) {
 			MountFlags: []string{"sec=ntlm"},
 			result:     false,
 		},
+		{
+			desc:       "[Success] Sec kerberos present in a mount flag with several options",
+			MountFlags: []string{"vers=3.0, sec=krb5i"},
+			result:     true,
+		},
 	}
 
 	for _, test := range tests {
@@ -962,6 +967,12 @@ func TestGetCredUID(t *testing.T) {
 			MountFlags:  []string{},
 			result:      -1,
 			expectedErr: fmt.Errorf("Can't find credUid in mount flags"),
+		},
+		{
+			desc:        "[Success] Got correct credUID from a mount flag with several options",
+			MountFlags:  []string{"sec=krb5,cruid=1000"},
+			result:      1000,
+			expectedErr: nil,
 		},
 		{
 			desc:        "[Error] Got error when CredUID is not an int",

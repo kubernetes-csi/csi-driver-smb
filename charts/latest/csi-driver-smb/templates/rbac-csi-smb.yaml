@@ -123,4 +123,38 @@ roleRef:
   name: csi-{{ .Values.rbac.name }}-node-secret-role
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
+{{- if and .Values.linux.enabled .Values.linux.krb5UpdateKeytabFromSecret (ne .Values.linux.krb5CacheDirectory "") }}
+---
+# The node plugin reads the secret of the volumes mounted with a kerberos
+# keytab (nodeStageSecretRef of their PersistentVolume) when the renewal with
+# the stored keytab fails, to pick up a rotated keytab. Only when kerberos is
+# configured (linux.krb5CacheDirectory), so that installations without
+# kerberos get no extra permissions.
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-{{ .Values.rbac.name }}-node-krb5-keytab-role
+{{ include "smb.labels" . | indent 2 }}
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-{{ .Values.rbac.name }}-node-krb5-keytab-binding
+{{ include "smb.labels" . | indent 2 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.serviceAccount.node }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: csi-{{ .Values.rbac.name }}-node-krb5-keytab-role
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
 {{ end }}

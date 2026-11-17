@@ -1,4 +1,13 @@
 {{- if .Values.linux.enabled}}
+{{- /*
+  The driver uses the kerberos cache directory at the same path as the node, so
+  that the symlinks it writes and cifs.upcall of the node agree. A directory
+  inside the kubelet directory is seen through the kubelet mount; mounting it
+  again there, under the bidirectional kubelet mount, would propagate to the
+  node and stack a bind mount on every start of the pod.
+*/}}
+{{- $krb5Dir := .Values.linux.krb5CacheDirectory | trimSuffix "/" }}
+{{- $krb5InKubelet := hasPrefix (printf "%s/" (.Values.linux.kubelet | trimSuffix "/")) (printf "%s/" $krb5Dir) }}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
@@ -20,9 +29,14 @@ spec:
         {{- if .Values.podLabels }}
 {{- toYaml .Values.podLabels | nindent 8 }}
         {{- end }}
-{{- if .Values.podAnnotations }}
+{{- if or .Values.podAnnotations (ne .Values.linux.krb5Conf "") }}
       annotations:
+{{- if ne .Values.linux.krb5Conf "" }}
+        checksum/krb5-conf: {{ .Values.linux.krb5Conf | sha256sum }}
+{{- end }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
 {{- end }}
     spec:
 {{- with .Values.node.affinity }}
@@ -67,11 +81,21 @@ spec:
               [libdefaults]
                   default_ccache_name = FILE:${cachedir}/${prefix}%{uid}
               EOF
+{{- if ne .Values.linux.krb5Conf "" }}
+              cat /krb5-custom/custom.conf > /host/etc/krb5.conf.d/91-csi-driver-smb-custom.conf
+{{- else }}
+              rm -f /host/etc/krb5.conf.d/91-csi-driver-smb-custom.conf
+{{- end }}
           securityContext:
             privileged: true
           volumeMounts:
             - name: krb5-confd
               mountPath: /host/etc/krb5.conf.d
+{{- if ne .Values.linux.krb5Conf "" }}
+            - name: krb5-custom-conf
+              mountPath: /krb5-custom
+              readOnly: true
+{{- end }}
           resources: {{- toYaml .Values.linux.resources.livenessProbe | nindent 12 }}
 {{- end }}
       containers:
@@ -154,6 +178,22 @@ spec:
             - "--nodeid=$(KUBE_NODE_NAME)"
             - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
             - "--krb5-prefix={{ .Values.linux.krb5Prefix }}"
+{{- if ne $krb5Dir "" }}
+            - "--krb5-cache-directory={{ $krb5Dir }}/"
+{{- end }}
+            - "--krb5-ensure-passwd-entry={{ .Values.linux.krb5EnsurePasswdEntry }}"
+            - "--krb5-renew-interval={{ .Values.linux.krb5RenewInterval }}"
+            - "--krb5-update-keytab-from-secret={{ and .Values.linux.krb5UpdateKeytabFromSecret (ne .Values.linux.krb5CacheDirectory "") }}"
+{{- if .Values.linux.krb5HostUserdb }}
+            - "--krb5-host-userdb-directory=/host/run/userdb"
+{{- end }}
+{{- if .Values.node.metricsPort }}
+            - "--metrics-address=0.0.0.0:{{ .Values.node.metricsPort }}"
+          ports:
+            - containerPort: {{ .Values.node.metricsPort }}
+              name: metrics
+              protocol: TCP
+{{- end }}
           livenessProbe:
             failureThreshold: 5
             httpGet:
@@ -181,10 +221,25 @@ spec:
             - mountPath: {{ .Values.linux.kubelet }}
               mountPropagation: Bidirectional
               name: mountpoint-dir
-{{- if ne .Values.linux.krb5CacheDirectory "" }}
-            - mountPath: {{ .Values.linux.kubelet }}/kerberos/
-              mountPropagation: Bidirectional
+{{- if ne $krb5Dir "" }}
+{{- if $krb5InKubelet }}
+            # only for kubelet to create the directory, the driver uses it through the kubelet mount
+            - mountPath: /krb5-cache-directory
               name: krb5cache-dir
+              readOnly: true
+{{- else }}
+            - mountPath: {{ $krb5Dir }}/
+              name: krb5cache-dir
+{{- end }}
+{{- end }}
+{{- if or (ne .Values.linux.krb5Conf "") (ne $krb5Dir "") }}
+            - mountPath: /etc/krb5.conf.d
+              name: krb5-custom-conf
+              readOnly: true
+{{- end }}
+{{- if .Values.linux.krb5HostUserdb }}
+            - mountPath: /host/run/userdb
+              name: host-userdb
 {{- end }}
           resources: {{- toYaml .Values.linux.resources.smb | nindent 12 }}
       volumes:
@@ -211,5 +266,16 @@ spec:
             path: /etc/krb5.conf.d
             type: DirectoryOrCreate
           name: krb5-confd
+{{- end }}
+{{- if or (ne .Values.linux.krb5Conf "") (ne $krb5Dir "") }}
+        - configMap:
+            name: {{ .Values.linux.dsName }}-krb5-conf
+          name: krb5-custom-conf
+{{- end }}
+{{- if .Values.linux.krb5HostUserdb }}
+        - hostPath:
+            path: /run/userdb
+            type: DirectoryOrCreate
+          name: host-userdb
 {{- end }}
 {{- end -}}
