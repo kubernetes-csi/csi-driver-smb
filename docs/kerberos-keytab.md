@@ -79,6 +79,7 @@ The driver only gets the secret when a volume is staged on a node. A node theref
 
 Starting one more pod with a volume that is already mounted on the node does not stage it again. The tickets obtained with the old keytab stay valid until they expire (usually after 10 hours); after that the kernel can not set up a new session when the connection to the server is lost, and the volume becomes unavailable. After a password change, make sure that the volumes of the principal are staged again on every node before then, e.g. by restarting all the pods on a node that use them.
 
+### Finding the KDC
 `kinit` and `cifs.upcall` run in the smb container and must find the KDC of the realm of the principal. There are two ways:
 
  - **Through DNS.** This needs no configuration when the DNS domain has SRV records for the realm (`_kerberos._udp.<realm>` and `_kerberos._tcp.<realm>`) and the smb container can resolve them. An Active Directory domain always has them. You can check with `dig +short SRV _kerberos._tcp.example.com`.
