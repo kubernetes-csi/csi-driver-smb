@@ -55,6 +55,11 @@ The kernel then sets up the new session as soon as the connection is back, and t
 
 `cifs-utils` 7.7 and later look the `cruid` user up on the node before switching namespaces, also with `upcall_target=app`. With these versions on the nodes, the passwd entry in the smb container is not enough to mount the volume: use `linux.krb5HostUserdb`, or make the credential uids known on the nodes in another way.
 
+### Kerberos and NTLM volumes of the same server
+The kernel shares one TCP connection between the mounts of the same SMB server with compatible mount options. A volume mounted with a user and password (NTLM) can therefore join the connection of kerberos volumes of the same server on the node. On RHEL CoreOS 9.6 (kernel `5.14.0-570`), with kerberos volumes mounted with `vers=3.0` and an NTLM volume without `vers=`, the session setup of the NTLM volume then failed (`validate protocol negotiate failed: -11`, `Send error in SessSetup = -11`), and after a storm of reconnects the node reset itself.
+
+When NTLM volumes of the same server can be mounted on the same node, add `nosharesock` to the mount flags of the kerberos volumes. Each volume then gets a connection of its own, and kerberos and NTLM volumes of the same server work side by side. This was tested in that one environment only.
+
 ### What is stored on the node
 The driver keeps the following in the kerberos cache directory of the node (`/var/lib/kubelet/kerberos/` by default), readable by root only:
  - `keytabs/<cruid>.keytab` and `keytabs/<cruid>.principal`: the keytab and the principal

@@ -22,6 +22,7 @@ spec:
     - dir_mode=0777
     - file_mode=0777
     - noserverino  # required to prevent data corruption
+    # - nosharesock  # when NTLM volumes of the same server can be mounted on the node, see docs/kerberos-keytab.md
   csi:
     driver: smb.csi.k8s.io
     # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
