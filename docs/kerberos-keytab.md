@@ -36,6 +36,7 @@ A renewal that fails is logged (`failed to renew the kerberos ticket of ...`), a
  - `csi_smb_kerberos_ticket_renewal_failing_principals`: the number of principals whose ticket could not be renewed at the last renewal. Alert when it is above 0, e.g. after a password change, see [Rotating the keytab](#rotating-the-keytab).
  - `csi_smb_kerberos_ticket_renewals_total{result="success|failure"}`: the number of renewals.
  - `csi_smb_kerberos_keytab_principals`: the number of principals with volumes mounted with a keytab on the node.
+ - `csi_smb_kerberos_keytab_updates_total{result="success|failure"}`: keytabs taken from the secret of a volume, see [Rotating the keytab](#rotating-the-keytab).
 
 ### Reconnects
 The kernel needs a ticket whenever it sets up a session with the SMB server: when the volume is mounted, and again when the connection to the server was lost (a network failure, a restart of the server). It asks for one with `request-key`, which the kernel starts as a helper in the namespaces of the node, and which runs `cifs.upcall` of the node (not the one in the smb container). The kernel passes the `cruid`, the process whose request needed the session, and the `upcall_target` mount option:
@@ -70,14 +71,16 @@ A volume that is mounted keeps the principal and the `cruid` it was mounted with
 A new keytab for the same principal replaces the stored keytab when a volume of the principal is mounted on the node, also when kubelet stages a volume that is already mounted again (e.g. after a restart of kubelet), and only when a ticket can be obtained with it. When no ticket can be obtained for a volume that is already mounted, e.g. because the KDC can not be reached, the volume keeps its ticket cache: the driver logs a warning and the renewal tries again later.
 
 ### Rotating the keytab
-A keytab stops working when the password of the principal changes, e.g. when the password of an Active Directory account is changed or expires: `kinit` then fails with `Preauthentication failed`. Update the secret with a keytab made after the change.
+A keytab stops working when the password of the principal changes, e.g. when the password of an Active Directory account is changed or expires: `kinit` then fails with `Preauthentication failed`. Update the secret with a keytab made after the change. Tickets obtained before the change stay valid until they expire (usually after 10 hours), so the volumes keep working meanwhile.
 
-The driver only gets the secret when a volume is staged on a node. A node therefore keeps using the old keytab until a volume of the principal is staged there again:
+With `--krb5-update-keytab-from-secret` (`linux.krb5UpdateKeytabFromSecret` in the Helm chart, enabled by default), when the renewal (`--krb5-renew-interval`) with the stored keytab of a principal fails, the driver reads the secrets of the principal's volumes, through the `nodeStageSecretRef` of their PersistentVolume. When a secret holds another keytab for the same principal and `kinit` succeeds with it, it replaces the stored keytab of the node and gives the new ticket; a keytab that does not work is not used (both counted in `csi_smb_kerberos_keytab_updates_total{result="success|failure"}`). While the stored keytab works, the secrets are not read, so two secrets with different keytabs that both work do not take turns. A rotated keytab is therefore in use on every node at the first renewal after both the password change and the update of the secret, at most one renewal interval later. The interval must stay well below the ticket lifetime, so that the new keytab is in use before the tickets of the old one expire: with the default of 1 hour and tickets of 10 hours there are about 9 hours left. A secret with another principal is not used: a volume keeps its principal until it is mounted again. The node service account needs `get` and `list` on `persistentvolumes` and `get` on `secrets`, which the Helm chart gives it with this option when `linux.krb5CacheDirectory` is set (installations without kerberos get neither the option nor the permissions).
+
+Without it, the driver only gets the secret when a volume is staged on a node, and a node keeps using the old keytab until a volume of the principal is staged there again:
  - a volume of the principal that is mounted on the node for the first time,
  - a volume that is unmounted from the node, because no pod on the node uses it any more, and mounted again by the next pod,
  - kubelet staging the mounted volumes again, e.g. after a restart of kubelet.
 
-Starting one more pod with a volume that is already mounted on the node does not stage it again. The tickets obtained with the old keytab stay valid until they expire (usually after 10 hours); after that the kernel can not set up a new session when the connection to the server is lost, and the volume becomes unavailable. After a password change, make sure that the volumes of the principal are staged again on every node before then, e.g. by restarting all the pods on a node that use them.
+Starting one more pod with a volume that is already mounted on the node does not stage it again. After a password change, make sure that the volumes of the principal are staged again on every node before the old tickets expire, e.g. by restarting all the pods on a node that use them.
 
 ### Finding the KDC
 `kinit` and `cifs.upcall` run in the smb container and must find the KDC of the realm of the principal. There are two ways:

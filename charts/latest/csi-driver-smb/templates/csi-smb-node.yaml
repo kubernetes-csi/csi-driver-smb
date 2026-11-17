@@ -183,6 +183,7 @@ spec:
 {{- end }}
             - "--krb5-ensure-passwd-entry={{ .Values.linux.krb5EnsurePasswdEntry }}"
             - "--krb5-renew-interval={{ .Values.linux.krb5RenewInterval }}"
+            - "--krb5-update-keytab-from-secret={{ and .Values.linux.krb5UpdateKeytabFromSecret (ne .Values.linux.krb5CacheDirectory "") }}"
 {{- if .Values.linux.krb5HostUserdb }}
             - "--krb5-host-userdb-directory=/host/run/userdb"
 {{- end }}

@@ -47,6 +47,13 @@ var (
 		StabilityLevel: metrics.ALPHA,
 	})
 
+	krb5KeytabUpdates = metrics.NewCounterVec(&metrics.CounterOpts{
+		Subsystem:      krb5MetricsSubsystem,
+		Name:           "keytab_updates_total",
+		Help:           "Number of attempts to replace the stored keytab of a principal with a new keytab from the secret of one of its volumes, by result.",
+		StabilityLevel: metrics.ALPHA,
+	}, []string{"result"})
+
 	krb5FailingRenewals = metrics.NewGauge(&metrics.GaugeOpts{
 		Subsystem:      krb5MetricsSubsystem,
 		Name:           "ticket_renewal_failing_principals",
@@ -56,5 +63,5 @@ var (
 )
 
 func init() {
-	legacyregistry.MustRegister(krb5TicketRenewals, krb5KeytabPrincipals, krb5FailingRenewals)
+	legacyregistry.MustRegister(krb5TicketRenewals, krb5KeytabUpdates, krb5KeytabPrincipals, krb5FailingRenewals)
 }

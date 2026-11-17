@@ -181,6 +181,10 @@ type keytabVolume struct {
 	CredUID     int    `json:"cruid"`
 	VolumeID    string `json:"volumeID"`
 	StagingPath string `json:"stagingPath"`
+	// the secret of the volume, found through its PersistentVolume, for
+	// --krb5-update-keytab-from-secret
+	SecretNamespace string `json:"secretNamespace,omitempty"`
+	SecretName      string `json:"secretName,omitempty"`
 }
 
 // readKeytabVolume reads the file of a volume staged with a keytab. The file
@@ -208,12 +212,23 @@ func (d *Driver) keytabVolumeCredUID(volumeFile string) (int, bool) {
 
 // writeKeytabVolume records that a volume is staged at stagingPath with the
 // keytab of credUID.
+// The secret recorded for the volume is kept: the secret of a
+// PersistentVolume can not change.
 func (d *Driver) writeKeytabVolume(volumeID, stagingPath string, credUID int) error {
-	content, err := json.Marshal(keytabVolume{CredUID: credUID, VolumeID: volumeID, StagingPath: stagingPath})
+	file := d.keytabVolumeFile(volumeID)
+	volume := keytabVolume{CredUID: credUID, VolumeID: volumeID, StagingPath: stagingPath}
+	if previous, ok := readKeytabVolume(file); ok && previous.VolumeID == volumeID {
+		volume.SecretNamespace, volume.SecretName = previous.SecretNamespace, previous.SecretName
+	}
+	return writeKeytabVolumeFile(file, volume)
+}
+
+func writeKeytabVolumeFile(file string, volume keytabVolume) error {
+	content, err := json.Marshal(volume)
 	if err != nil {
 		return err
 	}
-	return writeFileAtomic(d.keytabVolumeFile(volumeID), append(content, '\n'))
+	return writeFileAtomic(file, append(content, '\n'))
 }
 
 // keytabVolumeCount returns the number of volumes staged with the keytab of
@@ -568,14 +583,19 @@ func (d *Driver) isStagingPathMounted(path string, mountPoints []mount.MountPoin
 }
 
 // renewKerberosTickets gets a fresh ticket for every principal that has
-// volumes staged with a keytab. It returns the number of renewed ticket
-// caches.
+// volumes staged with a keytab, with its stored keytab. When that fails, e.g.
+// because the password of the principal was changed, it tries the keytabs of
+// the secrets of the principal's volumes (--krb5-update-keytab-from-secret):
+// one that works replaces the stored keytab. It returns the number of renewed
+// ticket caches.
 func (d *Driver) renewKerberosTickets() int {
 	d.krb5Mutex.Lock()
 	principals := d.keytabPrincipals()
 	d.krb5Mutex.Unlock()
 
-	renewed, failed := 0, 0
+	renewed := 0
+	failing := map[int]string{}
+	errs := map[int]error{}
 	for credUID, principal := range principals {
 		if _, err := os.Stat(d.keytabFile(credUID, krb5KeytabFileSuffix)); err != nil {
 			// the first volume of the principal is being staged
@@ -586,14 +606,32 @@ func (d *Driver) renewKerberosTickets() int {
 			continue
 		}
 		if err != nil {
-			klog.Errorf("failed to renew the kerberos ticket of %s (cruid %d): %v", principal, credUID, err)
-			krb5TicketRenewals.WithLabelValues(krb5RenewalResultFailure).Inc()
-			failed++
+			failing[credUID], errs[credUID] = principal, err
 			continue
 		}
 		klog.V(4).Infof("renewed the kerberos ticket of %s (cruid %d)", principal, credUID)
 		krb5TicketRenewals.WithLabelValues(krb5RenewalResultSuccess).Inc()
 		renewed++
+	}
+
+	// The secrets are only read for the principals whose stored keytab
+	// failed: no API calls while the keytabs work, and two secrets with
+	// different keytabs that both work do not take turns.
+	candidates := d.keytabSecretCandidates(failing)
+	failed := 0
+	for credUID, principal := range failing {
+		updated, err := d.updateKeytabFromSecrets(credUID, principal, candidates[credUID])
+		if errors.Is(err, errKeytabReleased) {
+			continue
+		}
+		if updated {
+			krb5TicketRenewals.WithLabelValues(krb5RenewalResultSuccess).Inc()
+			renewed++
+			continue
+		}
+		klog.Errorf("failed to renew the kerberos ticket of %s (cruid %d): %v", principal, credUID, errs[credUID])
+		krb5TicketRenewals.WithLabelValues(krb5RenewalResultFailure).Inc()
+		failed++
 	}
 	krb5KeytabPrincipals.Set(float64(len(principals)))
 	krb5FailingRenewals.Set(float64(failed))

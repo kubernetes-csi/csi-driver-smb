@@ -94,6 +94,7 @@ type DriverOptions struct {
 	Krb5EnsurePasswdEntry          bool
 	Krb5HostUserdbDirectory        string
 	Krb5RenewInterval              time.Duration
+	Krb5UpdateKeytabFromSecret     bool
 	DefaultOnDeletePolicy          string
 	RemoveArchivedVolumePath       bool
 	EnableWindowsHostProcess       bool
@@ -129,6 +130,7 @@ type Driver struct {
 	passwdFile                     string
 	krb5HostUserdbDirectory        string
 	krb5RenewInterval              time.Duration
+	krb5UpdateKeytabFromSecret     bool
 	krb5Mutex                      sync.Mutex // serializes changes to the keytabs and ticket caches of kerberos principals
 	defaultOnDeletePolicy          string
 	removeArchivedVolumePath       bool
@@ -165,6 +167,7 @@ func NewDriver(options *DriverOptions) *Driver {
 	driver.passwdFile = defaultPasswdFile
 	driver.krb5HostUserdbDirectory = options.Krb5HostUserdbDirectory
 	driver.krb5RenewInterval = options.Krb5RenewInterval
+	driver.krb5UpdateKeytabFromSecret = options.Krb5UpdateKeytabFromSecret
 
 	if options.VolStatsCacheExpireInMinutes <= 0 {
 		options.VolStatsCacheExpireInMinutes = 10 // default expire in 10 minutes

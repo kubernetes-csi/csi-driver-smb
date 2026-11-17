@@ -145,6 +145,14 @@ linux:
   # Interval for renewing the tickets of volumes mounted with a keytab
   # (krb5keytab and krb5principal in the secret), 0 disables it.
   krb5RenewInterval: 1h
+  # When the renewal with the stored keytab of a principal fails (e.g. after a
+  # password change), read the secrets of its volumes (nodeStageSecretRef of
+  # their PersistentVolume) and use a new keytab found there when kinit
+  # succeeds with it, so that a keytab rotated in the secret is used without
+  # mounting the volumes again. Only active when krb5CacheDirectory is set;
+  # then it gives the node service account get/list on persistentvolumes and
+  # get on secrets.
+  krb5UpdateKeytabFromSecret: true
   # Make the cruid users of kerberos mounts known on the node with systemd
   # userdb records in /run/userdb of the node, and mount kerberos volumes with
   # upcall_target=mount. Without it a kerberos volume stays unavailable after
