@@ -1,4 +1,5 @@
-{{- if and .Values.linux.enabled (ne .Values.linux.krb5Conf "") }}
+{{- $krb5Dir := .Values.linux.krb5CacheDirectory | trimSuffix "/" }}
+{{- if and .Values.linux.enabled (or (ne .Values.linux.krb5Conf "") (ne $krb5Dir "")) }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -6,6 +7,14 @@ metadata:
   namespace: {{ .Release.Namespace }}
 {{ include "smb.labels" . | indent 2 }}
 data:
+{{- if ne $krb5Dir "" }}
+  # the ticket caches of the driver, for cifs.upcall in the smb container
+  00-csi-driver-smb-cache.conf: |
+    [libdefaults]
+        default_ccache_name = FILE:{{ $krb5Dir }}/{{ .Values.linux.krb5Prefix | default "krb5cc_" }}%{uid}
+{{- end }}
+{{- if ne .Values.linux.krb5Conf "" }}
   custom.conf: |
 {{ .Values.linux.krb5Conf | indent 4 }}
+{{- end }}
 {{- end }}

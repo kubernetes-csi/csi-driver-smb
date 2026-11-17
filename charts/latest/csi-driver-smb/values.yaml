@@ -125,6 +125,9 @@ linux:
   dsName: csi-smb-node # daemonset name
   dnsPolicy: ClusterFirstWithHostNet  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
   kubelet: /var/lib/kubelet
+  # The driver uses this directory at the same path as the node. A directory
+  # inside the kubelet directory is seen through the kubelet mount, one outside
+  # it is mounted at its path.
   krb5CacheDirectory: "" # directory for kerberos credential cache, empty string means default(/var/lib/kubelet/kerberos/)
   krb5Prefix: "" # prefix for kerberos credential cache, empty string means default(krb5cc_)
   # When true (and krb5CacheDirectory is non-empty), an initContainer writes

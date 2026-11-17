@@ -1,4 +1,13 @@
 {{- if .Values.linux.enabled}}
+{{- /*
+  The driver uses the kerberos cache directory at the same path as the node, so
+  that the symlinks it writes and cifs.upcall of the node agree. A directory
+  inside the kubelet directory is seen through the kubelet mount; mounting it
+  again there, under the bidirectional kubelet mount, would propagate to the
+  node and stack a bind mount on every start of the pod.
+*/}}
+{{- $krb5Dir := .Values.linux.krb5CacheDirectory | trimSuffix "/" }}
+{{- $krb5InKubelet := hasPrefix (printf "%s/" (.Values.linux.kubelet | trimSuffix "/")) (printf "%s/" $krb5Dir) }}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
@@ -169,6 +178,9 @@ spec:
             - "--nodeid=$(KUBE_NODE_NAME)"
             - "--enable-get-volume-stats={{ .Values.feature.enableGetVolumeStats }}"
             - "--krb5-prefix={{ .Values.linux.krb5Prefix }}"
+{{- if ne $krb5Dir "" }}
+            - "--krb5-cache-directory={{ $krb5Dir }}/"
+{{- end }}
             - "--krb5-ensure-passwd-entry={{ .Values.linux.krb5EnsurePasswdEntry }}"
             - "--krb5-renew-interval={{ .Values.linux.krb5RenewInterval }}"
 {{- if .Values.linux.krb5HostUserdb }}
@@ -208,12 +220,18 @@ spec:
             - mountPath: {{ .Values.linux.kubelet }}
               mountPropagation: Bidirectional
               name: mountpoint-dir
-{{- if ne .Values.linux.krb5CacheDirectory "" }}
-            - mountPath: {{ .Values.linux.kubelet }}/kerberos/
-              mountPropagation: Bidirectional
+{{- if ne $krb5Dir "" }}
+{{- if $krb5InKubelet }}
+            # only for kubelet to create the directory, the driver uses it through the kubelet mount
+            - mountPath: /krb5-cache-directory
+              name: krb5cache-dir
+              readOnly: true
+{{- else }}
+            - mountPath: {{ $krb5Dir }}/
               name: krb5cache-dir
 {{- end }}
-{{- if ne .Values.linux.krb5Conf "" }}
+{{- end }}
+{{- if or (ne .Values.linux.krb5Conf "") (ne $krb5Dir "") }}
             - mountPath: /etc/krb5.conf.d
               name: krb5-custom-conf
               readOnly: true
@@ -248,7 +266,7 @@ spec:
             type: DirectoryOrCreate
           name: krb5-confd
 {{- end }}
-{{- if ne .Values.linux.krb5Conf "" }}
+{{- if or (ne .Values.linux.krb5Conf "") (ne $krb5Dir "") }}
         - configMap:
             name: {{ .Values.linux.dsName }}-krb5-conf
           name: krb5-custom-conf
