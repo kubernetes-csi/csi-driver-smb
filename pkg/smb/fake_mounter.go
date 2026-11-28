@@ -31,14 +31,14 @@ type fakeMounter struct {
 }
 
 // Mount overrides mount.FakeMounter.Mount.
-func (f *fakeMounter) Mount(source string, target string, _ string, _ []string) error {
+func (f *fakeMounter) Mount(source string, target string, fstype string, options []string) error {
 	if strings.Contains(source, "error_mount") {
 		return fmt.Errorf("fake Mount: source error")
 	} else if strings.Contains(target, "error_mount") {
 		return fmt.Errorf("fake Mount: target error")
 	}
 
-	return nil
+	return f.FakeMounter.Mount(source, target, fstype, options)
 }
 
 // MountSensitive overrides mount.FakeMounter.MountSensitive.
