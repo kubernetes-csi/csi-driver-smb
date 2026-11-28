@@ -1,0 +1,31 @@
+{{- if and .Values.rbac.create .Values.rbac.openshiftPrivilegedSCC -}}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Values.rbac.name }}-privileged-scc-role
+{{ include "smb.labels" . | indent 2 }}
+rules:
+  - apiGroups: ["security.openshift.io"]
+    resources: ["securitycontextconstraints"]
+    resourceNames: ["privileged"]
+    verbs: ["use"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Values.rbac.name }}-privileged-scc-binding
+  namespace: {{ .Release.Namespace }}
+{{ include "smb.labels" . | indent 2 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.serviceAccount.node }}
+    namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+    name: {{ .Values.serviceAccount.controller }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .Values.rbac.name }}-privileged-scc-role
+  apiGroup: rbac.authorization.k8s.io
+{{- end -}}
